@@ -4,3 +4,6 @@ docs/.vitepress/cache/
 *.log
 build_output.txt
 qa-history.json
+
+# Local Netlify folder
+.netlify
