@@ -41,6 +41,10 @@
             <path d="M12 6v2M12 16v2M16 12h-8" />
             <path d="M9 9l6 6M15 9l-6 6" />
           </svg>
+          <svg v-if="item.id === '开发管理'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
         </div>
         <span>{{ item.label }}</span>
       </div>
@@ -65,6 +69,7 @@
                 <svg v-if="group.label === '项目合同'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l6-6"/><path d="M9 9l6 6"/></svg>
                 <svg v-if="group.label === '样品及长库龄管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3l-1 5h7l-1-5"/><rect x="3" y="8" width="18" height="13" rx="2"/><circle cx="9" cy="14" r="2"/><circle cx="15" cy="14" r="2"/></svg>
                 <svg v-if="group.label === '预提与冲销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v6a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                <svg v-if="group.label === '值集配置'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="10" y1="6.5" x2="14" y2="6.5"/><line x1="10" y1="17.5" x2="14" y2="17.5"/><line x1="6.5" y1="10" x2="6.5" y2="14"/><line x1="17.5" y1="10" x2="17.5" y2="14"/></svg>
                 <span>{{ group.label }}</span>
                 <svg class="kb-arrow-svg" :class="{ rotated: expandedGroup === group.label }" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
@@ -92,6 +97,7 @@
                       <svg v-if="sub.label === '工程服务费冲销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v6a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/><line x1="9" y1="14" x2="15" y2="20"/><line x1="15" y1="14" x2="9" y2="20"/></svg>
                       <svg v-if="sub.label === '样品及长库龄折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/><path d="M4 4l6 6"/></svg>
                       <svg v-if="sub.label === '工程折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 12h8"/><circle cx="12" cy="8" r="2"/><path d="M8 16l4-4 4 4"/></svg>
+                      <svg v-if="sub.label === '装修等级'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
                       <span>{{ sub.label }}</span>
                     </div>
                   </template>
@@ -128,6 +134,7 @@ const primaryNav = [
   { id: '工程管理', label: '工程管理', icon: 'fa-solid fa-helmet-safety' },
   { id: '门店管理', label: '门店管理', icon: 'fa-solid fa-store' },
   { id: '财务管理', label: '财务管理', icon: 'fa-solid fa-coins' },
+  { id: '开发管理', label: '开发管理', icon: 'fa-solid fa-code' },
 ]
 
 const secondaryNav = {
@@ -188,6 +195,15 @@ const secondaryNav = {
       ]
     }
   ],
+  '开发管理': [
+    {
+      label: '值集配置',
+      icon: 'fa-solid fa-table-list',
+      items: [
+        { label: '装修等级', link: '/开发管理/值集配置/装修等级/', icon: 'fa-solid fa-paint-roller' },
+      ]
+    }
+  ],
   '财务管理': [
     {
       label: '预提与冲销',
@@ -242,6 +258,9 @@ onMounted(() => {
   } else if (currentPath.value.includes('/财务管理/')) {
     expandedPanel.value = '财务管理'
     expandedGroup.value = '预提与冲销'
+  } else if (currentPath.value.includes('/开发管理/')) {
+    expandedPanel.value = '开发管理'
+    expandedGroup.value = '值集配置'
   }
 })
 </script>
