@@ -1,0 +1,6 @@
+node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+*.log
+build_output.txt
+qa-history.json

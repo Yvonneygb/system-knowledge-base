@@ -1,0 +1,1172 @@
+<template>
+  <div class="kb-layout">
+    <!-- 顶部导航栏 -->
+    <header class="kb-topbar">
+      <div class="kb-logo-area">
+        <div class="kb-logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 20h20M3 10l9-7 9 7M5 10v10h4v-6h6v6h4V10" />
+          </svg>
+        </div>
+        <span class="kb-logo-title">新门户系统知识库</span>
+      </div>
+      <div class="kb-topbar-right"></div>
+    </header>
+
+    <!-- 一级菜单栏 -->
+    <nav class="kb-primary-nav">
+      <div
+        v-for="item in primaryNav"
+        :key="item.id"
+        class="kb-primary-item"
+        :class="{ active: expandedPanel === item.id }"
+        @click="togglePanel(item.id)"
+        :title="item.label"
+      >
+        <div class="kb-primary-icon">
+          <svg v-if="item.id === '家装管理'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <svg v-if="item.id === '工程管理'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 20h20M3 10l9-7 9 7M5 10v10" />
+            <rect x="7" y="14" width="4" height="6" />
+            <rect x="13" y="11" width="4" height="9" />
+          </svg>
+          <svg v-if="item.id === '门店管理'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18M3 7v1a3 3 0 006 0V7m0 1a3 3 0 006 0V7m0 1a3 3 0 006 0V7H3l2-4h14l2 4" />
+            <path d="M5 21V10.85M19 21V10.85" />
+          </svg>
+          <svg v-if="item.id === '财务管理'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v2M12 16v2M16 12h-8" />
+            <path d="M9 9l6 6M15 9l-6 6" />
+          </svg>
+        </div>
+        <span>{{ item.label }}</span>
+      </div>
+    </nav>
+
+    <!-- 二级侧边栏面板 -->
+    <transition name="panel-slide">
+      <aside class="kb-secondary-panel" v-if="expandedPanel">
+        <div class="kb-panel-header">
+          <span class="kb-panel-title">{{ expandedPanel }}</span>
+          <button class="kb-panel-close" @click="expandedPanel = null">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="kb-panel-body">
+          <template v-for="group in secondaryNav[expandedPanel]" :key="group.label">
+            <div class="kb-nav-group">
+              <div class="kb-nav-group-title" @click="toggleGroup(group.label)">
+                <svg v-if="group.label === '项目往来'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                <svg v-if="group.label === '服务费'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                <svg v-if="group.label === '项目交付'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1z"/><path d="M16 8h5v8h-5"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                <svg v-if="group.label === '项目合同'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l6-6"/><path d="M9 9l6 6"/></svg>
+                <svg v-if="group.label === '样品及长库龄管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3l-1 5h7l-1-5"/><rect x="3" y="8" width="18" height="13" rx="2"/><circle cx="9" cy="14" r="2"/><circle cx="15" cy="14" r="2"/></svg>
+                <svg v-if="group.label === '预提与冲销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v6a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                <span>{{ group.label }}</span>
+                <svg class="kb-arrow-svg" :class="{ rotated: expandedGroup === group.label }" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <transition name="group-expand">
+                <div class="kb-nav-group-items" v-if="expandedGroup === group.label">
+                  <template v-for="sub in group.items" :key="sub.label">
+                    <div
+                      class="kb-nav-item"
+                      :class="{ active: currentPath === sub.link }"
+                      @click="navigateTo(sub.link)"
+                    >
+                      <svg v-if="sub.label === '服务费业务背景'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="10" y1="6.5" x2="14" y2="6.5"/><line x1="10" y1="17.5" x2="14" y2="17.5"/><line x1="6.5" y1="10" x2="6.5" y2="14"/><line x1="17.5" y1="10" x2="17.5" y2="14"/></svg>
+                      <svg v-if="sub.label === '家装真实性核销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                      <svg v-if="sub.label === '家装要货订单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                      <svg v-if="sub.label === '家装折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/><path d="M17 7l-5 5"/><path d="M12 12l5 5"/></svg>
+                      <svg v-if="sub.label === '工程服务费报销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+                      <svg v-if="sub.label === '工程服务费兑现'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/><circle cx="7" cy="8" r="1"/><circle cx="17" cy="16" r="1"/></svg>
+                      <svg v-if="sub.label === '工程要货订单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                      <svg v-if="sub.label === '样品及长库龄要货订单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3l-1 5h7l-1-5"/><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 11v4"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="15" r="1"/><path d="M8 15l2 2"/><path d="M14 11l2 2"/></svg>
+                      <svg v-if="sub.label === '工程服务费预提'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>
+                      <svg v-if="sub.label === '自营工程合同'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                      <svg v-if="sub.label === '项目到款引入'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M19 15l-7 7-7-7"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="5" r="2"/></svg>
+                      <svg v-if="sub.label === '项目到款认领'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 00-2-2v0a2 2 0 00-2 2v0"/><path d="M14 10V4a2 2 0 00-2-2v0a2 2 0 00-2 2v6"/><path d="M10 10.5V6a2 2 0 00-2-2v0a2 2 0 00-2 2v8"/><path d="M18 8a2 2 0 114 0v6a8 8 0 11-16 0v-4a2 2 0 014 0"/></svg>
+                      <svg v-if="sub.label === '项目到款认领撤销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                      <svg v-if="sub.label === '工程服务费冲销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v6a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/><line x1="9" y1="14" x2="15" y2="20"/><line x1="15" y1="14" x2="9" y2="20"/></svg>
+                      <svg v-if="sub.label === '样品及长库龄折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/><path d="M4 4l6 6"/></svg>
+                      <svg v-if="sub.label === '工程折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 12h8"/><circle cx="12" cy="8" r="2"/><path d="M8 16l4-4 4 4"/></svg>
+                      <span>{{ sub.label }}</span>
+                    </div>
+                  </template>
+                </div>
+              </transition>
+            </div>
+          </template>
+        </div>
+      </aside>
+    </transition>
+
+    <!-- 主内容区域 -->
+    <main class="kb-main-content" :class="{ shifted: expandedPanel }">
+      <div class="kb-content-wrapper">
+        <Content class="kb-page-content" />
+      </div>
+    </main>
+
+    <!-- 悬浮问答组件 -->
+    <FloatingQA />
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vitepress'
+import { Content } from 'vitepress'
+import FloatingQA from './FloatingQA.vue'
+
+const router = useRouter()
+
+const primaryNav = [
+  { id: '家装管理', label: '家装管理', icon: 'fa-solid fa-building' },
+  { id: '工程管理', label: '工程管理', icon: 'fa-solid fa-helmet-safety' },
+  { id: '门店管理', label: '门店管理', icon: 'fa-solid fa-store' },
+  { id: '财务管理', label: '财务管理', icon: 'fa-solid fa-coins' },
+]
+
+const secondaryNav = {
+  '家装管理': [
+    {
+      label: '项目往来',
+      icon: 'fa-solid fa-arrow-right-arrow-left',
+      items: [
+        { label: '家装真实性核销', link: '/家装管理/项目往来/家装真实性核销/', icon: 'fa-solid fa-shield-halved' },
+        { label: '家装要货订单', link: '/家装管理/项目往来/家装要货订单/', icon: 'fa-solid fa-box-shipment' },
+        { label: '家装折扣政策', link: '/家装管理/项目往来/家装折扣政策/', icon: 'fa-solid fa-percent' },
+      ]
+    }
+  ],
+  '工程管理': [
+    {
+      label: '项目合同',
+      icon: 'fa-solid fa-file-contract',
+      items: [
+        { label: '自营工程合同', link: '/工程管理/项目合同/自营工程合同/', icon: 'fa-solid fa-file-signature' },
+      ]
+    },
+    {
+      label: '服务费',
+      icon: 'fa-solid fa-money-bill-transfer',
+      items: [
+        { label: '服务费业务背景', link: '/工程管理/服务费/服务费业务背景/', icon: 'fa-solid fa-diagram-project' },
+        { label: '工程服务费报销', link: '/工程管理/服务费/工程服务费报销/', icon: 'fa-solid fa-receipt' },
+        { label: '工程服务费兑现', link: '/工程管理/服务费/工程服务费兑现/', icon: 'fa-solid fa-hand-holding-dollar' },
+      ]
+    },
+    {
+      label: '项目交付',
+      icon: 'fa-solid fa-truck-fast',
+      items: [
+        { label: '工程要货订单', link: '/工程管理/项目交付/工程要货订单/', icon: 'fa-solid fa-box-urgent' },
+      ]
+    },
+    {
+      label: '项目往来',
+      icon: 'fa-solid fa-arrow-right-arrow-left',
+      items: [
+        { label: '工程服务费预提', link: '/工程管理/项目往来/工程服务费预提/', icon: 'fa-solid fa-file-invoice-dollar' },
+        { label: '项目到款引入', link: '/工程管理/项目往来/项目到款引入/', icon: 'fa-solid fa-arrow-down-to-line' },
+        { label: '项目到款认领', link: '/工程管理/项目往来/项目到款认领/', icon: 'fa-solid fa-hand-pointer' },
+        { label: '项目到款认领撤销', link: '/工程管理/项目往来/项目到款认领撤销/', icon: 'fa-solid fa-rotate-left' },
+        { label: '工程折扣政策', link: '/工程管理/项目往来/工程折扣政策/', icon: 'fa-solid fa-gavel' },
+      ]
+    }
+  ],
+  '门店管理': [
+    {
+      label: '样品及长库龄管理',
+      icon: 'fa-solid fa-flask',
+      items: [
+        { label: '样品及长库龄要货订单', link: '/门店管理/样品及长库龄管理/样品及长库龄要货订单/', icon: 'fa-solid fa-flask' },
+        { label: '样品及长库龄折扣政策', link: '/门店管理/样品及长库龄管理/样品及长库龄折扣政策/', icon: 'fa-solid fa-tags' },
+      ]
+    }
+  ],
+  '财务管理': [
+    {
+      label: '预提与冲销',
+      icon: 'fa-solid fa-receipt',
+      items: [
+        { label: '工程服务费冲销', link: '/财务管理/预提与冲销/工程服务费冲销/', icon: 'fa-solid fa-scissors' },
+      ]
+    }
+  ]
+}
+
+const expandedPanel = ref(null)
+const expandedGroup = ref('项目往来')
+const currentPath = computed(() => router.route.path)
+
+function togglePanel(id) {
+  if (expandedPanel.value === id) {
+    expandedPanel.value = null
+  } else {
+    expandedPanel.value = id
+    expandedGroup.value = secondaryNav[id]?.[0]?.label || null
+  }
+}
+
+function toggleGroup(label) {
+  expandedGroup.value = expandedGroup.value === label ? null : label
+}
+
+function navigateTo(link) {
+  router.go(link)
+}
+
+onMounted(() => {
+  if (currentPath.value.includes('/家装管理/')) {
+    expandedPanel.value = '家装管理'
+    expandedGroup.value = '项目往来'
+  } else if (currentPath.value.includes('/工程管理/服务费/')) {
+    expandedPanel.value = '工程管理'
+    expandedGroup.value = '服务费'
+  } else if (currentPath.value.includes('/工程管理/项目交付/')) {
+    expandedPanel.value = '工程管理'
+    expandedGroup.value = '项目交付'
+  } else if (currentPath.value.includes('/工程管理/项目合同/')) {
+    expandedPanel.value = '工程管理'
+    expandedGroup.value = '项目合同'
+  } else if (currentPath.value.includes('/工程管理/项目往来/')) {
+    expandedPanel.value = '工程管理'
+    expandedGroup.value = '项目往来'
+  } else if (currentPath.value.includes('/门店管理/')) {
+    expandedPanel.value = '门店管理'
+    expandedGroup.value = '样品及长库龄管理'
+  } else if (currentPath.value.includes('/财务管理/')) {
+    expandedPanel.value = '财务管理'
+    expandedGroup.value = '预提与冲销'
+  }
+})
+</script>
+
+<style scoped>
+.kb-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #FFFFFF;
+}
+
+/* ===== 顶部导航栏 — 白底紫高亮 ===== */
+.kb-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 200;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.kb-logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.kb-logo-area:hover { opacity: 0.85; }
+
+.kb-logo-mark {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #7C3AED;
+  border-radius: 8px;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(124,58,237,0.25);
+}
+.kb-logo-mark svg {
+  width: 22px;
+  height: 22px;
+}
+
+.kb-logo-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: rgb(17, 24, 39);
+  letter-spacing: 0.02em;
+}
+
+/* ===== 一级菜单栏 — 白底 ===== */
+.kb-primary-nav {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  bottom: 0;
+  width: 88px;
+  background: #F5F7FA;
+  border-right: 1px solid #E5E7EB;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 8px;
+  z-index: 150;
+}
+
+.kb-primary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 10px;
+  margin: 0;
+  color: #6B7280;
+  width: 100%;
+  white-space: nowrap;
+}
+.kb-primary-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.kb-primary-icon svg {
+  width: 22px;
+  height: 22px;
+}
+.kb-primary-item i {
+  font-size: 1.3rem;
+}
+.kb-primary-item span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.kb-primary-item:hover {
+  background: rgba(124,58,237,0.08);
+  color: #7C3AED;
+}
+.kb-primary-item.active {
+  background: rgba(124,58,237,0.12);
+  color: #7C3AED;
+}
+
+/* ===== 二级侧边栏面板 — 白底 ===== */
+.kb-secondary-panel {
+  position: fixed;
+  top: 56px;
+  left: 88px;
+  bottom: 0;
+  width: 200px;
+  background: #FFFFFF;
+  border-right: 1px solid #E5E7EB;
+  z-index: 140;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+}
+
+.kb-panel-header {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kb-panel-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: rgb(17,24,39);
+}
+.kb-panel-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: #F5F7FA;
+  color: #6B7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  transition: all 0.2s;
+}
+.kb-panel-close:hover { background: #FEF2F2; color: #DC2626; }
+
+.kb-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.kb-nav-group { margin-bottom: 4px; }
+.kb-nav-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: rgb(17,24,39);
+  transition: all 0.2s;
+}
+.kb-nav-group-title:hover { background: rgba(124,58,237,0.08); }
+
+.kb-arrow-svg {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+.kb-arrow-svg.rotated { transform: rotate(180deg); }
+
+.kb-nav-group-items { padding: 4px 0; }
+
+.kb-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 10px 28px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #6B7280;
+  transition: all 0.2s;
+  border-radius: 8px;
+  margin: 2px 6px;
+}
+.kb-nav-item i { font-size: 0.75rem; }
+.kb-nav-item:hover { background: rgba(124,58,237,0.08); color: #7C3AED; }
+.kb-nav-item.active { background: rgba(124,58,237,0.12); color: #7C3AED; font-weight: 600; }
+
+/* ===== 主内容区域 — 白底 ===== */
+.kb-main-content {
+  margin-left: 88px;
+  margin-top: 56px;
+  min-height: calc(100vh - 56px);
+  background: #FFFFFF;
+  transition: margin-left 0.3s ease;
+  padding: 0;
+}
+.kb-main-content.shifted {
+  margin-left: 288px;
+}
+
+.kb-content-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+.kb-page-content {
+  width: 100%;
+}
+
+/* ===== 动效 ===== */
+.panel-slide-enter-active { transition: all 0.3s ease; }
+.panel-slide-leave-active { transition: all 0.2s ease; }
+.panel-slide-enter-from { transform: translateX(-100%); opacity: 0; }
+.panel-slide-leave-to { transform: translateX(-100%); opacity: 0; }
+
+.group-expand-enter-active { transition: all 0.2s ease; }
+.group-expand-leave-active { transition: all 0.15s ease; }
+.group-expand-enter-from { opacity: 0; }
+.group-expand-leave-to { opacity: 0; }
+
+@media (max-width: 768px) {
+  .kb-primary-nav { width: 56px; padding: 12px 4px; }
+  .kb-secondary-panel { left: 56px; width: 180px; }
+  .kb-main-content { margin-left: 56px; padding: 16px 12px; }
+  .kb-main-content.shifted { margin-left: 236px; }
+  .kb-primary-item span { display: none; }
+}
+
+/* ===== 知识库全局内容样式 ===== */
+
+/* 统一底色白/浅灰交替 */
+.kl-wrap .kl-card:nth-child(odd)  { background: #FFFFFF; }
+.kl-wrap .kl-card:nth-child(even) { background: #FBFCFC; }
+
+/* 重点逻辑全宽容器 */
+.kl-wrap {
+  padding: 0;
+  max-width: 100%;
+  width: 100%;
+}
+.kl-wrap .kl-card {
+  width: 100%;
+  max-width: 100%;
+  padding: 24px 10%;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+/* 卡片头部 */
+.kl-card-header { margin-bottom: 12px; }
+
+/* 卡片标题 */
+.kl-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* 小标题（带紫色左边线） */
+.kl-sub-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #7C3AED;
+  margin: 0 0 8px 0;
+  padding-left: 10px;
+  border-left: 3px solid #7C3AED;
+  line-height: 1.4;
+}
+
+/* 列表 */
+.kl-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: klitem;
+}
+.kl-list li {
+  padding: 8px 0 8px 32px;
+  border-bottom: 1px solid #F3F4F6;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+  position: relative;
+  counter-increment: klitem;
+}
+.kl-list li:last-child { border-bottom: none; }
+.kl-list li::before {
+  content: counter(klitem);
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 22px;
+  height: 22px;
+  background: #7C3AED;
+  color: #FFFFFF;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 列表（无序号，只有项目符号） */
+.kl-list.plain li::before { display: none; }
+.kl-list.plain li { padding-left: 0; }
+
+/* 副标题段落 */
+.kl-sub-section {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 16px 0 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+/* 标签 badge */
+.kl-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(124,58,237,0.1);
+  color: #7C3AED;
+  vertical-align: middle;
+  line-height: 1.6;
+}
+.kl-badge.red    { background: rgba(220,38,38,0.1);  color: #DC2626; }
+.kl-badge.orange { background: rgba(234,88,12,0.1); color: #EA580C; }
+.kl-badge.green  { background: rgba(22,163,74,0.1);  color: #16A34A; }
+.kl-badge.yellow{ background: rgba(234,179,8,0.12); color: #B45309; }
+
+/* 橙色实操提示 */
+.kl-tip {
+  background: #FEF3C7;
+  border-left: 3px solid #F59E0B;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #92400E;
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+/* 警告/错误 */
+.kl-warn {
+  background: #FEF2F2;
+  border-left: 3px solid #EF4444;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #991B1B;
+  margin: 8px 0;
+}
+.kl-err {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #DC2626;
+  margin: 8px 0;
+}
+
+/* 公式框 */
+.kl-formula-box {
+  background: #FAF5FF;
+  border-left: 3px solid #7C3AED;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #4C1D95;
+  margin: 8px 0;
+}
+.kl-formula-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #7C3AED;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.kl-formula-code {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #5B21B6;
+  line-height: 1.6;
+}
+
+/* 高亮文字 */
+.kl-highlight { background: rgba(124,58,237,0.12); color: #7C3AED; padding: 0 4px; border-radius: 4px; }
+.kl-highlight-deep { background: rgba(124,58,237,0.2); color: #6D28D9; padding: 0 4px; border-radius: 4px; }
+.kl-strong { font-weight: 700; color: #1F2937; }
+
+/* 两栏对比 */
+.kl-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 8px 0;
+}
+.kl-col-box {
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.kl-col-box.pass   { background: #F0FDF4; border: 1px solid #86EFAC; color: #166534; }
+.kl-col-box.cancel { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
+.kl-col-box.gray   { background: #F9FAFB; border: 1px solid #E5E7EB; color: #374151; }
+.kl-col-box.info   { background: #EFF6FF; border: 1px solid #93C5FD; color: #1E40AF; }
+.kl-col-box.warn   { background: #FFFBEB; border: 1px solid #FCD34D; color: #92400E; }
+.kl-col-title {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.kl-col-items {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* 描述文字 */
+.kl-desc {
+  font-size: 14px;
+  color: #4B5563;
+  line-height: 1.7;
+  margin: 6px 0;
+}
+
+/* 序号圆 */
+.kl-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #7C3AED;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Section 大标题 */
+.kl-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+/* 表格 */
+.kl-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 8px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #E5E7EB;
+}
+.kl-table th {
+  background: #F3F4F6;
+  color: #374151;
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid #E5E7EB;
+}
+.kl-table td {
+  padding: 8px 12px;
+  color: #374151;
+  border-bottom: 1px solid #F3F4F6;
+  vertical-align: top;
+}
+.kl-table tr:last-child td { border-bottom: none; }
+
+/* 通用 kb-module-alt */
+.kb-module-alt {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* ===== 详细逻辑 dlm-* 模块体系 ===== */
+.dlm-wrap {
+  padding: 0;
+  max-width: 100%;
+  width: 100%;
+}
+.dlm-card {
+  width: 100%;
+  padding: 24px 10%;
+  box-sizing: border-box;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+.dlm-card:not(.alt) { background: #FFFFFF; }
+.dlm-card.alt       { background: #FBFCFC; }
+
+/* 模块标题行 */
+.dlm-mod-header {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.dlm-mod-sub {
+  font-size: 13px;
+  color: #6B7280;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #E5E7EB;
+}
+.dlm-mod-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #7C3AED;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  margin-right: 8px;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* 小标题（复用 key-logic 风格） */
+.dlm-sub-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #7C3AED;
+  margin: 20px 0 8px 0;
+  padding-left: 10px;
+  border-left: 3px solid #7C3AED;
+  line-height: 1.4;
+}
+
+/* 状态机流转 */
+.dlm-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+.dlm-flow-node {
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+.dlm-flow-new      { background: #EFF6FF; border: 2px solid #93C5FD; color: #1E40AF; }
+.dlm-flow-run      { background: #FEF3C7; border: 2px solid #FCD34D; color: #92400E; }
+.dlm-flow-approved { background: #F0FDF4; border: 2px solid #86EFAC; color: #166534; }
+.dlm-flow-rejected{ background: #FEF2F2; border: 2px solid #FCA5A5; color: #991B1B; }
+.dlm-flow-any     { background: #F3F4F6; border: 2px solid #D1D5DB; color: #374151; }
+.dlm-flow-cancel  { background: #F9FAFB; border: 2px solid #E5E7EB; color: #374151; }
+.dlm-flow-arrow {
+  padding: 0 12px;
+  font-size: 12px;
+  color: #9CA3AF;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* 状态行 */
+.dlm-state-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F3F4F6;
+}
+.dlm-state-row:last-child { border-bottom: none; }
+.dlm-state-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.dlm-state-info {
+  flex: 1;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.6;
+}
+
+/* ===== biz-intro 样式 ===== */
+.biz-hero {
+  background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+  color: #FFFFFF;
+  padding: 48px 32px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.biz-hero h2 {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+.biz-hero p { margin: 0; font-size: 1rem; opacity: 0.9; }
+.biz-section { margin-bottom: 32px; }
+.biz-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1E293B;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #E0E7FF;
+}
+.biz-tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.biz-tag {
+  background: #EEF2FF; color: #4338CA; border-radius: 20px;
+  padding: 4px 14px; font-size: 0.8rem; font-weight: 600;
+}
+.biz-flow-chart { margin: 16px 0; }
+.biz-flow-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin-bottom: 12px; padding: 12px; background: #F8FAFC;
+  border-radius: 8px; border-left: 3px solid #3B82F6;
+}
+.biz-flow-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #3B82F6; color: #fff; font-size: 12px;
+  font-weight: 700; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.biz-flow-content { flex: 1; }
+.biz-flow-content strong { display: block; margin-bottom: 2px; color: #1E293B; }
+.biz-flow-content span { font-size: 0.85rem; color: #64748B; }
+.biz-roles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+.biz-role {
+  padding: 12px; border-radius: 8px; font-size: 0.85rem;
+  border-left: 3px solid;
+}
+.biz-role.blue { background: #EFF6FF; border-color: #3B82F6; }
+.biz-role.purple { background: #F5F3FF; border-color: #7C3AED; }
+.biz-role.orange { background: #FFF7ED; border-color: #F97316; }
+.biz-formula {
+  background: #1E293B; color: #E2E8F0; border-radius: 12px;
+  padding: 20px 24px; font-family: 'Courier New', monospace;
+  font-size: 0.9rem; margin: 16px 0; line-height: 1.8;
+}
+.biz-formula-label { color: #93C5FD; font-size: 0.75rem; margin-bottom: 8px; }
+.biz-timeline { margin: 16px 0; }
+.biz-tl-item {
+  display: flex; gap: 12px; margin-bottom: 8px; align-items: flex-start;
+}
+.biz-tl-dot {
+  width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0;
+}
+.biz-tl-text { font-size: 0.85rem; color: #374151; }
+
+/* ===== biz-flow 样式 ===== */
+.bf-stage {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+.bf-stage-col {
+  border-radius: 14px;
+  padding: 20px 16px;
+  position: relative;
+}
+.bf-stage-col.blue { background: #EFF6FF; border: 1px solid #BFDBFE; }
+.bf-stage-col.purple { background: #F5F3FF; border: 1px solid #DDD6FE; }
+.bf-stage-col.green { background: #F0FDF4; border: 1px solid #BBF7D0; }
+.bf-col-title {
+  font-size: 0.85rem; font-weight: 700; margin-bottom: 12px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.bf-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin-bottom: 10px; font-size: 0.82rem;
+}
+.bf-icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+.bf-icon.blue { color: #3B82F6; }
+.bf-icon.purple { color: #7C3AED; }
+.bf-icon.green { color: #16A34A; }
+.bf-text { color: #374151; line-height: 1.4; }
+.bf-arrow-col {
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: center; gap: 8px;
+}
+.bf-arrow {
+  font-size: 1.4rem; color: #9CA3AF;
+}
+.bf-sub-label {
+  font-size: 0.7rem; color: #9CA3AF; text-align: center;
+}
+.bf-conditions {
+  background: #F8FAFC; border: 1px solid #E2E8F0;
+  border-radius: 12px; padding: 16px 20px; margin-top: 24px;
+}
+.bf-cond-title {
+  font-size: 0.85rem; font-weight: 700; color: #374151;
+  margin-bottom: 10px;
+}
+.bf-cond-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.bf-cond-table th {
+  background: #F1F5F9; color: #475569; font-weight: 600;
+  text-align: left; padding: 6px 10px;
+}
+.bf-cond-table td {
+  padding: 5px 10px; border-bottom: 1px solid #F1F5F9;
+  color: #374151;
+}
+
+/* ===== key-logic 样式（与 scoped 版本一致）====== */
+
+.kl-wrap {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.kl-wrap .kl-card {
+  width: 100%;
+  max-width: 100%;
+  padding: 24px 10%;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  margin-bottom: 0;
+}
+
+.kl-wrap .kl-card.alt {
+  background: #FAFAFC;
+}
+
+.kl-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.kl-card-title {
+  flex: 1;
+  margin: 0;
+}
+
+.kl-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #7C3AED;
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.kl-badge {
+  display: inline-block;
+  background: #EDE9FE;
+  color: #6D28D9;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.78rem;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+.kl-tip {
+  background: #FEF3C7;
+  border-left: 4px solid #F59E0B;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: #78350F;
+  margin-top: 12px;
+}
+
+.kl-formula-box {
+  background: #1E293B;
+  color: #E2E8F0;
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  margin-top: 12px;
+  line-height: 1.8;
+}
+
+.kl-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.kl-col-box {
+  background: #F8FAFC;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.83rem;
+  line-height: 1.6;
+}
+
+.kl-sub-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #F1F5F9;
+}
+
+.kl-sub-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #7C3AED;
+  margin: 0 0 8px;
+}
+
+.kl-warn {
+  background: #FEF2F2;
+  border-left: 4px solid #EF4444;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: #991B1B;
+  margin-top: 10px;
+}
+
+.kl-err {
+  background: #7F1D1D;
+  color: #FEE2E2;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  margin-top: 10px;
+}
+
+.kl-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.83rem;
+}
+
+.kl-table th {
+  background: #F5F3FF;
+  color: #6D28D9;
+  font-weight: 700;
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 2px solid #DDD6FE;
+}
+
+.kl-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #F1F5F9;
+  color: #374151;
+  vertical-align: top;
+}
+
+.kl-table tr:last-child td {
+  border-bottom: none;
+}
+
+.kl-section-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin: 0 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #E0E7FF;
+}
+</style>
