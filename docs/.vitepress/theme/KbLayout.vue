@@ -215,8 +215,6 @@ const secondaryNav = {
   ]
 }
 
-const expandedPanel = ref(null)
-const expandedGroup = ref('项目往来')
 const currentPath = computed(() => router.route.path)
 
 function togglePanel(id) {
@@ -236,37 +234,42 @@ function navigateTo(link) {
   router.go(link)
 }
 
+function resolvePanel(path) {
+  if (path.includes('/家装管理/')) return '家装管理'
+  if (path.includes('/工程管理/')) return '工程管理'
+  if (path.includes('/门店管理/')) return '门店管理'
+  if (path.includes('/财务管理/')) return '财务管理'
+  if (path.includes('/开发管理/')) return '开发管理'
+  return null
+}
+
+function resolveGroup(path) {
+  if (path.includes('/家装管理/')) return '项目往来'
+  if (path.includes('/工程管理/服务费/')) return '服务费'
+  if (path.includes('/工程管理/项目交付/')) return '项目交付'
+  if (path.includes('/工程管理/项目合同/')) return '项目合同'
+  if (path.includes('/工程管理/项目往来/')) return '项目往来'
+  if (path.includes('/门店管理/')) return '样品及长库龄管理'
+  if (path.includes('/财务管理/')) return '预提与冲销'
+  if (path.includes('/开发管理/')) return '值集配置'
+  return null
+}
+
+const expandedPanel = ref(null)
+const expandedGroup = ref('项目往来')
+
 onMounted(() => {
+  const p = currentPath.value
   // 根路径自动跳转到家装真实性核销
-  if (currentPath.value === '/' || currentPath.value === '/index.html') {
-    window.location.replace('/家装管理/项目往来/家装真实性核销/')
+  if (p === '/' || p === '/index.html') {
+    router.go('/家装管理/项目往来/家装真实性核销/')
     return
   }
-  if (currentPath.value.includes('/家装管理/')) {
-    expandedPanel.value = '家装管理'
-    expandedGroup.value = '项目往来'
-  } else if (currentPath.value.includes('/工程管理/服务费/')) {
-    expandedPanel.value = '工程管理'
-    expandedGroup.value = '服务费'
-  } else if (currentPath.value.includes('/工程管理/项目交付/')) {
-    expandedPanel.value = '工程管理'
-    expandedGroup.value = '项目交付'
-  } else if (currentPath.value.includes('/工程管理/项目合同/')) {
-    expandedPanel.value = '工程管理'
-    expandedGroup.value = '项目合同'
-  } else if (currentPath.value.includes('/工程管理/项目往来/')) {
-    expandedPanel.value = '工程管理'
-    expandedGroup.value = '项目往来'
-  } else if (currentPath.value.includes('/门店管理/')) {
-    expandedPanel.value = '门店管理'
-    expandedGroup.value = '样品及长库龄管理'
-  } else if (currentPath.value.includes('/财务管理/')) {
-    expandedPanel.value = '财务管理'
-    expandedGroup.value = '预提与冲销'
-  } else if (currentPath.value.includes('/开发管理/')) {
-    expandedPanel.value = '开发管理'
-    expandedGroup.value = '值集配置'
-  }
+  // 根据当前路径展开侧边栏
+  const panel = resolvePanel(p)
+  if (panel) expandedPanel.value = panel
+  const group = resolveGroup(p)
+  if (group) expandedGroup.value = group
 })
 </script>
 

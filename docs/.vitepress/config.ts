@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  base: '/system-knowledge-base/',
   title: '系统知识库',
   description: '家装管理系统业务逻辑梳理与排查知识库',
   head: [
