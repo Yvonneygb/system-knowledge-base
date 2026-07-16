@@ -2,6 +2,7 @@ import DefaultTheme from 'vitepress/theme'
 import { inBrowser } from 'vitepress/client'
 import KbLayout from './KbLayout.vue'
 import BreadcrumbTabs from './BreadcrumbTabs.vue'
+import ValueSetTabs from './ValueSetTabs.vue'
 import ServiceFeeFlow from './ServiceFeeFlow.vue'
 import VitePressRedirect from './VitePressRedirect.vue'
 import './custom.css'
@@ -11,6 +12,7 @@ export default {
   Layout: KbLayout,
   enhanceApp({ app, router }) {
     app.component('BreadcrumbTabs', BreadcrumbTabs)
+    app.component('ValueSetTabs', ValueSetTabs)
     app.component('ServiceFeeFlow', ServiceFeeFlow)
     app.component('VitePressRedirect', VitePressRedirect)
 

@@ -710,7 +710,7 @@
 <div class="tab-pad">
   <div class="dlm-wrap">
   <div class="dlm-card">
-    <div class="dlm-mod-header"><span class="dlm-mod-num">1</span>基础信息模块</div>
+    <div class="kl-card-header"><h3 class="kl-card-title">基础信息模块</h3></div>
     <div class="dlm-mod-sub">展示核销单头表的字段含义与取值逻辑</div>
     <table class="kl-table">
       <thead>
@@ -755,7 +755,7 @@
     </table>
   </div>
   <div class="dlm-card alt">
-    <div class="dlm-mod-header"><span class="dlm-mod-num">2</span>可选出库单逻辑</div>
+    <div class="kl-card-header"><h3 class="kl-card-title">可选出库单逻辑</h3></div>
     <div class="dlm-mod-sub">查询经销商在当前核销单条件下可以关联的出库单行</div>
     <div class="dlm-sub-title">接口信息</div>
     <div class="detail-text" v-pre>查询接口根据核销单头表的经销商、开票单位、交易公司等条件，从出库单明细表中筛选可关联的出库单行。</div>
@@ -783,7 +783,7 @@
     <div class="detail-text" v-pre>核销截止日 = 优先取延期配置，否则 = 发货日期 + 补核销截止天数（系统参数，家装默认180天，工程默认120天）</div>
   </div>
   <div class="dlm-card">
-    <div class="dlm-mod-header"><span class="dlm-mod-num">3</span>可选发票逻辑</div>
+    <div class="kl-card-header"><h3 class="kl-card-title">可选发票逻辑</h3></div>
     <div class="dlm-mod-sub">查询经销商在当前核销单条件下可以关联的发票明细</div>
     <div class="dlm-sub-title">过滤条件</div>
     <table class="kl-table">
@@ -803,7 +803,7 @@
     <div class="detail-text" v-pre>同一发票明细（invoice_detail_id）首次核销时关联的产品编码（item_code）会被记录。后续核销只能关联相同的产品编码，不能再换产品。</div>
   </div>
   <div class="dlm-card alt">
-    <div class="dlm-mod-header"><span class="dlm-mod-num">4</span>核销明细</div>
+    <div class="kl-card-header"><h3 class="kl-card-title">核销明细</h3></div>
     <div class="dlm-mod-sub">核销行表与核销明细表的字段含义与取值逻辑</div>
     <div class="dlm-sub-title">核销行表（EPM_INVOICE_TRUTH_LINE）</div>
     <div class="detail-text" v-pre>每行关联一张出库单行，包含出库单号、出库日期、核销截止日、可核销数量、本次核销数量等字段。</div>
@@ -825,7 +825,7 @@
     <div class="detail-text" v-pre>每行关联一张发票明细，包含发票号码、货物名称、可核销数量、本次核销数量、单位转换率等字段。详见上方基础信息模块中的核销明细表字段表。</div>
   </div>
   <div class="dlm-card">
-    <div class="dlm-mod-header"><span class="dlm-mod-num">5</span>保存校验</div>
+    <div class="kl-card-header"><h3 class="kl-card-title">保存校验</h3></div>
     <div class="dlm-mod-sub">保存核销单时的前端与后端校验规则</div>
     <table class="kl-table">
       <thead>
@@ -843,7 +843,7 @@
     <div class="detail-text" v-pre>新增：生成核销单号（前缀 + yyMMdd + 序列号），初始化状态为新建。更新：校验现有明细，更新数量字段并重新计算相关值。</div>
   </div>
   <div class="dlm-card alt">
-    <div class="dlm-mod-header"><span class="dlm-mod-num">6</span>提交校验</div>
+    <div class="kl-card-header"><h3 class="kl-card-title">提交校验</h3></div>
     <div class="dlm-mod-sub">提交审批时的4大校验逻辑</div>
     <table class="kl-table">
       <thead>
@@ -858,7 +858,7 @@
     </table>
   </div>
   <div class="dlm-card">
-    <div class="dlm-mod-header"><span class="dlm-mod-num">7</span>状态机</div>
+    <div class="kl-card-header"><h3 class="kl-card-title">状态机</h3></div>
     <div class="dlm-mod-sub">核销单各状态的流转关系与每个状态下的操作权限</div>
     <table class="kl-table">
       <thead>

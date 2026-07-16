@@ -645,16 +645,6 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
   color: #991B1B;
   margin: 8px 0;
 }
-.kl-err {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  border-radius: 6px;
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #DC2626;
-  margin: 8px 0;
-}
-
 /* 公式框 */
 .kl-formula-box {
   background: #FAF5FF;
@@ -1060,15 +1050,6 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
   padding: 10px 14px;
   font-size: 0.82rem;
   color: #991B1B;
-  margin-top: 10px;
-}
-
-.kl-err {
-  background: #7F1D1D;
-  color: #FEE2E2;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 0.82rem;
   margin-top: 10px;
 }
 
@@ -1936,6 +1917,30 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
   color: #6B7280;
   font-size: 0.83rem;
   margin: 0;
+}
+
+/* ===== vs-intro / vs-overview / vs-detail / vs-translate kl-wrap 适配 ===== */
+#vs-intro .kl-wrap .kl-card:nth-child(odd)  { background: #FFFFFF; }
+#vs-intro .kl-wrap .kl-card:nth-child(even) { background: #FBFCFC; }
+#vs-overview .kl-wrap .kl-card:nth-child(odd)  { background: #FFFFFF; }
+#vs-overview .kl-wrap .kl-card:nth-child(even) { background: #FBFCFC; }
+#vs-detail .kl-wrap .kl-card:nth-child(odd)  { background: #FFFFFF; }
+#vs-detail .kl-wrap .kl-card:nth-child(even) { background: #FBFCFC; }
+#vs-translate .kl-wrap .kl-card:nth-child(odd)  { background: #FFFFFF; }
+#vs-translate .kl-wrap .kl-card:nth-child(even) { background: #FBFCFC; }
+#vs-intro .kl-wrap .kl-card,
+#vs-overview .kl-wrap .kl-card,
+#vs-detail .kl-wrap .kl-card,
+#vs-translate .kl-wrap .kl-card {
+  border-radius: 0;
+  box-shadow: none;
+  border-top: 1px solid #F1F5F9;
+}
+#vs-intro .kl-wrap .kl-card:first-child,
+#vs-overview .kl-wrap .kl-card:first-child,
+#vs-detail .kl-wrap .kl-card:first-child,
+#vs-translate .kl-wrap .kl-card:first-child {
+  border-top: none;
 }
 
 /* ===== biz-intro kl-wrap 适配 ===== */

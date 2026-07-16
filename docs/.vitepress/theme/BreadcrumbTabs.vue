@@ -37,7 +37,7 @@ const tabs = [
   { id: 'history', label: '历史排查记录', icon: 'fa-solid fa-clock-rotate-left' },
 ]
 
-const activeTab = ref('detail-logic')
+const activeTab = ref('biz-intro')
 
 function applyTabVisibility() {
   const sectionIds = tabs.map(t => t.id)

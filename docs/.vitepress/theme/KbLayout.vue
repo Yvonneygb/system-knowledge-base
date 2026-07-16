@@ -237,6 +237,11 @@ function navigateTo(link) {
 }
 
 onMounted(() => {
+  // 根路径自动跳转到家装真实性核销
+  if (currentPath.value === '/' || currentPath.value === '/index.html') {
+    window.location.replace('/家装管理/项目往来/家装真实性核销/')
+    return
+  }
   if (currentPath.value.includes('/家装管理/')) {
     expandedPanel.value = '家装管理'
     expandedGroup.value = '项目往来'
@@ -649,16 +654,6 @@ onMounted(() => {
   color: #991B1B;
   margin: 8px 0;
 }
-.kl-err {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  border-radius: 6px;
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #DC2626;
-  margin: 8px 0;
-}
-
 /* 公式框 */
 .kl-formula-box {
   background: #FAF5FF;
@@ -1141,15 +1136,6 @@ onMounted(() => {
   padding: 10px 14px;
   font-size: 0.82rem;
   color: #991B1B;
-  margin-top: 10px;
-}
-
-.kl-err {
-  background: #7F1D1D;
-  color: #FEE2E2;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 0.82rem;
   margin-top: 10px;
 }
 

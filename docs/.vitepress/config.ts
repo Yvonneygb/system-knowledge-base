@@ -10,7 +10,7 @@ export default defineConfig({
   themeConfig: {
     outline: false,
     nav: [
-      { text: '🏠 知识库首页', link: '/' },
+      { text: '🏠 家装真实性核销', link: '/家装管理/项目往来/家装真实性核销/' },
       { text: '📂 家装管理', link: '/家装管理/项目往来/家装真实性核销/' },
       { text: '⚙️ 工程管理', link: '/工程管理/服务费/服务费业务背景/' },
       { text: '🔧 开发管理', link: '/开发管理/值集配置/装修等级/' }
