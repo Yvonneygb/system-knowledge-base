@@ -235,8 +235,8 @@ function toggleGroup(label) {
 }
 
 function navigateTo(link) {
-  // VitePress router 会自动处理 base 路径
-  router.go(link)
+  // 使用 withBase 确保 GitHub Pages base 路径正确
+  router.go(withBase(link))
 }
 
 function resolvePanel(path) {
