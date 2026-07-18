@@ -123,7 +123,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vitepress'
+import { useRouter, withBase } from 'vitepress'
 import { Content } from 'vitepress'
 import FloatingQA from './FloatingQA.vue'
 
@@ -265,9 +265,9 @@ const expandedGroup = ref('项目往来')
 
 onMounted(() => {
   const p = currentPath.value
-  // 根路径自动跳转到家装真实性核销
-  if (p === '/' || p === '/index.html') {
-    router.go('/家装管理/项目往来/家装真实性核销/')
+  // 根路径自动跳转到家装真实性核销（使用 withBase 确保 base 路径正确）
+  if (p === '/' || p === '/index.html' || p === '/system-knowledge-base/' || p === '/system-knowledge-base/index.html') {
+    router.go(withBase('/家装管理/项目往来/家装真实性核销/'))
     return
   }
   // 根据当前路径展开侧边栏
