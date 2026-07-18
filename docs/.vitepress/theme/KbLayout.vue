@@ -78,7 +78,7 @@
                   <template v-for="sub in group.items" :key="sub.label">
                     <div
                       class="kb-nav-item"
-                      :class="{ active: currentPath === sub.link }"
+                      :class="{ active: currentPath.includes(sub.link.replace(/\/$/, '')) }"
                       @click="navigateTo(sub.link)"
                     >
                       <svg v-if="sub.label === '服务费业务背景'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="10" y1="6.5" x2="14" y2="6.5"/><line x1="10" y1="17.5" x2="14" y2="17.5"/><line x1="6.5" y1="10" x2="6.5" y2="14"/><line x1="17.5" y1="10" x2="17.5" y2="14"/></svg>
@@ -215,7 +215,11 @@ const secondaryNav = {
   ]
 }
 
-const currentPath = computed(() => router.route.path)
+const currentPath = computed(() => {
+  // 确保路径以 / 开头，用于匹配
+  const path = router.route.path
+  return path.endsWith('/') ? path : path + '/'
+})
 
 function togglePanel(id) {
   if (expandedPanel.value === id) {
@@ -231,6 +235,7 @@ function toggleGroup(label) {
 }
 
 function navigateTo(link) {
+  // VitePress router 会自动处理 base 路径
   router.go(link)
 }
 
