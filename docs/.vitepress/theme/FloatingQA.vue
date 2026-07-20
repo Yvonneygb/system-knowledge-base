@@ -16,7 +16,7 @@
             <span v-if="!API_URL" class="qa-env-tag">仅本地可用</span>
           </div>
           <span class="qa-panel-desc">
-            {{ API_URL ? '基于业务逻辑文档智能检索' : '请在本地开发环境（localhost:3456）使用' }}
+            {{ API_URL ? (API_URL.includes('localhost') ? '基于业务逻辑文档智能检索' : '🤖 云端 AI 问答服务') : '请在本地开发环境（localhost:3456）使用' }}
           </span>
         </div>
 
@@ -90,14 +90,19 @@
 import { ref, nextTick, watch, onMounted } from 'vue'
 
 const STORAGE_KEY = 'kb-qa-history'
-// 本地开发时连接 localhost:3456，生产环境优雅降级
-const API_URL = (() => {
+// 优先级：window.KB_API_URL（构建时注入） > localhost
+const getApiUrl = () => {
+  if (typeof window === 'undefined') return null
+  // 云端构建时通过 window.KB_API_URL 注入
+  const injected = (window as any).KB_API_URL
+  if (injected) return injected
+  // 本地开发 fallback
   const host = window.location.hostname
-  // 只有在本地开发环境（localhost/127.0.0.1）才连接后端
   return (host === 'localhost' || host === '127.0.0.1')
     ? 'http://localhost:3456/api/qa'
     : null
-})()
+}
+const API_URL = getApiUrl()
 
 const isOpen = ref(false)
 const question = ref('')

@@ -3,6 +3,7 @@ import cors from 'cors'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { readFile } from 'fs/promises'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -12,6 +13,10 @@ app.use(express.json({ charset: 'utf-8' }))
 
 const KB_ROOT = path.resolve(__dirname, 'docs')
 const HISTORY_FILE = path.resolve(__dirname, 'qa-history.json')
+
+// 云端模式：知识库从 GitHub 动态加载，不写文件
+const IS_CLOUD = process.env.KB_GITHUB_URL || process.env.LLM_API_KEY
+const KB_GITHUB_URL = process.env.KB_GITHUB_URL || ''
 
 function loadHistory() {
   try {
@@ -34,7 +39,7 @@ function pageToMdFile(pagePath) {
   return fs.existsSync(mdPath) ? mdPath : null
 }
 
-// 更新MD文件中 <div id="history"> 内的表格，追加排查记录行
+// 更新MD文件中 <div id="history"> 内的表格，追加排查记录行（仅本地模式）
 function updateHistorySection(mdFilePath, record) {
   if (!mdFilePath || !fs.existsSync(mdFilePath)) return false
   
@@ -51,15 +56,12 @@ function updateHistorySection(mdFilePath, record) {
   const lines = answer.split('\n')
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    // 匹配"## 根因"或"**根因**"标题
     if (line.match(/^#+\s*根因/) || line.match(/\*+根因\*+/)) {
-      // 检查本行是否有实质内容（不只是"根因"二字）
       const inlineContent = line.replace(/^#+\s*根因[：:]?\s*/, '').replace(/\*+根因\*+[：:]?\s*/, '').replace(/\*+/g, '').trim()
       if (inlineContent && inlineContent !== '根因') {
         rootCause = inlineContent.substring(0, 30)
         break
       }
-      // 标题后跳过空行，取下一非空行
       for (let j = i + 1; j < Math.min(i + 5, lines.length); j++) {
         if (lines[j].trim()) {
           rootCause = lines[j].replace(/\*+/g, '').replace(/^[-]\s*/, '').replace(/^\d+[.]\s*/, '').substring(0, 30)
@@ -68,13 +70,11 @@ function updateHistorySection(mdFilePath, record) {
       }
       if (rootCause !== 'AI排查') break
     }
-    // 匹配"原因："行（排除仅含"常见原因："的空标题）
     if (line.match(/原因[：:]/) && !line.match(/^#+/) && line.replace(/常见原因[：:]?\s*/,'').trim()) {
       rootCause = line.replace(/常见原因[：:]?\s*/, '').replace(/\*+/g, '').substring(0, 30)
       break
     }
   }
-  // 如果没提取到根因，取回答的第一行摘要
   if (rootCause === 'AI排查' && lines.length > 0) {
     const firstContent = lines.find(l => l.trim() && !l.match(/^#+/))
     if (firstContent) rootCause = firstContent.replace(/\*+/g, '').substring(0, 30)
@@ -82,12 +82,10 @@ function updateHistorySection(mdFilePath, record) {
   
   const newRow = `| ${dateStr} | ${questionShort} | ${rootCause} | — | — |`
   
-  // 在history区域内找到 |------|------| 分隔行，在其下一行插入新记录
   const afterHistory = content.substring(historyStart)
   const separatorMatch = afterHistory.match(/\|[-|]+\|\s*\n/)
   if (separatorMatch) {
     const insertPos = historyStart + afterHistory.indexOf(separatorMatch[0]) + separatorMatch[0].length
-    // 在分隔行之后、现有数据行之前插入新行（最新的排在前）
     content = content.substring(0, insertPos) + newRow + '\n' + content.substring(insertPos)
     fs.writeFileSync(mdFilePath, content, 'utf-8')
     console.log(`✅ 已写入排查记录到: ${mdFilePath}`)
@@ -101,19 +99,62 @@ function updateHistorySection(mdFilePath, record) {
 function loadKnowledgeBase() {
   const files = []
   const walkDir = (dir) => {
-    const entries = fs.readdirSync(dir, { withFileTypes: true })
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name)
-      if (entry.isDirectory() && entry.name !== '.vitepress') {
-        walkDir(fullPath)
-      } else if (entry.isFile() && entry.name.endsWith('.md')) {
-        const content = fs.readFileSync(fullPath, 'utf-8')
-        const relPath = path.relative(KB_ROOT, fullPath).replace(/\\/g, '/')
-        files.push({ path: relPath, content })
+    try {
+      const entries = fs.readdirSync(dir, { withFileTypes: true })
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name)
+        if (entry.isDirectory() && entry.name !== '.vitepress') {
+          walkDir(fullPath)
+        } else if (entry.isFile() && entry.name.endsWith('.md')) {
+          const content = fs.readFileSync(fullPath, 'utf-8')
+          const relPath = path.relative(KB_ROOT, fullPath).replace(/\\/g, '/')
+          files.push({ path: relPath, content })
+        }
       }
-    }
+    } catch (_) {}
   }
   walkDir(KB_ROOT)
+  return files
+}
+
+// 从 GitHub raw 获取知识库 MD 文件（云端模式）
+async function loadKnowledgeBaseFromGitHub(branch = 'master') {
+  if (!KB_GITHUB_URL) return []
+  
+  const match = KB_GITHUB_URL.match(/github\.com\/([^\/]+\/[^\/]+)/)
+  if (!match) {
+    console.warn('KB_GITHUB_URL 格式不正确，应为 https://github.com/owner/repo')
+    return []
+  }
+  
+  const [owner, repo] = match[1].split('/')
+  const baseRaw = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}`
+  
+  // 获取仓库文件列表
+  const listResp = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`, {
+    headers: { 'Accept': 'application/vnd.github.v3+json' }
+  })
+  
+  if (!listResp.ok) {
+    console.error(`获取仓库文件列表失败: ${listResp.status}`)
+    return []
+  }
+  
+  const tree = await listResp.json()
+  const mdFiles = tree.tree.filter(f => f.path.endsWith('.md') && !f.path.includes('.vitepress/'))
+  
+  const files = []
+  for (const f of mdFiles) {
+    try {
+      const resp = await fetch(`${baseRaw}/${f.path}`)
+      if (resp.ok) {
+        const content = await resp.text()
+        files.push({ path: f.path, content })
+      }
+    } catch (_) {}
+  }
+  
+  console.log(`从 GitHub 加载了 ${files.length} 个知识库文件`)
   return files
 }
 
@@ -151,21 +192,53 @@ function searchRelevantContext(question, kbFiles) {
   return selected
 }
 
+// 调用 LLM：支持本地 OpenClaw / OpenAI 兼容 API / 云端自定义 URL
 async function callLLM(messages) {
-  const baseUrl = 'http://127.0.0.1:64856'
-  const resp = await fetch(`${baseUrl}/v1/chat/completions`, {
+  const apiKey = process.env.LLM_API_KEY
+  const baseUrl = process.env.LLM_BASE_URL
+  const model = process.env.LLM_MODEL
+
+  if (!apiKey) {
+    throw new Error('LLM_API_KEY 未配置。请在 Railway/Render 等平台设置环境变量 LLM_API_KEY')
+  }
+
+  const endpoint = baseUrl
+    ? `${baseUrl.replace(/\/$/, '')}/chat/completions`
+    : 'http://127.0.0.1:64856/v1/chat/completions'
+  const modelName = model || 'openclaw'
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`
+  }
+
+  const resp = await fetch(endpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer a640245d914c76aaa324d4d32feee6604de1b5ee2c43429f' },
-    body: JSON.stringify({ model: 'openclaw', messages, temperature: 0.3, max_tokens: 2048, stream: false })
+    headers,
+    body: JSON.stringify({ model: modelName, messages, temperature: 0.3, max_tokens: 2048, stream: false })
   })
+
   if (!resp.ok) {
     const text = await resp.text()
     console.error(`LLM API error: ${resp.status} body: ${text.substring(0, 500)}`)
-    throw new Error(`LLM API error: ${resp.status} | ${text.substring(0, 100)}`)
+    throw new Error(`LLM API 错误 (${resp.status})：${text.substring(0, 100)}`)
   }
+
   const data = await resp.json()
   return data.choices?.[0]?.message?.content || '无法获取回答'
 }
+
+// 知识库加载（启动时一次性）
+let kbFiles = []
+async function initKnowledgeBase() {
+  if (IS_CLOUD && KB_GITHUB_URL) {
+    kbFiles = await loadKnowledgeBaseFromGitHub()
+  } else {
+    kbFiles = loadKnowledgeBase()
+    console.log(`本地知识库文件数: ${kbFiles.length}`)
+  }
+}
+initKnowledgeBase()
 
 // 问答接口
 app.post('/api/qa', async (req, res) => {
@@ -173,7 +246,6 @@ app.post('/api/qa', async (req, res) => {
     const { question, page } = req.body
     if (!question) return res.json({ error: '请输入问题' })
     
-    const kbFiles = loadKnowledgeBase()
     const relevantFiles = searchRelevantContext(question, kbFiles)
     let contextText = relevantFiles.length > 0
       ? relevantFiles.map(f => `--- 文档: ${f.path} ---\n${f.content}`).join('\n\n')
@@ -191,16 +263,15 @@ app.post('/api/qa', async (req, res) => {
       page: page || ''
     }
     
-    // 保存到历史JSON文件
+    // 保存到历史JSON文件（云端也保存，用于参考）
     const history = loadHistory()
     history.push(record)
     saveHistory(history)
     
-    // ★ 核心功能：将排查记录回写到当前页面的"历史排查记录"tab
-    if (page) {
+    // 本地模式：回写到 MD 文件的 history 区域
+    if (!IS_CLOUD && page) {
       const mdFile = pageToMdFile(page)
       if (mdFile) updateHistorySection(mdFile, record)
-      else console.log(`⚠ 未找到对应MD文件: ${page}`)
     }
     
     res.json({ answer, sources: relevantFiles.map(f => f.path) })
@@ -218,16 +289,22 @@ app.post('/api/qa/history', (req, res) => {
   const history = loadHistory()
   history.push(record)
   saveHistory(history)
-  if (record.page) { const mdFile = pageToMdFile(record.page); if (mdFile) updateHistorySection(mdFile, record) }
+  if (!IS_CLOUD && record.page) {
+    const mdFile = pageToMdFile(record.page)
+    if (mdFile) updateHistorySection(mdFile, record)
+  }
   res.json({ ok: true, count: history.length })
 })
 app.delete('/api/qa/history', (req, res) => { saveHistory([]); res.json({ ok: true }) })
-app.get('/api/kb-list', (req, res) => { res.json(loadKnowledgeBase().map(f => ({ path: f.path, size: f.content.length }))) })
+app.get('/api/kb-list', (req, res) => { res.json(kbFiles.map(f => ({ path: f.path, size: f.content.length }))) })
 
-const kbCount = loadKnowledgeBase().length
-console.log(`知识库文件数: ${kbCount}`)
-const PORT = 3456
+// 健康检查
+app.get('/health', (req, res) => res.json({ status: 'ok', kbFiles: kbFiles.length }))
+
+const PORT = process.env.PORT || 3456
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`知识库问答 API 服务启动: http://localhost:${PORT}`)
+  console.log(`知识库问答 API 服务启动: http://0.0.0.0:${PORT}`)
+  console.log(`模式: ${IS_CLOUD ? '云端（从 GitHub 加载知识库）' : '本地模式'}`)
+  if (IS_CLOUD) console.log(`GitHub 仓库: ${KB_GITHUB_URL}`)
   console.log(`历史记录文件: ${HISTORY_FILE}`)
 })

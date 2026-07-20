@@ -18,6 +18,9 @@ export default {
 
     // 根路径重定向到第一个知识库页面
     if (inBrowser) {
+      // 注入 AI 问答后端 API 地址（云端部署时由环境变量指定）
+      window.KB_API_URL = (import.meta && import.meta.env && import.meta.env.VITE_QA_API_URL) || null
+
       // Font Awesome CDN - 动态加载图标库
       if (!document.getElementById('font-awesome-css')) {
         var fontAwesomeLink = document.createElement('link')
