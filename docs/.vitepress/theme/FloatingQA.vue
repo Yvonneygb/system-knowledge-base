@@ -13,8 +13,11 @@
           <div class="qa-panel-title">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8.01" y2="16"/><line x1="16" y1="16" x2="16.01" y2="16"/></svg>
             <span>系统知识库 AI 问答</span>
+            <span v-if="!API_URL" class="qa-env-tag">仅本地可用</span>
           </div>
-          <span class="qa-panel-desc">基于业务逻辑文档智能检索</span>
+          <span class="qa-panel-desc">
+            {{ API_URL ? '基于业务逻辑文档智能检索' : '请在本地开发环境（localhost:3456）使用' }}
+          </span>
         </div>
 
         <!-- 历史问答 -->
@@ -87,7 +90,14 @@
 import { ref, nextTick, watch, onMounted } from 'vue'
 
 const STORAGE_KEY = 'kb-qa-history'
-const API_URL = 'http://localhost:3456/api/qa'
+// 本地开发时连接 localhost:3456，生产环境优雅降级
+const API_URL = (() => {
+  const host = window.location.hostname
+  // 只有在本地开发环境（localhost/127.0.0.1）才连接后端
+  return (host === 'localhost' || host === '127.0.0.1')
+    ? 'http://localhost:3456/api/qa'
+    : null
+})()
 
 const isOpen = ref(false)
 const question = ref('')
@@ -132,14 +142,21 @@ function renderMd(text) {
 function clearHistory() {
   qaHistory.value = []
   try { localStorage.removeItem(STORAGE_KEY) } catch (_) {}
-  // 同步清空后端历史文件
-  try {
-    fetch(`${API_URL}/history`, { method: 'DELETE' })
-  } catch (_) {}
+  // 同步清空后端历史文件（仅本地环境）
+  if (API_URL) {
+    try { fetch(`${API_URL}/history`, { method: 'DELETE' }) } catch (_) {}
+  }
 }
 
 async function submit() {
   if (!question.value.trim() || isLoading.value) return
+
+  // 生产环境检测
+  if (!API_URL) {
+    errorMsg.value = 'AI 问答仅支持本地开发环境使用'
+    return
+  }
+
   isLoading.value = true
   errorMsg.value = ''
   const q = question.value.trim()
@@ -259,6 +276,15 @@ async function submit() {
   font-size: 0.75rem;
   color: #6B7280;
   margin-top: 4px;
+}
+.qa-env-tag {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(234,88,12,0.1);
+  color: #EA580C;
+  font-weight: 600;
+  margin-left: 6px;
 }
 
 /* 消息区 */
