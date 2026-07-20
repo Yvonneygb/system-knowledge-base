@@ -3,6 +3,21 @@ import cors from 'cors'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+
+// 加载 .env 文件（本地开发时读取 API Key）
+const envPath = path.resolve(__dirname, '.env')
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf-8')
+  for (const line of envContent.split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const eqIdx = trimmed.indexOf('=')
+    if (eqIdx === -1) continue
+    const key = trimmed.slice(0, eqIdx).trim()
+    const val = trimmed.slice(eqIdx + 1).trim()
+    if (key && !process.env[key]) process.env[key] = val
+  }
+}
 import { readFile } from 'fs/promises'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
