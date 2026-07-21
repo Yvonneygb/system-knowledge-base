@@ -94,7 +94,7 @@ const STORAGE_KEY = 'kb-qa-history'
 const getApiUrl = () => {
   if (typeof window === 'undefined') return null
   // 云端构建时通过 window.KB_API_URL 注入
-  const injected = (window as any).KB_API_URL
+  const injected = window.KB_API_URL
   if (injected) return injected
   // 本地开发 fallback
   const host = window.location.hostname
@@ -125,14 +125,17 @@ watch(qaHistory, (val) => {
 }, { deep: true })
 
 function shortSrc(path) {
-  const parts = path.split('/')
+  const decoded = decodeURIComponent(path)
+  const parts = decoded.split('/')
   return parts[parts.length - 1].replace('.md', '')
 }
 
 function shortPage(page) {
   if (!page) return ''
-  const parts = page.split('/').filter(p => p && p !== 'docs')
-  return parts.length > 0 ? parts.join('/') : page
+  // URL 解码处理中文路径
+  const decoded = decodeURIComponent(page)
+  const parts = decoded.split('/').filter(p => p && p !== 'docs')
+  return parts.length > 0 ? parts.join('/') : decoded
 }
 
 function renderMd(text) {

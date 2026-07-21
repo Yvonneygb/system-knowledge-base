@@ -4,6 +4,8 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
 // 加载 .env 文件（本地开发时读取 API Key）
 const envPath = path.resolve(__dirname, '.env')
 if (fs.existsSync(envPath)) {
@@ -20,8 +22,6 @@ if (fs.existsSync(envPath)) {
 }
 import { readFile } from 'fs/promises'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
 const app = express()
 app.use(cors())
 app.use(express.json({ charset: 'utf-8' }))
@@ -30,7 +30,7 @@ const KB_ROOT = path.resolve(__dirname, 'docs')
 const HISTORY_FILE = path.resolve(__dirname, 'qa-history.json')
 
 // 云端模式：知识库从 GitHub 动态加载，不写文件
-const IS_CLOUD = process.env.KB_GITHUB_URL || process.env.LLM_API_KEY
+const IS_CLOUD = !!process.env.KB_GITHUB_URL
 const KB_GITHUB_URL = process.env.KB_GITHUB_URL || ''
 
 function loadHistory() {
@@ -196,13 +196,17 @@ function searchRelevantContext(question, kbFiles) {
     return { ...file, score }
   })
   scored.sort((a, b) => b.score - a.score)
+  const MAX_CONTEXT = 60000
   const selected = []
   let totalChars = 0
   for (const item of scored) {
     if (item.score <= 0) break
-    if (totalChars + item.content.length > 20000) break
-    selected.push(item)
-    totalChars += item.content.length
+    // 始终纳入得分最高的文件，即使其单独超出预算（避免大文件被整体丢弃）
+    if (selected.length > 0 && totalChars + item.content.length > MAX_CONTEXT) break
+    // 单文件超预算时截断，防止上下文过大
+    const content = item.content.length > MAX_CONTEXT ? item.content.slice(0, MAX_CONTEXT) : item.content
+    selected.push({ ...item, content })
+    totalChars += content.length
   }
   return selected
 }
