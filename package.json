@@ -3,9 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev docs",
+    "dev": "vitepress build docs && node scripts/serve-local.mjs",
+    "dev:hmr": "vitepress dev docs",
     "build": "vitepress build docs",
-    "serve": "vitepress serve docs"
+    "preview": "node scripts/serve-local.mjs"
   },
   "devDependencies": {
     "vitepress": "1.0.0-alpha.28",
