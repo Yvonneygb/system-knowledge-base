@@ -198,16 +198,20 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
   background: #FFFFFF !important;
 }
 
-.kb-page-content table thead { background: #F5F7FA !important; }
+.kb-page-content table thead {
+  background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%) !important;
+}
 .kb-page-content table th {
-  font-weight: 400 !important;
-  color: var(--kb-text) !important;
+  background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%) !important;
+  font-weight: 700 !important;
+  color: #5B21B6 !important;
   padding: 10px 14px !important;
-  border-bottom: 1px solid #E5E7EB !important;
+  border-bottom: 2px solid var(--kb-purple, #7C3AED) !important;
   font-size: 0.85rem !important;
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
+  white-space: nowrap !important;
 }
 .kb-page-content table td {
   padding: 8px 14px !important;
@@ -218,9 +222,11 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
+  white-space: nowrap !important;
 }
 .kb-page-content table tr:last-child td { border-bottom: none !important; }
 .kb-page-content table tr:hover td { background: rgba(124,58,237,0.04) !important; }
+.kb-page-content table { table-layout: auto !important; width: 100% !important; }
 
 /* ===== 链接 — 紫色 === */
 .kb-page-content a { color: var(--kb-purple) !important; text-decoration: none !important; font-weight: 600 !important; }
@@ -512,6 +518,9 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
 /* 统一底色白/浅灰交替 */
 .kl-wrap .kl-card:nth-child(odd)  { background: #FFFFFF; }
 .kl-wrap .kl-card:nth-child(even) { background: #FBFCFC; }
+/* KbCard 组件 scoped 背景覆盖 — 交替底色 */
+.kl-wrap > .kb-card:nth-child(odd)  { background: #FFFFFF !important; }
+.kl-wrap > .kb-card:nth-child(even) { background: #FBFCFC !important; }
 
 /* 重点逻辑全宽容器 */
 .kl-wrap {

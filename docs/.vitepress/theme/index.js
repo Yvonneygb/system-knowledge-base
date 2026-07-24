@@ -5,6 +5,7 @@ import BreadcrumbTabs from './BreadcrumbTabs.vue'
 import ValueSetTabs from './ValueSetTabs.vue'
 import ServiceFeeFlow from './ServiceFeeFlow.vue'
 import VitePressRedirect from './VitePressRedirect.vue'
+import { kbUiPlugin } from './ui/index.js'
 import './custom.css'
 
 export default {
@@ -15,6 +16,9 @@ export default {
     app.component('ValueSetTabs', ValueSetTabs)
     app.component('ServiceFeeFlow', ServiceFeeFlow)
     app.component('VitePressRedirect', VitePressRedirect)
+
+    // 注册通用 UI 设计系统组件库（Kb*）
+    app.use(kbUiPlugin)
 
     // 根路径重定向到第一个知识库页面
     if (inBrowser) {

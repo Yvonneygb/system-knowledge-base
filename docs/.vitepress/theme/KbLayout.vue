@@ -64,6 +64,7 @@
             <div class="kb-nav-group">
               <div class="kb-nav-group-title" @click="toggleGroup(group.label)">
                 <svg v-if="group.label === '项目往来'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                <svg v-if="group.label === '家装往来'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v12a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18"/><path d="M9 10h6"/><path d="M9 14h6"/></svg>
                 <svg v-if="group.label === '服务费'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
                 <svg v-if="group.label === '项目交付'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1z"/><path d="M16 8h5v8h-5"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                 <svg v-if="group.label === '项目合同'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l6-6"/><path d="M9 9l6 6"/></svg>
@@ -146,6 +147,13 @@ const secondaryNav = {
         { label: '家装真实性核销', link: '/家装管理/项目往来/家装真实性核销/', icon: 'fa-solid fa-shield-halved' },
         { label: '家装要货订单', link: '/家装管理/项目往来/家装要货订单/', icon: 'fa-solid fa-box-shipment' },
         { label: '家装折扣政策', link: '/家装管理/项目往来/家装折扣政策/', icon: 'fa-solid fa-percent' },
+      ]
+    },
+    {
+      label: '家装往来',
+      icon: 'fa-solid fa-receipt',
+      items: [
+        { label: '家装核销发票上传', link: '/家装管理/家装往来/家装核销发票上传/', icon: 'fa-solid fa-file-invoice' },
       ]
     }
   ],
