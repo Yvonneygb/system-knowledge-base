@@ -142,20 +142,20 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
   display: none !important;
 }
 
-/* 复制按钮 — 紫色 */
+/* 复制按钮 — 白色文字、无底色 */
 .kb-page-content div[class*="language-"] button.copy {
   position: absolute !important;
   top: 8px !important;
   right: 12px !important;
   z-index: 2 !important;
-  background: var(--kb-purple) !important;
+  background: none !important;
   color: #fff !important;
-  border-radius: 6px !important;
-  padding: 6px 14px !important;
-  font-size: 0.8rem !important;
+  border-radius: 0 !important;
+  padding: 2px 4px !important;
+  font-size: .8rem !important;
   font-weight: 600 !important;
   opacity: 1 !important;
-  transition: all 0.2s ease !important;
+  transition: color .2s ease !important;
   cursor: pointer !important;
   border: none !important;
   display: flex !important;
@@ -165,16 +165,31 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
 }
 
 .kb-page-content div[class*="language-"] button.copy:hover {
-  background: var(--kb-purple-hover) !important;
+  color: #fff !important;
+  background: none !important;
 }
 
 .kb-page-content div[class*="language-"] button.copy.copied {
-  background: #10b981 !important;
+  background: none !important;
+  color: #10b981 !important;
 }
 
 /* 去掉 copy 按钮内部的 clipboard 图标，只显示文字 */
 .kb-page-content div[class*="language-"] button.copy svg {
   display: none !important;
+}
+
+/* 复制按钮显示"复制"二字(替代默认英文 Copy Code tooltip) */
+.kb-page-content div[class*="language-"] button.copy::after {
+  content: "复制";
+}
+
+/* 复制成功态: 隐藏 VitePress 默认英文 "Copied" 伪元素, 用 ::after 显示"已复制" */
+.kb-page-content div[class*="language-"] button.copy.copied:before {
+  display: none !important;
+}
+.kb-page-content div[class*="language-"] button.copy.copied::after {
+  content: "已复制" !important;
 }
 
 /* 行内代码 — 紫色半透明底 */
@@ -1336,7 +1351,10 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
 
 /* Error detail overlay styles (from index.md) */
 .error-detail-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; }
-.error-detail-overlay:target { display:flex; }
+/* 弹窗垂直+水平居中：flex 容器配合 align/justify center，超长内容可滚动 */
+.error-detail-overlay:target { display:flex; align-items:center; justify-content:center; overflow:auto; }
+/* 兜底：弹窗打开时阻断任何祖先的 hover/动画 transform,确保 position:fixed 相对视口全屏(否则遮罩只盖住包含块) */
+.kb-card:has(.error-detail-overlay:target) { transform:none !important; }
 .error-detail-box { background:#fff; border-radius:12px; padding:28px 32px; max-width:720px; width:90%; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.2); position:relative; }
 .error-detail-box .close-btn { position:absolute; top:12px; right:16px; font-size:24px; color:#9CA3AF; text-decoration:none; line-height:1; }
 .error-detail-box .close-btn:hover { color:#374151; }
@@ -1402,71 +1420,41 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
 }
 
 /* ===== HTML代码块样式（用于 error-detail-box 内的 SQL）===== */
-.error-detail-box pre {
+.error-detail-box pre,
+.faq-answer pre {
   background:#1E293B !important;
   border-radius:6px !important;
-  margin:0 !important;
-  padding:0 !important;
-  overflow-x:auto !important;
+  margin:8px 0 0 0 !important;
+  padding:12px 14px !important;
+  overflow-x:hidden !important;
+  white-space:pre-wrap !important;
+  word-break:break-word !important;
+  overflow-wrap:anywhere !important;
 }
 
-.error-detail-box pre code.language-sql {
-  display:block !important;
+/* VitePress fenced 代码块外层(含复制按钮) — 暗色 + 换行不溢出 */
+.error-detail-box div[class*="language-"],
+.faq-answer div[class*="language-"] {
+  position:relative;
+  margin:8px 0 0 0 !important;
   background:#1E293B !important;
-  padding:12px 14px !important;
+  border-radius:6px !important;
+}
+.error-detail-box pre.shiki,
+.faq-answer pre.shiki {
   margin:0 !important;
-  font-family:"DengXian","等线","Noto Sans SC",monospace !important;
   font-size:12px !important;
   line-height:1.7 !important;
+}
+.error-detail-box pre code,
+.faq-answer pre code {
+  font-family:"JetBrains Mono","Fira Code","SFMono-Regular",Consolas,monospace !important;
   color:#E2E8F0 !important;
-  white-space:pre !important;
-  tab-size:2 !important;
+  white-space:pre-wrap !important;
+  word-break:break-word !important;
+  overflow-wrap:anywhere !important;
 }
 
-/* SQL语法高亮 - 关键字 */
-.error-detail-box pre code.language-sql .token.keyword,
-.error-detail-box pre code.language-sql .token.statement {
-  color:#FF79C6 !important;
-  font-weight:600 !important;
-}
-
-/* SQL语法高亮 - 字符串 */
-.error-detail-box pre code.language-sql .token.string {
-  color:#F1FA8C !important;
-}
-
-/* SQL语法高亮 - 数字 */
-.error-detail-box pre code.language-sql .token.number {
-  color:#BD93F9 !important;
-}
-
-/* SQL语法高亮 - 注释 */
-.error-detail-box pre code.language-sql .token.comment {
-  color:#6272A4 !important;
-  font-style:italic !important;
-}
-
-/* SQL语法高亮 - 函数 */
-.error-detail-box pre code.language-sql .token.function {
-  color:#50FA7B !important;
-}
-
-/* SQL语法高亮 - 表名/字段名 */
-.error-detail-box pre code.language-sql .token.table,
-.error-detail-box pre code.language-sql .token.column,
-.error-detail-box pre code.language-sql .token.identifier {
-  color:#8BE9FD !important;
-}
-
-/* SQL语法高亮 - 操作符 */
-.error-detail-box pre code.language-sql .token.operator {
-  color:#FFB86C !important;
-}
-
-/* SQL语法高亮 - 标点符号 */
-.error-detail-box pre code.language-sql .token.punctuation {
-  color:#F8F8F2 !important;
-}
 .error-detail-box .detail-text { font-size:13px; color:#374151; line-height:1.7; background:#F9FAFB; border-radius:6px; padding:12px 14px; margin:0; }
 .error-detail-box .detail-tip { background:#FFF7ED; border-left:3px solid #D97706; border-radius:4px; padding:8px 12px; font-size:12px; color:#92400E; margin-top:10px; }
 .kb-page-content a.view-btn { display:inline-block !important; padding:4px 12px !important; font-size:12px !important; background:#7C3AED !important; color:#FFFFFF !important; border-radius:4px !important; text-decoration:none !important; font-weight:600 !important; cursor:pointer !important; transition:background 0.2s !important; }
@@ -2241,4 +2229,61 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
 .dlm-sub-title + pre {
   margin-top: 10px;
 }
+
+/* ===== 字段表（详细逻辑 TAB）— 卡片内横向滚动 + 列宽固定 + 允许换行 ===
+   用 .kb-page-content 前缀提升特异性，覆盖全局 .kb-page-content table 的
+   table-layout:auto / white-space:nowrap，使字段表可换行、可控列宽、可横向滚动 */
+.kb-page-content .kb-field-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 8px 0 16px 0;
+}
+
+.kb-page-content .kb-field-tbl {
+  table-layout: fixed !important;
+  width: 100% !important;
+  min-width: 960px;            /* 内容总宽超过卡片时触发卡片内横向滚动条 */
+  border-collapse: collapse !important;
+  border-radius: var(--kb-radius-sm) !important;
+  overflow: hidden !important;
+  border: 1px solid #E5E7EB !important;
+  background: #FFFFFF !important;
+  margin: 0 !important;
+}
+
+.kb-page-content .kb-field-tbl thead {
+  background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%) !important;
+}
+.kb-page-content .kb-field-tbl th {
+  background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%) !important;
+  font-weight: 700 !important;
+  color: #5B21B6 !important;
+  padding: 10px 14px !important;
+  border: 1px solid #E5E7EB !important;
+  border-bottom: 2px solid var(--kb-purple, #7C3AED) !important;
+  font-size: 0.85rem !important;
+  text-align: left !important;
+  white-space: nowrap !important;   /* 表头保持单行 */
+  word-break: normal !important;
+}
+.kb-page-content .kb-field-tbl td {
+  padding: 8px 14px !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  color: var(--kb-text) !important;
+  font-size: 0.85rem !important;
+  font-weight: 400 !important;
+  vertical-align: top !important;
+  white-space: normal !important;          /* 单元格内容允许换行 */
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+.kb-page-content .kb-field-tbl tr:last-child td {
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+}
+.kb-page-content .kb-field-tbl tr:hover td {
+  background: rgba(124,58,237,0.04) !important;
+}
+/* 列宽由 <col> 精确控制：合法值列宽约减半（12%），数据库列名置于末列 */
 

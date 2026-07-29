@@ -44,6 +44,10 @@ function send(res, filePath) {
 
 const server = http.createServer((req, res) => {
   const urlPath = decodeURIComponent((req.url || '/').split('?')[0])
+  if (urlPath === '/') {
+    res.writeHead(302, { 'Location': BASE })
+    return res.end()
+  }
   if (!urlPath.startsWith(BASE)) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' })
     return res.end(`请在 ${BASE} 路径下访问本站。`)

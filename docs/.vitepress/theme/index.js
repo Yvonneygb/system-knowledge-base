@@ -126,6 +126,17 @@ export default {
             }
           })
         })
+
+        // 复制按钮汉化：title 统一为"复制"(可见文字由 custom.css button.copy::after 控制)
+        document.querySelectorAll('button.copy').forEach(function(btn) {
+          btn.setAttribute('title', '复制')
+        })
+        // hydration 后 VitePress 可能重置 title,延迟再应用一次确保生效
+        setTimeout(function() {
+          document.querySelectorAll('button.copy').forEach(function(btn) {
+            btn.setAttribute('title', '复制')
+          })
+        }, 400)
       }
 
       // 首次加载时执行

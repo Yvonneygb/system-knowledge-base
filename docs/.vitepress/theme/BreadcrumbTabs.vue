@@ -56,6 +56,10 @@ function applyTabVisibility() {
 
 watch(activeTab, () => {
   applyTabVisibility()
+  // 切换 tab 时清除报错弹窗的 :target 锚点,避免返回该 tab 时残留弹窗冒出
+  if (typeof location !== 'undefined' && location.hash.startsWith('#err-detail')) {
+    history.replaceState(null, '', location.pathname + location.search)
+  }
 })
 
 onMounted(() => {
