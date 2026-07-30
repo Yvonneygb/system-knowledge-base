@@ -71,13 +71,13 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="1. 报备类型区分">
+<KbCard num="1" title="报备类型区分">
 
 本菜单为**工程单体报备**，报备类型值为1。系统共支持4种报备类型：单体报备(1)、战略报备(2)、家装战略(3)、家装单体(4)，多种报备共用后端代码，通过报备类型参数区分。
 
 </KbCard>
 
-<KbCard num="2" title="2. 保存前数据处理">
+<KbCard num="2" title="保存前数据处理">
 
 - **关联战略项目清理**：如果是单体报备但工程类型不是"战略工程"，则自动清除关联的战略项目信息（战略项目编码、名称、经营模式、业务单元类型）
 - **经纬度必填校验**：工程单体报备保存时，经纬度不能为空且不能为0，精度取小数点后7位
@@ -85,7 +85,7 @@
 
 </KbCard>
 
-<KbCard num="3" title="3. 提交流程校验（查重拦截）">
+<KbCard num="3" title="提交流程校验（查重拦截）">
 
 - **查重开关判断**：根据当前组织是否配置了查重校验值集(AE.REPEAT_REPORT_VERIFY_ORG)决定是否开启查重
 - **白名单跳过**：项目名称包含查重关键字白名单中的内容时，跳过查重拦截
@@ -96,7 +96,7 @@
 
 </KbCard>
 
-<KbCard num="4" title="4. OA审批推送">
+<KbCard num="4" title="OA审批推送">
 
 - 提交审批时，根据OA单据关系表找到"单体项目报备"对应的OA表单ID
 - 将报备信息（项目编码、客户、地址、产品线、乙方信息等）组装后推送到OA
@@ -104,7 +104,7 @@
 
 </KbCard>
 
-<KbCard num="5" title="5. 审批通过后处理">
+<KbCard num="5" title="审批通过后处理">
 
 - **同步到项目表**：审批通过后将报备数据复制到项目信息表（排除查重标记、ES推送状态等字段）
 - **推送CRM报备信息**：调用EBS接口(indivireportAdd)推送经销商编码、名称、事业部、报备号、项目名称、有效状态到CRM
@@ -113,7 +113,7 @@
 
 </KbCard>
 
-<KbCard num="6" title="6. 审批驳回后处理">
+<KbCard num="6" title="审批驳回后处理">
 
 - 审核状态回退为"新建"
 - 报备时间清空
@@ -122,7 +122,7 @@
 
 </KbCard>
 
-<KbCard num="7" title="7. 二次报备">
+<KbCard num="7" title="二次报备">
 
 - 同一项目编码支持二次报备，报备次数为2
 - 已二次报备且审批通过的项目不允许再次报备
@@ -130,7 +130,7 @@
 
 </KbCard>
 
-<KbCard num="8" title="8. 报备有效期与冻结">
+<KbCard num="8" title="报备有效期与冻结">
 
 - 报备审批通过后设定有效期，超过有效周期未产生合同则项目冻结
 - 冻结后可申请解冻（工程单体报备解冻申请，流程编码: ENGINEERING_REPORT_JDSQ_MAIN）
@@ -138,7 +138,7 @@
 
 </KbCard>
 
-<KbCard num="9" title="9. 列表查询">
+<KbCard num="9" title="列表查询">
 
 - 支持普通查询和ES查询两种模式切换
 - 普通查询通过SQL查EPM_REPORT表（REPORT_TYPE=1），关联项目表、客户表、合同表、折扣表等
@@ -147,7 +147,7 @@
 
 </KbCard>
 
-<KbCard num="10" title="10. 批量删除">
+<KbCard num="10" title="批量删除">
 
 - 仅允许删除非审批中、非已审批、非暂挂、非退回状态的报备数据
 - 删除时级联删除：折扣申请 → 合同 → 项目阶段 → 项目信息 → 工作流任务 → 报备主表
@@ -218,7 +218,7 @@
 <KbCard title="保存校验">
 <KbSubTitle>经纬度必填</KbSubTitle>
 
-工程单体报备(REPORT_TYPE=1)经纬度不能为空
+**校验规则：** 工程单体报备(REPORT_TYPE=1)经纬度不能为空
 
 ```sql
 SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE REPORT_TYPE = 1 AND (LATITUDE IS NULL OR LONGITUDE IS NULL)
@@ -226,7 +226,7 @@ SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE REPORT_TYPE = 1 AND (LATITU
 
 <KbSubTitle>经纬度不为0</KbSubTitle>
 
-经纬度值不能为0
+**校验规则：** 经纬度值不能为0
 
 ```sql
 SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE REPORT_TYPE = 1 AND (LATITUDE = 0 OR LONGITUDE = 0)
@@ -234,7 +234,7 @@ SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE REPORT_TYPE = 1 AND (LATITU
 
 <KbSubTitle>收货人必填</KbSubTitle>
 
-含运费经销商+REPORT ADD FLAG开启时
+**校验规则：** 含运费经销商+REPORT ADD FLAG开启时
 
 ```sql
 SELECT R.REPORT_ID, R.PROJECT_CODE FROM EPM_REPORT R JOIN CUSTOMER_ORG CO ON CO.CUSTOMER_ID = R.CUSTOMER_ID WHERE R.REPORT_TYPE = 1 AND CO.INCLUDE_FREIGHT_FLAG = 'Y' AND (R.TAKE_MAN IS NULL OR R.PHONE_CODE IS NULL)
@@ -242,7 +242,7 @@ SELECT R.REPORT_ID, R.PROJECT_CODE FROM EPM_REPORT R JOIN CUSTOMER_ORG CO ON CO.
 
 <KbSubTitle>交易公司ID&gt;0</KbSubTitle>
 
-交易公司ID必须大于0
+**校验规则：** 交易公司ID必须大于0
 
 ```sql
 SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE TRADING_COMPANY_ID <= 0
@@ -250,7 +250,7 @@ SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE TRADING_COMPANY_ID <= 0
 
 <KbSubTitle>非战略工程时清空关联</KbSubTitle>
 
-单体报备+非战略工程类型时自动清除关联战略项目
+**校验规则：** 单体报备+非战略工程类型时自动清除关联战略项目
 
 ```sql
 SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE REPORT_TYPE = 1 AND PROJECT_SOURCE != '2' AND (REL_PROJECT_ID IS NOT NULL OR REL_PROJECT_CODE IS NOT NULL)
@@ -261,7 +261,7 @@ SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE REPORT_TYPE = 1 AND PROJECT
 <KbCard title="提交校验">
 <KbSubTitle>查重拦截标记</KbSubTitle>
 
-标记为Y时禁止直接提交，需走申诉
+**校验规则：** 标记为Y时禁止直接提交，需走申诉
 
 ```sql
 SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE DUPLICATE_REPORTING = 'Y' AND HZ_APPROVE_STATUS = 'NEW'
@@ -269,7 +269,7 @@ SELECT REPORT_ID, PROJECT_CODE FROM EPM_REPORT WHERE DUPLICATE_REPORTING = 'Y' A
 
 <KbSubTitle>查重开关</KbSubTitle>
 
-组织是否配置查重校验值集
+**校验规则：** 组织是否配置查重校验值集
 
 ```sql
 SELECT * FROM HZERO.HPF_LOV_VALUE WHERE LOV_ID = (SELECT LOV_ID FROM HZERO.HPF_LOV WHERE LOV_CODE = 'AE.REPEAT_REPORT_VERIFY_ORG') AND VALUE = :organizationId
@@ -277,7 +277,7 @@ SELECT * FROM HZERO.HPF_LOV_VALUE WHERE LOV_ID = (SELECT LOV_ID FROM HZERO.HPF_L
 
 <KbSubTitle>可报备数量</KbSubTitle>
 
-经销商有效报备额度校验
+**校验规则：** 经销商有效报备额度校验
 
 ```sql
 SELECT RQC.CUSTOMER_ID, RQC.MAX_QTY, RQC.TMP_EXTRA_QTY, RQC.TMP_START_DATE, RQC.TMP_END_DATE FROM EPM_REPORT_QUANTITY_CONFIG RQC WHERE RQC.CUSTOMER_ID = :customerId
@@ -285,7 +285,7 @@ SELECT RQC.CUSTOMER_ID, RQC.MAX_QTY, RQC.TMP_EXTRA_QTY, RQC.TMP_START_DATE, RQC.
 
 <KbSubTitle>申诉次数</KbSubTitle>
 
-经销商当月申诉次数校验
+**校验规则：** 经销商当月申诉次数校验
 
 ```sql
 SELECT RAC.CUSTOMER_ID, RAC.APPEAL_NUM, RAC.APPEAL_NUM_TMP FROM EPM_REPORT_APPEAL_CONFIG RAC WHERE RAC.CUSTOMER_ID = :customerId AND RAC.APPEAL_YEAR = :year AND RAC.APPEAL_MONTH = :month
@@ -293,7 +293,7 @@ SELECT RAC.CUSTOMER_ID, RAC.APPEAL_NUM, RAC.APPEAL_NUM_TMP FROM EPM_REPORT_APPEA
 
 <KbSubTitle>ES相似度查重</KbSubTitle>
 
-同城同地址相似项目匹配
+**校验规则：** 同城同地址相似项目匹配
 
 ```sql
 通过ES索引IDX_EPM_REPORT查询，相似度范围由系统参数ReportSimilarLower/ReportSimilarUpper控制
@@ -301,7 +301,7 @@ SELECT RAC.CUSTOMER_ID, RAC.APPEAL_NUM, RAC.APPEAL_NUM_TMP FROM EPM_REPORT_APPEA
 
 <KbSubTitle>OA单据关系</KbSubTitle>
 
-必须维护EPMS与OA表单对应关系
+**校验规则：** 必须维护EPMS与OA表单对应关系
 
 ```sql
 SELECT * FROM EPM_OA_BILL_REF WHERE BILL_NAME = '单体项目报备'

@@ -1064,7 +1064,9 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
   font-size: 0.85rem;
   font-weight: 700;
   color: #7C3AED;
-  margin: 0 0 8px;
+  margin: 16px 0 8px;
+  padding-left: 10px;
+  border-left: 3px solid #7C3AED;
 }
 
 .kl-warn {

@@ -18,9 +18,11 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
 ```
 创建结案单 → 选择结案类型(项目结案/合同结案) → 提交工作流(CONTRACT_COMPLETED_MAIN) → 审批通过 → 执行结案逻辑 → 更新项目进度 → 推送CRM
 ```
+
 </KbCard>
 
 <KbCard num="2" title="流程节点说明">
@@ -64,7 +66,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="1. 合同结案(actionType=2)核心逻辑">
+<KbCard num="1" title="合同结案(actionType=2)核心逻辑">
 
 - 将目标合同的结案日期设为当前时间，结案类型设为提交时选择的值，有效状态设为失效(3)
 - 查询该合同下所有增补合同(主合同ID=当前合同ID)，批量更新增补合同的结案日期和结案类型
@@ -72,21 +74,21 @@
 
 </KbCard>
 
-<KbCard num="2" title="2. 项目结案(actionType=1)核心逻辑">
+<KbCard num="2" title="项目结案(actionType=1)核心逻辑">
 
 - 查询项目下所有审批状态为"审批通过"的合同，批量更新有效状态为失效(3)、结案日期为当前时间、结案类型为提交时选择的值
 - 将项目报备的有效状态设为失效(3)，项目进度状态设为2，记录结案时间
 
 </KbCard>
 
-<KbCard num="3" title="3. 项目进度更新">
+<KbCard num="3" title="项目进度更新">
 
 - 查询阶段定义表中阶段名称为"项目结案"的记录，获取阶段ID
 - 调用项目阶段服务更新进度，内容格式为: `{日期}项目结案`
 
 </KbCard>
 
-<KbCard num="4" title="4. CRM推送">
+<KbCard num="4" title="CRM推送">
 
 - 查询项目关联的报备记录，获取客户信息
 - 推送数据包含: 客户编码、客户名称、客户简称、组织编码、报备编号、项目名称、有效状态(0=失效)
@@ -94,13 +96,13 @@
 
 </KbCard>
 
-<KbCard num="5" title="5. 增补合同结案字段重置">
+<KbCard num="5" title="增补合同结案字段重置">
 
 - 新增增补合同时，结案日期和结案状态会被重置为空
 
 </KbCard>
 
-<KbCard num="6" title="6. 前端展示逻辑">
+<KbCard num="6" title="前端展示逻辑">
 
 - 结案日期和结案状态字段均为只读(disabled=true)，由后端结案审批通过后自动回写
 - 列表页支持按结案状态筛选查询

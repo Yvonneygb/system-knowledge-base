@@ -72,7 +72,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 报备审核写入项目档案">
+<KbCard num="1" title="1 报备审核写入项目档案">
 
 - **首次报备**：报备审核通过后，将报备数据转换为项目档案数据INSERT到EPM_PROJECT，设置PROJECT_VALID=2(已生效)，计算有效期VALID_START_DATE=当前时间，VALID_END_DATE=VALID_START_DATE+项目有效周期天数
 - **二次报备**：报备审核通过后，根据PROJECT_ID查询已有项目档案并UPDATE，更新报备时间、阶段、交易公司、甲乙方、项目名称等字段
@@ -82,7 +82,7 @@
 
 </KbCard>
 
-<KbCard num="2" title="2.2 项目进度更新写入档案">
+<KbCard num="2" title="2 项目进度更新写入档案">
 
 - **阶段变更校验**：新阶段序号必须大于等于旧阶段序号，否则抛错"阶段更新，只能前进，不能后退"
 - **并发校验**：若单据中当前进度与项目档案中的进度不一致（即单据记录的旧进度 < 档案中实际进度），抛错"项目进度已变更，请驳回重审!"
@@ -91,7 +91,7 @@
 
 </KbCard>
 
-<KbCard num="3" title="2.3 项目冻结机制">
+<KbCard num="3" title="3 项目冻结机制">
 
 - **自动冻结**：系统定时任务检测项目有效期超期或进度更新超时，自动将PROJECT_VALID置为4(已冻结)，记录FREEZE_TYPE和FREEZE_TIME
 - **冻结类型**：1=超项目有效期(有效期内未签合同)；2=进度超时更新；4=有效期内已签合同但超期
@@ -99,27 +99,27 @@
 
 </KbCard>
 
-<KbCard num="4" title="2.4 项目解冻逻辑">
+<KbCard num="4" title="4 项目解冻逻辑">
 
 - 解冻申请审批通过后，更新项目档案：PROJECT_VALID=2(已生效)，FREEZE_TYPE=0，记录UNFREEZE_TIME
 - 解冻时若进度阶段与档案不一致，同步更新档案进度
 
 </KbCard>
 
-<KbCard num="5" title="2.5 项目失效/恢复逻辑">
+<KbCard num="5" title="5 项目失效/恢复逻辑">
 
 - **失效**：失效申请审批通过后，PROJECT_VALID=3(已失效)，记录CHANGE_VALID_USER/CHANGE_VALID_TIME/CHANGE_VALID_REASON
 - **恢复生效**：恢复申请审批通过后，PROJECT_VALID=2(已生效)，重新计算有效期
 
 </KbCard>
 
-<KbCard num="6" title="2.6 合同信息回写">
+<KbCard num="6" title="6 合同信息回写">
 
 - 项目合同签订确认时，回写以下字段至项目档案：CONTRACT_CODE、CONTRACT_AMOUNT、PERFORMANCE_SECURITY、GUARANTEE_AMOUNT、GUARANTEE_PERIOD、CONTRACT_SIGNUP_DATE、PERIOD_START_DATE、PERIOD_END_DATE
 
 </KbCard>
 
-<KbCard num="7" title="2.7 折扣校验配置中的项目档案标识">
+<KbCard num="7" title="7 折扣校验配置中的项目档案标识">
 
 - 折扣校验配置C1/C2规则中，PROJECT_ARCHIVE字段标识是否为本地项目档案(1=异地,2=本地)，影响折扣校验逻辑
 

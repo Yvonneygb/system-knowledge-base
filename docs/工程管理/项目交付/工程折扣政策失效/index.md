@@ -18,6 +18,7 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
 ```
 新建失效单 → 选择折扣政策 → 选择失效产品明细行 → 保存 → 保存并提交(发起审批) → 审批中 → 审批通过
                                                                                               ↓
@@ -31,6 +32,7 @@
                                                                                    通用(suitableType=normal)不推送CRM
                                                                                    专项(suitableType=special)推送CRM失效
 ```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">

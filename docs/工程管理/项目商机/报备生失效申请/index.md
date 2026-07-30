@@ -18,6 +18,7 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
 ```text
 项目报备（已生效）
        │
@@ -33,6 +34,7 @@
                                                                       ├── 推送生效信息到CRM
                                                                       └── 推送ES索引数据
 ```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
@@ -50,15 +52,20 @@
 </KbCard>
 
 <KbCard num="3" title="下游影响">
-- 影响1：项目有效状态变更
-  - 审批通过后，项目的有效状态（PROJECT_VALID）会被更新：失效申请设为3（已失效），恢复生效申请设为2（已生效）
-- 影响2：CRM系统数据同步
-  - 审批通过后，通过EBS接口（INDIVIREPORT_ADD）将报备有效状态变更推送到CRM系统，失效时传validStatus=0，生效时传validStatus=1
-- 影响3：ES索引数据变更
-  - 单体报备（REPORT_TYPE=1）审批通过后：失效时删除ES文档，恢复生效时重新推送ES文档
-- 影响4：合同关联影响
-  - 报备失效后，关联的项目合同中报备有效状态会同步显示为"已失效"，影响合同相关业务
----
+
+<KbSubTitle>影响1：项目有效状态变更</KbSubTitle>
+审批通过后，项目的有效状态（PROJECT_VALID）会被更新：失效申请设为3（已失效），恢复生效申请设为2（已生效）
+
+<KbSubTitle>影响2：CRM系统数据同步</KbSubTitle>
+审批通过后，通过EBS接口（INDIVIREPORT_ADD）将报备有效状态变更推送到CRM系统，失效时传validStatus=0，生效时传validStatus=1
+
+<KbSubTitle>影响3：ES索引数据变更</KbSubTitle>
+单体报备（REPORT_TYPE=1）审批通过后：失效时删除ES文档，恢复生效时重新推送ES文档
+
+<KbSubTitle>影响4：合同关联影响</KbSubTitle>
+报备失效后，关联的项目合同中报备有效状态会同步显示为"已失效"，影响合同相关业务
+
+
 </KbCard>
 </div>
 </div>
