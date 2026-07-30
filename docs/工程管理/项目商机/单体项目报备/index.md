@@ -818,3 +818,15 @@ SELECT * FROM EPM_OA_BILL_REF WHERE BILL_NAME = '单体项目报备'
 </div>
 </div>
 </div>
+
+<div id="history" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="历史排查记录">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
+</div>
+</div>
+</div>

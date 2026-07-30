@@ -72,6 +72,7 @@
                 <svg v-if="group.label === '预提与冲销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v6a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
                 <svg v-if="group.label === '值集配置'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="10" y1="6.5" x2="14" y2="6.5"/><line x1="10" y1="17.5" x2="14" y2="17.5"/><line x1="6.5" y1="10" x2="6.5" y2="14"/><line x1="17.5" y1="10" x2="17.5" y2="14"/></svg>
                 <svg v-if="group.label === '项目商机'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>
+                <svg v-if="group.label === '合同与折扣'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="15" y1="12" x2="9" y2="18"/><circle cx="9.5" cy="12.5" r="1"/><circle cx="14.5" cy="17.5" r="1"/></svg>
                 <span>{{ group.label }}</span>
                 <svg class="kb-arrow-svg" :class="{ rotated: expandedGroup === group.label }" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
@@ -168,6 +169,13 @@ const secondaryNav = {
         { label: '家装核销发票上传', link: '/家装管理/家装往来/家装核销发票上传/', icon: 'fa-solid fa-file-invoice' },
         { label: '家装要货订单', link: '/家装管理/家装往来/家装要货订单/', icon: 'fa-solid fa-cart-shopping' },
       ]
+    },
+    {
+      label: '项目交付',
+      icon: 'fa-solid fa-truck-fast',
+      items: [
+        { label: '家装折扣政策申请', link: '/家装管理/项目交付/家装折扣政策申请/', icon: 'fa-solid fa-percent' },
+      ]
     }
   ],
   '工程管理': [
@@ -176,6 +184,14 @@ const secondaryNav = {
       icon: 'fa-solid fa-file-contract',
       items: [
         { label: '自营工程合同', link: '/工程管理/项目合同/自营工程合同/', icon: 'fa-solid fa-file-signature' },
+      ]
+    },
+    {
+      label: '合同与折扣',
+      icon: 'fa-solid fa-file-invoice-dollar',
+      items: [
+        { label: '工程折扣单', link: '/工程管理/合同与折扣/工程折扣单/', icon: 'fa-solid fa-tags' },
+        { label: '项目合同失效', link: '/工程管理/合同与折扣/项目合同失效/', icon: 'fa-solid fa-file-circle-xmark' },
       ]
     },
     {
@@ -209,6 +225,7 @@ const secondaryNav = {
         { label: '价格保护函', link: '/工程管理/项目商机/价格保护函/', icon: 'fa-solid fa-shield-halved' },
         { label: '项目进度更新', link: '/工程管理/项目商机/项目进度更新/', icon: 'fa-solid fa-chart-line' },
         { label: '战略报备变更', link: '/工程管理/项目商机/战略报备变更/', icon: 'fa-solid fa-pen-to-square' },
+        { label: '战略项目报备', link: '/工程管理/项目商机/战略项目报备/', icon: 'fa-solid fa-chess-rook' },
       ]
     },
     {
@@ -230,6 +247,7 @@ const secondaryNav = {
       items: [
         { label: '样品及长库龄要货订单', link: '/门店管理/样品及长库龄管理/样品及长库龄要货订单/', icon: 'fa-solid fa-flask' },
         { label: '样品及长库龄折扣政策', link: '/门店管理/样品及长库龄管理/样品及长库龄折扣政策/', icon: 'fa-solid fa-tags' },
+        { label: '样品及长库龄折扣政策失效', link: '/门店管理/样品及长库龄管理/样品及长库龄折扣政策失效/', icon: 'fa-solid fa-ban' },
       ]
     }
   ],
@@ -287,10 +305,13 @@ function resolvePanel(path) {
 }
 
 function resolveGroup(path) {
+  if (path.includes('/家装管理/家装往来/')) return '家装往来'
+  if (path.includes('/家装管理/项目交付/')) return '项目交付'
   if (path.includes('/家装管理/')) return '项目往来'
   if (path.includes('/工程管理/服务费/')) return '服务费'
   if (path.includes('/工程管理/项目交付/')) return '项目交付'
   if (path.includes('/工程管理/项目合同/')) return '项目合同'
+  if (path.includes('/工程管理/合同与折扣/')) return '合同与折扣'
   if (path.includes('/工程管理/项目往来/')) return '项目往来'
   if (path.includes('/工程管理/项目商机/')) return '项目商机'
   if (path.includes('/门店管理/')) return '样品及长库龄管理'

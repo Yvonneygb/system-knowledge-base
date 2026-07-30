@@ -578,3 +578,15 @@ WHERE EPD.PROJ_DISABLE_ID = {申请单ID};</code></pre>
 </div>
 </div>
 </div>
+
+<div id="history" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="历史排查记录">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
+</div>
+</div>
+</div>
