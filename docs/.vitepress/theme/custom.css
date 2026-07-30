@@ -245,15 +245,17 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
 
 /* ===== 下游影响标准三列表格（dms-style 标准：以单体项目报备为基准）===
    结构：| 下游系统/模块 | 影响内容 | 说明 |
-   - 第1列(下游系统/模块)紫色加粗、不换行
-   - 第2列(影响内容)加粗、不换行
+   - 三列正文统一使用常规黑色文本样式（与"说明"列一致）
+   - 第1/2列(下游系统/模块、影响内容)不换行，仅控制布局
    - 第3列(说明)允许换行，避免长文本横向溢出 */
+.ds-impact table td {
+  color: var(--kb-text) !important;
+  font-weight: 400 !important;
+}
 .ds-impact table td:first-child,
 .ds-impact table td:nth-child(2) {
   white-space: nowrap !important;
-  font-weight: 500 !important;
 }
-.ds-impact table td:first-child { color: #5B21B6 !important; font-weight: 600 !important; }
 .ds-impact table td:last-child {
   white-space: normal !important;
   word-break: break-word !important;
