@@ -94,6 +94,9 @@
                       <svg v-if="sub.label === '工程折扣政策失效'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
                       <svg v-if="sub.label === '报备生失效申请'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="9.5" y1="14.5" x2="14.5" y2="19.5"/><line x1="14.5" y1="14.5" x2="9.5" y2="19.5"/></svg>
                       <svg v-if="sub.label === '报备解冻申请'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.5" y1="4.5" x2="19.5" y2="19.5"/><line x1="19.5" y1="4.5" x2="4.5" y2="19.5"/></svg>
+                      <svg v-if="sub.label === '工程项目结案'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      <svg v-if="sub.label === '单体项目报备'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                      <svg v-if="sub.label === '工程项目档案'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
                       <svg v-if="sub.label === '样品及长库龄要货订单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3l-1 5h7l-1-5"/><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 11v4"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="15" r="1"/><path d="M8 15l2 2"/><path d="M14 11l2 2"/></svg>
                       <svg v-if="sub.label === '工程服务费预提'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>
                       <svg v-if="sub.label === '自营工程合同'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
@@ -195,6 +198,9 @@ const secondaryNav = {
       items: [
         { label: '报备生失效申请', link: '/工程管理/项目商机/报备生失效申请/', icon: 'fa-solid fa-file-xmark' },
         { label: '报备解冻申请', link: '/工程管理/项目商机/报备解冻申请/', icon: 'fa-solid fa-snowflake' },
+        { label: '工程项目结案', link: '/工程管理/项目商机/工程项目结案/', icon: 'fa-solid fa-circle-check' },
+        { label: '单体项目报备', link: '/工程管理/项目商机/单体项目报备/', icon: 'fa-solid fa-box' },
+        { label: '工程项目档案', link: '/工程管理/项目商机/工程项目档案/', icon: 'fa-solid fa-archive' },
       ]
     },
     {
@@ -278,6 +284,7 @@ function resolveGroup(path) {
   if (path.includes('/工程管理/项目交付/')) return '项目交付'
   if (path.includes('/工程管理/项目合同/')) return '项目合同'
   if (path.includes('/工程管理/项目往来/')) return '项目往来'
+  if (path.includes('/工程管理/项目商机/')) return '项目商机'
   if (path.includes('/门店管理/')) return '样品及长库龄管理'
   if (path.includes('/财务管理/')) return '预提与冲销'
   if (path.includes('/开发管理/')) return '值集配置'
