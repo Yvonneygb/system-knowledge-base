@@ -18,6 +18,7 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
 ```text
 项目报备（已冻结）
        │
@@ -37,6 +38,7 @@
        │
        └──[流程终止/撤回]──> 项目保持冻结
 ```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
@@ -57,17 +59,24 @@
 </KbCard>
 
 <KbCard num="3" title="下游影响">
+
 - 影响1：项目有效状态变更
   - 审批通过后，项目的有效状态（PROJECT_VALID）被更新为2（已生效），冻结类型（FREEZE_TYPE）清零，冻结时间（FREEZE_TIME）清空
+
 - 影响2：项目有效期重置
   - 超有效期冻结（FREEZE_TYPE=1或4）审批通过后，有效起始日期设为当前时间，有效结束日期设为当前时间+有效周期天数+1天
+
 - 影响3：项目进度更新
   - 审批通过后，根据解冻申请单中的解冻后进度（STAGE_VALUE_AFTER）更新项目进度，并记录阶段历程
+
 - 影响4：CRM系统数据同步
   - 审批通过后，非家装单体报备（MONOMER_TYPE≠2）通过EBS接口（INDIVIREPORT_ADD）将解冻信息推送到CRM，validStatus=1
+
 - 影响5：ES索引数据变更
   - 单体报备（REPORT_TYPE=1）：提交时推送ES文档，拒绝/终止时删除ES文档
+
 ---
+
 </KbCard>
 </div>
 </div>
