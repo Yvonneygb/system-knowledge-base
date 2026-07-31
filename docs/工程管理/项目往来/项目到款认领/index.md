@@ -1,376 +1,1592 @@
----
----
-
 <BreadcrumbTabs />
 
-<div id="logic">
+<div id="biz-intro" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbHero num="3" title="项目到款认领" desc="工程管理-项目往来业务说明" />
 
-<div class="kb-module">
+<KbCard title="业务介绍">
 
-### 数据模型
+<!-- 空白:待补充 -->
 
-**核心表结构**：
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="biz-flow" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="业务流程图">
 
 ```text
-EPM_PAYMENT_ALLOT (回款认领单头表)
-  │
-  ├──< EPM_PAYMENT_ALLOT_LINE (回款认领合同行表)
-  │       ├──< EPM_PAYMENT_ALLOT_DETAIL (认款出库单明细表)
-  │       │     └── cancel_flag='N' 为有效认领
-  │       └── contractId → EPM_PROJECT_CONTRACT (合同)
-  │           └── projectId → EPM_PROJECT (项目)
-  │
-  └── paymentImportId → EPM_PAYMENT_IMPORT (到款单)
+到款引入(EPM_PAYMENT_IMPORT) ──引入到款数据──> 项目到款认领(新建)
+                                                    │
+                                                    ├── 选择客户 → 查询可认领项目
+                                                    ├── 选择项目 → 查询可认领合同
+                                                    ├── 选择合同 → 查询可认领出库明细
+                                                    ├── 填写认领金额 → 保存(校验可认领金额)
+                                                    │
+                                                    ▼
+                                              提交审批(推送ERP核销-SUBMIT)
+                                                    │
+                                          ┌─────────┴─────────┐
+                                          ▼                   ▼
+                                    审批通过              审批驳回
+                                    (推送ERP核销-APPROVE)  (推送ERP取消核销-CANCEL)
+                                    状态→APPROVED          状态→INTERRUPT
+                                          │
+                                          ▼
+                                    ERP核销完成
+                                    (状态→TRANSFER/ACCOUNTED)
 
-关联查询表:
-  INV_OUT_BILL_INTF_CONFIRM_B ←── 明细.lineNumber (出库确认行)
-  INV_OUT_BILL_INTF_HEAD_B ←── 确认行.deliveryId (出库确认头)
-  DRP_DIFFPROCBILL_LINE ←── 明细.sourceId (签收差异行)
-  DRP_DIFFPROCBILL_HEADER ←── 差异行.diffbillId (签收差异头)
-  EPM_CUST_TRX_DETAIL_IFACE ←── 应收事务处理(获取customerTrxId)
-  CUSTOMER_ORG ←── 币种查询
+                    ┌──────────────────────────────────────────────┐
+                    │          到款认领撤销流程                      │
+                    │  选择已认领明细 → 填写撤销原因 → 保存撤销单    │
+                    │       → 提交审批 → 审批通过                   │
+                    │       → 推送ERP撤销(负数金额)                 │
+                    │       → 回退到款单可认领金额                   │
+                    └──────────────────────────────────────────────┘
 ```
 
-#### 认领头表字段（EPM_PAYMENT_ALLOT）
+</KbCard>
 
-| 字段名 | 类型 | 含义 | 关键说明 |
-|--------|------|------|---------|
-| paymentAllotId | Long | 认领单ID | 主键，自增 |
-| paymentAllotCode | String | 认领单号 | 编码规则：AE_PAYMENT_ALLOT_NO |
-| paymentImportId | Long | 到款单ID | 外键→EPM_PAYMENT_IMPORT |
-| customerId | Long | 客户ID | 经销商ID |
-| allotAmt | BigDecimal | 本次认款合计 | 由合同行金额汇总 |
-| unallotAmtBefore | BigDecimal | 认款前可认金额 | 保存时计算 |
-| unallotAmtAfter | BigDecimal | 认款后可认金额 | = unallotAmtBefore - allotAmt |
-| claimType | String | 认领方式 | auto=自动；manual=手动 |
-| paymentAllotStat | String | 认款状态 | APPLYING/APPROVED/TRANSFER/ACCOUNTED/CANCEL |
-| hzApproveStatus | String | 审批状态 | NEW/RUN/APPROVED/REBUT/INTERRUPT |
-| manualInvoiceClaim | String | 手工发票认领 | Y/N，决定ERP推送逻辑 |
-| isHome | Long | 是否家装 | 2=是 |
+<KbCard num="2" title="上游依赖">
 
-#### 合同行表字段（EPM_PAYMENT_ALLOT_LINE）
+| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
+|---------|---------|---------|------------|
+| 项目到款引入(EPM_PAYMENT_IMPORT) | 数据依赖 | 提供到款单基础数据（客户、金额、银行流水号等），认领基于到款引入数据 | 到款单状态为已审核，可认领金额>0 |
+| 项目合同(EPM_PROJECT_CONTRACT) | 数据依赖 | 提供可认领的合同信息，合同需审批通过 | 合同审批状态=APPROVED，合同类型=1 |
+| 出库确认/差异单 | 数据依赖 | 提供可认领的出库明细行（签收行），含工程方金额、经销商金额 | 差异单审批通过，已记账，推送成功 |
+| ERP核销接口(EPMS_AR_APPLY) | 配置依赖 | 认领提交/审批/撤销时推送ERP核销数据 | ERP接口可用 |
+| 编码规则(AE.EPM_PAYMENT_ALLOT) | 配依赖 | 生成认领单号 | 编码规则已配置 |
+| 工作流(EPM_PAYMENT_ALLOT_区域) | 配置依赖 | 按区域区分审批流程 | 工作流已部署 |
 
-| 字段名 | 类型 | 含义 |
-|--------|------|------|
-| paymentAllotLineId | Long | 合同行ID（主键） |
-| paymentAllotId | Long | 认领单ID |
-| contractId | Long | 合同ID |
-| allotAmt | BigDecimal | 本次认款金额 |
-| contractAmtReceived | BigDecimal | 当时已回款金额 |
-| hasAllotAmount | BigDecimal | 已认领金额 |
+</KbCard>
 
-#### 出库明细表字段（EPM_PAYMENT_ALLOT_DETAIL）
+<KbCard num="3" title="下游影响">
+<div class="ds-impact">
 
-| 字段名 | 类型 | 含义 | 关键说明 |
-|--------|------|------|---------|
-| paymentAllotDetailId | Long | 明细ID | 主键 |
-| paymentAllotLineId | Long | 合同行ID | 外键 |
-| lineNumber | Long | 出库确认行ID | →INV_OUT_BILL_INTF_CONFIRM_B |
-| sourceId | Long | 签收明细ID | →DRP_DIFFPROCBILL_LINE |
-| claimAmt | BigDecimal | 本次认款金额 | 核心字段 |
-| returnAmt | BigDecimal | 经销商回款金额 | 核心计算字段 |
-| claimServiceAmt | BigDecimal | 本次认领工程服务费 | 核心计算字段 |
-| claimPercent | BigDecimal | 认款比例 | |
-| allowCashFlag | String | 能否兑现 | Y/N，商票未兑付时为N |
-| cancelFlag | String | 是否撤销 | Y/N，撤销审批通过后更新为Y |
+| 下游系统/模块 | 影响内容 | 说明 |
+|---|---|---|
+| 项目到款单 | 可认领金额回写 | 保存认领时扣减到款单可认领金额；删除认领时恢复可认领金额；撤销审批通过时回加可认领金额。当可认领金额=0时，到款单认领状态更新为已清(CLEAR) |
+| ERP系统 | 推送核销数据 | 提交时推送SUBMIT状态核销数据；审批通过推送APPROVE状态；驳回推送CANCEL状态；撤销推送负数金额核销数据。推送数据包含AR_APPLY(应收核销)、OM_CLAIM(出库认领)、OM_APPLY(出库核销)三类 |
+| 工程项目合同 | 合同已回款金额更新 | 认领审批通过后，合同的已回款金额增加，影响合同回款进度统计 |
+| 出库确认 | 出库明细撤销标记 | 撤销审批通过后，对应出库明细行的撤销标识更新为Y，该明细不可再次撤销 |
 
 </div>
-
-<div class="kb-module">
-
-### API接口
-
-**认领单接口**（`/v1/{organizationId}/epmPaymentAllot`）：
-
-| HTTP方法 | URL路径 | 功能描述 |
-|---------|---------|---------|
-| POST | /saveAllot | 保存认领 |
-| POST | /updateAllot | 更新认领 |
-| POST | /deleteAllot | 删除认领 |
-| POST | /queryOne | 认领详情 |
-| POST | /queryCanAllotProjectPage | 可认领项目（分页） |
-| POST | /queryCanAllotContractPage | 可认领合同（分页） |
-| POST | /queryCanAllotDetail | 可认领出库明细 |
-| POST | /select-contract-amt | 合同认缴金额 |
-| POST | /selectDetailsByProject | 项目出库明细 |
-| POST | /list/search | 认领列表 |
-
-**合同行接口**（`/v1/{organizationId}/epmPaymentAllotLine`）：
-
-| HTTP方法 | URL路径 | 功能描述 |
-|---------|---------|---------|
-| POST | /queryLinesByPaymentAllotId | 合同行查询 |
-| POST | /queryContractAllotDatas | 合同认领数据 |
-
-**明细行接口**（`/v1/{organizationId}/epmPaymentAllotDetail`）：
-
-| HTTP方法 | URL路径 | 功能描述 |
-|---------|---------|---------|
-| POST | /queryAllotDetails | 出库明细查询 |
-
+</KbCard>
+</div>
+</div>
 </div>
 
-<div class="kb-module">
+<div id="key-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="重点逻辑1：到款认领金额校验 金额校验">
+<KbQuote>确保认领金额不超过到款单剩余可认领金额，防止超额认领</KbQuote>
 
-### 认领保存逻辑
+**具体逻辑**：
 
-**新增** (`saveAllot`)：
-1. 从用户附加信息获取事业部(DEPT)
-2. 查询到款单(EPM_PAYMENT_IMPORT)
-3. 汇总合同行allotAmt → 头.allotAmt
-4. 前置校验(`beforeUpsert`)：到款单状态+可认领金额
-5. 赋值：paymentAllotStat=APPLYING, claimType=manual, hzApproveStatus=NEW
-6. 保存认领头+合同行+出库明细行
+- 1、保存和提交时均校验本次认领金额合计是否大于到款单剩余可认领金额
+- 2、对于虚拟到款单(VIRTUAL_RECEIPT)，直接从本地数据库计算可认领金额
+- 3、对于真实到款单(RECEIPT)，实时调用ERP接口查询最新可认领金额，以ERP返回为准
+- 4、校验不通过时阻断报错，提示本次认款金额合计大于剩余认款金额
+</KbCard>
 
-**更新** (`updateAllot`)：采用"先删后插"策略，删除所有子行后重新插入
+<KbCard num="2" title="重点逻辑2：到款认领保存逻辑 保存">
+<KbQuote>新建认领单并关联合同行和出库明细行，同时扣减到款单可认领金额</KbQuote>
 
-**删除** (`deleteAllot`)：
-- 仅NEW/INTERRUPT状态可删除
-- 删除后更新到款单可认领金额（虚拟→本地计算；真实→ERP查询）
+**具体逻辑**：
 
-**兑现标记** (`saveLine`)：
-- 商票/银行承兑且未兑付→allowCashFlag='N'
-- 其他→allowCashFlag='Y'
+- 1、新增时自动生成认领单号（编码规则AE.EPM_PAYMENT_ALLOT），认领方式固定为手动(manual)，初始状态为申请中(APPLYING)
+- 2、本次认领金额合计=所有合同行的认领金额之和（保留2位小数）
+- 3、认领前可认领金额=当前到款单剩余可认领金额，认领后可认领金额=认领前-本次认领合计
+- 4、更新到款单可认领金额，若扣减后为0则更新到款单认领状态为已清(CLEAR)
+- 5、商票/银行承兑汇票类型到款单且兑付状态为未兑付时，出库明细行标记为不可兑现
+- 6、更新时采用先删后插策略，先删除原有合同行和出库明细行，再重新保存
+</KbCard>
 
-</div>
+<KbCard num="3" title="重点逻辑3：ERP核销数据推送 ERP推送">
+<KbQuote>将认领数据推送至ERP进行应收核销和出库核销，实现DMS与ERP的账务同步</KbQuote>
 
-<div class="kb-module">
+**具体逻辑**：
 
-### 核心金额计算
+- 1、推送数据按三种维度组装：AR_APPLY按应收事务ID汇总、OM_CLAIM按出库明细行维度、OM_APPLY按出库单号汇总
+- 2、手工发票认领(Y)和非手工发票认领查询不同SQL获取行数据，手工认领取虚拟发票行，非手工认领取出库确认行
+- 3、提交时推送SUBMIT状态，审批通过推送APPROVE状态，驳回推送CANCEL状态
+- 4、推送后检查ERP返回结果，若返回状态非S则报错并展示ERP错误信息
+- 5、收款单号根据到款类型区分：真实到款取来源系统收款单号，虚拟到款取到款导入单号
+</KbCard>
 
-**经销商回款金额(returnAmt)**：
+<KbCard num="4" title="重点逻辑4：到款认领撤销逻辑 撤销">
+<KbQuote>对已审批通过的认领进行撤销，回退认领金额并通知ERP取消核销</KbQuote>
 
-| 场景 | 计算公式 |
-|------|---------|
-| 本次认领=剩余可认领 | returnAmt = 经销商金额 - 已认领经销商金额 |
-| 本次认领<剩余可认领 | returnAmt = (经销商金额 / 工程方金额) × 本次认领金额，7位精度→2位 |
+**具体逻辑**：
 
-**工程服务费(claimServiceAmt)**：
+- 1、撤销时推送ERP的金额为负数（取反），实现核销冲销
+- 2、撤销审批通过后，将对应出库明细行的撤销标识更新为Y，该明细不可再次撤销
+- 3、撤销审批通过后，按认领单维度将撤销的认领金额回加到对应到款单的可认领金额
+- 4、撤销提交前校验明细是否已被撤销，已被撤销的明细需剔除后才能提交
+- 5、撤销保存前按报销单分组校验，撤销后可结算工程服务费不可小于0
+</KbCard>
 
-| 场景 | 计算公式 |
-|------|---------|
-| 本次认领=剩余可认领 | claimServiceAmt = 工程方金额 - 经销商金额 - 已认领工程服务费 |
-| 本次认领<剩余可认领 | claimServiceAmt = returnAmt - claimAmt |
+<KbCard num="5" title="重点逻辑5：经销商回款金额计算 金额计算">
+<KbQuote>根据认领金额和工程方/经销商金额比例，计算经销商维度的回款金额</KbQuote>
 
-**超额校验**：totalClaimAmt + claimAmt > engineeringAmount → 报错
+**具体逻辑**：
 
-**认领前后金额**：
-- unallotAmtBefore = 当前可认领金额
-- unallotAmtAfter = unallotAmtBefore - allotAmt
-- 到款单unallotAmt更新为 canAllotAmt - allotAmt
-- unallotAmt=0 → allotStatus=CLEAR
+- 1、若本次认款金额=剩余可认款金额（即全部认完），则还款金额=剩余还款金额
+- 2、否则按比例计算：还款金额=(经销商金额/工程方金额)×本次认领金额，经销商金额除以工程方金额保留7位小数，最终结果保留2位小数
+- 3、校验已认领金额+本次认领金额不可超过工程金额，超过则报错
+</KbCard>
 
-</div>
+<KbCard num="6" title="重点逻辑6：可认领数据查询 数据范围">
+<KbQuote>根据客户、项目、合同逐级筛选可认领的出库明细数据</KbQuote>
 
-<div class="kb-module">
+**具体逻辑**：
 
-### 审批与ERP推送
-
-**流程提交** (`wfProcSubmit`)：
-1. 校验到款单状态+可认领金额
-2. 推送核销数据到ERP(SUBMIT状态)
-3. 启动HZERO工作流
-4. 更新hzApproveStatus=RUN
-
-**审批回调** (`wfComplete`)：
-- 驳回→推送ERP取消核销(CANCEL)
-- 通过→推送ERP核销(APPROVE)，paymentAllotStat=APPROVED
-
-**ERP推送数据结构** (`pushAllotDataToErp`)：
-- **AR_APPLY**：按customerTrxId分组汇总claimAmt和returnAmt
-- **OM_CLAIM**：逐行组装CLAIM_DELIVERY_LINE_ID, CLAIM_AMT, RETURN_AMT
-- **OM_APPLY**：按DELIVERY_NUMBER分组汇总
-
-**手工发票认领(manualInvoiceClaim=Y)的影响**：
-
-| 维度 | manualInvoiceClaim=Y | manualInvoiceClaim=N |
-|------|---------------------|---------------------|
-| 数据来源 | source_type=trx, source_name=TRX | source_type=inv_out, source_name=DELIVERY |
-| 合同金额 | engineering_amount | sales_real_quantity × engineering_price |
-| 经销商金额 | =合同金额 | sales_real_quantity × dealer_parice |
-| 应收事务ID | source_doc_id | epm_cust_trx_detail_iface |
+- 1、查询可认领项目需传入客户ID、交易公司ID、收款公司ID，按此条件筛选有可认领明细的项目
+- 2、查询可认领合同需传入项目ID，筛选该项目下有可认领明细的合同
+- 3、可认领明细的核心条件：差异单审批通过、已记账、推送成功、非结清、合同金额&gt;已认领金额、应收接口已处理
+- 4、剩余可认领金额=工程方金额-已认领金额（排除当前认领单和已撤销的）
+</KbCard>
 
 </div>
+</div>
+</div>
 
-<div class="kb-module">
+<div id="detail-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="界面模块1：到款认领列表页">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>认款单号</td>
+<td>文本框</td>
+<td>系统自动生成的认领单号</td>
+<td>常显</td>
+<td>保存时按编码规则AE.EPM_PAYMENT_ALLOT自动生成，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.PAYMENT_ALLOT_CODE</td>
+</tr>
+<tr>
+<td>到款单号</td>
+<td>文本框</td>
+<td>关联的到款引入单号</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.PAYMENT_IMPORT_CODE</td>
+</tr>
+<tr>
+<td>银行流水号</td>
+<td>文本框</td>
+<td>银行流水号</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.SERIAL_NUMBER</td>
+</tr>
+<tr>
+<td>收款日期</td>
+<td>文本框</td>
+<td>到款收款日期</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.RECEIVE_DATE</td>
+</tr>
+<tr>
+<td>收款金额</td>
+<td>文本框</td>
+<td>到款总金额</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.RECEIVE_AMT</td>
+</tr>
+<tr>
+<td>本次认款金额</td>
+<td>文本框</td>
+<td>本次认领的金额合计</td>
+<td>常显</td>
+<td>自动计算=所有合同行认领金额之和(保留2位小数)，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.ALLOT_AMT</td>
+</tr>
+<tr>
+<td>币种</td>
+<td>文本框</td>
+<td>到款币种</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.CURRENCY</td>
+</tr>
+<tr>
+<td>汇率</td>
+<td>文本框</td>
+<td>到款汇率</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.EXCHANGE_RATE</td>
+</tr>
+<tr>
+<td>收款公司</td>
+<td>文本框</td>
+<td>交易公司名称</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.RECEIVE_UNIT_NAME</td>
+</tr>
+<tr>
+<td>收款银行</td>
+<td>文本框</td>
+<td>收款银行</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.RECEIVE_BANK</td>
+</tr>
+<tr>
+<td>收款账号</td>
+<td>文本框</td>
+<td>收款账号</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.RECEIVE_ACCOUNT</td>
+</tr>
+<tr>
+<td>汇款单位编码</td>
+<td>文本框</td>
+<td>法人客户编码</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.REMIT_UNIT_CODE</td>
+</tr>
+<tr>
+<td>汇款单位名称</td>
+<td>文本框</td>
+<td>法人客户名称</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.REMIT_UNIT_NAME</td>
+</tr>
+<tr>
+<td>事业部</td>
+<td>文本框</td>
+<td>所属事业部</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.DIVISION_NAME</td>
+</tr>
+<tr>
+<td>打款说明</td>
+<td>文本框</td>
+<td>打款说明</td>
+<td>常显</td>
+<td>来源于到款引入单，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_IMPORT.PAYMENT_REMARK</td>
+</tr>
+<tr>
+<td>单据状态</td>
+<td>下拉选择框</td>
+<td>审批状态</td>
+<td>常显</td>
+<td>值集HWKF.APPROVE_STATUS翻译</td>
+<td>NEW/RUN/APPROVED/INTERRUPT</td>
+<td>EPM_PAYMENT_ALLOT.HZ_APPROVE_STATUS</td>
+</tr>
+<tr>
+<td>认款状态</td>
+<td>下拉选择框</td>
+<td>认领业务状态</td>
+<td>常显</td>
+<td>系统自动维护</td>
+<td>APPLYING/APPROVED/TRANSFER/ACCOUNTED/CANCEL</td>
+<td>EPM_PAYMENT_ALLOT.PAYMENT_ALLOT_STAT</td>
+</tr>
+<tr>
+<td>认领方式</td>
+<td>文本框</td>
+<td>认领方式</td>
+<td>常显</td>
+<td>手动认领固定为manual</td>
+<td>auto/manual</td>
+<td>EPM_PAYMENT_ALLOT.CLAIM_TYPE</td>
+</tr>
+</tbody></table></div>
+</KbCard>
 
-### 状态流转
+<KbCard title="界面模块2：到款认领详情页-头信息">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>认款单号</td>
+<td>文本框</td>
+<td>系统自动生成的认领单号</td>
+<td>常显</td>
+<td>新增时自动生成，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.PAYMENT_ALLOT_CODE</td>
+</tr>
+<tr>
+<td>到款单号</td>
+<td>文本框</td>
+<td>关联的到款引入单号</td>
+<td>常显</td>
+<td>来源于到款引入单</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.PAYMENT_IMPORT_CODE</td>
+</tr>
+<tr>
+<td>银行流水号</td>
+<td>文本框</td>
+<td>银行流水号</td>
+<td>常显</td>
+<td>来源于到款引入单</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.SERIAL_NUMBER</td>
+</tr>
+<tr>
+<td>客户编码</td>
+<td>文本框</td>
+<td>经销商编码</td>
+<td>常显</td>
+<td>来源于到款引入单</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.CUSTOMER_CODE</td>
+</tr>
+<tr>
+<td>客户名称</td>
+<td>文本框</td>
+<td>经销商名称</td>
+<td>常显</td>
+<td>来源于到款引入单</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.CUSTOMER_NAME</td>
+</tr>
+<tr>
+<td>认款前可认款金额</td>
+<td>文本框</td>
+<td>认领前到款单剩余可认领金额</td>
+<td>常显</td>
+<td>保存时自动计算=当前到款单可认领金额，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.UNALLOT_AMT_BEFORE</td>
+</tr>
+<tr>
+<td>本次认款合计金额</td>
+<td>文本框</td>
+<td>本次认领金额合计</td>
+<td>常显</td>
+<td>自动汇总合同行认领金额，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.ALLOT_AMT</td>
+</tr>
+<tr>
+<td>认款后可认款金额</td>
+<td>文本框</td>
+<td>认领后到款单剩余可认领金额</td>
+<td>常显</td>
+<td>自动计算=认款前-本次认款合计，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.UNALLOT_AMT_AFTER</td>
+</tr>
+<tr>
+<td>手工发票认领</td>
+<td>单选框</td>
+<td>是否手工发票认领</td>
+<td>常显</td>
+<td>默认N，可编辑</td>
+<td>Y/N</td>
+<td>EPM_PAYMENT_ALLOT.MANUAL_INVOICE_CLAIM</td>
+</tr>
+<tr>
+<td>备注</td>
+<td>文本框</td>
+<td>备注</td>
+<td>常显</td>
+<td>默认空，可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT.REMARK</td>
+</tr>
+</tbody></table></div>
+</KbCard>
 
-**认领单状态(paymentAllotStat)**：
+<KbCard title="界面模块3：到款认领详情页-合同行">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>项目编码</td>
+<td>文本框</td>
+<td>合同所属项目编码</td>
+<td>常显</td>
+<td>选择合同后自动带出，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_LINE.PROJECT_CODE</td>
+</tr>
+<tr>
+<td>项目名称</td>
+<td>文本框</td>
+<td>合同所属项目名称</td>
+<td>常显</td>
+<td>选择合同后自动带出，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_LINE.PROJECT_NAME</td>
+</tr>
+<tr>
+<td>合同编码</td>
+<td>文本框</td>
+<td>合同编码</td>
+<td>常显</td>
+<td>弹窗选择合同后自动带出，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_LINE.CONTRACT_CODE</td>
+</tr>
+<tr>
+<td>合同名称</td>
+<td>文本框</td>
+<td>合同名称</td>
+<td>常显</td>
+<td>弹窗选择合同后自动带出，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_LINE.CONTRACT_NAME</td>
+</tr>
+<tr>
+<td>认款前待回款金额</td>
+<td>文本框</td>
+<td>该合同认领前待回款金额</td>
+<td>常显</td>
+<td>自动带出，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_LINE.UNRECEIVE_AMT_BEFORE</td>
+</tr>
+<tr>
+<td>本次认款金额</td>
+<td>数值框</td>
+<td>本次对该合同的认领金额</td>
+<td>常显</td>
+<td>默认0，可编辑，需&gt;0</td>
+<td>&gt;0</td>
+<td>EPM_PAYMENT_ALLOT_LINE.ALLOT_AMT</td>
+</tr>
+<tr>
+<td>认款后待回款金额</td>
+<td>文本框</td>
+<td>认领后该合同待回款金额</td>
+<td>常显</td>
+<td>自动计算=认款前-本次认款，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_LINE.UNRECEIVE_AMT_AFTER</td>
+</tr>
+<tr>
+<td>认领方式</td>
+<td>文本框</td>
+<td>合同行认领方式</td>
+<td>常显</td>
+<td>-</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_LINE.CLAIM_WAY</td>
+</tr>
+<tr>
+<td>认领比例</td>
+<td>数值框</td>
+<td>认领比例</td>
+<td>常显</td>
+<td>-</td>
+<td>0-100</td>
+<td>EPM_PAYMENT_ALLOT_LINE.CLAIM_PERCENT</td>
+</tr>
+<tr>
+<td>当时已回款金额</td>
+<td>文本框</td>
+<td>认领时合同已回款金额快照</td>
+<td>常显</td>
+<td>保存时记录当时合同已回款金额，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_LINE.CONTRACT_AMT_RECEIVED</td>
+</tr>
+<tr>
+<td>行备注</td>
+<td>文本框</td>
+<td>行备注</td>
+<td>常显</td>
+<td>默认空，可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_LINE.REMARK</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="界面模块4：到款认领详情页-出库明细行">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>出库单号</td>
+<td>文本框</td>
+<td>出库单编号</td>
+<td>常显</td>
+<td>来源于签收行/出库确认，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>产品编码</td>
+<td>文本框</td>
+<td>产品编码</td>
+<td>常显</td>
+<td>来源于签收行，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>签收时间</td>
+<td>文本框</td>
+<td>签收时间</td>
+<td>常显</td>
+<td>来源于签收行，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>发货日期</td>
+<td>文本框</td>
+<td>发货日期</td>
+<td>常显</td>
+<td>来源于签收行，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>折后单价</td>
+<td>文本框</td>
+<td>折后单价</td>
+<td>常显</td>
+<td>来源于签收行，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>发货数量</td>
+<td>数值框</td>
+<td>发货数量</td>
+<td>常显</td>
+<td>来源于签收行，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>合同发货金额</td>
+<td>文本框</td>
+<td>工程方金额(发货数量×工程方单价)</td>
+<td>常显</td>
+<td>自动计算=发货数量×工程方单价(保留2位小数)，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>经销商发货金额</td>
+<td>文本框</td>
+<td>经销商金额(发货数量×经销商单价)</td>
+<td>常显</td>
+<td>自动计算=发货数量×经销商单价(保留2位小数)，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>已认领金额</td>
+<td>文本框</td>
+<td>该出库明细行已认领金额(排除当前认领单和已撤销)</td>
+<td>常显</td>
+<td>系统汇总，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>剩余可认款金额</td>
+<td>文本框</td>
+<td>合同发货金额-已认领金额</td>
+<td>常显</td>
+<td>自动计算，不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>本次认款金额</td>
+<td>数值框</td>
+<td>本次对该出库明细的认领金额</td>
+<td>常显</td>
+<td>默认0，可编辑</td>
+<td>&gt;0且≤剩余可认款金额</td>
+<td>EPM_PAYMENT_ALLOT_DETAIL.CLAIM_AMT</td>
+</tr>
+<tr>
+<td>还款金额</td>
+<td>数值框</td>
+<td>经销商维度的回款金额</td>
+<td>常显</td>
+<td>自动计算：若本次认款=剩余可认款则还款=剩余还款；否则=(经销商金额/工程方金额)×本次认款(保留2位小数)，不可编辑</td>
+<td>-</td>
+<td>EPM_PAYMENT_ALLOT_DETAIL.RETURN_AMT</td>
+</tr>
+<tr>
+<td>认款比例</td>
+<td>数值框</td>
+<td>认领比例</td>
+<td>常显</td>
+<td>-</td>
+<td>0-100</td>
+<td>EPM_PAYMENT_ALLOT_DETAIL.CLAIM_PERCENT</td>
+</tr>
+<tr>
+<td>本次认领工程服务费</td>
+<td>数值框</td>
+<td>本次认领的工程服务费</td>
+<td>常显</td>
+<td>默认0，可编辑</td>
+<td>≥0</td>
+<td>EPM_PAYMENT_ALLOT_DETAIL.CLAIM_SERVICE_AMT</td>
+</tr>
+<tr>
+<td>能否兑现</td>
+<td>文本框</td>
+<td>是否允许兑现</td>
+<td>常显</td>
+<td>商票/银行承兑且未兑付时为N，否则为Y</td>
+<td>Y/N</td>
+<td>EPM_PAYMENT_ALLOT_DETAIL.ALLOW_CASH_FLAG</td>
+</tr>
+<tr>
+<td>是否撤销</td>
+<td>文本框</td>
+<td>是否已被撤销</td>
+<td>常显</td>
+<td>撤销审批通过后更新为Y</td>
+<td>Y/N</td>
+<td>EPM_PAYMENT_ALLOT_DETAIL.CANCEL_FLAG</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="选择弹窗">
+<KbSubTitle>弹窗1：可认领项目弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| customerId | 客户ID | 到款单对应的客户ID | 10001 |
+
+**数据范围**
+
+```sql
+查询该客户下有可认领出库明细的项目（差异单审批通过、已记账、推送成功、合同金额>已认领金额）
+```
+
+<KbSubTitle>弹窗2：可认领合同弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| projectId | 项目ID | 选定的项目ID | 20001 |
+
+**数据范围**
+
+```sql
+查询该项目下有可认领出库明细的合同
+```
+
+<KbSubTitle>弹窗3：可认领出库明细弹窗 <KbBadge type="purple">多选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| projectId | 项目ID | 选定的项目ID | 20001 |
+| contractId | 合同ID | 选定的合同ID | 30001 |
+
+**数据范围**
+
+```sql
+差异单审批通过、本次收款=2、source_type=inv_out、非结清、已记账、推送成功、出库来源DELIVERY、合同金额>已认领金额、应收接口已处理
+```
+
+</KbCard>
+<KbCard title="导入">
+</KbCard>
+<KbCard title="其他按钮">
+
+| 按钮名称 | 按钮作用 | 所在位置 | 显隐条件/可点击条件 | 影响 |
+|---------|---------|---------|-------------------|------|
+| 新增 | 新建到款认领单 | 列表页 | 常显 | 跳转新建页面 |
+| 保存 | 保存认领数据 | 详情页 | 新建/编辑状态 | 调用saveAllot/updateAllot接口，校验并保存认领头+合同行+出库明细行，扣减到款单可认领金额 |
+| 提交 | 提交审批 | 详情页 | 审批状态=NEW或INTERRUPT | 校验到款单状态和可认领金额，推送ERP核销(SUBMIT)，启动工作流 |
+| 删除 | 删除认领单 | 详情页 | 审批状态=NEW或INTERRUPT | 删除认领头+合同行+出库明细行，恢复到款单可认领金额 |
+| 导出 | 导出认领列表 | 列表页 | 常显 | 调用listSearchExport接口导出Excel |
+| 详情导出 | 导出认领详情 | 详情页 | 常显 | 调用exportSearch接口导出Excel |
+| 查询合同认缴金额 | 查询合同已回款和发货金额 | 详情页 | 选择合同后 | 调用selectContractAmt接口，返回合同已回款金额和出库确认金额 |
+| 根据项目获取出库明细 | 查询项目下出库单明细 | 详情页 | 选择项目后 | 调用selectDetailsByProject接口，根据手工发票认领标识区分查询 |
+
+</KbCard>
+<KbCard title="保存校验">
+<KbSubTitle>校验1：到款单状态校验 —— 确保到款单处于可操作状态</KbSubTitle>
+
+- 第1点：校验关联的到款引入单状态是否允许认领操作
+- 第2点：到款单不存在时报错
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT * FROM epm_payment_import WHERE payment_import_id = #{paymentImportId}
+```
+
+<KbSubTitle>校验2：本次认领金额不可超过可认领金额 —— 防止超额认领</KbSubTitle>
+
+- 第1点：虚拟到款单(VIRTUAL_RECEIPT)：从本地数据库计算可认领金额，本次认领金额合计不可超过该值
+- 第2点：真实到款单(RECEIPT)：实时调用ERP接口查询最新可认领金额，本次认领金额合计不可超过ERP返回值
+
+<KbTip>阻断性报错，提示"本次认款金额合计：【X】大于到款接口剩余认款金额：【Y】！"</KbTip>
+
+```sql
+-- 虚拟到款单可认领金额
+    SELECT unallot_amt FROM epm_payment_import WHERE payment_import_id = #{paymentImportId}
+```
+
+<KbSubTitle>校验3：出库明细认领金额不可超过工程金额 —— 防止单行超额认领</KbSubTitle>
+
+- 第1点：对每个出库明细行，已认领金额+本次认领金额不可超过工程方金额
+- 第2点：超过时提示具体出库单号和产品编码
+
+<KbTip>阻断性报错，提示"出库单号：X，产品编码：Y，已认领金额+本次认领金额已超工程金额，请检查！"</KbTip>
+
+```sql
+SELECT epad.payment_allot_detail_id, epad.claim_amt,
+           (SELECT SUM(claim_amt) FROM epm_payment_allot_detail WHERE source_id = epad.source_id AND cancel_flag <> 'Y') total_claim_amt
+    FROM epm_payment_allot_detail epad
+    WHERE epad.payment_allot_line_id IN (
+      SELECT payment_allot_line_id FROM epm_payment_allot_line WHERE payment_allot_id = #{paymentAllotId}
+    )
+```
+
+<KbSubTitle>校验4：事业部信息校验 —— 确保用户有所属事业部</KbSubTitle>
+
+- 第1点：从用户附加信息中获取DEPT字段，为空则报错
+
+<KbTip>阻断性报错，提示"事业部信息为空"</KbTip>
+
+```sql
+-- 无需SQL，为用户会话信息校验
+```
+
+</KbCard>
+<KbCard title="提交校验">
+<KbSubTitle>校验1：到款单状态校验 —— 确保提交时到款单仍处于可认领状态</KbSubTitle>
+
+- 第1点：调用paymentImportService.verifyImportStat校验到款单状态
+- 第2点：到款单不存在时报错
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT * FROM epm_payment_import WHERE payment_import_id = #{paymentImportId}
+```
+
+<KbSubTitle>校验2：可认领金额校验 —— 提交时再次校验金额，防止并发场景下超额认领</KbSubTitle>
+
+- 第1点：与保存校验相同的金额校验逻辑，提交时再次执行
+- 第2点：真实到款单实时查ERP确保金额最新
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT unallot_amt FROM epm_payment_import WHERE payment_import_id = #{paymentImportId}
+```
+
+<KbSubTitle>校验3：ERP核销推送校验 —— 确保ERP核销接口调用成功</KbSubTitle>
+
+- 第1点：推送SUBMIT状态核销数据至ERP
+- 第2点：检查ERP返回结果，所有行返回状态必须为S
+
+<KbTip>阻断性报错，提示"认领推送erp异常【{ERP错误信息}】"</KbTip>
+
+```sql
+-- 推送数据查询
+    SELECT epa.payment_allot_id, epi.source_system_no, epi.bill_type, epi.receive_unit_code
+    FROM epm_payment_allot epa
+    LEFT JOIN epm_payment_import epi ON epa.payment_import_id = epi.payment_import_id
+    WHERE epa.payment_allot_id = #{paymentAllotId}
+```
+
+</KbCard>
+<KbCard title="状态机">
+### 状态机
+
+<KbSubTitle>状态机流转图</KbSubTitle>
+
 
 ```text
-新建 → APPLYING(申请中)
-  │
-  ├── 审批通过 → APPROVED(已审核) → ERP推送成功 → TRANSFER(已推送)
-  │                                            └── ACCOUNTED(已认领)
-  └── 认领撤销 → CANCEL(已撤销)
+新建(NEW) ──提交──> 审批中(RUN) ──审批通过──> 已审批(APPROVED)
+    │                   │                      │
+    │                   │                      ├── ERP核销完成 ──> 已推送(TRANSFER)
+    │                   │                      │
+    │                   │                      └── ERP记账完成 ──> 已认领(ACCOUNTED)
+    │                   │
+    │                   └──审批驳回──> 已驳回(INTERRUPT)
+    │                                      │
+    │                                      ├── 可重新编辑提交
+    │                                      └── 可删除
+    │
+    └── 可删除
+
+已审批(APPROVED) ──撤销──> 已撤销(CANCEL)
 ```
 
-**审批状态(hzApproveStatus)**：
+<KbSubTitle>状态机列表</KbSubTitle>
 
-```text
-NEW(新建) → RUN(审批中)
-  ├── APPROVED(审批通过)
-  ├── REBUT(驳回) → 可重新编辑提交
-  └── INTERRUPT(终止) → 可删除
-```
 
-</div>
+| 状态机名称 | 状态释义 | 可执行的操作 |
+|-----------|---------|------------|
+| NEW | 新建 | 编辑、保存、提交、删除 |
+| RUN | 审批中 | 无（等待审批结果） |
+| APPROVED | 审批通过 | 查看、撤销 |
+| INTERRUPT | 驳回 | 编辑、重新提交、删除 |
+| TRANSFER | 已推送 | 查看、撤销 |
+| ACCOUNTED | 已认领 | 查看、撤销 |
+| CANCEL | 已撤销 | 查看 |
 
-</div>
+---
 
-<div id="faq">
+</KbCard>
+<KbCard num="1" title="表1：EPM_PAYMENT_ALLOT（到款认领主表）">
 
-<div class="kb-module">
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| PAYMENT_ALLOT_ID | BIGINT | 认领单ID，主键 | - | 自增生成 |
+| PAYMENT_ALLOT_CODE | VARCHAR | 认领单号 | 认款单号 | 按编码规则AE.EPM_PAYMENT_ALLOT自动生成 |
+| ORGANIZATION_ID | BIGINT | 事业部ID | - | 从用户附加信息DEPT获取 |
+| PAYMENT_IMPORT_CODE | VARCHAR | 到款记录单号 | 到款单号 | 来源于到款引入单 |
+| SERIAL_NUMBER | VARCHAR | 银行流水号 | 银行流水号 | 来源于到款引入单 |
+| CUSTOMER_ID | BIGINT | 客户ID | - | 来源于到款引入单 |
+| CUSTOMER_CODE | VARCHAR | 客户编码 | 客户编码 | 来源于到款引入单 |
+| CUSTOMER_NAME | VARCHAR | 客户名称 | 客户名称 | 来源于到款引入单 |
+| UNALLOT_AMT_BEFORE | DECIMAL | 认款前可认款金额 | 认款前可认款金额 | 保存时=当前到款单可认领金额 |
+| ALLOT_AMT | DECIMAL | 本次认款合计金额 | 本次认款合计金额 | 所有合同行认领金额之和(保留2位小数) |
+| UNALLOT_AMT_AFTER | DECIMAL | 认款后可认款金额 | 认款后可认款金额 | =UNALLOT_AMT_BEFORE-ALLOT_AMT |
+| REMARK | VARCHAR | 备注 | 备注 | 用户输入 |
+| STAT | BIGINT | 单据状态 | - | 工作流状态 |
+| WFID | BIGINT | 流程ID | - | 工作流实例ID |
+| WFFLAG | BIGINT | 流程状态 | - | 工作流标志 |
+| IS_HOME | BIGINT | 是否家装 | - | 工程固定为0，家装为2 |
+| CLIENTNAME | VARCHAR | 区分APP与PC | - | 客户端标识 |
+| PAYMENT_IMPORT_ID | BIGINT | 到款记录单ID | - | 关联到款引入单主键 |
+| CLAIM_TYPE | VARCHAR | 认领方式 | 认领方式 | 手动认领=manual |
+| PAYMENT_ALLOT_STAT | VARCHAR | 认款状态 | 认款状态 | APPLYING/APPROVED/TRANSFER/ACCOUNTED/CANCEL |
+| MANUAL_INVOICE_CLAIM | VARCHAR | 手工发票认领标识 | 手工发票认领 | Y/N |
+| HZ_APPROVE_STATUS | VARCHAR | 审批状态 | 单据状态 | NEW/RUN/APPROVED/INTERRUPT |
+| HZ_INSTANCE_ID | BIGINT | 审批实例ID | - | 工作流实例ID |
 
-### Q1：虚拟到款单和真实到款单的可认领金额如何计算？ 🔴高频
+</KbCard>
 
-虚拟到款(VIRTUAL_RECEIPT)走本地SQL计算；真实到款(RECEIPT)实时查ERP的unappliedAmount。
+<KbCard num="2" title="表2：EPM_PAYMENT_ALLOT_LINE（到款认领合同行表）">
 
-</div>
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| PAYMENT_ALLOT_LINE_ID | BIGINT | 认领合同行ID，主键 | - | 自增生成 |
+| PAYMENT_ALLOT_ID | BIGINT | 认领单ID | - | 关联EPM_PAYMENT_ALLOT主键 |
+| PAYMENT_PLAN_LINE_ID | BIGINT | 回款计划行ID | - | 关联回款计划行 |
+| UNRECEIVE_AMT_BEFORE | DECIMAL | 认款前待回款金额 | 认款前待回款金额 | 保存时记录 |
+| ALLOT_AMT | DECIMAL | 本次认款金额 | 本次认款金额 | 用户输入 |
+| UNRECEIVE_AMT_AFTER | DECIMAL | 认款后待回款金额 | 认款后待回款金额 | =UNRECEIVE_AMT_BEFORE-ALLOT_AMT |
+| REMARK | VARCHAR | 行备注 | 行备注 | 用户输入 |
+| PAYMENT_TYPE | DECIMAL | 认款款项 | - | 值集pem.payment_type |
+| CONTRACT_ID | BIGINT | 合同ID | - | 关联项目合同表 |
+| CONTRACT_AMT_RECEIVED | DECIMAL | 当时已回款金额 | 当时已回款金额 | 保存时快照合同已回款金额 |
+| ACTUAL_AMOUNT | DECIMAL | 实际结算总金额 | - | 合同实际结算金额 |
+| HAS_ALLOT_AMOUNT | DECIMAL | 已认领金额 | - | 合同已认领金额 |
+| CLAIM_WAY | VARCHAR | 认领方式 | 认领方式 | - |
+| CLAIM_PERCENT | DECIMAL | 认领比例 | 认领比例 | - |
+| CONTRACT_CODE | VARCHAR | 合同编码 | 合同编码 | 选择合同后带出 |
+| CONTRACT_NAME | VARCHAR | 合同名称 | 合同名称 | 选择合同后带出 |
+| PROJECT_CODE | VARCHAR | 项目编码 | 项目编码 | 选择合同后带出 |
+| PROJECT_NAME | VARCHAR | 项目名称 | 项目名称 | 选择合同后带出 |
 
-<div class="kb-module-alt">
+</KbCard>
 
-### Q2：更新认领单时为什么采用"先删后插"？
+<KbCard num="3" title="表3：EPM_PAYMENT_ALLOT_DETAIL（到款认领出库明细表）">
 
-合同行和出库明细行可能发生变化（增删明细），最安全的做法是删除所有子行后重新插入。
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| PAYMENT_ALLOT_DETAIL_ID | BIGINT | 认领出库明细ID，主键 | - | 自增生成 |
+| PAYMENT_ALLOT_LINE_ID | BIGINT | 认领合同行ID | - | 关联EPM_PAYMENT_ALLOT_LINE主键 |
+| SOURCE_ID | BIGINT | 签收明细ID | - | 关联差异单行/出库确认行 |
+| LINE_NUMBER | BIGINT | ERP出库单明细ID | - | ERP出库单行号 |
+| SOURCE_TYPE | VARCHAR | 数据来源 | - | inv_out/trx |
+| CLAIM_AMT | DECIMAL | 本次认款金额 | 本次认款金额 | 用户输入 |
+| RETURN_AMT | DECIMAL | 还款金额(经销商维度) | 还款金额 | 自动计算：(经销商金额/工程方金额)×本次认领金额 |
+| CLAIM_PERCENT | DECIMAL | 认款比例 | 认款比例 | - |
+| ALLOW_CASH_FLAG | VARCHAR | 能否兑现 | 能否兑现 | 商票/银行承兑且未兑付=N，否则=Y |
+| CANCEL_FLAG | VARCHAR | 是否撤销 | 是否撤销 | 撤销审批通过后更新为Y |
+| CLAIM_SERVICE_AMT | DECIMAL | 本次认领工程服务费 | 本次认领工程服务费 | 用户输入 |
 
-</div>
+</KbCard>
 
-<div class="kb-module">
+<KbCard num="4" title="表4：EPM_PAYMENT_ALLOT_CANCEL（到款认领撤销表）">
 
-### Q3：哪些状态可以删除认领单？
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| ID | BIGINT | 撤销单ID，主键 | - | 自增生成 |
+| CANCEL_NO | VARCHAR | 撤销单号 | 撤销编号 | 事业部编码+编码规则AE.EPM_PAYMENT_ALLOT_CANCEL_NO生成 |
+| CANCEL_DATE | DATE | 撤销时间 | 撤销时间 | 撤销审批通过时更新为当前时间 |
+| PROJECT_ID | BIGINT | 项目ID | - | 关联项目表 |
+| STAT | BIGINT | 撤销状态 | - | 默认1 |
+| WFID | BIGINT | 流程ID | - | 默认0 |
+| WFFLAG | BIGINT | 流程标志 | - | 默认0 |
+| CANCEL_REASON | VARCHAR | 撤销原因 | 撤销原因 | 用户输入 |
+| ORGANIZATION_ID | BIGINT | 事业部ID | - | 用户所属事业部 |
+| HZ_APPROVE_STATUS | VARCHAR | 审批状态 | 单据状态 | NEW/RUN/APPROVED/INTERRUPT |
+| HZ_INSTANCE_ID | BIGINT | 审批实例ID | - | 工作流实例ID |
 
-仅NEW(新建)和INTERRUPT(终止)状态可删除。审批中(RUN)或已通过(APPROVED)不可删除。
+---
 
-</div>
-
-<div class="kb-module-alt">
-
-### Q4：手工发票认领和普通认领有什么本质区别？
-
-手工发票认领(manualInvoiceClaim=Y)的数据来源是应收事务处理(TRX)，而非出库单(DELIVERY)。合同金额等于工程方金额，经销商金额也等于工程方金额，没有独立的经销商定价。ERP推送时使用不同的查询逻辑。
-
-</div>
-
-<div class="kb-module">
-
-### Q5：商票到款单的兑现标记如何影响认领？
-
-商票(TRADE_BILL)或银行承兑(BANK_BILL)且未兑付(PENDING)时，明细allowCashFlag='N'，表示不可兑现。兑付成功后更新为'Y'。
-
-</div>
-
-<div class="kb-module-alt">
-
-### Q6：预认领自动推送的触发条件是什么？
-
-定时任务检查申请中的预认领数据，当出库确认行对应的最后签收记录已入账(account_status=ACCOUNTED)且入账数量=明细数量时，自动推送ERP核销。
-
-</div>
-
-</div>
-
-<div id="troubleshoot">
-
-<div class="kb-module">
-
-**步骤1：查认领单基本信息**
-
-```sql
-SELECT payment_allot_id, payment_allot_code, payment_allot_stat, hz_approve_status, manual_invoice_claim
-FROM epm_payment_allot WHERE payment_allot_id = #{paymentAllotId};
-```
-
-> 异常判断：查不到→认领单被删除；状态不一致→数据异常
-
-</div>
-
-<div class="kb-module-alt">
-
-**步骤2：查认领金额**
-
-```sql
-SELECT allot_amt, unallot_amt_before, unallot_amt_after, payment_import_id
-FROM epm_payment_allot WHERE payment_allot_id = #{paymentAllotId};
-```
-
-</div>
-
-<div class="kb-module">
-
-**步骤3：查到款单状态与金额**
-
-```sql
-SELECT payment_import_id, allot_status, unallot_amt, bill_type, import_stat
-FROM epm_payment_import WHERE payment_import_id = #{paymentImportId};
-```
-
-</div>
-
-<div class="kb-module-alt">
-
-**步骤4：查认领明细（是否有撤销）**
-
-```sql
-SELECT ad.payment_allot_detail_id, ad.claim_amt, ad.return_amt, ad.cancel_flag, ad.allow_cash_flag
-FROM epm_payment_allot_line al
-JOIN epm_payment_allot_detail ad ON al.payment_allot_line_id = ad.payment_allot_line_id
-WHERE al.payment_allot_id = #{paymentAllotId};
-```
+</KbCard>
 
 </div>
-
-<div class="kb-module">
-
-**步骤5：查合同行认领数据**
-
-```sql
-SELECT line.contract_id, line.allot_amt, epc.contract_code, epc.contract_name
-FROM epm_payment_allot_line line
-JOIN epm_project_contract epc ON line.contract_id = epc.contract_id
-WHERE line.payment_allot_id = #{paymentAllotId};
-```
-
+</div>
 </div>
 
-<div class="kb-module-alt">
+<div id="permission" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="权限控制">
 
-**上游依赖**：到款单(EPM_PAYMENT_IMPORT)、客户(CUSTOMER)、合同(EPM_PROJECT_CONTRACT)、项目(EPM_PROJECT)、出库确认(INV_OUT_BILL_INTF_CONFIRM_B)、签收差异(DRP_DIFFPROCBILL)
+<!-- 空白:待补充 -->
 
-**下游影响**：工程服务费兑现(allowCashFlag控制)、回款金额(contractAmtReceived)、ERP核销推送
-
+</KbCard>
+</div>
+</div>
 </div>
 
+<div id="faq" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="报错一览表" :hover="false">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:27%"><col style="width:13%"><col style="width:32%"><col style="width:14%"><col style="width:14%"></colgroup>
+<thead><tr><th>报错信息</th><th>提示节点</th><th>根因与解决方案</th><th>等级</th><th>详细逻辑</th></tr></thead>
+<tbody>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">事业部信息为空</td>
+            <td style="font-size:13px;">保存</td>
+            <td style="font-size:13px;">用户附加信息中DEPT字段为空，需检查用户配置</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">未找到该到款单</td>
+            <td style="font-size:13px;">保存/更新/删除</td>
+            <td style="font-size:13px;">关联的到款引入单不存在，paymentImportId可能错误</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-2" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">本次认款金额合计：【X】大于到款接口剩余认款金额：【Y】！</td>
+            <td style="font-size:13px;">保存/提交</td>
+            <td style="font-size:13px;">认领金额超过到款单可认领余额，需减少认领金额或检查是否有其他认领单占用</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-3" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">出库单号：X，产品编码：Y，已认领金额+本次认领金额已超工程金额，请检查！</td>
+            <td style="font-size:13px;">保存</td>
+            <td style="font-size:13px;">单个出库明细行认领超额，需减少该行认领金额</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-4" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">流程发起异常，单据主键为空！</td>
+            <td style="font-size:13px;">提交</td>
+            <td style="font-size:13px;">单据ID为空，系统异常</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-5" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">流程发起异常，单据不存在！</td>
+            <td style="font-size:13px;">提交</td>
+            <td style="font-size:13px;">认领单已被删除或ID错误</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-6" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">流程发起异常，到款单不存在！</td>
+            <td style="font-size:13px;">提交</td>
+            <td style="font-size:13px;">关联的到款引入单不存在</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-7" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">流程完结异常，单据主键为空！</td>
+            <td style="font-size:13px;">审批回调</td>
+            <td style="font-size:13px;">单据ID为空，系统异常</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-8" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">流程完结异常，单据不存在！</td>
+            <td style="font-size:13px;">审批回调</td>
+            <td style="font-size:13px;">认领单已被删除</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-9" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">查询认领数据为空</td>
+            <td style="font-size:13px;">ERP推送</td>
+            <td style="font-size:13px;">推送ERP时查询认领数据为空，认领单可能无合同行</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-10" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">erp返回认领结果为空！</td>
+            <td style="font-size:13px;">ERP推送</td>
+            <td style="font-size:13px;">ERP接口返回数据为空，检查ERP接口状态</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-11" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">认领推送erp异常【{错误信息}】</td>
+            <td style="font-size:13px;">ERP推送</td>
+            <td style="font-size:13px;">ERP核销接口返回失败，检查ERP端错误信息</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-12" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">单据id(X)异常，核销接口返回信息为：Y</td>
+            <td style="font-size:13px;">核销接口</td>
+            <td style="font-size:13px;">ERP核销接口返回非S状态，检查核销数据</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-13" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">删除异常：未指定到款认领id</td>
+            <td style="font-size:13px;">删除</td>
+            <td style="font-size:13px;">未传入认领单ID</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-14" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">删除异常：未查询到该认领单</td>
+            <td style="font-size:13px;">删除</td>
+            <td style="font-size:13px;">认领单不存在</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-15" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">删除异常：新建状态下的认领才可删除，请检查！</td>
+            <td style="font-size:13px;">删除</td>
+            <td style="font-size:13px;">仅NEW和INTERRUPT状态可删除，当前状态不允许</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-16" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">删除异常：未找到该到款单</td>
+            <td style="font-size:13px;">删除</td>
+            <td style="font-size:13px;">关联的到款引入单不存在</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-17" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">到款认领异常，未指定到款单id</td>
+            <td style="font-size:13px;">详情查询</td>
+            <td style="font-size:13px;">未传入认领单ID</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-18" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">查询到款认领单数据为空</td>
+            <td style="font-size:13px;">详情查询</td>
+            <td style="font-size:13px;">认领单不存在</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-19" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">查询项目列表异常，未指定客户id</td>
+            <td style="font-size:13px;">可认领项目查询</td>
+            <td style="font-size:13px;">未传入客户ID</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-20" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">查询项目列表异常，未指定交易公司id</td>
+            <td style="font-size:13px;">可认领项目查询</td>
+            <td style="font-size:13px;">未传入交易公司ID</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-21" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">查询项目列表异常，未指定收款公司id</td>
+            <td style="font-size:13px;">可认领项目查询</td>
+            <td style="font-size:13px;">未传入收款公司ID</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-22" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">查询合同列表异常，未指定项目id</td>
+            <td style="font-size:13px;">可认领合同查询</td>
+            <td style="font-size:13px;">未传入项目ID</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-23" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">查询可认领明细异常，未指定项目id</td>
+            <td style="font-size:13px;">可认领明细查询</td>
+            <td style="font-size:13px;">未传入项目ID</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-24" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">项目到款引入数据异常</td>
+            <td style="font-size:13px;">根据项目获取出库明细</td>
+            <td style="font-size:13px;">到款引入单不存在</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-25" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">项目合同相关信息异常</td>
+            <td style="font-size:13px;">根据项目获取出库明细</td>
+            <td style="font-size:13px;">该项目下无审批通过的合同</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-26" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">撤销明细中，含有已经报销的认领明细，且撤销后可结算工程服务费小于零，不允许撤销：报销单号-X</td>
+            <td style="font-size:13px;">撤销保存</td>
+            <td style="font-size:13px;">撤销后可结算工程服务费&lt;0，需减少撤销明细</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-27" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">明细中以下认领明细已被撤销，请剔除后再重新提交撤销：【认领单号：X，出库单号：Y，产品编码：Z】</td>
+            <td style="font-size:13px;">撤销提交</td>
+            <td style="font-size:13px;">撤销明细中包含已被撤销的行，需剔除</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-28" class="view-btn">查看</a></td>
+          </tr>
+</tbody></table></div>
+
+<div id="err-detail-1" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>事业部信息为空</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>用户附加信息中DEPT字段为空，需检查用户配置</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
-<div id="history">
-
-<div class="kb-module">
-
-### 历史排查记录
-
-*(本模块暂无历史排查记录，后续遇到问题后会在此补充)*
-
+<div id="err-detail-2" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>未找到该到款单</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>关联的到款引入单不存在，paymentImportId可能错误</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
+<div id="err-detail-3" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>本次认款金额合计：【X】大于到款接口剩余认款金额：【Y】！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>认领金额超过到款单可认领余额，需减少认领金额或检查是否有其他认领单占用</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
-<div id="related">
-
-<div class="kb-module">
-
-### 关联模块
-
-| 模块 | 关联方式 | 说明 |
-|------|---------|------|
-| 项目到款引入(EpmPaymentImport) | 认领单.paymentImportId | 认领前校验状态、获取可认领金额 |
-| 项目到款认领撤销(EpmPaymentAllotCancel) | 明细.cancel_flag | 撤销审批通过后标记为Y、金额回加 |
-| 自营工程合同(EpmProjectContract) | 合同行.contractId | 合同已回款金额计算 |
-| 工程服务费兑现(EpmServiceFeeCash) | 明细.allowCashFlag | 商票未兑付不可兑现 |
-| 工程项目(EpmProject) | 合同.projectId | 项目维度查询可认领数据 |
-| ERP系统(EBS) | pushAllotDatas | AR_APPLY/OM_CLAIM/OM_APPLY推送 |
-
+<div id="err-detail-4" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>出库单号：X，产品编码：Y，已认领金额+本次认领金额已超工程金额，请检查！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>单个出库明细行认领超额，需减少该行认领金额</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
+<div id="err-detail-5" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>流程发起异常，单据主键为空！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>单据ID为空，系统异常</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-6" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>流程发起异常，单据不存在！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>认领单已被删除或ID错误</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-7" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>流程发起异常，到款单不存在！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>关联的到款引入单不存在</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-8" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>流程完结异常，单据主键为空！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>单据ID为空，系统异常</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-9" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>流程完结异常，单据不存在！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>认领单已被删除</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-10" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>查询认领数据为空</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>推送ERP时查询认领数据为空，认领单可能无合同行</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-11" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>erp返回认领结果为空！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>ERP接口返回数据为空，检查ERP接口状态</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-12" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>认领推送erp异常【{错误信息}】</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>ERP核销接口返回失败，检查ERP端错误信息</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-13" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>单据id(X)异常，核销接口返回信息为：Y</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>ERP核销接口返回非S状态，检查核销数据</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-14" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>删除异常：未指定到款认领id</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>未传入认领单ID</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-15" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>删除异常：未查询到该认领单</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>认领单不存在</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-16" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>删除异常：新建状态下的认领才可删除，请检查！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>仅NEW和INTERRUPT状态可删除，当前状态不允许</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-17" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>删除异常：未找到该到款单</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>关联的到款引入单不存在</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-18" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>到款认领异常，未指定到款单id</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>未传入认领单ID</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-19" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>查询到款认领单数据为空</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>认领单不存在</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-20" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>查询项目列表异常，未指定客户id</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>未传入客户ID</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-21" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>查询项目列表异常，未指定交易公司id</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>未传入交易公司ID</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-22" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>查询项目列表异常，未指定收款公司id</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>未传入收款公司ID</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-23" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>查询合同列表异常，未指定项目id</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>未传入项目ID</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-24" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>查询可认领明细异常，未指定项目id</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>未传入项目ID</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-25" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>项目到款引入数据异常</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>到款引入单不存在</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-26" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>项目合同相关信息异常</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>该项目下无审批通过的合同</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-27" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>撤销明细中，含有已经报销的认领明细，且撤销后可结算工程服务费小于零，不允许撤销：报销单号-X</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>撤销后可结算工程服务费&lt;0，需减少撤销明细</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-28" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>明细中以下认领明细已被撤销，请剔除后再重新提交撤销：【认领单号：X，出库单号：Y，产品编码：Z】</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>撤销明细中包含已被撤销的行，需剔除</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+</KbCard>
+<KbCard title="常见问题">
+<div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">认领提交后ERP核销推送失败</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>ERP接口不可用或推送数据异常，可通过以下SQL查看认领数据<br>
+      <strong style="color:#7C3AED;">处理：</strong>1.检查ERP接口状态；2.检查推送数据是否完整；3.修复后重新提交
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">认领金额与到款单可认领金额不一致</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>并发认领导致可认领金额被其他认领单占用，真实到款单以ERP实时数据为准<br>
+      <strong style="color:#7C3AED;">处理：</strong>1.刷新页面重新获取最新可认领金额；2.减少本次认领金额；3.真实到款单会自动查ERP最新数据
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">可认领项目/合同/明细查询为空</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>差异单未审批通过、未记账、推送未成功、合同金额已全部认领等<br>
+      <strong style="color:#7C3AED;">处理：</strong>1.检查差异单是否审批通过；2.检查出库确认是否已记账；3.检查合同是否还有剩余可认领金额
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">撤销后可结算工程服务费小于0</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>撤销的工程服务费过大，导致已兑现的工程服务费无法覆盖<br>
+      <strong style="color:#7C3AED;">处理：</strong>减少撤销明细中工程服务费金额，确保撤销后可结算金额≥0
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q5</span>
+      <span style="font-size:15px;">删除认领单失败</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>仅NEW和INTERRUPT状态的认领单可删除<br>
+      <strong style="color:#7C3AED;">处理：</strong>确认认领单状态为新建或驳回后再删除；若已审批通过需走撤销流程
+    </div>
+  </div>
+</div>
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="changelog" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="更新记录">
+
+| 日期 | 提交ID | 提交人 | 提交内容 |
+|------|-------|-------|---------|
+| 2026-07-31 | - | - | 初始生成知识库文档 |
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="history" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="历史排查记录">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
+</div>
+</div>
 </div>

@@ -126,6 +126,8 @@
                       <svg v-if="sub.label === '客户金税发票号码查询'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
                       <svg v-if="sub.label === '样品及长库龄折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/><path d="M4 4l6 6"/></svg>
                       <svg v-if="sub.label === '工程折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 12h8"/><circle cx="12" cy="8" r="2"/><path d="M8 16l4-4 4 4"/></svg>
+                      <svg v-if="sub.label === '工程核销发票上传'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+                      <svg v-if="sub.label === '工程真实性核销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                       <svg v-if="sub.label === '装修等级'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
                       <span>{{ sub.label }}</span>
                     </div>
@@ -265,6 +267,8 @@ const secondaryNav = {
         { label: '项目到款认领', link: '/工程管理/项目往来/项目到款认领/', icon: 'fa-solid fa-hand-pointer' },
         { label: '项目到款认领撤销', link: '/工程管理/项目往来/项目到款认领撤销/', icon: 'fa-solid fa-rotate-left' },
         { label: '工程折扣政策', link: '/工程管理/项目往来/工程折扣政策/', icon: 'fa-solid fa-gavel' },
+        { label: '工程核销发票上传', link: '/工程管理/项目往来/工程核销发票上传/', icon: 'fa-solid fa-file-invoice' },
+        { label: '工程真实性核销', link: '/工程管理/项目往来/工程真实性核销/', icon: 'fa-solid fa-shield-halved' },
       ]
     }
   ],
