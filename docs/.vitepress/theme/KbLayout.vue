@@ -93,6 +93,11 @@
                       <svg v-if="sub.label === '工程要货订单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                       <svg v-if="sub.label === '工程折扣政策申请'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg>
                       <svg v-if="sub.label === '工程折扣政策失效'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/></svg>
+                      <svg v-if="sub.label === '折扣单报表'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+                      <svg v-if="sub.label === '工程合同产品变更'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+                      <svg v-if="sub.label === '工程取消核销与发票作废'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="9.5" y1="14.5" x2="14.5" y2="19.5"/><line x1="14.5" y1="14.5" x2="9.5" y2="19.5"/></svg>
+                      <svg v-if="sub.label === '工程折扣延期'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+                      <svg v-if="sub.label === '紧急要货插单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                       <svg v-if="sub.label === '报备生失效申请'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="9.5" y1="14.5" x2="14.5" y2="19.5"/><line x1="14.5" y1="14.5" x2="9.5" y2="19.5"/></svg>
                       <svg v-if="sub.label === '报备解冻申请'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.5" y1="4.5" x2="19.5" y2="19.5"/><line x1="19.5" y1="4.5" x2="4.5" y2="19.5"/></svg>
                       <svg v-if="sub.label === '工程项目结案'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -212,6 +217,11 @@ const secondaryNav = {
         { label: '工程要货订单', link: '/工程管理/项目交付/工程要货订单/', icon: 'fa-solid fa-box-urgent' },
         { label: '工程折扣政策申请', link: '/工程管理/项目交付/工程折扣政策申请/', icon: 'fa-solid fa-percent' },
         { label: '工程折扣政策失效', link: '/工程管理/项目交付/工程折扣政策失效/', icon: 'fa-solid fa-ban' },
+        { label: '折扣单报表', link: '/工程管理/项目交付/折扣单报表/', icon: 'fa-solid fa-table' },
+        { label: '工程合同产品变更', link: '/工程管理/项目交付/工程合同产品变更/', icon: 'fa-solid fa-retweet' },
+        { label: '工程取消核销与发票作废', link: '/工程管理/项目交付/工程取消核销与发票作废/', icon: 'fa-solid fa-file-xmark' },
+        { label: '工程折扣延期', link: '/工程管理/项目交付/工程折扣延期/', icon: 'fa-solid fa-clock' },
+        { label: '紧急要货插单', link: '/工程管理/项目交付/紧急要货插单/', icon: 'fa-solid fa-bolt' },
         { label: '订单紧急要货', link: '/工程管理/项目交付/订单紧急要货/', icon: 'fa-solid fa-truck-bolt' },
       ]
     },
