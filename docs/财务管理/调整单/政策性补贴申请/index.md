@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="2" title="政策性补贴申请" desc="财务管理-调整单业务说明" />
+<KbHero num="2" title="政策性补贴申请" desc="工程管理-调整单业务说明" />
 
 <KbCard title="业务介绍">
 

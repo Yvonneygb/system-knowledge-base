@@ -122,6 +122,8 @@
                       <svg v-if="sub.label === '广告费调整申请单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg>
                       <svg v-if="sub.label === '政策性补贴申请'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>
                       <svg v-if="sub.label === '销售提价兑现'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      <svg v-if="sub.label === '经销商余额明细查询'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h7"/><path d="M16 16h6"/><path d="M19 13v6"/><circle cx="12" cy="12" r="2"/></svg>
+                      <svg v-if="sub.label === '客户金税发票号码查询'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
                       <svg v-if="sub.label === '样品及长库龄折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/><path d="M4 4l6 6"/></svg>
                       <svg v-if="sub.label === '工程折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 12h8"/><circle cx="12" cy="8" r="2"/><path d="M8 16l4-4 4 4"/></svg>
                       <svg v-if="sub.label === '装修等级'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
@@ -302,6 +304,14 @@ const secondaryNav = {
         { label: '政策性补贴申请', link: '/财务管理/调整单/政策性补贴申请/', icon: 'fa-solid fa-award' },
         { label: '销售提价兑现', link: '/财务管理/调整单/销售提价兑现/', icon: 'fa-solid fa-check-circle' },
       ]
+    },
+    {
+      label: '对账单',
+      icon: 'fa-solid fa-file-invoice',
+      items: [
+        { label: '经销商余额明细查询', link: '/财务管理/对账单/经销商余额明细查询/', icon: 'fa-solid fa-wallet' },
+        { label: '客户金税发票号码查询', link: '/财务管理/对账单/客户金税发票号码查询/', icon: 'fa-solid fa-receipt' },
+      ]
     }
   ]
 }
@@ -351,6 +361,7 @@ function resolveGroup(path) {
   if (path.includes('/工程管理/项目商机/')) return '项目商机'
   if (path.includes('/门店管理/')) return '样品及长库龄管理'
   if (path.includes('/财务管理/调整单/')) return '调整单'
+  if (path.includes('/财务管理/对账单/')) return '对账单'
   if (path.includes('/财务管理/')) return '预提与冲销'
   if (path.includes('/开发管理/')) return '值集配置'
   return null
