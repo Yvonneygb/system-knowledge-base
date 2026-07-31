@@ -1,559 +1,563 @@
----
----
-
 <BreadcrumbTabs />
 
-<div id="logic">
+<div id="biz-intro" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbHero num="3" title="工程服务费报销" desc="工程管理-服务费业务说明" />
 
-<div class="kb-module">
+<KbCard title="业务介绍">
 
-### 数据模型
+<!-- 空白:待补充 -->
 
-**核心表结构**：
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="biz-flow" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="业务流程图">
 
 ```text
-FIN_SVC_EXP_ACC_HEAD (服务费报销表头)
+工程项目 + 经销商 + 出库单/退库单
   │
-  ├──< FIN_SVC_EXP_ACC_LINE (服务费报销出库单明细, 关联签收差异处理行)
-  │       │
-  │       └── 虚拟调账行(source_type=virtual, 正数/负数行互关联)
+  ▼
+新建工程服务费报销单 → 选择项目/经销商 → 自动带出项目信息
   │
-  └──< FIN_SVC_EXP_INV_REF (报销与发票关联关系)
-         │
-         └──< FIN_INVOICE (发票表, 复用已有表)
-
-关联外部表:
-  DRP_DIFFPROCBILL_LINE ←── FIN_SVC_EXP_ACC_LINE.DIFFBILL_LINE_ID
-  DRP_DIFFPROCBILL_HEADER ←── 签收差异处理头
-  EPM_PAYMENT_ALLOT_DETAIL ←── 认领出库单明细
+  ▼
+查询合同发货明细(出库单/退库单) → 选择明细行 → 自动计算逾期天数和扣分率
+  │
+  ▼
+填写报销金额/税率/发票信息 → OCR识别发票 → 保存
+  │
+  ▼
+提交 → 启动H0工作流(FIN_SVC_EXP_ACC) → 审批
+  │
+  ▼
+审批通过 → 推送财务共享(FSCC)
+  │
+  ├─ FSC&CC审批通过 → 更新状态为已核销
+  └─ F&CC审批拒绝 → 更新状态为拒绝
 ```
 
-#### 报销表头字段（FIN_SVC_EXP_ACC_HEAD）
+</KbCard>
 
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| svcExpAccId | SVC_EXP_ACC_ID | Long | 主键id | 自增生成 |
-| svcExpAccNo | SVC_EXP_ACC_NO | String | 报销单号 | 前缀+yyMMdd+编码规则序列(CodeRule: SVC_EXP_ACC_NO) |
-| organizationId | ORGANIZATION_ID | Long | 组织id(事业部id) | 取当前用户附加信息DEPT |
-| stat | STAT | Long | 单据状态 | 新建=1 |
-| auditStat | AUDIT_STAT | String | 审核状态 | 新建时="新建" |
-| billType | BILL_TYPE | String | 单据状态 | 新建时="未核销" |
-| billingUnitId | BILLING_UNIT_ID | Long | 开票单位id(法人客户id) | 前端传入 |
-| projectId | PROJECT_ID | Long | 工程项目id | 前端传入 |
-| customerId | CUSTOMER_ID | Long | 经销商id | 前端传入 |
-| tradingCompanyId | TRADING_COMPANY_ID | Long | 交易公司id | 根据customerId+billingUnitId自动查询 |
-| vendorId | VENDOR_ID | Long | 供应商id | 前端传入 |
-| bankName | BANK_NAME | String | 开户银行 | 前端传入 |
-| bankAccount | BANK_ACCOUNT | String | 银行账号 | 前端传入 |
-| wfid | WFID | Long | 流程id | 默认0 |
-| wfflag | WFFLAG | Long | 流程状态 | 默认0 |
-| hzInstanceId | HZ_INSTANCE_ID | Long | 流程实例id | 流程启动后回写 |
-| hzApproveStatus | HZ_APPROVE_STATUS | String | 流程实例状态 | NEW/RUN/APPROVED/RETURN等 |
-| accruedDemeritRate | ACCRUED_DEMERIT_RATE | BigDecimal | 应计扣分率 | = max(行.总扣分率) |
-| adjustDemeritRate | ADJUST_DEMERIT_RATE | BigDecimal | 调整扣分率 | 默认=应计扣分率，审批节点可修改 |
-| actualReimbRate | ACTUAL_REIMB_RATE | BigDecimal | 实际报销比例 | = (1-调整扣分率) × (1+税率) / 1.09 |
-| writeOffAmt | WRITE_OFF_AMT | BigDecimal | 核销金额 | = Σ行.serviceChargeAmt |
-| totalUncashAmt | TOTAL_UNCASH_AMT | BigDecimal | 本次报销金额 | = 实际报销比例 × 核销金额 |
-| actualBxAmt | ACTUAL_BX_AMT | BigDecimal | 实际报销金额 | 无发票=本次报销金额; 有发票=min(|本次报销金额|, 发票金额合计) |
-| totalCashAmt | TOTAL_CASH_AMT | BigDecimal | 已兑现金额 | 计算字段 |
-| exchangeFlag | EXCHANGE_FLAG | Long | 兑现标识 | 来源于词汇值 |
-| cashingWay | CASHING_WAY | Long | 兑现方式 | 1=转货款, 其他=银行转账 |
-| taxRate | TAX_RATE | BigDecimal | 税率 | 前端传入/发票税率 |
-| invoiceType | INVOICE_TYPE | Long | 发票类型 | 前端传入 |
-| offlineReimbursement | OFFLINE_REIMBURSEMENT | String | 线下已报销 | Y/N |
-| writeOffAmount | WRITE_OFF_AMOUNT | BigDecimal | 冲销金额 | 前端传入，保留2位小数 |
-| ledgerDate | LEDGER_DATE | LocalDate | 总账日期 | 前端传入 |
-| checker | CHECKER | String | 审核人 | 审批通过时=当前用户ID |
-| checkTime | CHECK_TIME | Date | 审核时间 | 审批通过时=当前时间 |
-| errorCollection | ERROR_COLLECTION | String | 错误信息 | 推送共享失败时记录 |
-| callbackSource | CALLBACK_SOURCE | String | 外部系统回调结果 | 外部回调写入 |
+<KbCard num="2" title="上游依赖">
 
-#### 出库单明细字段（FIN_SVC_EXP_ACC_LINE）
+| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
+|---------|---------|---------|------------|
+| 工程项目 | 数据依赖 | 报销单关联工程项目，带出项目信息 | 项目已创建 |
+| 经销商 | 数据依赖 | 报销单关联经销商 | 经销商已存在 |
+| 出库单/退库单 | 数据依赖 | 报销明细来源于合同发货明细(出库D/退库R) | 出库单/退库单已签收 |
+| H0工作流引擎 | 配置依赖 | 提交审批使用H0工作流(FIN_SVC_EXP_ACC) | 工作流已配置 |
+| 财务共享(FSCC) | 配置依赖 | 审批通过后推送FSCC进行共享审批 | FSCC接口已配置 |
+| OCR服务 | 配置依赖 | 发票OCR识别 | OCR服务可用 |
 
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| svcExpAccLineId | SVC_EXP_ACC_LINE_ID | Long | 主键id | 自增生成 |
-| svcExpAccId | SVC_EXP_ACC_ID | Long | 报销id | 关联HEAD主键 |
-| lineNumber | LINE_NUMBER | Long | 来源行id | 签收行line_number |
-| sourceType | SOURCE_TYPE | String | 来源类型 | return=退库单, inv_out=出库单, inv_out_map=历史签收, virtual=虚拟调账 |
-| serviceChargeAmt | SERVICE_CHARGE_AMT | BigDecimal | 服务费 | = 合同金额 - 实际结算金额 |
-| reimbOverDay | REIMB_OVER_DAY | Long | 逾期报销天数 | 计算值，默认0 |
-| reimbOverDeductRate | REIMB_OVER_DEDUCT_RATE | BigDecimal | 逾期报销扣费率(%) | = 报销逾期率 × 逾期天数，上限100% |
-| signOverDay | SIGN_OVER_DAY | Long | 逾期签收天数 | 计算值，默认0 |
-| signOverDeductRate | SIGN_OVER_DEDUCT_RATE | BigDecimal | 逾期签收扣费率(%) | = 签收逾期率 × 逾期天数，上限100% |
-| actualServiceAmt | ACTUAL_SERVICE_AMT | BigDecimal | 实际服务费含税金额 | = (1-总扣分率) × serviceChargeAmt × (1+税率) / 1.09 |
-| serviceAmtNotax | SERVICE_AMT_NOTAX | BigDecimal | 实际服务费未税金额 | = (1-总扣分率) × serviceChargeAmt / 1.09 |
-| taxAmt | TAX_AMT | BigDecimal | 税金 | 默认0 |
-| diffbillLineId | DIFFBILL_LINE_ID | Long | 签收行id | 关联DRP_DIFFPROCBILL_LINE |
-| projectId | PROJECT_ID | Long | 项目id | 通过项目找虚拟行时用 |
-| virtualAvailableFlag | VIRTUAL_AVAILABLE_FLAG | String | 正数虚拟调账行可用标识 | Y=可用, N=不可用 |
-| virtualSourceLineId | VIRTUAL_SOURCE_LINE_ID | Long | 对应负数虚拟调账行id | — |
+</KbCard>
 
-> **initVirtual()方法**：虚拟调账行初始化，reimbOverDay=0, signOverDay=0, taxAmt=0, actualSignDeductDay=0, actualReimbDeductDay=0, diffbillLineId=0, virtualSourceLineId=0, actualServiceAmt=serviceChargeAmt, serviceAmtNotax=serviceChargeAmt/1.09
+<KbCard num="3" title="下游影响">
+<div class="ds-impact">
 
-#### 报销与发票关联字段（FIN_SVC_EXP_INV_REF）
-
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| svcExpInvRefId | SVC_EXP_INV_REF_ID | Long | 主键id | 自增生成 |
-| svcExpAccId | SVC_EXP_ACC_ID | Long | 报销id | 关联HEAD主键 |
-| finInvoiceId | FIN_INVOICE_ID | Long | 发票id | 关联FIN_INVOICE主键 |
+| 下游系统/模块 | 影响内容 | 说明 |
+|---|---|---|
+| 财务共享(FSCC) | 推送FSCC共享审批 | 审批通过后推送报销数据到FSCC，FSCC进行共享审批和账务处理 |
+| 服务费预提/冲销 | 核销金额影响预提冲销 | 报销单的核销金额会影响服务费的预提和冲销计算 |
 
 </div>
-
-<div class="kb-module-alt">
-
-### 可选出库单/退库单逻辑
-
-**出库单明细接口**：`GET /v1/{organizationId}/fin-svc-exp-acc-heads/get-inv-lines`
-
-**过滤条件**：
-
-| 条件 | 说明 |
-|------|------|
-| 匹配 organizationId+customerId+billingUnitId+projectId | 项目+经销商+法人限定 |
-| 匹配 tradingCompanyCode | 交易公司限定 |
-| 未被其他报销单关联 | 出库明细不能已被其他报销单使用 |
-
-**退库单明细接口**：`GET /v1/{organizationId}/fin-svc-exp-acc-heads/get-other-info`（doGetOtherInfo方法）
-
-**过滤条件**：organizationId+customerId+billingUnitId+projectId限定，未被其他报销单关联
-
-> **虚拟调账行**：source_type='virtual'，正数行(serviceChargeAmt>0)为可核销行，负数行(serviceChargeAmt<0)为调整行。正数行update，负数行insert+initVirtual()
-
+</KbCard>
+</div>
+</div>
 </div>
 
-<div class="kb-module">
+<div id="key-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="重点逻辑1：双轨审批（H0工作流+FSCC共享审批） 【双轨审批】">
+<KbQuote>工程服务费报销需要经过DMS内部审批和财务共享审批两道流程</KbQuote>
 
-### 逾期天数与扣分率计算
+**具体逻辑**：
 
-**逾期参数来源**：
+- 1、提交时启动H0工作流(FIN_SVC_EXP_ACC)，DMS内部审批
+- 2、H0审批通过后，推送报销数据到财务共享系统(FSCC)
+</KbCard>
 
-| 参数 | 说明 |
-|------|------|
-| SIGN_OVER_DEDUCT_RATE | 签收逾期扣费率 |
-| BX_OVER_DEDUCT_RATE | 报销逾期扣费率 |
-| BX_OVER_LIMIT_DAY | 报销超期免扣天数 |
-| SIGN_OVER_LIMIT_DAY | 签收超期免扣天数 |
-| SC_REIMB_CUTTING_LINE | 签收/报销不计扣分时间切割线 |
-| SC_REIMB_INVBILL_CUTTING_LINE | 出库日期不计扣分时间线 |
+<KbCard num="2" title="重点逻辑2：逾期天数和扣分率自动计算 【自动计算】">
+<KbQuote>根据出库日期和签收日期自动计算逾期天数，结合扣分率配置计算扣费</KbQuote>
 
-**逾期签收天数计算**：
-- 签收时间 < 切割线 或 来源=退库 → 0
-- 出库日期 < 2023-06-01 → 0
-- 否则 = 签收时间 - 出库时间 - 签收超期免扣天数，最小0
+**具体逻辑**：
 
-**逾期报销天数计算**：
-- 当前时间 < 切割线 或 来源=退库 → 0
-- 出库日期 < 2023-06-01 → 0
-- 否则 = 当前时间 - 签收时间 - 报销超期免扣天数，最小0
+</KbCard>
 
-**扣分率计算**：
-- 签收逾期率 = 签收逾期率 × 签收逾期天数，上限100%
-- 报销逾期率 = 报销逾期率 × 报销逾期天数，上限100%
-- **总扣分率 = 签收逾期率 + 报销逾期率，上限100%**
+<KbCard num="3" title="重点逻辑3：报销明细来源类型多样 【多来源】">
+<KbQuote>报销明细可来源于出库单、退库单、历史签收或虚拟调账</KbQuote>
 
-</div>
+**具体逻辑**：
 
-<div class="kb-module-alt">
-
-### 保存与提交
-
-**保存接口**：`POST /v1/{organizationId}/fin-svc-exp-acc-heads/insert`
-
-**新增逻辑**：
-1. 在途校验 → 冲销金额处理 → 基础数据初始化(stat=1, auditStat="新建", billType="未核销")
-2. 转货款校验账户(cashingWay==1) → 生成单号(SVC_EXP_ACC_NO) → 计算金额(calHeadAmt)
-3. 插入表头(hzApproveStatus="NEW") → 插入明细行(doInsertLine) → 保存附件
-
-**更新逻辑**：`POST /v1/{organizationId}/fin-svc-exp-acc-heads/update`
-- 先删后增：删除发票明细 → 处理虚拟调账行 → 删除关联关系和明细行 → 重新插入
-
-#### 金额计算逻辑（calHeadAmt）
-
-| 计算项 | 公式 |
-|--------|------|
-| 应计扣分率 | max(行.总扣分率) |
-| 调整扣分率 | 默认=应计扣分率，审批节点可修改 |
-| 实际报销比例 | (1-调整扣分率) × (1+税率) / 1.09 |
-| 核销金额 | Σ行.serviceChargeAmt |
-| 本次报销金额 | 实际报销比例 × 核销金额 |
-| 实际报销金额 | 无发票=本次报销金额; 有发票=min(|本次报销金额|, 发票金额合计) |
-| 行未税金额 | (1-最大扣分率) × serviceChargeAmt / 1.09 |
-| 行含税金额 | (1-最大扣分率) × serviceChargeAmt × (1+税率) / 1.09 |
-
-**税金计算**：
-- 有发票时：applyTaxAmount = 发票税金总和
-- 无发票时：applyTaxAmount = 本次报销金额 × 税率 / (1+税率)
-
-#### 提交逻辑（wfProcSubmit）
-
-1. 校验出库明细及退库明细(validCheck)
-2. 组装流程参数(svcExpAccId, offlineFlag, area)
-3. 调用workflowClient.startInstanceByFlowKey()启动流程
-4. 更新hzInstanceId和hzApproveStatus="RUN"
+- 1、sourceType=inv_out(出库单)：正常出库签收的服务费报销
+- 2、sourceType=return(退库单)：退库产生的服务费报销
+- 3、sourceType=inv_out_map(历史签收)：历史签收数据
+- 4、sourceType=virtual(虚拟调账)：用于调账的虚拟行，正4initVirtual方法初始化默认值
+</KbCard>
 
 </div>
+</div>
+</div>
 
-<div class="kb-module">
+<div id="detail-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="界面模块1：工程服务费报销页面（hlod低代码页面）">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>报销单号</td>
+<td>文本框</td>
+<td>报销单编号</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.SVC_EXP_ACC_NO</td>
+</tr>
+<tr>
+<td>工程项目</td>
+<td>弹窗选择</td>
+<td>工程项目</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.PROJECT_ID</td>
+</tr>
+<tr>
+<td>经销商</td>
+<td>弹窗选择</td>
+<td>经销商</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.CUSTOMER_ID</td>
+</tr>
+<tr>
+<td>交易公司</td>
+<td>下拉选择框</td>
+<td>交易公司</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.TRADING_COMPANY_ID</td>
+</tr>
+<tr>
+<td>开票单位</td>
+<td>下拉选择框</td>
+<td>开票单位</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.BILLING_UNIT_ID</td>
+</tr>
+<tr>
+<td>供应商</td>
+<td>弹窗选择</td>
+<td>供应商</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.VENDOR_ID</td>
+</tr>
+<tr>
+<td>开户银行</td>
+<td>文本框</td>
+<td>开户银行</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.BANK_NAME</td>
+</tr>
+<tr>
+<td>银行账号</td>
+<td>文本框</td>
+<td>银行账号</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.BANK_ACCOUNT</td>
+</tr>
+<tr>
+<td>本次报销金额</td>
+<td>数值框</td>
+<td>本次报销金额</td>
+<td>常显</td>
+<td></td>
+<td>正数</td>
+<td>FIN_SVC_EXP_ACC_HEAD.TOTAL_UNCASH_AMT</td>
+</tr>
+<tr>
+<td>实际报销金额</td>
+<td>数值框</td>
+<td>实际报销金额</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.ACTUAL_BX_AMT</td>
+</tr>
+<tr>
+<td>税率</td>
+<td>数值框</td>
+<td>税率</td>
+<td>常显</td>
+<td></td>
+<td>0~1</td>
+<td>FIN_SVC_EXP_ACC_HEAD.TAX_RATE</td>
+</tr>
+<tr>
+<td>发票类型</td>
+<td>下拉选择框</td>
+<td>发票类型</td>
+<td>常)显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.INVOICE_TYPE</td>
+</tr>
+<tr>
+<td>应计扣分率</td>
+<td>数值框</td>
+<td>应计扣分率</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.ACCRUED_DEMERIT_RATE</td>
+</tr>
+<tr>
+<td>调整扣分率</td>
+<td>数值框</td>
+<td>调整扣分率</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>@FIN_SVC_EXP_ACC_HEAD.ADJUST_DE/DEMERIT_RATE</td>
+</tr>
+<tr>
+<td>实际报销比例</td>
+<td>数值框</td>
+<td>实际报销比例</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.ACTUAL_REIMB_RATE</td>
+</tr>
+<tr>
+<td>总账日期</td>
+<td>日期选择器</td>
+<td>总账日期</td>
+<td>常显</td>
+<td></td>
+<td>日期</td>
+<td>FIN_SVC_EXP_ACC_HEAD.LEDGER_DATE</td>
+</tr>
+<tr>
+<td>单据状态</td>
+<td>文本框</td>
+<td>单据状态</td>
+<td>常显</td>
+<td></td>
+<td>0=新建，1=制单，5=审核通过</td>
+<td>FIN_SVC_EXP_ACC_HEAD.STAT</td>
+</tr>
+<tr>
+<td>审批状态</td>
+<td>文本框</td>
+<td>H0审批状态</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.HZ_APPROVE_STATUS</td>
+</tr>
+<tr>
+<td>备注</td>
+<td>文本域</td>
+<td>备注</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>FIN_SVC_EXP_ACC_HEAD.REMARK</td>
+</tr>
+</tbody></table></div>
+</KbCard>
 
-### 状态流转
+<KbCard title="选择弹窗">
+<KbSubTitle>弹窗1：工程项目选择弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| organizationId | 组织ID | 租户组织ID | 1 |
+
+**数据范围**
+
+```sql
+工程项目表中当前组织下的有效项目
+```
+
+<KbSubTitle>弹窗2：合同发货明细弹窗 <KbBadge type="purple">多选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| projectId | 项目ID | 工程项目ID | 100 |
+| customerId | 经销商ID | 经销商ID | 200 |
+
+**数据范围**
+
+```sql
+该项目下已签收的出库单/退库单明细
+```
+
+</KbCard>
+<KbCard title="导入">
+</KbCard>
+<KbCard title="其他按钮">
+
+| 按钮名称 | 按钮作用 | 所在位置 | 显隐条件/可点击条件 | 影响 |
+|---------|---------|---------|-------------------|------|
+| 保存 | 保存报销单 | 详情页 | 单据状态=制单(1)或新建 | 调用POST /v1/{organizationId}/fin-svc-exp-acc-heads/insert保存 |
+| 修改 | 修改报销单 | 详情页 | 单据状态=制单(1) | 调用POST /v1/{organizationId}/fin-svc-exp-acc-heads/update修改 |
+| 删除 | 删除报销单 | 详情页 | 单据状态=制单(1) | 调用GET /vB/{organizationId}/fin-svc-exp-acc-heads/delete/{svcExpAccId}删除 |
+| 提交 | 提交审批 | 详情页 | 单据状态=制单(1) | 启动H0工作流FIN_SVC_EXP_ACC |
+| OCR发票 | OCR识别发票 | 详情页 | 常显 | 调用OCR服务识别发票信息 |
+
+</KbCard>
+<KbCard title="保存校验">
+<KbSubTitle>校验1：本次报销金额必输 —— 确保报销金额不为空</KbSubTitle>
+
+- 第1点：TOTAL_UNCASH_AMT字段标注@NotNull，框架自动校验
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT total_uncash_amt FROM fin_svc_exp_acc_head WHERE svc_exp_acc_id = :svcExpAccId
+```
+
+</KbCard>
+<KbCard title="提交校验">
+<KbSubTitle>校验1：报销单必须存在 —— 确保数据完整性</KbSubTitle>
+
+- 第1点：根据svcExpAccId查询FIN_SVC_EXP_ACC_HEAD记录，若不存在则阻断
+
+<KbTip>.阻断性报错</KbTip>
+
+```sql
+SELECT * FROM fin_svc_exp_acc_head WHERE svc_exp_acc_id = :svcExpAccId
+```
+
+</KbCard>
+<KbCard title="状态机">
+### 状态机
+
+<KbSubTitle>状态机流转图</KbSubTitle>
+
 
 ```text
-新建 ──提交──> 已提交(RUN) ──审批通过──> 审批通过(APPROVED)
-                  │                        
-                  └──审批驳回──> 驳回(RETURN)
-
-新建 ──删除──> 物理删除所有数据
-审批通过 ──推送共享──> 共享系统(FSSC)
+新建(0) → 制单(1) → 已提交(-1) → 审核通过(5)
+                ↑                ↓
+                └──── 可删除 ←───┘(审批拒绝后)
+                                      ↓
+                              推送2FSCC → FSCC审批通过(已核销) / FSCC拒绝
 ```
 
-| auditStat | hzApproveStatus | 含义 |
-|-----------|-----------------|------|
-| 新建 | NEW | 刚创建，未提交 |
-| 已提交 | RUN | 审批流程运行中 |
-| 审批通过 | APPROVED | 审批已通过，推送共享 |
-| 驳回 | RETURN | 审批驳回 |
+<KbSubTitle>状态机列表</KbSubTitle>
 
-#### 审批通过回调（onWfComplete）
 
-1. 设置checker=当前用户ID, checkTime=当前时间
-2. 设置hzApproveStatus="APPROVED"
-3. 线下报销且有负数虚拟调账行 → 插入正数虚拟调整行(serviceChargeAmt取反, svcExpAccId=0)
+| 状态机名称 | 状态释义 | 可执行的操作 |
+|-----------|---------|------------|
+| 0 | 新建 | 保存 |
+| 1 | 制单 | 保存、修改、删除、提交 |
+| -1 | 已提交 | 等待审批 |
+| 5 | 审核通过 | 不可编辑、不可删除，已推送FSCC |
 
-#### 审批驳回回调（onWfBreak）
+---
 
-1. code=RUN时执行volidate校验
-2. 更新hzApproveStatus=code
+</KbCard>
+<KbCard num="1" title="表1：FIN_SVC_EXP_ACC_HEAD（工程服务费报销头表）">
 
-#### 流程节点动作（eventExecute）
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| SVC_EXP_ACC_ID | NUMBER | 主键ID | - | 自增生成 |
+| SVC_EXP_ACC_NO | VARCHAR | 报销单号 | 报销单号 | 编码规则AE.FIN_SVC_EXP_ACC生成 |
+| ORGANIZATION_ID | NUMBER | 组织ID | - | 必输 |
+| PROJECT_ID | NUMBER | 工程项目ID | 工程项目 | 用户选择 |
+| CUSTOMER_ID | NUMBER | 经销商ID | 经销商 | 用户选择 |
+| TRADING_COMPANY_ID | NUMBER | 交易公司ID | 交易公司 | 必输，由项目带入 |
+| BILLING_UNIT_ID | NUMBER | 开票单位ID | 开票单位 | 由项目带入 |
+| V9ENDOR_ID | NUMBER | 供应商ID | 供应商 | 用户选择 |
+| BANK_NAME | VARCHAR | 开户银行 | 开户银行 | 由供应商带入 |
+| BANK_ACCOUNT | VARCHAR | 银行账号 | 银行账号 | 由供应商带入 |
+| TOTAL_UNCASH_AMT | NUMBER | 本次报销金额 | 本次报销金额 | 必输，行项汇总 |
+| TOTAL_CASH_AMT | NUMBER | 已兑现金额 | - | 累计兑现金额 |
+| ACTUAL_BX_AMT | NUMBER | 实际报销金额 | 实际报销金额 | 审批后赋值 |
+| TAX_RATE | NUMBER | 税率 | 税率 | 用户输入 |
+| INVOICE_TYPE | NUMBER | 发票类型 | 发票类型 | 用户选择 |
+| ACCRUED_DEMERIT_RATE | NUMBER? | 应计扣分率 | 应计扣分率 | 自动计算 |
+| ADJUST_DEMERIT_RATE | NUMBER | 调整扣分率 | 调整扣分率 | 用户输入 |
+| ACTUAL_REIMB_RATE | NUMBER | 实际报销比例 | 实际报销比例 | 自动计算 |
+| LEDGER_DATE | DATE | 总账日期 | 总账日期 | 用户输入 |
+| STAT | NUMBER | 单据状态 | 单据状态 | 0=新建，1=制单，5=审核通过 |
+| HZ_APPROVE_STATUS | VARCHAR | H0审批状态 | 审批状态 | NEW/RUN/APPROVED/REJECTED |
+| HZ_INSTANCE_ID | NUMBER | H0流程实例ID | - | 提交工作流时赋值 |
+| BILL_TYPE | VARCHAR | 单据类型 | - | 已核销/未核销 |
+| WRITE_OFF_AMT | NUMBER | 核销金额 | - | 核销时赋值 |
+| CHECK_TIME | DATE | 审核时间 | - | 审核时赋值 |
+| CHECKER | VARCHAR | 审核人 | - | 审核时赋值 |
+| REMARK | VARCHAR | 备注 | 备注 | 用户输入 |
+| OFFLINE_REIMBURSEMENT | VARCHAR | 线下已报销 | - | Y/N |
+| CALLBACK_SOURCE4SOURCE | VARCHAR | 外部系统回调结果 | - | FSCC回调时赋值 |
+| OBJECT_VERSION_NUMBER | NUMBER | 乐观锁版本号 | - | 框架自动维护 |
 
-| action | 执行内容 |
-|--------|---------|
-| approvalCompleted | 推送数据到共享(pushDataToFssc) |
-| uploadFile | 流程节点生成PDF |
+</KbCard>
 
-</div>
+<KbCard num="2" title="表2：FIN_SVC_EXP_ACC_LINE（工程服务费报销明细表）">
 
-<div class="kb-module-alt">
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| SVC_EXP_ACC_LINE_ID | NUMBER | 主键ID | - | 自增生成 |
+| SVC_EXP_ACC_ID | NUMBER | 报销ID | - | 关联头表 |
+|0LINE_NUMBER | NUMBER | 来源行ID | - | 关联出库单/退库单行 |
+| SOURCE_TYPE | VARCHAR | 来源类型 | 来源类型 | inv_out/return/inv_out_map/virtual |
+| SERVICE_CHARGE_AMT | NUMBER | 服务费 | 服务费 | 由出库单带入 |
+| ACTUAL_SERVICE_AMT | NUMBER | 实际服务费含税金额 | 实际服务费含税金额 | =服务费×(1-扣分率) |
+| SERVICE_AMT_NOTAX | NUMBER | 实际服务费未税金额 | 实际服务费未税金额 | =含税/(1+税率) |
+| TAX_AMT | NUMBER | 税金 | 税金 | =含税-未税 |
+| REIMB_OVER_DAY | NUMBER | 逾期报销天数 | 逾期报销天数 | 自动计算 |
+| REIMB_OVER_DEDUCT_RATE | NUMBER | 逾期报销扣费率(%) | 逾期报销扣费率 | 匹配扣分率配置 |
+| SIGN_OVER_DAY | NUMBER | 逾期签收天数 | 逾期签收天数 | 自动计算 |
+| SIGN_OVER_DEDUCT_RATE | NUMBER | 逾期签收扣费率(%) | 逾期签收扣费率 | 匹配扣分率配置 |
+| ACTUAL_REIMB_DEDUCT_DAY | NUMBER | 实际逾期扣除天数 | - | 用户输入或自动计算 |
+| ACTUAL_SIGN_DEDUCT_DAY | NUMBER | 实际报销扣除天数 | - | 用户输入或自动计算 |
+| DIFFBILL_LINE_ID | NUMBER | 签收行ID | - | 关联签收行 |
+| PROJECT_ID | NUMBER | 项目ID | - | 关联项目 |
+| VIRTUAL_AVAILABLE_FLAG | VARCHAR | 虚拟调账行可用标识 | - | Y=可用，N=不可用 |
+| VIRTUAL_SOURCE_LINE_ID | NUMBER | 对应负数虚拟调账行ID | - | 虚拟调账关联 |
+| OBJECT_VERSION_NUMBER | NUMBER | 乐观锁版本号 | - | 框架自动维护 |
 
-### 推送共享逻辑（pushDataToFssc）
+</KbCard>
 
-**推送数据组成**：
+<KbCard num="3" title="表3：FIN_SVC_EXP_INV_REF（服务费报销与发票关联关系表，关联表）">
 
-| 数据类型 | 来源 | 内容 |
-|---------|------|------|
-| 头数据 | queryDataPushFssc SQL | 费用支付单号、摘要、供应商地址、银行信息、经营单位、付款方式、来源单据、兑现标识、法人客户编号、转货款单位 |
-| 系统参数 | 配置值 | 币种、单据类型、支付类型、系统来源、汇率、ERP类型、URL |
-| 审批人信息 | 流程数据 | applyLdapCode, orgLdapCode, positionLdapCode |
-| 金额 | 计算字段 | 申请报销未税金额、批准报销未税金额、付款金额、扣减金额 |
-| 行数据 | queryDataLinePushFssc SQL | 成本中心编码、费用科目编码 |
-| 附件 | 发票+单据 | 发票附件(businessType=01) + 单据附件 |
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| SVC_EXP_INV_REF_ID | NUMBER | 主键 | - | 自增生成 |
+| SVC_EXP_ACC_ID | NUMBER | 报销ID | - | 关联报销头表 |
+| INVOICE_ID | NUMBER | 发票ID | - | 关联发票表 |
 
-> 推送调用：`arrowFsscSdk.pushFinSvcExpAcc()`
+---
 
-</div>
-
-</div>
-
-<div id="faq">
-
-<div class="kb-module">
-
-### Q1: 保存时报错"该项目存在其它在途的报销单" 🔴高频
-
-**现象**：同一项目+经销商+法人下无法创建新的报销单
-
-**根因**：已存在hzApproveStatus为NEW或RUN的报销单
-
-**排查SQL**：
-
-```sql
-SELECT SVC_EXP_ACC_NO, HZ_APPROVE_STATUS, AUDIT_STAT
-FROM FIN_SVC_EXP_ACC_HEAD
-WHERE PROJECT_ID = :projectId
-  AND CUSTOMER_ID = :customerId
-  AND BILLING_UNIT_ID = :billingUnitId
-  AND HZ_APPROVE_STATUS IN ('NEW', 'RUN')
-```
-
-</div>
-
-<div class="kb-module-alt">
-
-### Q2: 提交时报错"实际报销金额必须大于0" 🔴高频
-
-**现象**：销财会计节点校验失败
-
-**根因**：扣分率过高导致实际报销金额≤0
-
-**排查SQL**：
-
-```sql
-SELECT ACCRUED_DEMERIT_RATE, ADJUST_DEMERIT_RATE, ACTUAL_REIMB_RATE,
-       WRITE_OFF_AMT, TOTAL_UNCASH_AMT, ACTUAL_BX_AMT
-FROM FIN_SVC_EXP_ACC_HEAD
-WHERE SVC_EXP_ACC_ID = :accId
--- 确认: 实际报销比例 = (1-调整扣分率) × (1+税率) / 1.09
--- 若调整扣分率接近100%，实际报销金额≈0
-```
+</KbCard>
 
 </div>
-
-<div class="kb-module">
-
-### Q3: 提交时报错"发票必须上传" 🔴高频
-
-**现象**：经销商上传发票节点校验失败
-
-**根因**：非线下报销(OFFLINE_REIMBURSEMENT≠Y)未上传发票
-
-**排查SQL**：
-
-```sql
-SELECT OFFLINE_REIMBURSEMENT FROM FIN_SVC_EXP_ACC_HEAD WHERE SVC_EXP_ACC_ID = :accId
--- Y=线下报销直接通过, 非Y必须上传发票
-SELECT * FROM FIN_SVC_EXP_INV_REF WHERE SVC_EXP_ACC_ID = :accId
--- 检查是否有关联发票
-```
-
+</div>
 </div>
 
-<div class="kb-module-alt">
+<div id="permission" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="权限控制">
 
-### Q4: 提交时报错"发票类型与预开发票类型不一致" 🟡偶发
+<!-- 空白:待补充 -->
 
-**现象**：发票类型校验失败
-
-**根因**：上传的发票类型与报销单预开发票类型(INVOICE_TYPE)不一致
-
-**排查SQL**：
-
-```sql
-SELECT INVOICE_TYPE FROM FIN_SVC_EXP_ACC_HEAD WHERE SVC_EXP_ACC_ID = :accId
-SELECT INVOICE_TYPE FROM FIN_INVOICE WHERE FIN_INVOICE_ID IN (
-  SELECT FIN_INVOICE_ID FROM FIN_SVC_EXP_INV_REF WHERE SVC_EXP_ACC_ID = :accId
-)
--- 对比两者是否一致
-```
-
+</KbCard>
+</div>
+</div>
 </div>
 
-<div class="kb-module">
+<div id="faq" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="报错一览表" :hover="false">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:27%"><col style="width:13%"><col style="width:32%"><col style="width:14%"><col style="width:14%"></colgroup>
+<thead><tr><th>报错信息</th><th>提示节点</th><th>根因与解决方案</th><th>等级</th><th>详细逻辑</th></tr></thead>
+<tbody>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">未找到工程服务费报销记录</td>
+            <td style="font-size:13px;">FSCC回调</td>
+            <td style="font-size:13px;">FSCC回调时根据svcExpAccId未找到对应记录，可能数据已被删除</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
+          </tr>
+</tbody></table></div>
 
-### Q5: 提交时报错"发票税率与预开发票税率不一致" 🟡偶发
-
-**现象**：发票税率校验失败
-
-**根因**：上传的发票税率与报销单预开发票税率(TAX_RATE)不一致
-
-**排查SQL**：
-
-```sql
-SELECT TAX_RATE FROM FIN_SVC_EXP_ACC_HEAD WHERE SVC_EXP_ACC_ID = :accId
-SELECT TAX_RATE FROM FIN_INVOICE WHERE FIN_INVOICE_ID IN (
-  SELECT FIN_INVOICE_ID FROM FIN_SVC_EXP_INV_REF WHERE SVC_EXP_ACC_ID = :accId
-)
--- 对比两者是否一致
-```
-
+<div id="err-detail-1" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>未找到工程服务费报销记录</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>FSCC回调时根据svcExpAccId未找到对应记录，可能数据已被删除</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+</KbCard>
+<KbCard title="常见问题">
+<div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">审批通过后FSCC推送失败</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>FSCC接口不可用或推送数据格式异常<br>
+      <strong style="color:#7C3AED;">处理：</strong>1 解决思路：查看ERROR_COLLECTION字段中的错误信息，确认FSCC服务状态后重新推送
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">逾期扣分率计算不准确</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>- �=原因：扣分率配置表未维护或逾期天数匹配规则有误<br>
+      <strong style="color:#7C3AED;">处理：</strong>检查扣分率配置表(SysConfConstants中配置的时间分割线)，确认逾期天数计算逻辑
+    </div>
+  </div>
+</div>
+</KbCard>
+</div>
+</div>
 </div>
 
-<div class="kb-module-alt">
+<div id="changelog" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="更新记录">
 
-### Q6: 可选出库单明细为空 🟡偶发
-
-| 可能原因 | 检查方式 |
-|---------|---------|
-| 出库明细已被其他报销单使用 | 查FIN_SVC_EXP_ACC_LINE中已有关联 |
-| 项目+经销商+法人+交易公司条件不匹配 | 确认查询参数 |
-| 签收差异处理行不存在 | 查DRP_DIFFPROCBILL_LINE |
-| 认领出库单明细不存在 | 查EPM_PAYMENT_ALLOT_DETAIL |
-
+| 日期 | 提交ID | 提交人 | 提交内容 |
+|------|-------|-------|---------|
+| 2025-10-21 | - | - | 初始创建工程服务费报销功能 |
+</KbCard>
+</div>
+</div>
 </div>
 
-<div class="kb-module">
+<div id="history" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="历史排查记录">
 
-### Q7: 上传发票时报错"上传发票金额合计大于本次报销金额" 🟡偶发
+<!-- 空白:待补充 -->
 
-**现象**：发票金额校验失败
-
-**根因**：发票金额合计 > 本次报销金额(TOTAL_UNCASH_AMT)
-
-**排查**：计算发票含税金额总和，与TOTAL_UNCASH_AMT比较
-
+</KbCard>
 </div>
-
-<div class="kb-module-alt">
-
-### Q8: 推送共享失败 🟡偶发
-
-**现象**：审批通过后推送FSSC失败，errorCollection字段记录错误信息
-
-**排查SQL**：
-
-```sql
-SELECT ERROR_COLLECTION FROM FIN_SVC_EXP_ACC_HEAD
-WHERE SVC_EXP_ACC_ID = :accId
--- 查看推送失败的具体错误信息
-```
-
-| 可能原因 | 检查方式 |
-|---------|---------|
-| FSSC接口异常 | 查errorCollection |
-| 必填字段缺失 | 检查推送数据组装 |
-| 供应商地址/银行信息缺失 | 查VENDOR_SITE_ID, BANK_NAME, BANK_ACCOUNT |
-
 </div>
-
-</div>
-
-<div id="troubleshoot">
-
-<div class="kb-module">
-
-**步骤1：确认报销单基本信息**
-
-```sql
-SELECT SVC_EXP_ACC_ID, SVC_EXP_ACC_NO, STAT, AUDIT_STAT, HZ_APPROVE_STATUS,
-       BILL_TYPE, CASHING_WAY, OFFLINE_REIMBURSEMENT,
-       ACCRUED_DEMERIT_RATE, ADJUST_DEMERIT_RATE, ACTUAL_REIMB_RATE,
-       WRITE_OFF_AMT, TOTAL_UNCASH_AMT, ACTUAL_BX_AMT
-FROM FIN_SVC_EXP_ACC_HEAD
-WHERE SVC_EXP_ACC_NO = ':报销单号';
-```
-
-> 异常判断：查不到→报销单被删除；AUDIT_STAT与HZ_APPROVE_STATUS不一致→数据异常；实际报销金额≤0→扣分率过高
-
-</div>
-
-<div class="kb-module-alt">
-
-**步骤2：查询出库单明细行**
-
-```sql
-SELECT SVC_EXP_ACC_LINE_ID, LINE_NUMBER, SOURCE_TYPE, SERVICE_CHARGE_AMT,
-       REIMB_OVER_DAY, SIGN_OVER_DAY, REIMB_OVER_DEDUCT_RATE, SIGN_OVER_DEDUCT_RATE,
-       ACTUAL_SERVICE_AMT, SERVICE_AMT_NOTAX, DIFFBILL_LINE_ID,
-       VIRTUAL_AVAILABLE_FLAG, VIRTUAL_SOURCE_LINE_ID
-FROM FIN_SVC_EXP_ACC_LINE
-WHERE SVC_EXP_ACC_ID = :svcExpAccId;
-```
-
-> 异常判断：SOURCE_TYPE=virtual行需检查正负行关联；扣分率之和超过100%→数据异常
-
-</div>
-
-<div class="kb-module">
-
-**步骤3：查询发票关联与发票明细**
-
-```sql
-SELECT r.FIN_INVOICE_ID, i.INVOICE_NO, i.INVOICE_TYPE, i.TAX_RATE, i.AMT
-FROM FIN_SVC_EXP_INV_REF r
-JOIN FIN_INVOICE i ON r.FIN_INVOICE_ID = i.FIN_INVOICE_ID
-WHERE r.SVC_EXP_ACC_ID = :svcExpAccId;
-```
-
-> 异常判断：无发票关联→线下报销或未上传发票；发票类型/税率与报销单不一致→校验失败
-
-</div>
-
-<div class="kb-module-alt">
-
-**步骤4：检查逾期扣分率计算**
-
-```sql
-SELECT l.LINE_NUMBER, l.REIMB_OVER_DAY, l.SIGN_OVER_DAY,
-       l.REIMB_OVER_DEDUCT_RATE, l.SIGN_OVER_DEDUCT_RATE,
-       (l.REIMB_OVER_DEDUCT_RATE + l.SIGN_OVER_DEDUCT_RATE) AS TOTAL_DEDUCT_RATE
-FROM FIN_SVC_EXP_ACC_LINE l
-WHERE l.SVC_EXP_ACC_ID = :svcExpAccId
-  AND l.SOURCE_TYPE != 'virtual';
-```
-
-> TOTAL_DEDUCT_RATE > 100% → 数据异常；逾期天数=0但扣分率>0 → 参数配置问题
-
-</div>
-
-<div class="kb-module">
-
-**步骤5：检查推送共享状态**
-
-```sql
-SELECT ERROR_COLLECTION, CALLBACK_SOURCE, INVOICE_PAID_DATE, INVOICE_PAID_AMOUNT,
-       RECEIPT_STATUS
-FROM FIN_SVC_EXP_ACC_HEAD
-WHERE SVC_EXP_ACC_ID = :svcExpAccId;
-```
-
-> ERROR_COLLECTION非空→推送失败；CALLBACK_SOURCE非空→有外部回调；INVOICE_PAID_DATE非空→已收到款
-
-</div>
-
-</div>
-
-<div id="history">
-
-<div class="kb-module">
-
-> 本页面记录真实排查案例，用于频次分析和趋势监控。
-
-| 日期 | 问题简述 | 根因 | 耗时 | 频次标记 |
-|------|---------|------|------|---------|
-| 2026-07-03 | 页面示例创建 | 模板初始化 | — | — |
-
-</div>
-
-<div class="kb-module-alt">
-
-### 按根因分类统计
-
-| 根因分类 | 次数 | 占比 |
-|---------|------|------|
-| 数据异常 | 0 | 0% |
-| 逻辑缺陷 | 0 | 0% |
-| 并发冲突 | 0 | 0% |
-| 配置错误 | 0 | 0% |
-| 推送失败 | 0 | 0% |
-| 其他 | 0 | 0% |
-
-> 暂无数据，积累排查记录后自动更新。
-
-</div>
-
-</div>
-
-<div id="related">
-
-<div class="kb-module">
-
-### 上游依赖
-
-| 模块 | 关联方式 | 说明 |
-|------|---------|------|
-| 项目管理 | 数据依赖 | 报销头关联项目信息(PROJECT_ID) |
-| 经销商管理 | 数据依赖 | 报销头关联经销商信息(CUSTOMER_ID) |
-| 法人/开票单位 | 数据依赖 | 报销头关联法人信息(BILLING_UNIT_ID) |
-| 交易公司 | 数据依赖 | 根据customerId+billingUnitId自动查询TRADING_COMPANY_ID |
-| 签收差异处理 | 数据依赖 | 出库单明细行关联DRP_DIFFPROCBILL_LINE |
-| 认领出库单 | 数据依赖 | 关联EPM_PAYMENT_ALLOT_DETAIL |
-| 发票管理 | 数据依赖 | 复用FIN_INVOICE表，通过FIN_SVC_EXP_INV_REF关联 |
-| 系统参数管理 | 配置依赖 | 逾期扣分率、切割线、免扣天数等参数 |
-
-</div>
-
-<div class="kb-module-alt">
-
-### 下游影响
-
-| 模块 | 关联方式 | 说明 |
-|------|---------|------|
-| 共享系统(FSSC) | 业务触发 | 审批通过后推送共享系统报销数据 |
-| 虚拟调账行 | 数据更新 | 审批通过后处理正数虚拟调整行 |
-| 工作流引擎 | 流程依赖 | 提交审批通过HZERO工作流引擎处理 |
-| 转货款/银行转账 | 业务触发 | 兑现方式决定付款路径 |
-
-</div>
-
 </div>

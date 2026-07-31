@@ -1,412 +1,582 @@
----
----
-
 <BreadcrumbTabs />
 
-<div id="logic">
+<div id="biz-intro" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbHero num="4" title="工程服务费兑现" desc="工程管理-服务费业务说明" />
 
-<div class="kb-module">
+<KbCard title="业务介绍">
 
-### 数据模型
+<!-- 空白:待补充 -->
 
-**核心表结构**：
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="biz-flow" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="业务流程图">
 
 ```text
-EPM_EXPENSE_TO_CASH (服务费兑现主表)
+工程服务费报销单(已审核通过) + 合同回款
   │
-  ├──< EXP_CASH_REIMB_REF (服务费负数兑现与报销关联关系表)
-  │       │
-  │       └── 关联 FIN_SVC_EXP_ACC_HEAD (报销表头)
+  ▼
+新建工程服务费兑现单 → 选择经销商/合同 → 查询可兑现的报销明细
   │
-  └──< EXP_CASH_REIMB_CLAIM_REF (服务费兑现与报销认领关联关系表)
-         │
-         └── 关联 FIN_SVC_EXP_ACC_LINE (报销出库单明细)
-         └── 关联 EPM_PAYMENT_ALLOT_DETAIL (认领出库单明细)
-```
-
-#### 兑现主表字段（EPM_EXPENSE_TO_CASH）
-
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| cashingId | CASHING_ID | Long | 主键 | 自增生成 |
-| cashingNo | CASHING_NO | String | 兑现编号 | CodeRule(EPM_CASHING_NO)生成 |
-| cashType | CASH_TYPE | Long | 兑现类型 | 1=正数兑现, 2=负数兑现, 3=退款兑现 |
-| cashingWay | CASHING_WAY | Long | 兑现方式 | 词汇(epm.cashing_way)，1=转货款 |
-| customerId | CUSTOMER_ID | Long | 经销商ID | 前端传入 |
-| svcExpAccId | SVC_EXP_ACC_ID | Long | 报销id | 关联报销表头 |
-| serviceAmt | SERVICE_AMT | BigDecimal | 服务费金额 | 默认0 |
-| cashableAmtBefore | CASHABLE_AMT_BEFORE | BigDecimal | 兑现前剩余可兑现金额 | 默认0 |
-| cashableAmtAfter | CASHABLE_AMT_AFTER | BigDecimal | 兑现后剩余可兑现金额 | 默认0 |
-| cashableAmt | CASHABLE_AMT | BigDecimal | 本次可兑现金额 | 默认0 |
-| applyAmt | APPLY_AMT | BigDecimal | 本次申请实际兑现金额 | 正数兑现=复核申请金额×实际报销比例; 负数兑现=负数合计 |
-| depositDeduct | DEPOSIT_DEDUCT | BigDecimal | 应扣质保金 | 默认0 |
-| taxesDeduct | TAXES_DEDUCT | BigDecimal | 应扣税金 | 默认0 |
-| otherDeduct | OTHER_DEDUCT | Long | 应扣其他 | 默认0 |
-| diffTaxRate | DIFF_TAX_RATE | BigDecimal | 发票差异税率 | = max(0, 0.09-实际税率) |
-| totalReturnAmt | TOTAL_RETURN_AMT | BigDecimal | 合同回款总额 | 默认0 |
-| contractId | CONTRACT_ID | Long | 合同ID | 前端传入 |
-| contractCode | CONTRACT_CODE | String | 合同编码 | 前端传入 |
-| contractName | CONTRACT_NAME | String | 合同名称 | 前端传入 |
-| thisWriteoffAmt | THIS_WRITEOFF_AMT | BigDecimal | 本次核销金额 | 默认0 |
-| applyNotaxAmt | APPLY_NOTAX_AMT | BigDecimal | 实际兑现未税金额 | 默认0 |
-| applyTaxAmount | APPLY_TAX_AMOUNT | BigDecimal | 行税金总额 | |
-| auditStat | AUDIT_STAT | String | 单据审核状态 | 新建时="新建" |
-| hzApproveStatus | HZ_APPROVE_STATUS | String | 流程实例状态 | NEW/RUN/APPROVED等 |
-| billType | BILL_TYPE | String | 单据类型 | 默认"manual" |
-| exchangeFlag | EXCHANGE_FLAG | Long | 兑现标识 | |
-| actualReimbRate | ACTUAL_REIMB_RATE | BigDecimal | 实际报销比例 | 来自报销单 |
-| appliedCashAmt | APPLIED_CASH_AMT | BigDecimal | 已申请兑现金额 | 计算值 |
-| settleableCashAmt | SETTLEABLE_CASH_AMT | BigDecimal | 可结算工程服务费 | = 已认领服务费 - 退货服务费 - 已申请兑现 + 调账金额 |
-| currentApplyCashAmt | CURRENT_APPLY_CASH_AMT | BigDecimal | 本次申请金额 | 前端传入 |
-| projectSurplus | PROJECT_SURPLUS | BigDecimal | 项目盈余 | = 已认领合同金额 - (发货结算金额-退货结算金额) - 已申请兑现 |
-| auditApplyCashAmt | AUDIT_APPLY_CASH_AMT | BigDecimal | 复核申请金额 | 前端传入 |
-| offlineCashed | OFFLINE_CASHED | String | 线下已兑现 | Y/N，默认N |
-| paymentStatus | PAYMENT_STATUS | Long | 付款状态 | 0=未付款, 2=付款成功 |
-| tradingCompanyId | TRADING_COMPANY_ID | Long | 交易公司ID | |
-| tradingCompanyCode | TRADING_COMPANY_CODE | String | 交易公司编码 | |
-| tradingCompanyName | TRADING_COMPANY_NAME | String | 交易公司名称 | |
-
-#### 负数兑现关联表（EXP_CASH_REIMB_REF）
-
-| 字段名 | 数据库列名 | 类型 | 含义 |
-|--------|-----------|------|------|
-| cashReimbRefId | CASH_REIMB_REF_ID | Long | 主键id |
-| cashingId | CASHING_ID | Long | 兑现id |
-| svcExpAccId | SVC_EXP_ACC_ID | Long | 报销id |
-| cashAmt | CASH_AMT | Long | 含税兑现金额 |
-| surCashAmt | SUR_CASH_AMT | Long | 剩余兑现金额 |
-| noTaxCashAmt | NO_TAX_CASH_AMT | Long | 不含税兑现金额 |
-
-#### 认领关联表（EXP_CASH_REIMB_CLAIM_REF）
-
-| 字段名 | 数据库列名 | 类型 | 含义 |
-|--------|-----------|------|------|
-| expCashReimbClaimRefId | EXP_CASH_REIMB_CLAIM_REF_ID | Long | 主键id |
-| cashingId | CASHING_ID | Long | 兑现记录ID |
-| svcExpAccLineId | SVC_EXP_ACC_LINE_ID | Long | 报销明细id |
-| paymentAllotDetailId | PAYMENT_ALLOT_DETAIL_ID | Long | 认领出库单明细id |
-| cashAmt | CASH_AMT | Long | 含税兑现金额 |
-
-</div>
-
-<div class="kb-module-alt">
-
-### 兑现类型判断逻辑
-
-#### checkCashType() — 自动判断兑现类型
-
-1. **获取报销信息**：调用getBxInfo()查询报销金额
-   - 如果actualBxAmt >= 0 → **正数兑现(cashType=1)**
-
-2. **负数/退款判断**：
-   - 查询可关联的正数报销单（resetBxCodes）
-   - **存在正数报销单** → **负数兑现(cashType=2)**，applyAmt = Σ负数行金额
-   - **不存在正数报销单** → **退款兑现(cashType=3)**，applyAmt = 实际报销金额 - 已兑现金额
-
-#### 三种兑现类型对比
-
-```text
-cashType=1 正数兑现:  正常报销兑现，金额 > 0
-cashType=2 负数兑现:  报销单金额为负，需关联正数报销单冲减
-cashType=3 退款兑现:  报销单金额为负，无可关联正数单，走退款流程
-```
-
-</div>
-
-<div class="kb-module">
-
-### 金额计算逻辑
-
-#### 可结算金额计算 — calSettleableAmt()
-
-```text
-可结算兑现金额 = (已认领工程服务费 - 已退货工程服务费) - 已申请兑现金额 + 虚拟调账金额
-  └── 已申请兑现金额 = Σ(stat in (3,5) 或 HZ_APPROVE_STATUS in ('RUN','APPROVED') 的 Audit_Apply_Cash_Amt)
-  └── 虚拟调账金额 = FIN_SVC_EXP_ACC_LINE中 source_type='virtual' 的 service_charge_amt之和
-```
-
-#### 项目盈余计算 — calProjectSurplus()
-
-```text
-项目盈余 = 已认领合同金额 - (发货结算金额 - 退货结算金额) - 已申请兑现金额
-```
-
-#### 兑现金额计算 — calCashAmt()
-
-```text
-正数兑现(cashType=1):
-  如果 已申请兑现+可结算=核销金额 且 复核申请=可结算:
-    applyAmt = 实际报销金额 - 已兑现金额  (防止尾差)
-  否则:
-    applyAmt = 复核申请金额 × 实际报销比例
-
-负数兑现(cashType=2):
-  applyAmt = -Σ(正数报销单行.cashAmt)
-```
-
-</div>
-
-<div class="kb-module-alt">
-
-### 保存与提交
-
-#### 创建逻辑 — doInsert()
-
-1. 设置 auditStat="新建", hzApproveStatus="NEW"
-2. 设置 organizationId=当前用户DEPT
-3. billType默认="manual"
-4. **转货款账户校验**：cashingWay==1时查询事业部虚拟经销商账户余额ID
-5. 生成单号：CodeRule(EPM_CASHING_NO)
-6. 计算兑现金额：calCashAmt()
-7. 赋默认值：assignDefaultValue()
-8. 插入主表 EPM_EXPENSE_TO_CASH
-9. 插入明细行：EXP_CASH_REIMB_CLAIM_REF和EXP_CASH_REIMB_REF
-10. 保存前校验：validCheck()
-
-#### 流程提交 — wfProcSubmit()
-
-1. 数据校验：volidate()
-2. 组装流程参数：cashingId, offlineFlag, area, startRealName, titleName, projectId
-3. 调用workflowClient.startInstanceByFlowKey()启动流程
-4. 更新 hzInstanceId 和 hzApproveStatus="RUN"
-
-</div>
-
-<div class="kb-module">
-
-### 状态流转
-
-```text
-新建 → 已提交(RUN) → 审批通过(APPROVED) / 审批驳回
-  │        │              │
-  │        │              └── 推送共享: eventExecute() → arrowFsscSdk.pushExpenseToCash()
-  │        │
-  │        └── 流程驳回回调: onWfBreak() → hzApproveStatus=code
+  ▼
+选择报销明细 → 自动计算可兑现金额(服务费-质保金-税金-其他扣款)
   │
-  └── 流程完结回调: onWfComplete() → hzApproveStatus="APPROVED"
+  ▼
+填写本次申请兑现金额 → 保存
+  │
+  ▼
+提交 → 启动H0工作流(EXPENSE_TO_CASH，按区域D/N/X/B区分) → 审批
+  │
+  ▼
+审批通过 → 推送财务共享(FSCC)
+  │
+  ├─ FSCC审批通过 → 更新状态为已核销 → 触发付款
+  └─ FSCC审批拒绝 → 更新状态为拒绝
 ```
 
-#### 审批通过推送共享 — eventExecute()
+</KbCard>
 
-1. 校验本次申请金额 > 0
-2. 构建推送数据：buildPushData()
-   - 查询推送数据体（queryDataToErp SQL）
-   - 设置系统参数：sourceSystem="EPMS"
-   - 设置审批人信息：applyLdapCode, orgLdapCode, positionLdapCode
-   - 银行转账时清空custCode和custSiteCode
-3. 调用 arrowFsscSdk.pushExpenseToCash() 推送
-4. 校验返回结果每行 processStatus="S"
+<KbCard num="2" title="上游依赖">
 
-</div>
+| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
+|---------|---------|---------|------------|
+| 工程服务费报销 | 数据依赖 | 兑现基于已审核通过的报销单 | 报销单审批状态=APPROVED |
+| 工程合同 | 数据依赖 | 兑现关联合同，获取合同回款总额 | 合同已生效 |
+| 经销商 | 数据依赖 | 兑现关联经销商 | 经销商已存在 |
+| H0工作流引擎 | 配置依赖 | 提交审批使用H0工作流(EXPENSE_TO_CASH) | 工作流已配置，按区域(D/N/X/B)区分 |
+| 财务共享(FSCC) | 配置依赖 | 审批通过后推送FSCC进行共享审批 | FSCC接口已配置 |
 
-<div class="kb-module-alt">
+</KbCard>
 
-### API接口清单
+<KbCard num="3" title="下游影响">
+<div class="ds-impact">
 
-| URL | HTTP方法 | 功能说明 |
-|-----|---------|---------|
-| `/v1/{orgId}/epm-expense-to-cash/select` | GET | 查询兑现单详细信息 |
-| `/v1/{orgId}/epm-expense-to-cash/get-bx-info` | GET | 查询出库明细/判断兑现类型 |
-| `/v1/{orgId}/epm-expense-to-cash/insert` | POST | 保存新增 |
-| `/v1/{orgId}/epm-expense-to-cash/update` | POST | 保存修改 |
-| `/v1/{orgId}/epm-expense-to-cash/salesmajor` | GET | 查询常规销售主体 |
-| `/v1/{orgId}/epm-expense-to-cash/delete` | DELETE | 删除 |
-| `/v1/{orgId}/epm-expense-to-cash/volidate` | POST | 流程提交前数据校验 |
+| 下游系统/模块 | 影响内容 | 说明 |
+|---|---|---|
+| 财务共享(FSCC) | 推送FSCC共享审批 | 审批通过后推送兑现数据到FSCC，FSCC进行共享审批和付款处理 |
+| 工程服务费报销 | 更新已兑现金额 | 兑现后更新报销单的已兑现金额(TOTAL_CASH_AMT) |
+| 付款流程 | 触发付款更新状态 | FSCC审批通过后触发付款，更新付款状态(PAYMENT_STATUS) |
 
 </div>
-
+</KbCard>
+</div>
+</div>
 </div>
 
-<div id="faq">
+<div id="key-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="重点逻辑1：兑现金额计算逻辑 【金额计算】">
+<KbQuote>兑现金额需要扣除质保金、税金等扣款后计算实际可兑现金额</KbQuote>
 
-<div class="kb-module">
+**具体逻辑**：
 
-### 常见问题 FAQ
+- 1、服务费金额=报销单中该经销商/合同下的服务费总额
+- 2、本次可兑现金额=服务费金额-应扣质保金-应扣税金-应扣其他
+- 3、兑现前剩余可兑现金额=历史累计可兑现金额-已兑现金额
+- 4、本次申请兑现金额&lt;=本次可兑现金额，用户输入
+</KbCard>
 
-#### Q1: 兑现类型自动判断错误怎么办？
+<KbCard num="2" title="重点逻辑2：工作流按区域区分 【区域区分】">
+<KbQuote>不同区域(大区)使用不同的工作流编码</KbQuote>
 
-兑现类型由 checkCashType() 自动判断，依据是报销单金额的正负值和可关联正数报销单的存在性。如果判断结果不符合预期，需检查：
-1. 报销单 actualBxAmt 的值是否正确
-2. 正数报销单是否已被取消（cancel_flag='N' 且不存在未取消的取消单）
-3. resetBxCodes 的查询条件：stat=5 + actual_bx_amt>0 + 剩余兑现金额>0 + 同项目
+**具体逻辑**：
 
-排查SQL：
+- 1、工作流编码EXPENSE_TO_CASH按区域区分：D/N/X/B四个区域
+- 2、提交时根据经销商所属区域匹配对应的工作流编码
+</KbCard>
+
+<KbCard num="3" title="重点逻辑3：双轨审批（H0工作流+FSCC共享审批） 【双轨审批】">
+<KbQuote>工程服务费兑现需要经过DMS内部审批和财务共享审批两道流程</KbQuote>
+
+**具体逻辑**：
+
+- 1、提交时启动H0工作流(EXPENSE_TO_CASH)，DMS内部审批
+- 2、H0审批通过后，推送兑现数据到财务共享系统(FSCC)
+- 3、FSCC审批回调(objType=8067)，更新兑现单状态：通过→已核销，拒绝→拒绝
+</KbCard>
+
+</div>
+</div>
+</div>
+
+<div id="detail-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="界面模块1：工程服务费兑现页面（hlod低代码页面）">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>兑现单号</td>
+<td>文本框</td>
+<td>兑现单编号</td>
+<td>常显</td>
+<td>保存时自动生成，不可编辑</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.CASHING_NO</td>
+</tr>
+<tr>
+<td>兑现类型</td>
+<td>下拉选择框</td>
+<td>兑现方式</td>
+<td>常显</td>
+<td>来源值集epm.cashing_way，必输</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.CASHING_WAY</td>
+</tr>
+<tr>
+<td>兑现类型(业务)</td>
+<td>下拉选择框</td>
+<td>业务兑现类型</td>
+<td>常显</td>
+<td>必输</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.CASH_TYPE</td>
+</tr>
+<tr>
+<td>经销商</td>
+<td>弹窗选择</td>
+<td>经销商</td>
+<td>常显</td>
+<td>用户选择，选择后带出编码和名称</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.CUSTOMER_ID</td>
+</tr>
+<tr>
+<td>合同</td>
+<td>弹窗选择</td>
+<td>工程合同</td>
+<td>常显</td>
+<td>用户选择，选择后带出编码和名称</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.CONTRACT_ID</td>
+</tr>
+<tr>
+<td>交易公司</td>
+<td>下拉选择框</td>
+<td>交易公司</td>
+<td>常显</td>
+<td>由合同带入</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.TRADING_COMPANY_ID</td>
+</tr>
+<tr>
+<td>常规销售主体</td>
+<td>下拉选择框</td>
+<td>常规销售主体</td>
+<td>常显</td>
+<td>用户选择或自动带出</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.SALES_MAJOR_ID</td>
+</tr>
+<tr>
+<td>供应商</td>
+<td>弹窗选择</td>
+<td>供应商</td>
+<td>常显</td>
+<td>用户选择</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.VENDOR_ID</td>
+</tr>
+<tr>
+<td>收款方</td>
+<td>文本框</td>
+<td>收款方</td>
+<td>常显</td>
+<td>用户输入</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.RECEIVER</td>
+</tr>
+<tr>
+<td>开户银行</td>
+<td>文本框</td>
+<td>开户银行</td>
+<td>常显</td>
+<td>由供应商带入或用户输入</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.BANK_NAME</td>
+</tr>
+<tr>
+<td>银行账号</td>
+<td>文本框</td>
+<td>银行账号</td>
+<td>常显</td>
+<td>由供应商带入或用户输入</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.BANK_ACCOUNT</td>
+</tr>
+<tr>
+<td>服务费金额</td>
+<td>数值框</td>
+<td>服务费金额</td>
+<td>常显</td>
+<td>由报销明细汇总，默认0</td>
+<td>非负数</td>
+<td>EPM_EXPENSE_TO_CASH.SERVICE_AMT</td>
+</tr>
+<tr>
+<td>兑现前剩余可兑现金额</td>
+<td>数值框</td>
+<td>兑现前剩余可兑现金额</td>
+<td>常显</td>
+<td>自动计算，默认0</td>
+<td>非负数</td>
+<td>EPM_EXPENSE_TO_CASH.CASHABLE_AMT_BEFORE</td>
+</tr>
+<tr>
+<td>应扣质保金</td>
+<td>数值框</td>
+<td>应扣质保金</td>
+<td>常显</td>
+<td>自动计算，默认0</td>
+<td>非负数</td>
+<td>EPM_EXPENSE_TO_CASH.DEPOSIT_DEDUCT</td>
+</tr>
+<tr>
+<td>应扣税金</td>
+<td>数值框</td>
+<td>应扣税金</td>
+<td>常显</td>
+<td>自动计算，默认0</td>
+<td>非负数</td>
+<td>EPM_EXPENSE_TO_CASH.TAXES_DEDUCT</td>
+</tr>
+<tr>
+<td>应扣其他</td>
+<td>数值框</td>
+<td>应扣其他扣款</td>
+<td>常显</td>
+<td>默认0</td>
+<td>非负数</td>
+<td>EPM_EXPENSE_TO_CASH.OTHER_DEDUCT</td>
+</tr>
+<tr>
+<td>本次可兑现金额</td>
+<td>数值框</td>
+<td>本次可兑现金额</td>
+<td>常显</td>
+<td>=服务费-质保金-税金-其他，默认0</td>
+<td>非负数</td>
+<td>EPM_EXPENSE_TO_CASH.CASHABLE_AMT</td>
+</tr>
+<tr>
+<td>本次申请兑现金额</td>
+<td>数值框</td>
+<td>本次申请实际兑现金额</td>
+<td>常显</td>
+<td>用户输入，&lt;=本次可兑现金额</td>
+<td>正数</td>
+<td>EPM_EXPENSE_TO_CASH.APPLY_AMT</td>
+</tr>
+<tr>
+<td>合同回款总额</td>
+<td>数值框</td>
+<td>合同回款总额</td>
+<td>常显</td>
+<td>由合同带入，默认0</td>
+<td>非负数</td>
+<td>EPM_EXPENSE_TO_CASH.TOTAL_RETURN_AMT</td>
+</tr>
+<tr>
+<td>单据状态</td>
+<td>文本框</td>
+<td>单据状态</td>
+<td>常显</td>
+<td>新建=0，制单=1，审核通过=5</td>
+<td>0/1/5</td>
+<td>EPM_EXPENSE_TO_CASH.STAT</td>
+</tr>
+<tr>
+<td>审批状态</td>
+<td>文本框</td>
+<td>H0审批状态</td>
+<td>常显</td>
+<td>NEW/RUN/APPROVED/REJECTED</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.HZ_APPROVE_STATUS</td>
+</tr>
+<tr>
+<td>付款状态</td>
+<td>文本框</td>
+<td>付款状态</td>
+<td>常显</td>
+<td>0=未付款，2=付款成功</td>
+<td>0/2</td>
+<td>EPM_EXPENSE_TO_CASH.PAYMENT_STATUS</td>
+</tr>
+<tr>
+<td>总账日期</td>
+<td>日期选择器</td>
+<td>总账日期</td>
+<td>常显</td>
+<td>用户输入</td>
+<td>日期</td>
+<td>EPM_EXPENSE_TO_CASH.LEDGER_DATE</td>
+</tr>
+<tr>
+<td>备注</td>
+<td>文本域</td>
+<td>备注</td>
+<td>常显</td>
+<td>用户输入</td>
+<td>-</td>
+<td>EPM_EXPENSE_TO_CASH.CASH_REMARK</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="选择弹窗">
+<KbSubTitle>弹窗1：经销商选择弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| organizationId | 组织ID | 租户组织ID | 1 |
+
+**数据范围**
+
+```sql
+当前组织下的有效经销商
+```
+
+<KbSubTitle>弹窗2：合同选择弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| customerId | 经销商ID | 经销商ID | 100 |
+
+**数据范围**
+
+```sql
+该经销商下已生效的工程合同
+```
+
+</KbCard>
+<KbCard title="导入">
+</KbCard>
+<KbCard title="其他按钮">
+
+| 按钮名称 | 按钮作用 | 所在位置 | 显隐条件/可点击条件 | 影响 |
+|---------|---------|---------|-------------------|------|
+| 保存 | 保存兑现单 | 详情页 | 单据状态=制单(1)或新建 | 调用POST /v1/{organizationId}/epm-expense-to-cash/insert保存 |
+| 修改 | 修改兑现单 | 详情页 | 单据状态=制单(1) | 调用POST /v1/{organizationId}/epm-expense-to-cash/update修改 |
+| 删除 | 删除兑现单 | 详情页 | 单据状态=制单(1) | 调用DELETE /v1/{organizationId}/epm-expense-to-cash/delete删除 |
+| 提交 | 提交审批 | 详情页 | 单据状态=制单(1) | 启动H0工作流EXPENSE_TO_CASH(按区域D/N/X/B) |
+
+</KbCard>
+<KbCard title="保存校验">
+<KbSubTitle>校验1：兑现类型必输 —— 确保兑现方式明确</KbSubTitle>
+
+- 第1点：CASHING_WAY和CASH_TYPE字段标注@NotNull，框架自动校验
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT cashing_way, cash_type FROM epm_expense_to_cash WHERE cashing_id = :cashingId
+```
+
+</KbCard>
+<KbCard title="提交校验">
+<KbSubTitle>校验1：兑现单必须存在 —— 确保数据完整性</KbSubTitle>
+
+- 第1点：根据cashingId查询EPM_EXPENSE_TO_CASH记录，若不存在则阻断
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT * FROM epm_expense_to_cash WHERE cashing_id = :cashingId
+```
+
+</KbCard>
+<KbCard title="状态机">
+### 状态机
+
+<KbSubTitle>状态机流转图</KbSubTitle>
+
+
 ```text
-SELECT cashing_id, cash_type, apply_amt, actual_reimb_rate
-FROM EPM_EXPENSE_TO_CASH
-WHERE svc_exp_acc_id = #{报销id}
+新建(0) → 制单(1) → 已提交(-1) → 审核通过(5)
+                ↑                ↓
+                └──── 可删除 ←───┘(审批拒绝后)
+                                      ↓
+                              推送FSCC → FSCC审批通过(已核销/付款) / FSCC拒绝
 ```
 
-#### Q2: 正数兑现金额为0或负数？
+<KbSubTitle>状态机列表</KbSubTitle>
 
-正数兑现 applyAmt 必须 > 0。若为0，常见原因：
-1. 出库明细未被认领（allow_cash_flag='Y' 的认领记录为空）
-2. 可结算金额为0（已认领服务费 - 退货服务费 - 已申请兑现 ≤ 0）
-3. 实际报销比例为0（调整扣分率=1）
 
-排查SQL：
-```text
--- 检查认领情况
-SELECT allot_detail_id, actual_service_amt, allow_cash_flag
-FROM EPM_PAYMENT_ALLOT_DETAIL
-WHERE svc_exp_acc_line_id IN (SELECT svc_exp_acc_line_id FROM FIN_SVC_EXP_ACC_LINE WHERE svc_exp_acc_id = #{报销id})
+| 状态机名称 | 状态释义 | 可执行的操作 |
+|-----------|---------|------------|
+| 0 | 新建 | 保存 |
+| 1 | 制单 | 保存、修改、删除、提交 |
+| -1 | 已提交 | 等待审批 |
+| 5 | 审核通过 | 不可编辑、不可删除，已推送FSCC |
 
--- 检查可结算金额
-SELECT applied_cash_amt, settleable_cash_amt, project_surplus
-FROM EPM_EXPENSE_TO_CASH
-WHERE svc_exp_acc_id = #{报销id}
-```
+---
 
-#### Q3: 兑现金额超过报销金额？
+</KbCard>
+<KbCard num="1" title="表1：EPM_EXPENSE_TO_CASH（工程服务费兑现表）">
 
-校验规则：|本次兑现金额| + |已兑现金额| ≤ |实际报销金额|。若超限，异常信息为"报销单剩余兑现金额为:xxx,本单兑现金额:xxx，请检查"。
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| CASHING_ID | NUMBER | 兑现记录ID(主键) | - | 自增生成 |
+| CASHING_NO | VARCHAR | 兑现记录编号 | 兑现单号 | 编码规则生成 |
+| ORGANIZATION_ID | NUMBER | 组织ID | - | 必输 |
+| SERVICE_EXPENSE_HEAD_ID | NUMBER | 服务费编号ID | - | 关联服务费头表 |
+| CASHING_WAY | NUMBER | 兑现类型 | 兑现类型 | 来源值集epm.cashing_way，必输 |
+| CASH_TYPE | NUMBER | 兑现类型(业务) | 兑现类型(业务) | 必输 |
+| CUSTOMER_ID | NUMBER | 经销商ID | 经销商 | 用户选择 |
+| CUSTOMER_CODE | VARCHAR | 经销商编码 | - | 由经销商带入 |
+| CUSTOMER_NAME | VARCHAR | 经销商名称 | - | 由经销商带入 |
+| CONTRACT_ID | NUMBER | 合同ID | 合同 | 用户选择 |
+| CONTRACT_CODE | VARCHAR | 合同编码 | - | 由合同带入 |
+| CONTRACT_NAME | VARCHAR | 合同名称 | - | 由合同带入 |
+| TRADING_COMPANY_ID | NUMBER | 交易公司ID | 交易公司 | 由合同带入 |
+| SALES_MAJOR_ID | NUMBER | 常规销售主体ID | 常规销售主体 | 用户选择 |
+| VENDOR_ID | NUMBER | 供应商ID | 供应商 | 用户选择 |
+| RECEIVER | VARCHAR | 收款方 | 收款方 | 用户输入 |
+| BANK_NAME | VARCHAR | 开户银行 | 开户银行 | 由供应商带入 |
+| BANK_ACCOUNT | VARCHAR | 银行账号 | 银行账号 | 由供应商带入 |
+| SERVICE_AMT | NUMBER | 服务费金额 | 服务费金额 | 由报销明细汇总，默认0 |
+| CASHABLE_AMT_BEFORE | NUMBER | 兑现前剩余可兑现金额 | 兑现前剩余可兑现金额 | 自动计算，默认0 |
+| DEPOSIT_DEDUCT | NUMBER | 应扣质保金 | 应扣质保金 | 自动计算，默认0 |
+| TAXES_DEDUCT | NUMBER | 应扣税金 | 应扣税金 | 自动计算，默认0 |
+| OTHER_DEDUCT | NUMBER | 应扣其他 | 应扣其他 | 默认0 |
+| CASHABLE_AMT | NUMBER | 本次可兑现金额 | 本次可兑现金额 | =服务费-质保金-税金-其他，默认0 |
+| APPLY_AMT | NUMBER | 本次申请兑现金额 | 本次申请兑现金额 | 用户输入 |
+| TOTAL_RETURN_AMT | NUMBER | 合同回款总额 | 合同回款总额 | 由合同带入，默认0 |
+| STAT | NUMBER | 单据状态 | 单据状态 | 0=新建，1=制单，5=审核通过 |
+| HZ_APPROVE_STATUS | VARCHAR | H0审批状态 | 审批状态 | NEW/RUN/APPROVED/REJECTED |
+| HZ_INSTANCE_ID | NUMBER | H0流程实例ID | - | 提交工作流时赋值 |
+| PAYMENT_STATUS | NUMBER | 付款状态 | 付款状态 | 0=未付款，2=付款成功 |
+| PAYMENT_DATE | DATE | 付款日期 | - | 付款成功时赋值 |
+| LEDGER_DATE | DATE | 总账日期 | 总账日期 | 用户输入 |
+| SVC_EXP_ACC_ID | NUMBER | 报销ID | - | 关联报销单 |
+| BILL_TYPE | VARCHAR | 单据类型 | - | auto=自动生成 |
+| OFFLINE_CASHED | VARCHAR | 线下已兑现 | - | Y/N |
+| ERROR_COLLECTION | VARCHAR | 推送共享错误原因 | - | FSCC推送失败时记录 |
+| CALLBACK_SOURCE | VARCHAR | 外部系统回调结果 | - | FSCC回调时赋值 |
+| CASH_REMARK | VARCHAR | 备注 | 备注 | 用户输入 |
+| OBJECT_VERSION_NUMBER | NUMBER | 乐观锁版本号 | - | 框架自动维护 |
 
-排查SQL：
-```text
-SELECT svc_exp_acc_id, actual_bx_amt,
-  (SELECT SUM(ABS(apply_amt)) FROM EPM_EXPENSE_TO_CASH WHERE svc_exp_acc_id = #{报销id} AND stat IN (3,5) OR HZ_APPROVE_STATUS IN ('RUN','APPROVED')) as total_cash
-FROM FIN_SVC_EXP_ACC_HEAD
-WHERE svc_exp_acc_id = #{报销id}
-```
+---
 
-#### Q4: 项目盈余不足无法兑现？
-
-项目盈余 = 已认领合同金额 - (发货结算金额 - 退货结算金额) - 已申请兑现。若项目盈余 < 复核申请金额，则报错"当前项目盈余：xxx元，小于复核申请金额：xxx元，无法兑现！"
-
-排查SQL：
-```text
-SELECT project_id, 
-  (SELECT SUM(contract_amt) FROM EPM_PAYMENT_ALLOT_DETAIL WHERE project_id = #{projectId}) as claimed_contract,
-  (SELECT SUM(settlement_amt) - SUM(return_settlement_amt) FROM ...) as goods_settlement,
-  (SELECT SUM(apply_amt) FROM EPM_EXPENSE_TO_CASH WHERE project_id = #{projectId} AND stat IN (3,5)) as applied_cash
-```
-
-#### Q5: 负数兑现提示"正数报销单明细兑现金额不足"？
-
-负数兑现需关联正数报销单行，且每行的剩余兑现金额(surCashAmt)必须≥本次兑现金额。若不足则报错"以下正数报销单明细兑现金额不足：xxx"。
-
-#### Q6: 转货款方式兑现报错？
-
-转货款(cashingWay=1)时需查询事业部虚拟经销商账户余额ID。若查询不到，可能原因：
-1. division_trading_rel 中缺少对应记录
-2. 交易公司与事业部不匹配
-
-#### Q7: 推送共享返回错误？
-
-审批通过后 eventExecute() 推送共享，校验返回每行 processStatus="S"。若失败需检查 errorCollection 字段记录的错误信息。
-
-#### Q8: 流程提交校验失败？
-
-volidate() 校验三项：
-1. currentApplyCashAmt > 0
-2. 已结算+复核申请 ≤ 核算金额
-3. 项目盈余 ≥ 复核申请金额
+</KbCard>
 
 </div>
-
+</div>
 </div>
 
-<div id="troubleshoot">
+<div id="permission" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="权限控制">
 
-<div class="kb-module">
+<!-- 空白:待补充 -->
 
-### 排查工作流
-
-#### Step 1: 确认报销单状态
-
-```text
-SELECT hz_approve_status, actual_bx_amt, audit_stat
-FROM FIN_SVC_EXP_ACC_HEAD
-WHERE svc_exp_acc_id = #{报销id}
-```
-
-预期：hz_approve_status = 'APPROVED'，actual_bx_amt 有值
-
-#### Step 2: 确认兑现单数量和状态
-
-```text
-SELECT cashing_id, cashing_no, cash_type, hz_approve_status, apply_amt, audit_apply_cash_amt
-FROM EPM_EXPENSE_TO_CASH
-WHERE svc_exp_acc_id = #{报销id}
-```
-
-#### Step 3: 确认已申请兑现金额汇总
-
-```text
-SELECT SUM(apply_amt) as total_applied
-FROM EPM_EXPENSE_TO_CASH
-WHERE svc_exp_acc_id = #{报销id}
-  AND (stat IN (3,5) OR HZ_APPROVE_STATUS IN ('RUN','APPROVED'))
-```
-
-#### Step 4: 确认认领和可结算金额
-
-```text
--- 认领服务费
-SELECT SUM(actual_service_amt) as claimed_svc
-FROM EPM_PAYMENT_ALLOT_DETAIL
-WHERE svc_exp_acc_id = #{报销id} AND allow_cash_flag = 'Y' AND cancel_flag = 'N'
-
--- 虚拟调账
-SELECT SUM(service_charge_amt) as virtual_amt
-FROM FIN_SVC_EXP_ACC_LINE
-WHERE svc_exp_acc_id = #{报销id} AND source_type = 'virtual'
-```
-
-#### Step 5: 确认推送共享状态
-
-```text
-SELECT cashing_id, error_collection, hz_approve_status
-FROM EPM_EXPENSE_TO_CASH
-WHERE cashing_id = #{兑现id}
-```
-
+</KbCard>
+</div>
+</div>
 </div>
 
+<div id="faq" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="报错一览表" :hover="false">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:27%"><col style="width:13%"><col style="width:32%"><col style="width:14%"><col style="width:14%"></colgroup>
+<thead><tr><th>报错信息</th><th>提示节点</th><th>根因与解决方案</th><th>等级</th><th>详细逻辑</th></tr></thead>
+<tbody>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">未找到工程服务费兑现记录</td>
+            <td style="font-size:13px;">FSCC回调</td>
+            <td style="font-size:13px;">FSCC回调时根据cashingId未找到对应记录，可能数据已被删除</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
+          </tr>
+</tbody></table></div>
+
+<div id="err-detail-1" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>未找到工程服务费兑现记录</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>FSCC回调时根据cashingId未找到对应记录，可能数据已被删除</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+</KbCard>
+<KbCard title="常见问题">
+<div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">审批通过后FSCC推送失败</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>FSCC接口不可用或推送数据格式异常<br>
+      <strong style="color:#7C3AED;">处理：</strong>查看ERROR_COLLECTION字段中的错误信息，确认FSCC服务状态后重新推送
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">兑现金额计算不准确</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>质保金、税金等扣款计算逻辑有误，或报销单数据已更新<br>
+      <strong style="color:#7C3AED;">处理：</strong>核实报销单的服务费金额和扣款配置，重新计算可兑现金额
+    </div>
+  </div>
+</div>
+</KbCard>
+</div>
+</div>
 </div>
 
-<div id="history">
+<div id="changelog" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="更新记录">
 
-<div class="kb-module-alt">
-
-### 历史排查记录
-
-| 日期 | 问题描述 | 排查结果 | 解决方案 |
-|------|---------|---------|---------|
-| — | 暂无历史排查记录 | — | — |
-
+| 日期 | 提交ID | 提交人 | 提交内容 |
+|------|-------|-------|---------|
+| 2025-10-31 | - | - | 初始创建工程服务费兑现功能 |
+</KbCard>
+</div>
+</div>
 </div>
 
+<div id="history" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="历史排查记录">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
-
-<div id="related">
-
-<div class="kb-module">
-
-### 关联模块
-
-#### 上游依赖
-
-| 模块 | 说明 | 影响方式 |
-|------|------|---------|
-| 工程服务费报销 | 兑现数据来源于已审批报销单 | 报销单审批通过后才可发起兑现 |
-| 报销出库单明细 | 可兑现金额依赖出库单认领情况 | 认领数据影响可结算金额 |
-| 报销发票 | 实际报销金额受发票金额约束 | 发票金额限制实际兑现金额上限 |
-| 工程项目 | 项目盈余计算依赖项目关联数据 | 项目盈余不足时无法兑现 |
-| 工程合同 | 合同回款总额影响兑现 | 合同数据影响兑现金额计算 |
-| 交易公司 | 转货款时需查询交易公司关联 | 交易公司不匹配则转货款失败 |
-| 事业部基础设置 | 虚拟经销商账户依赖事业部设置 | 设置缺失导致转货款报错 |
-| 供应商 | 银行转账时需供应商信息 | 供应商数据影响付款 |
-
-#### 下游影响
-
-| 模块 | 说明 | 影响方式 |
-|------|------|---------|
-| 出库单数量 | 兑现后影响出库单的可兑现数量 | 已兑现金额减少可兑现金额 |
-| 工程服务费冲销 | 审批通过后报销单的冲销金额参与冲销汇总 | 兑现通过→冲销数据增加 |
-| 共享财务系统(FSSC) | 审批通过后推送共享 | 推送数据影响财务入账 |
-| 工作流系统 | 兑现流程依赖工作流审批 | 流程状态变更触发后续操作 |
-
 </div>
-
 </div>
