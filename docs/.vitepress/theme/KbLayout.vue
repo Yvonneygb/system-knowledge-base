@@ -184,6 +184,7 @@ const secondaryNav = {
       icon: 'fa-solid fa-file-contract',
       items: [
         { label: '自营工程合同', link: '/工程管理/项目合同/自营工程合同/', icon: 'fa-solid fa-file-signature' },
+        { label: '经销商工程合同', link: '/工程管理/项目合同/经销商工程合同/', icon: 'fa-solid fa-handshake' },
       ]
     },
     {
@@ -192,6 +193,7 @@ const secondaryNav = {
       items: [
         { label: '工程折扣单', link: '/工程管理/合同与折扣/工程折扣单/', icon: 'fa-solid fa-tags' },
         { label: '项目合同失效', link: '/工程管理/合同与折扣/项目合同失效/', icon: 'fa-solid fa-file-circle-xmark' },
+        { label: '工程自营签收', link: '/工程管理/合同与折扣/工程自营签收/', icon: 'fa-solid fa-clipboard-check' },
       ]
     },
     {
@@ -210,6 +212,7 @@ const secondaryNav = {
         { label: '工程要货订单', link: '/工程管理/项目交付/工程要货订单/', icon: 'fa-solid fa-box-urgent' },
         { label: '工程折扣政策申请', link: '/工程管理/项目交付/工程折扣政策申请/', icon: 'fa-solid fa-percent' },
         { label: '工程折扣政策失效', link: '/工程管理/项目交付/工程折扣政策失效/', icon: 'fa-solid fa-ban' },
+        { label: '订单紧急要货', link: '/工程管理/项目交付/订单紧急要货/', icon: 'fa-solid fa-truck-bolt' },
       ]
     },
     {

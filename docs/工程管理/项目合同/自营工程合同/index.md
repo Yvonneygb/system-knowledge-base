@@ -1,415 +1,600 @@
----
----
-
 <BreadcrumbTabs />
 
-<div id="logic">
+<div id="biz-intro" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbHero num="1" title="自营工程合同" desc="工程管理-项目合同业务说明" />
 
-<div class="kb-module">
+<KbCard title="业务介绍">
 
-### 数据模型
+<!-- 空白:待补充 -->
 
-**核心表结构**：
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="biz-flow" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="业务流程图">
 
 ```text
-EPM_PROJECT_CONTRACT (工程项目合同主表)
-  │
-  ├──< EPM_CONTRACT_TERMS (合同约定条款表)
-  ├──< EPM_CONTRACT_ITEM (合同产品清单表)
-  ├──< EPM_CONTRACT_COMPLETED (合同结案表)
-  ├──< EPM_PROJECT_CONTRACT_ECN (合同变更单表)
-  │       └──< EPM_PAYMENT_PLAN_ECN (付款计划变更表)
-  ├──< EPM_DISCOUNT_APPLY (折扣申请单头表)
-  │       ├──< EPM_DISCOUNT_APPLY_LINE (折扣申请单行表)
-  │       │     └──< EPM_DISCOUNT_APPLY_LINE_EXT (折扣申请行扩展表)
-  │       └──< EPM_DISCOUNT_APPLY_PLAN (折扣申请提货计划表)
-  ├──< EPM_DISCOUNT_ECN (折扣变更单头表)
-  │       ├──< EPM_DISCOUNT_ECN_LINE (折扣变更单行表)
-  │       │     └──< EPM_DISCOUNT_ECN_LINE_EXT (折扣变更行扩展表)
-  │       └──< EPM_DISCOUNT_ECN_PLAN (折扣变更提货计划表)
-  ├──< EPM_CONTRACT_INTENTION_REL (合同意向单关联表)
-  ├──< EPM_CONTRACT_ADDRESS_EXT (合同地址扩展表)
-  ├──< EPM_PAYMENT_PLAN_SET (付款计划/周期条件表)
-  ├──< EPM_CONTRACT_CHANNEL_REL_H (合同渠道关联头表)
-
-关联外部表:
-  EPM_PROJECT ←── 合同.projectId
-  EPM_PROJECT_ECN ←── 合同变更单.ecnId
-  SA_OUT_BILL_HEAD ←── 意向单关联.outBillHeadId
-  CUSTOMER_ADDRESS ←── 合同地址
-  CM_DISC_PRESET_RATE_DTL ←── 折扣预设率明细
+项目报备(已生效) → 新建自营工程合同 → 选择项目/客户/交易公司(autotrophyFlag=999)
+  ↓
+填写合同基本信息(签约方式=直销) + 签收方式 + 操作模式 + 产品清单 + 付款计划 + 合同条款
+  ↓
+保存 → 生成合同编码，校验项目/客户/交易公司
+  ↓
+保存并提交 → 启动审批流程(按区域:东/西/南/北区，SUB_CONTRACT_ZYGCHT_{区域})
+  ↓
+审批通过 → 合同有效状态=2(已生效) → 可创建折扣单/签收单
+审批驳回 → 合同有效状态不变
+  ↓
+合同失效 → 参见"项目合同失效"菜单
+签收 → 参见"工程自营签收"菜单
 ```
 
-#### 合同主表字段（EPM_PROJECT_CONTRACT）
+</KbCard>
 
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| contractId | CONTRACT_ID | Long | 工程项目合同ID | 主键，自增 |
-| contractCode | CONTRACT_CODE | String | 合同编码 | 自动生成：事业部编码+编码规则AE_EPM_PROJECT_CONTRACT+序号 |
-| contractName | CONTRACT_NAME | String | 合同名称 | @NotNull，长度≤80 |
-| contractCharacter | CONTRACT_CHARACTER | String | 合同性质 | AR=收款合同；AP=付款合同 |
-| contractType | CONTRACT_TYPE | Long | 签约类型 | 1=直销/自营工程；2=经销 |
-| contractAmt | CONTRACT_AMT | String | 合同总额 | |
-| contractMode | CONTRACT_MODE | Long | 操作模式 | 1=自营工程；2=经销商服务，默认0 |
-| isFrame | IS_FRAME | Long | 是否战略协议 | 2=是；非2=否 |
-| valid | VALID | Long | 有效状态 | 1=未审核；2=有效；3=失效；7=审批中 |
-| hzApproveStatus | HZ_APPROVE_STATUS | String | 审批状态 | NEW/RUN/APPROVED/REJECTED/REBUT |
-| projectId | PROJECT_ID | Long | 工程项目ID | |
-| partyAId | PARTY_A_ID | Long | 甲方客户ID | |
-| partyAName | PARTY_A_NAME | String | 甲方名称 | |
-| partyBName | PARTY_B_NAME | String | 乙方名称 | |
-| customerId | CUSTOMER_ID | Long | 客户ID | |
-| tradingCompanyId | TRADING_COMPANY_ID | Long | 交易公司ID | |
-| supplementType | SUPPLEMENT_TYPE | Long | 增补类型 | 1=新增合同；2=合同增补 |
-| mainContractId | MAIN_CONTRACT_ID | Long | 主合同ID | >0时为增补合同 |
-| isHome | IS_HOME | Long | 是否家装 | 2=是 |
-| isCustom | IS_CUSTOM | Long | 是否纯定制 | 2=是；非2=否 |
-| projectCategory | PROJECT_CATEGORY | String | 项目分类 | normal=标准项目；small=小型项目 |
-| signedDate | SIGNED_DATE | LocalDateTime | 签订时间 | |
-| completedDate | COMPLETED_DATE | LocalDateTime | 结案日期 | 系统自动回写 |
-| completedType | COMPLETED_TYPE | Long | 结案类型 | 系统自动回写 |
+<KbCard num="2" title="上游依赖">
+
+| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
+|---------|---------|---------|------------|
+| 工程项目报备 | 数据依赖 | 合同关联项目，获取项目信息、客户、地址等 | 项目已报备6且有效 |
+| 客户主数据 | 数据依赖 |D | 合同关联客户 | �&户已创建且有效 |
+| 交易公司 | 数据依赖 | 合同关联交易公司(自营范围，tradingScope=2) | 交易公司已配置 |
+| 编码规则配置 | 配置依赖 | 生成合同编码 | 编码规则已配置且生效 |
+| 工作流引擎 | 配置依赖 | 审批流程SUB_CONTRACT_ZYGCHT_{区域} | 流程已部署且可用 |
+
+</KbCard>
+
+<KbCard num="3" title="下游影响">
+<div class="ds-impact">
+
+| 下游系统/模块 | 影响内容 | 说明 |
+|---|---|---|
+| 工程折扣政策申请 | 基于合同创建折扣申请 | 合同生效后，可基于合同创建折扣政策申请 |
+| 工程自营签收 | 创建自营签收单 | 合同生效后，可创建自营签收单(签收方式决定签收流程) |
+| 项目合同失效 | 发起失效申请 | 合同可发起失效申请，失效后合同状态变为3(已失效) |
 
 </div>
-
-<div class="kb-module">
-
-### API接口
-
-**基础URL**：`/v1/{organizationId}/epm-project-contracts`
-
-| HTTP方法 | URL路径 | 功能描述 |
-|---------|---------|---------|
-| POST | /save-data | 创建合同（仅保存） |
-| POST | /save-data-submit | 创建合同（保存+提交审批） |
-| POST | /delete-contract | 删除合同 |
-| POST | /ask-crm-item | 查询产品最高折扣率 |
-| POST | /do-check-motion-change | 经销商合同提交审批（流程前校验+更新项目阶段） |
-| POST | /do-Contract-Check | 经销商合同审批回调 |
-| GET | /query-project | 查询合同列表 |
-| GET | /get-contract-terms | 查询合同条款值集 |
-| GET | /trading-company-customer | 开票单位查询 |
-
-**合同变更单接口**（`/v1/{organizationId}/epm-project-contract-ecns`）：
-
-| HTTP方法 | URL路径 | 功能描述 |
-|---------|---------|---------|
-| GET | /search | 变更单列表查询 |
-| DELETE | / | 删除变更单 |
-| GET | /select | 变更单详情 |
-
-**合同结案接口**（`/v1/{organizationId}/epm-contract-completeds`）：
-
-| HTTP方法 | URL路径 | 功能描述 |
-|---------|---------|---------|
-| GET | /detail | 结案详情 |
-
+</KbCard>
+</div>
+</div>
 </div>
 
-<div class="kb-module">
+<div id="key-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="重点逻辑1：与经销商工程合同共用后端代码 {共用代码}">
+<KbQuote>自营合同和经销商合同共用EPM_PROJECT_CONTRACT表和后端ServiceImpl，通过contractType区分</KbQuote>
 
-### 合同创建逻辑
+**具体逻辑**：
 
-**核心方法**：`EpmProjectContractServiceImpl.newSave()`
+- 1、自营合同contractType=1(直销)，经销商合同contractType=2(经销A
+- 2、列表查询固定传参contractType=1，仅展示自营合同
+- 3、交易公司LOV传入autotrophyFlag=999和tradingScope=28筛选自营范围交易公司
+</KbCard>
 
-1. **校验数据** (`checkSaveData`)：
-   - 合同名称不能为空，长度≤80
-   - 合同名称、交易公司名称、开票单位名称必填
-   - 经销合同(contractType=2)且非家装：签约单位不能为空
-   - 非纯定制：折扣清单和订单产品线不能为空
-   - 家装合同：合作结束时间>合作开始时间
+<KbCard num="2" title="重点逻辑2：签收方式 {自营特有}">
+<KbQuote>自营合同需配置签收方式，决定签收流程和ERP推送行为</KbQuote>
 
-2. **参数补齐** (`parameterCompletion`)：
-   - 从项目表查询stageName/projectCode/stageId
-   - 将战略报备信息写回合同
-   - 设置创建人/修改人/时间
+**具体逻辑**：
 
-3. **小型项目校验** (`smallProjectAssignment`)：
-   - 默认projectCategory=normal
-   - 小型项目：同一项目只能存在一个生效的合同
+- 1、签收方式1=签收（仅签收流程），签收方式2=签收+验收（双重流程）
+- 2、当signWay=2时，财务签收审核后不推送ERP
+</KbCard>
 
-4. **校验产品数量** (`checkItemQuantityHandle`)：
-   - 意向单中产品在合同清单中不存在→报错
-   - 意向单产品下单数量>合同相同产品数量→报错
+<KbCard num="3" title="重点逻辑3：审批流程按区域区分 {多流程}">
+<KbQuote>不同区域的自营工程合同使用不同的审批流程</KbQuote>
 
-5. **校验操作模式** (`validContractMode`)：
-   - 内部用户(customerClass=1)→只能自营工程(contractMode=1)
-   - 外部用户(customerClass=2)→只能经销商服务(contractMode=2)
+**具体逻辑**：
 
-6. **保存合同头** → 生成编码(事业部编码+AE_EPM_PROJECT_CONTRACT+序号)，valid=1
-
-7. **处理子表**：意向单关联、附件、产品清单、折扣单
+</KbCard>
 
 </div>
-
-<div class="kb-module">
-
-### 合同审批流程
-
-**提交流程** (`saveDataSubmit`)：
-1. 调用`onUserSubmit()`进行提交前处理
-2. 调用`newSave()`保存数据
-3. 构建流程启动参数（subject=工程折扣申请单）
-4. 调用`workflowClient.startInstanceByFlowKey()`启动HZERO工作流
-5. 更新hzApproveStatus=RUN
-
-**流程前校验** (`doCheckMotionChange`)：
-- 非定制合同必须维护产品信息和折扣类型
-- 校验合同是否已审核
-- 更新项目阶段为"折扣申请"
-
-**审批回调** (`doContractCheck`)：
-- 更新折扣单状态为APPROVED
-- 更新项目阶段：增补→"项目供货中"；非增补→"折扣通过"
-
+</div>
 </div>
 
-<div class="kb-module">
+<div id="detail-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="界面模块1：自营工程合同列表页">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>审核状态</td>
+<td>下拉选择框</td>
+<td>审批流程状态</td>
+<td>常显</td>
+<td>1.来源：值集HWKF.APPROVE_STATUS</td>
+<td>值集&lt;集HWKF.APPROVE_STATUS中的项</td>
+<td>EPM_PROJECT_CONTRACT.HZ_APPROVE_STATUS</td>
+</tr>
+<tr>
+<td>有效状态</td>
+<td>下拉选择框(</td>
+<td>合同有效状态</td>
+<td>常显</td>
+<td>1.来源：值集AE.VALID</td>
+<td>1未审核/2有效/3失效/7失效申请中</td>
+<td>EPM_PROJECT_CONTRACT.VALID</td>
+</tr>
+<tr>
+<td>合同编码</td>
+<td>文7文本框</td>
+<td>合同唯一编码</td>
+<td>常显</td>
+<td>1.系统自动生成</td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.CONTRACT_CODE</td>
+</tr>
+<tr>
+<td>合同名称</td>
+<td>文本框</td>
+<td>合同名称</td>
+<td>常显</td>
+<td>1.用户输入</td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.CONTRACT_NAME</td>
+</tr>
+<tr>
+<td>签订时间</td>
+<td>日期选择框</td>
+<td>合同签订?订日期</td>
+<td>常显</td>
+<td>1.用户输入</td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.SIGNED_DATE</td>
+</tr>
+<tr>
+<td>项目编码</td>
+<td>文本框</td>
+<td>关联项目编码</td>
+<td>常显</td>
+<td>1.选择项目LOV带出</td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.PROJECT_CODE</td>
+</tr>
+<tr>
+<td>客户名称</td>
+<td>文本框</td>
+<td>�3客户名称</td>
+<td>常显</td>
+<td>1.选择项目/客户带出</td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.CUSTOMER_NAME</td>
+</tr>
+<tr>
+<td>合同总额</td>
+<td>数字框</td>
+<td>合同金额</td>
+<td>常显</td>
+<td>1.用户9用户输入</td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.CONTRACT_AMT</td>
+</tr>
+<tr>
+<td>签收方式</td>
+<td>下拉选择框</td>
+<td>签收方式</td>
+<td>常显</td>
+<td>1.来源：值集AE.EPM.SIGN_WAY</td>
+<td>1(签收)/2(签收+验收)</td>
+<td>EPM_PROJECT_CONTRACT.SIGN_WAY</td>
+</tr>
+</tbody></table></div>
+</KbCard>
 
-### 合同变更(ECN)
+<KbCard title="界面模块2：合同详情页-基本信息(自营特有字段)">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>签收方式</td>
+<td>下拉E选择框</td>
+<td>签收方式，自营合同必填</td>
+<td>常显</td>
+<td></td>
+<td>1(签收)/2(签收+验收)</td>
+<td>EPM_PROJECT_CONTRACT.SIGN_WAY</td>
+</tr>
+<tr>
+<td>操作模式</td>
+<td>下拉选择框</td>
+<td>操作模式，自营合同必填</td>
+<td>常显</td>
+<td></td>
+<td>值集AE.EPM.CONTRACT_MODE</td>
+<td>EPM_PROJECT_CONTRACT.CONTRACT_MODE</td>
+</tr>
+<tr>
+<td>甲方名称</td>
+<td>文本框</td>
+<td>甲方名称</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.PARTY_A_NAME</td>
+</tr>
+<tr>
+<td>甲方地址</td>
+<td>文本框</td>
+<td>甲方地址</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.PARTY_A_ADDRESS</td>
+</tr>
+<tr>
+<td>甲方法定代表人</td>
+<td>文本框</td>
+<td>甲方法定代表人</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.PARTD_A_LEGAL_PERSON</td>
+</tr>
+<tr>
+<td>甲方电话</td>
+<td>文本框</td>
+<td>甲方电话</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.PARTY_A_PHONE</td>
+</tr>
+<tr>
+<td>付款方式</td>
+<td>下拉选择框</td>
+<td>付款方式</td>
+<td>常显</td>
+<td></td>
+<td>值集AE.EPM.PAYMENT_WAY</td>
+<td>EPM_PROJECT_CONTRACT.PAYMENT_WAY</td>
+</tr>
+<tr>
+<td>付款方银行名称</td>
+<td>文本框</td>
+<td>付款方银行</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.RECEIVING_BANK</td>
+</tr>
+<tr>
+<td>付款方银行账号</td>
+<td>文本框</td>
+<td>付款方银行账号</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.RECEIVING_ACCOUNT</td>
+</tr>
+<tr>
+<td>质保期</td>
+<td>数字框</td>
+<td>质保期(年)</td>
+<td>常显</td>
+<td></td>
+<td>非负整数</td>
+<td>EPM_PROJECT_CONTRACT.WARRANTY_PERIOD</td>
+</tr>
+<tr>
+<td>质保金比例</td>
+<td>数字框</td>
+<td>质保金比例</td>
+<td>常4显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.RETENTION_MONEY_RATIO</td>
+</tr>
+<tr>
+<td>质保金金额</td>
+<td>数字框</td>
+<td>质保金金额</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.RETENTION_MONEY</td>
+</tr>
+<tr>
+<td>履约金</td>
+<td>数字框</td>
+<td>履约保证金金额</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.PERFORMANCE_BOND</td>
+</tr>
+<tr>
+<td>预扣定金单</td>
+<td>LOV</td>
+<td>预扣定金单号</td>
+<td>常显</td>
+<td></td>
+<td>LOV:AE.WITHHOLDING_DEPOSIT_VIEW</td>
+<td>EPM_PROJECT_CONTRACT.WITHHOLDING_DEPOSIT_NO</td>
+</tr>
+<tr>
+<td>收货人</td>
+<td>文本框</td>
+<td>收9收货人</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.RECEIVING_PARTY</td>
+</tr>
+<tr>
+<td>联系方式</td>
+<td>文本框</td>
+<td>收货人电话</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.RECEIVING_PARTY_PHONE</td>
+</tr>
+<tr>
+<td>详细地点</td>
+<td>文本框</td>
+<td>交货地点</td>
+<td>常显</td>
+<td></td>
+<td>-</td>
+<td>EPM_PROJECT_CONTRACT.DELIVERY_PLACE</td>
+</tr>
+</tbody></table></div>
+</KbCard>
 
-**变更类型**：
-- **ecnType=1（变更）**：更新周期条件，删除原EPM_PAYMENT_PLAN_SET，插入变更后EPM_PAYMENT_PLAN_ECN(isNew=2)
-- **ecnType=2（失效）**：设置合同valid=3，可选同时作废工程，删除折扣预设率明细
+<KbCard title="界面模块3：合同详情页-自营特有Tab页">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td></td>
+<td>EpmPaymentPlanSetInfo</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>EpmEontractTermsInfo</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table></div>
+</KbCard>
 
-**保存变更单** (`saveContractEcn`)：
-1. 校验同一合同不能重复发起失效
-2. 生成变更单编码(AE_EPM_PROJECT_CONTRACT_ECN_NO)
-3. 更新合同valid=7（审批中）
+<KbCard title="选择弹窗">
+</KbCard>
+<KbCard title="导入">
+</KbCard>
+<KbCard title="其他按钮">
 
-**删除变更单**：
-1. 删除变更单记录
-2. 恢复合同valid=2
+| 按钮名称 | 按钮作用 | 所在位置 | 显隐条件/可点击条件 | 影响 |
+|---------|---------|---------|-------------------|------|
+| 新建 | 新建合同 | 列表页 | 常显 | 跳转合同详情页 |
+| 失效 |?发起合同失效 | 列表页行操作 | 合同有效状态=2(已生效) | 跳转合同失效页面 |
+| 删除 | 删除合同 | 列表页行操作 | 审核状态=NEW | 调用delete-contract删除 |
 
-</div>
+</KbCard>
+<KbCard title="保存校验">
+<KbSubTitle>校验1：签收方式必填 —— 自营合同特有校验</KbSubTitle>
 
-<div class="kb-module">
+- 第1点：signWay字段为必输，前端DataSet设置required=true
 
-### 合同结案
+<KbTip>前端校验提示</KbTip>
 
-**结案类型**：
-- **actionType=1（项目结案）**：项目下所有合同valid=3，报备失效(projectValid=3)
-- **actionType=2（合同结案）**：合同及所有增补合同valid=3
+```sql
+SELECT SIGN_WAY FROM EPM_PROJECT_CONTRACT WHERE CONTRACT_ID = #{contractId}
+```
 
-**通用处理**：
-- 更新项目阶段为"项目结案"
-- 推送CRM：调用`arrowEbsSdkService.indivireportAdd()`，有效状态设为0
+</KbCard>
+<KbCard title="提交校验">
+<KbSubTitle>校验1：合同提交校验 —— 与经销商合同共用doContractCheck</KbSubTitle>
 
-</div>
+- 第1点：调用doContractCheck校验合同数据完整性
 
-<div class="kb-module">
+<KbTip>阻断性报错</KbTip>
 
-### 折扣单管理
+```sql
+-
+```
 
-**保存折扣单** (`saveDiscountApply`)：
-1. 战略协议(isFrame=2)不维护折扣单
-2. 查询额度内广告费
-3. 校验封顶量(`checkCappedQuantity`)
-4. 保存前校验(产品上架、工程方单价≠0、合同数量≠0)
-5. 金额计算(`calculate`)
+</KbCard>
+<KbCard title="状态机">
+### 状态机
 
-**关键计算公式**：
+<KbSubTitle>状态机流转图</KbSubTitle>
 
-| 计算项 | 公式 | 精度 |
-|--------|------|------|
-| 折前金额 | 出厂折扣率 × 标准单价(不含安装) × 销售额计算数量 | - |
-| 应用折扣率 | 出厂折扣率 × 审批折扣率 | 5位小数 |
-| 折后单价(家装) | 标准单价(不含安装) × 应用折扣率 | 3位小数 |
-| 折后单价(自营工程) | 工程方单价 | 7位小数 |
-| 折后金额 | 销售额计算数量 × 折后单价 | 2位小数 |
-| 运费 | 标准单价 × 运费点数 × 折扣率 | - |
-
-**封顶量校验** (`checkCappedQuantity`)：
-1. 所有行引用统一政策(policyFlag=Y)时才校验
-2. 合同数量必须在坎级区间(minimumQty~cappingQty)内
-3. 单个经销商封顶：合同数量≤customerCapsNumber
-4. 政策行总数量：累计≤totalCapNumber
-
-</div>
-
-<div class="kb-module">
-
-### 状态流转
-
-**合同有效状态(valid)**：
 
 ```text
-新建 → valid=1(未审核)
-  │
-  ├── 提交审批 → valid=1, hzApproveStatus=RUN(审批中)
-  │     ├── 审批通过 → valid=2(有效), hzApproveStatus=APPROVED
-  │     └── 驳回 → hzApproveStatus=REJECTED
-  │
-  ├── 发起失效 → valid=7(审批中)
-  │     ├── 失效审批通过 → valid=3(失效)
-  │     └── 删除变更单 → valid=2(恢复有效)
-  │
-  └── 结案 → valid=3(失效)
+[新建 NEW] ──保存并提交──→ [审批中 RUN] ──审批通过──→ [已审批 APPROVED]
+                                │
+                                ├──审批驳回──→ [已驳回 REJECTED]
+                                �%──撤回──→ [已撤回 WITHDRAW]
 ```
 
-**合同审批状态(hzApproveStatus)**：
+####2状态机列表
 
-| 值 | 含义 |
-|----|------|
-| NEW | 新建 |
-| RUN | 审批中 |
-| APPROVED | 审批通过 |
-| REJECTED | 驳回 |
-| REBUT | 反驳 |
+| 状态机名称 | 状态释义 | 可执行的操作 |
+|-----------|---------|------------|
+| NEW | 新建 | 保存、保存并提交、编辑、删除 |
+| RUN | 审批中 | 等待审批结果 |
+| APPROVED | 已审批 | 失效、签收 |
+| REJECTED | 已驳回 | 保存、保存并提交0提交、编辑 |
+| WITHDRAW | 已撤回 | 保存、保存并提交、编辑 |
 
-</div>
+---
 
-</div>
+</KbCard>
+<KbCard num="1" title="表1：EPM_PROJECT_CONTRACT（工程项目合同表）- 与经销商合同共用">
 
-<div id="faq">
+> 与经销商工程合同共用同一张表，通过CONTRACT_TYPE=1区分自营合同。完整字段参见"经销商工程合同"文档，此处仅列出D自营特有/差异字段
 
-<div class="kb-module">
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| CONTRACT_TYPE | Long | 签约方式 | 签约方式 | 自营合同固定为1(直销) |
+| SIGN_WAY | Long | 签收方式 |/签收方式 | 1=签收/2=签收+验收，自营合同必填 |
+| CONTRACT_MODE | Long | 操作模式 | 操作模式 | 系统词汇AE.EPM.CONTRACT_MODE，自营合同必填 |
+| PARTY_A_NAME | String | 甲方名称 | 甲方名称 | 自营合同必填 |
+| PARTY2A_ADDRESS | String | 甲方地址 | 甲方地址 | 自营合同非必填 |
+| PARTY_A_LEGAL_PERSON | String | 甲方法定代表人 | 甲方法定代表人 | - |
+| PARTY_A_PHONE | String | 甲方电话 | 甲方电话 | - |
+| PAYMENT_WAY | String | 付款方式 | 付款方式 | 系统词汇AE.EPM.PAYMENT_WAY，自营合同必填 |
+| RECEIVING_BANK | String | 付款方银行 | 付款方银行名称 | 自营合同必填 |
+| RECEIVING_ACCOUNT | String | 付款方银行账号 | 付款方银行账号 | 自营合同必填 |
+| WARRANTY_PERIOD | Long | 质保期(年) | 质保期 | 自营合同必填 |
+| RETENTION_MONEY_RATIO | String | 质保金比例 | 质保金比例 | - |
+| RETENTION_MONEY | String | 质保金金额 | 质保金金额 | - |
+| PERFORMANCE_BOND | String | 履约保证金金额 | 履约金 | - |
+| WITHHOLDING_DEPOSIT_NO | String | 预扣定金单号1号 | 预扣定金单 | LOV选择 |
+| RECEIVING_PARTY | String | 收货人 | 收货人 | 自营合同必填 |
+| RECEIVING_PARTY_PHONE | String | 联系方式 | 联系方式 | 自营合同必填 |
+| DELIVERY_PLACE | String | 交货地点 | 详细地点( | 自营合同必填 |
 
-### Q1：合同编码如何生成？ 🔴高频
+---
 
-事业部编码 + 编码规则AE_EPM_PROJECT_CONTRACT + 序号自动生成。
-
-</div>
-
-<div class="kb-module-alt">
-
-### Q2：小型项目有什么特殊限制？
-
-同一项目只能存在一个生效的合同，不允许增补。默认值：priceContainTax=2, priceContainFreight=2, discountType=2。
-
-</div>
-
-<div class="kb-module">
-
-### Q3：经销商客户分类如何影响操作模式？
-
-内部用户(customerClass=1)只能选自营工程(contractMode=1)；外部用户(customerClass=2)只能选经销商服务(contractMode=2)。
-
-</div>
-
-<div class="kb-module-alt">
-
-### Q4：增补合同如何关联主合同？
-
-通过mainContractId字段关联，大于0时为增补合同，记录最原始合同ID。
+</KbCard>
 
 </div>
-
-<div class="kb-module">
-
-### Q5：战略协议合同为什么不维护折扣单？
-
-isFrame=2的战略协议不需要折扣单，保存时会跳过折扣单处理直接返回。
-
+</div>
 </div>
 
-<div class="kb-module-alt">
+<div id="permission" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="权限控制">
 
-### Q6：纯定制合同与普通合同的差异？
+<!-- 空白:待补充 -->
 
-纯定制合同(isCustom=2)：清除折扣信息，删除EPM_CONTRACT_ITEM、折扣单行和提货计划；提交审批时无需校验产品信息和折扣类型。
-
+</KbCard>
+</div>
+</div>
 </div>
 
+<div id="faq" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="报错一览表" :hover="false">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:27%"><col style="width:13%"><col style="width:32%"><col style="width:14%"><col style="width:14%"></colgroup>
+<thead><tr><th>报错信息</th><th>提示节点</th><th>根因与解决方案</th><th>等级</th><th>详细逻辑</th></tr></thead>
+<tbody>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">签收方式不能为空</td>
+            <td style="font-size:13px;">保存</td>
+            <td style="font-size:13px;">自营合同签收方式为必填字段</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">项目数据不存在</td>
+            <td style="font-size:13px;">保存</td>
+            <td style="font-size:13px;">关联的项目已被删除或无效</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-2" class="view-btn">查看</a></td>
+          </tr>
+</tbody></table></div>
+
+<div id="err-detail-1" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>签收方式不能为空</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>自营合同签收方式为必填字段</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
 </div>
 
-<div id="troubleshoot">
-
-<div class="kb-module">
-
-**步骤1：查合同基本信息**
-
-```sql
-SELECT contract_id, contract_code, contract_name, valid, hz_approve_status, contract_type
-FROM epm_project_contract WHERE contract_id = #{contractId};
-```
-
-> 异常判断：查不到→合同被删除；valid与hz_approve_status不一致→数据异常
-
+<div id="err-detail-2" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>项目数据不存在</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>关联的项目已被删除或无效</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+</KbCard>
+<KbCard title="常见问题">
+<div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">签收方式=2(签收+验收)时ERP未推送</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>signWay=2时，财务签收审核后不推送ERP，这是设计行为<br>
+      <strong style="color:#7C3AED;">处理：</strong>确认签收方式配置是否正确，如需推送ERP则签收方式应设为1
+    </div>
+  </div>
+</div>
+</KbCard>
+</div>
+</div>
 </div>
 
-<div class="kb-module-alt">
+<div id="changelog" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="更新记录">
 
-**步骤2：查合同有效状态含义**
-
-| valid值 | 含义 |
-|--------|------|
-| 1 | 未审核 |
-| 2 | 有效 |
-| 3 | 失效 |
-| 7 | 审批中 |
-
+| 日期 | 提交ID | 提交人 | 提交内容 |
+|------|-------|-------|---------|
+| - | - | - | 暂无2026年提交记录 |
+</KbCard>
+</div>
+</div>
 </div>
 
-<div class="kb-module">
+<div id="history" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="历史排查记录">
 
-**步骤3：查折扣申请单**
+<!-- 空白:待补充 -->
 
-```sql
-SELECT discount_apply_id, discount_apply_code, stat
-FROM epm_discount_apply WHERE contract_id = #{contractId};
-```
-
+</KbCard>
 </div>
-
-<div class="kb-module-alt">
-
-**步骤4：查合同变更单**
-
-```sql
-SELECT ecn_id, ecn_code, ecn_type, hz_approve_status
-FROM epm_project_contract_ecn WHERE contract_id = #{contractId};
-```
-
 </div>
-
-<div class="kb-module">
-
-**步骤5：查合同产品清单**
-
-```sql
-SELECT contract_item_line_id, item_code, item_name, contract_qty, contract_price
-FROM epm_contract_item WHERE contract_id = #{contractId};
-```
-
-</div>
-
-<div class="kb-module-alt">
-
-**上游依赖**：项目(EPM_PROJECT)、客户(CUSTOMER)、交易公司(EPM_TRADING_COMPANY)、事业部(DIVISION_BASE_SET)、折扣政策(EPM_DISCOUNT_POLICY)、意向单(SA_OUT_BILL_HEAD)
-
-**下游影响**：出库单(INV_OUT_BILL)、订单(SA_OUT_BILL)、报备(EPM_REPORT)推送CRM、折扣预设率(CM_DISC_PRESET_RATE_DTL)
-
-</div>
-
-</div>
-
-<div id="history">
-
-<div class="kb-module">
-
-### 历史排查记录
-
-*(本模块暂无历史排查记录，后续遇到问题后会在此补充)*
-
-</div>
-
-</div>
-
-<div id="related">
-
-<div class="kb-module">
-
-### 关联模块
-
-| 模块 | 关联方式 | 说明 |
-|------|---------|------|
-| 工程项目(EPM_PROJECT) | 合同.projectId | 项目阶段随合同审批流转 |
-| 工程要货订单(SA_OUT_BILL) | 意向单关联 | 合同产品数量≥意向单下单数量 |
-| 家装真实性核销(EPM_INVOICE_TRUTH) | 出库单关联 | 合同产品经出库后进入核销 |
-| 项目到款引入(EPM_PAYMENT_IMPORT) | 客户关联 | 同客户下的到款单用于回款认领 |
-| 工程服务费报销(EPM_SERVICE_FEE) | 项目关联 | 合同对应项目的服务费报销 |
-| 报备(EPM_REPORT) | 项目报备推送CRM | 结案时推送报备失效 |
-
-</div>
-
 </div>
