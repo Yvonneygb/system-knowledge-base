@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="2" title="工程折扣政策失效" desc="工程管理-项目交付业务说明" />
+<KbHero num="3" title="工程折扣政策失效" desc="工程管理-项目交付业务说明" />
 
 <KbCard title="业务介绍">
 
@@ -19,27 +19,23 @@
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
 
-```
-新建失效单 → 选择折扣政策 → 选择失效产品明细行 → 保存 → 保存并提交(发起审批) → 审批中 → 审批通过
-                                                                                              ↓
-                                                                                     更新政策行失效状态(VALID_STAT=3)
-                                                                                              ↓
-                                                                                   判断该政策所有行是否均已失效
-                                                                                              ↓
-                                                                                   是 → 更新政策头失效状态(VALID=3)
-                                                                                   否 → 政策头保持原状态
-                                                                                              ↓
-                                                                                   通用(suitableType=normal)不推送CRM
-                                                                                   专项(suitableType=special)推送CRM失效
+```text
+工程折扣政策申请(已生效) → 选择政策行发起失效申请 → 保存/提交 → 工作流审批
+  → 审批通过 → 更新政策行失效状态(validStat=3) → 判断政策头是否全部失效 → 推送CRM(专项折扣)
+  → 审批拒绝/驳回/终止 → 流程结束，政策行不变
 ```
 
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
 
-| 上游单据 | 依赖说明 |
-|---------|---------|
-| 工程折扣政策申请 | 失效单必须关联一条已生效的工程折扣政策（IS_MAKT=0, SUITABLE_TYPE=normal），通过LOV选择 |
+| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
+|---------|---------|---------|------------|
+| 工程折扣政策申请 | 数据依赖 | 失效申请必须关联一条已生效的折扣政策，从中选择要失效的产品行 | 政策状态为已生效(valid=2) |
+| 编码规则配置 | 配置依赖 | 生成政策失效单号，编码规则AE.GC_DISCOUNT_POLICY_DISABLED | 编码规则已配置且生效 |
+| 工作流引擎 | 配置依赖 | 提交时启动审批流程，流程编码DISCOUNT_POLICY_DISABLED | 工作流已部署 |
+| CRM系统 | 数据依赖 | 审批通过后推送CRM失效信息（仅专项折扣） | suitableType≠normal |
+| OA审批系统 | 配置依赖 | 推送OA待办审批，回调更新审批状态 | OA单据映射已配置 |
 
 </KbCard>
 
@@ -48,10 +44,9 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
-| 工程折扣政策行 | 政策行状态失效 | 审批通过后，关联的政策行生效状态更新为已失效(VALID_STAT=3) |
-| 工程折扣政策头 | 政策头状态失效 | 当该政策下所有行均失效后，政策头有效状态更新为已失效(VALID=3) |
-| CRM系统 | 失效信息推送 | 通用类型(suitableType=normal)不推送CRM；专项类型(suitableType=special)审批通过后推送CRM执行失效 |
-| OA系统 | 失效审批推送 | 保存并提交时推送OA审批，携带头信息和明细行数据 |
+| 工程折扣政策 | 政策行失效 | 审批通过后，所选政策行的validStat更新为3(已失效)，该行不再参与折扣计算 |
+| 工程折扣政策 | 政策头失效 | 当政策下所有产品行均失效时，政策头valid更新为3(已失效)，整个政策不再生效 |
+| CRM系统 | CRM侧政策失效 | 审批通过后，专项折扣(suitableType≠normal)推送CRM接口policyDisabled，标记CRM侧政策行失效 |
 
 </div>
 </KbCard>
@@ -62,62 +57,44 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="重点逻辑1：新建失效单">
+<KbCard num="1" title="重点逻辑1：工程/家装/样品三菜单共用后端代码 共用代码">
+<KbQuote>工程折扣政策失效、家装折扣政策失效、样品折扣政策失效三个菜单共用同一套后端Controller和ServiceImpl，通过前端传递的isMakt和suitableType参数区分业务类型</KbQuote>
+
 **具体逻辑**：
 
-- 1、用户选择一条工程折扣政策，系统自动带出政策类型、政策名称、适用客户、适用区域、适用省份等信息。用户需填写失效原因（必填），并选择需要失效的产品明细行。
+- 1、列表查询时，前端固定传suitableType参数——工程传normal、家装传special(isMakt=0)、样品传special(isMakt=2)
+- 2、编码规则根据关联政策的suitableType和isMakt自动选择——工程用AE.GC_DISCOUNT_POLICY_DISABLED、家装用AE.JZ_DISCOUNT_POLICY_DISABLED、样品用AE.YP_DISCOUNT_POLICY_DISABLED
+- 3、审批通过后，通用折扣(suitableType=normal)不推送CRM，专项折扣(suitableType=special)推送CRM
 </KbCard>
 
-<KbCard num="2" title="重点逻辑2：选择失效产品明细行">
+<KbCard num="2" title="重点逻辑2：审批通过后执行失效 核心逻辑">
+<KbQuote>工作流审批通过是政策失效的生效条件，审批通过后才真正修改政策行和头的失效状态</KbQuote>
+
 **具体逻辑**：
 
-- 1、点击"新建"按钮弹出选择弹窗，展示所选政策下尚未失效的产品明细行（过滤已失效行），用户可多选后确认添加到失效单中。已添加的行不会在弹窗中重复出现。
+- 1、审批通过后，调用updateVaildByDisabledId将本次失效申请关联的所有政策行validStat更新为3
+- 2、查询该政策下所有政策行，过滤掉validStat≠3且不属于本次失效申请的行，如果剩余行数为0则将政策头valid更新为3(全部失效)
+- 3、专项折扣推送CRM，逐行调用crmSdkService.policyDisabled接口，传入endFlag=Y、endUser、endTime和policyItemId(CRM行ID)
 </KbCard>
 
-<KbCard num="3" title="重点逻辑3：阶梯政策展示">
+<KbCard num="3" title="重点逻辑3：保存时政策行与失效申请关联 核心逻辑">
+<KbQuote>政策行通过discountPolicyDisabledId字段与失效申请建立关联，用于审批通过后定位需要失效的行</KbQuote>
+
 **具体逻辑**：
 
-- 1、点击产品明细行时，系统加载该行的阶梯政策信息（起订量、封顶量、特价、折扣率），在下方阶梯政策区域展示。
+- 1、新建时，先insert失效申请头，获取主键ID后，将选中的政策行的discountPolicyDisabledId更新为该ID
+- 2、编辑时，先清空该失效申请下所有政策行的discountPolicyDisabledId(clearDisabledId)，再重新关联新选中的行(updateDisabledId)
+- 3、删除时，先清空关联(clearDisabledId)，再删除失效申请头
 </KbCard>
 
-<KbCard num="4" title="重点逻辑4：保存逻辑">
+<KbCard num="4" title="重点逻辑4：前端submit参数覆盖疑似BUG 已知问题">
+<KbQuote>工程折扣政策失效前端headDS.ts中，submit时硬编码覆盖isMakt:2和suitableType:'special'，这是样品的参数而非工程的参数</KbQuote>
+
 **具体逻辑**：
 
-- 1、失效政策行不允许为空，至少需要选择一行产品明细
-- 2、新建时自动生成政策失效编码，编码规则根据政策类型区分（工程使用工程编码规则）
-- 3、保存时将选中的政策行关联到失效单
-- 4、更新时先清除旧关联，再重新建立关联
-- 5、同时保存附件信息
-</KbCard>
-
-<KbCard num="5" title="重点逻辑5：保存并提交逻辑">
-**具体逻辑**：
-
-- 1、先执行保存，然后发起工作流审批。工作流主题格式为"全渠道样品折扣政策失效_失效编号_用户名_事业部_时间"。
-</KbCard>
-
-<KbCard num="6" title="重点逻辑6：审批通过后处理">
-**具体逻辑**：
-
-- 1、更新失效单状态为审批通过
-- 2、更新关联政策行的生效状态为已失效
-- 3、检查该政策下是否所有行均已失效，若全部失效则更新政策头有效状态为已失效
-- 4、通用类型（工程）不推送CRM；专项类型推送CRM执行失效
-</KbCard>
-
-<KbCard num="7" title="重点逻辑7：删除逻辑">
-**具体逻辑**：
-
-- 1、仅新建状态的失效单允许删除。删除时同时清除政策行与该失效单的关联关系。
-</KbCard>
-
-<KbCard num="8" title="重点逻辑8：编码规则">
-**具体逻辑**：
-
-- 1、根据所失效政策的类型自动选择编码规则：
-- 2、工程（suitableType=normal）：使用工程折扣政策失效编码规则
-- 3、家装（suitableType=special, isMakt≠2）：使用家装折扣政策失效编码规则
-- 4、样品（isMakt=2）：使用样品折扣政策失效编码规则
+- 1、工程折扣政策失效应传isMakt:0和suitableType:'normal'，但代码中写死为isMakt:2和suitableType:'special'
+- 2、该BUG可能导致后端编码规则选择错误（选择样品编码规则而非工程编码规则），以及列表查询suitableType过滤异常
+- 3、LOV查询参数(isMakt:0, suitableType:'normal')和列表查询参数(suitableType:'normal')是正确的，仅submit覆盖有误
 </KbCard>
 
 </div>
@@ -127,238 +104,636 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="界面模块">
-<KbSubTitle>列表页</KbSubTitle>
-
-| 区域 | 说明 |
-|------|------|
-| 查询栏 | 政策失效编号、政策申请编号、审核状态（HWKF.APPROVE_STATUS）、政策类型（AE.EPM.POLICY_TYPE） |
-| 操作按钮 | 新建、导出 |
-| 列表字段 | 审核状态、政策失效编号、政策申请编号、申请人、申请时间、政策类型、政策名称、适用客户、适用区域、适用省份、适用客户分类、有效开始日期、有效结束日期、失效原因、最后更新时间 |
-| 行操作 | 查看（所有状态）、删除（仅新建状态） |
-
-
-<KbSubTitle>详情页</KbSubTitle>
-
-| 区域 | 说明 |
-|------|------|
-| 头部按钮 | 刷新、编辑、保存、保存并提交（新建/拒绝/撤回状态可见） |
-| 基本信息Tab | 政策失效编号（自动生成）、申请人（默认当前用户）、申请时间（默认当前时间）、单据状态、政策申请单号（LOV选择）、政策类型、政策名称、适用客户、适用区域、适用省份、适用客户分类、失效原因（必填）、有效开始日期、有效结束日期 |
-| 产品明细区 | 产品明细行表格，支持新建（弹窗选择）、删除操作 |
-| 阶梯政策区 | 点击产品行展示阶梯政策（起订量、封顶量、特价、折扣率） |
-| 附件Tab | 附件上传，attachConfId=9022 |
-| 流程审批Tab | 有流程实例ID时展示审批历史 |
-
-
+<KbCard title="界面模块1：列表页">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>审核状态</td>
+<td>下拉选择框</td>
+<td>审批流程状态</td>
+<td>常显</td>
+<td>默认空；来源值集HWKF.APPROVE_STATUS</td>
+<td>HWKF.APPROVE_STATUS值集</td>
+<td>EPM_DISCOUNT_POLICY_DISABLED.HZ_APPROVE_STATUS</td>
+</tr>
+<tr>
+<td>政策失效编号</td>
+<td>文本框</td>
+<td>系统自动生成的失效单号</td>
+<td>常显</td>
+<td>系统按编码规则自动生成</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_DISABLED.DISCOUNT_POLICY_DISABLED_CODE</td>
+</tr>
+<tr>
+<td>政策申请编号</td>
+<td>文本框</td>
+<td>关联的折扣政策编码</td>
+<td>常显</td>
+<td>来源关联政策头</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.DISCOUNT_POLICY_CODE</td>
+</tr>
+<tr>
+<td>申请人</td>
+<td>文本框</td>
+<td>创建人姓名</td>
+<td>常显</td>
+<td>系统自动取当前用户realName</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>申请时间</td>
+<td>日期选择器</td>
+<td>创建时间</td>
+<td>常显</td>
+<td>系统自动记录</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_DISABLED.CREATION_DATE</td>
+</tr>
+<tr>
+<td>政策类型</td>
+<td>下拉选择框</td>
+<td>折扣政策类型</td>
+<td>常显</td>
+<td>来源值集AE.EPM.POLICY_TYPE</td>
+<td>AE.EPM.POLICY_TYPE值集</td>
+<td>EPM_DISCOUNT_POLICY.POLICY_TYPE</td>
+</tr>
+<tr>
+<td>政策名称</td>
+<td>文本框</td>
+<td>折扣政策名称</td>
+<td>常显</td>
+<td>来源关联政策头</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.DISCOUNT_POLICY_NAME</td>
+</tr>
+<tr>
+<td>适用客户</td>
+<td>文本框</td>
+<td>政策适用经销商</td>
+<td>常显</td>
+<td>来源政策适用客户表，逗号拼接</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>适用区域</td>
+<td>文本框</td>
+<td>政策适用销售区域</td>
+<td>常显</td>
+<td>来源关联政策头</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.SALE_AREA_NAME</td>
+</tr>
+<tr>
+<td>适用省份</td>
+<td>文本框</td>
+<td>政策适用省份</td>
+<td>常显</td>
+<td>来源关联政策头</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.PROVINCE_NAME</td>
+</tr>
+<tr>
+<td>适用客户分类</td>
+<td>下拉选择框</td>
+<td>客户分类</td>
+<td>常显</td>
+<td>来源值集AE.APPLICABLE_CUSTOMER_CLASS</td>
+<td>AE.APPLICABLE_CUSTOMER_CLASS值集</td>
+<td>EPM_DISCOUNT_POLICY.CUSTOMER_CLASS</td>
+</tr>
+<tr>
+<td>有效开始日期</td>
+<td>日期选择器</td>
+<td>政策有效期开始</td>
+<td>常显</td>
+<td>来源关联政策头</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.EFFECTIVE_DATE_START</td>
+</tr>
+<tr>
+<td>有效结束日期</td>
+<td>日期选择器</td>
+<td>政策有效期结束</td>
+<td>常显</td>
+<td>来源关联政策头</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.EFFECTIVE_DATE_END</td>
+</tr>
+<tr>
+<td>失效原因</td>
+<td>文本框</td>
+<td>失效原因说明</td>
+<td>常显</td>
+<td>用户手动输入</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_DISABLED.NOTE</td>
+</tr>
+<tr>
+<td>最后更新时间</td>
+<td>日期选择器</td>
+<td>最后修改时间</td>
+<td>常显</td>
+<td>系统自动记录</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_DISABLED.LAST_UPDATE_DATE</td>
+</tr>
+</tbody></table></div>
 </KbCard>
+
+<KbCard title="界面模块2：详情页-基本信息">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>政策失效编号</td>
+<td>文本框</td>
+<td>系统自动生成的失效单号</td>
+<td>常显</td>
+<td>新建时系统按编码规则自动生成；不可编辑</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_DISABLED.DISCOUNT_POLICY_DISABLED_CODE</td>
+</tr>
+<tr>
+<td>申请人</td>
+<td>文本框</td>
+<td>创建人姓名</td>
+<td>常显</td>
+<td>默认取当前登录用户realName；不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>申请时间</td>
+<td>日期选择器</td>
+<td>创建时间</td>
+<td>常显</td>
+<td>默认取当前时间；不可编辑</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_DISABLED.CREATION_DATE</td>
+</tr>
+<tr>
+<td>单据状态</td>
+<td>下拉选择框</td>
+<td>审批流程状态</td>
+<td>常显</td>
+<td>默认NEW；来源值集HWKF.APPROVE_STATUS；不可编辑</td>
+<td>HWKF.APPROVE_STATUS值集</td>
+<td>EPM_DISCOUNT_POLICY_DISABLED.HZ_APPROVE_STATUS</td>
+</tr>
+<tr>
+<td>政策申请单号</td>
+<td>LOV弹窗</td>
+<td>关联的折扣政策</td>
+<td>常显</td>
+<td>必填；LOV弹窗选择，LOV编码DISCOUNT_POLICY_DIALOG_V，参数isMakt=0, suitableType=normal；选择后自动带出政策类型、名称、客户、区域、省份、客户分类、有效期；编辑时可操作</td>
+<td>仅suitableType=normal且isMakt=0的已生效政策</td>
+<td>EPM_DISCOUNT_POLICY.DISCOUNT_POLICY_CODE</td>
+</tr>
+<tr>
+<td>政策类型</td>
+<td>下拉选择框</td>
+<td>折扣政策类型</td>
+<td>常显</td>
+<td>必填；来源值集AE.EPM.POLICY_TYPE；选择政策后自动带出，不可编辑</td>
+<td>AE.EPM.POLICY_TYPE值集</td>
+<td>EPM_DISCOUNT_POLICY.POLICY_TYPE</td>
+</tr>
+<tr>
+<td>政策名称</td>
+<td>文本框</td>
+<td>折扣政策名称</td>
+<td>常显</td>
+<td>选择政策后自动带出；不可编辑；最大长度30</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.DISCOUNT_POLICY_NAME</td>
+</tr>
+<tr>
+<td>适用客户</td>
+<td>文本框</td>
+<td>政策适用经销商</td>
+<td>常显</td>
+<td>选择政策后自动带出；不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>适用区域</td>
+<td>文本框</td>
+<td>政策适用销售区域</td>
+<td>常显</td>
+<td>选择政策后自动带出；不可编辑</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.SALE_AREA_NAME</td>
+</tr>
+<tr>
+<td>适用省份</td>
+<td>文本框</td>
+<td>政策适用省份</td>
+<td>常显</td>
+<td>选择政策后自动带出；不可编辑</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.PROVINCE_NAME</td>
+</tr>
+<tr>
+<td>适用客户分类</td>
+<td>下拉选择框</td>
+<td>客户分类</td>
+<td>常显</td>
+<td>来源值集AE.APPLICABLE_CUSTOMER_CLASS；选择政策后自动带出，不可编辑</td>
+<td>AE.APPLICABLE_CUSTOMER_CLASS值集</td>
+<td>EPM_DISCOUNT_POLICY.CUSTOMER_CLASS</td>
+</tr>
+<tr>
+<td>失效原因</td>
+<td>文本域</td>
+<td>失效原因说明</td>
+<td>常显</td>
+<td>必填；用户手动输入；编辑时可操作</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_DISABLED.NOTE</td>
+</tr>
+<tr>
+<td>有效开始日期</td>
+<td>日期选择器</td>
+<td>政策有效期开始</td>
+<td>常显</td>
+<td>选择政策后自动带出；不可编辑；不大于有效结束日期</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.EFFECTIVE_DATE_START</td>
+</tr>
+<tr>
+<td>有效结束日期</td>
+<td>日期选择器</td>
+<td>政策有效期结束</td>
+<td>常显</td>
+<td>选择政策后自动带出；不可编辑；不小于有效开始日期</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY.EFFECTIVE_DATE_END</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="界面模块3：详情页-产品明细行">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>申请类型</td>
+<td>下拉选择框</td>
+<td>产品申请类型</td>
+<td>常显</td>
+<td>来源值集AE.EPM.APPLICATION_TYPE</td>
+<td>AE.EPM.APPLICATION_TYPE值集(1-产品/2-型号/3-全产品)</td>
+<td>EPM_DISCOUNT_POLICY_ITEM.APPLICATION_TYPE</td>
+</tr>
+<tr>
+<td>产品编码</td>
+<td>文本框</td>
+<td>产品编码</td>
+<td>常显</td>
+<td>来源政策行</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM.ITEM_CODE</td>
+</tr>
+<tr>
+<td>产品名称</td>
+<td>文本框</td>
+<td>产品名称</td>
+<td>常显</td>
+<td>来源政策行</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM.ITEM_NAME</td>
+</tr>
+<tr>
+<td>产品型号</td>
+<td>文本框</td>
+<td>产品型号</td>
+<td>常显</td>
+<td>来源政策行</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM.ITEM_MODEL</td>
+</tr>
+<tr>
+<td>单位</td>
+<td>文本框</td>
+<td>计量单位</td>
+<td>常显</td>
+<td>来源政策行</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM.UOM_NAME</td>
+</tr>
+<tr>
+<td>标准单价(元)</td>
+<td>数值框</td>
+<td>含安装的标准单价</td>
+<td>常显</td>
+<td>来源政策行</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM.STAND_PRICE</td>
+</tr>
+<tr>
+<td>优惠方式</td>
+<td>下拉选择框</td>
+<td>优惠方式</td>
+<td>常显</td>
+<td>来源值集AE.EPM.PREFERENTIAL_TYPE</td>
+<td>AE.EPM.PREFERENTIAL_TYPE值集(1-折扣/2-特价)</td>
+<td>EPM_DISCOUNT_POLICY_ITEM.PREFERENTIAL_TYPE</td>
+</tr>
+<tr>
+<td>封顶数量校验</td>
+<td>开关</td>
+<td>是否校验封顶数量</td>
+<td>常显</td>
+<td>来源政策行；1=否/2=是</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM.CAPPING</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="界面模块4：详情页-阶梯政策行(二级明细)">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>起订量</td>
+<td>数值框</td>
+<td>阶梯起订量</td>
+<td>常显</td>
+<td>来源政策行二级明细</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM_LINE.MINIMUM_QTY</td>
+</tr>
+<tr>
+<td>封顶量</td>
+<td>数值框</td>
+<td>阶梯封顶量</td>
+<td>常显</td>
+<td>来源政策行二级明细</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM_LINE.CAPPING_QTY</td>
+</tr>
+<tr>
+<td>特价</td>
+<td>数值框</td>
+<td>阶梯特价金额</td>
+<td>常显</td>
+<td>来源政策行二级明细</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM_LINE.SPECIAL_OFFER</td>
+</tr>
+<tr>
+<td>折扣率</td>
+<td>数值框</td>
+<td>阶梯折扣率</td>
+<td>常显</td>
+<td>来源政策行二级明细</td>
+<td>-</td>
+<td>EPM_DISCOUNT_POLICY_ITEM_LINE.DISCOUNT_RATE</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
 <KbCard title="选择弹窗">
-<KbSubTitle>政策申请单号LOV（DISCOUNT_POLICY_DIALOG_V）</KbSubTitle>
+<KbSubTitle>弹窗1：折扣政策选择弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
 
-- 数据范围：IS_MAKT=0 且 SUITABLE_TYPE='normal' 的已生效折扣政策
-- 排查SQL：
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| isMakt | 是否样品 | 区分工程/样品 | 0 |
+| suitableType | 适用类型 | 区分工程/家装/样品 | normal |
+
+**数据范围**
+
 ```sql
-SELECT * FROM EPM_DISCOUNT_POLICY
-WHERE IS_MAKT = 0
-  AND SUITABLE_TYPE = 'normal'
-  AND VALID = 2;
+EPM_DISCOUNT_POLICY中isMakt=0(非样品)且suitable_type='normal'(工程通用折扣)且valid=2(已生效)
 ```
 
+<KbSubTitle>弹窗2：政策产品明细选择弹窗 <KbBadge type="purple">多选</KbBadge></KbSubTitle>
 
-<KbSubTitle>产品明细选择弹窗</KbSubTitle>
+**入参**
 
-- 数据范围：所选政策下未失效（VALID_STAT≠3）且未被当前失效单选中的产品明细行
-- 排查SQL：
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| discountPolicyId | 政策ID | 关联的政策头ID | 1001 |
+| validStat | 生效状态 | 仅查询未失效的行 | 0 |
+| notExistsId | 排除已选行ID | 已在界面上的行不再出现 | [101,102] |
+
+**数据范围**
+
 ```sql
-SELECT * FROM EPM_DISCOUNT_POLICY_ITEM
-WHERE DISCOUNT_POLICY_ID = :discountPolicyId
-  AND VALID_STAT = 0
-  AND DISCOUNT_POLICY_ITEM_ID NOT IN (:notExistsIds);
+EPM_DISCOUNT_POLICY_ITEM中discount_policy_id=入参且valid_stat=0(未失效)且discount_policy_disabled_id为空(未被其他失效申请关联)
 ```
-
 
 </KbCard>
 <KbCard title="导入">
-无导入功能。
 </KbCard>
 <KbCard title="其他按钮">
 
-| 按钮 | 说明 |
-|------|------|
-| 导出 | 列表页导出，接口：/v1/{organizationId}/epm-discount-policy-disabled/exportEpmDiscountPolicyDisabled，条件suitableType=normal |
+| 按钮名称 | 按钮作用 | 所在位置 | 显隐条件/可点击条件 | 影响 |
+|---------|---------|---------|-------------------|------|
+| 新建 | 新增失效申请 | 列表页 | 有创建权限 | 跳转详情页新建模式 |
+| 导出 | 导出列表数据 | 列表页 | 有导出权限 | 调用exportEpmDiscountPolicyDisabled接口，suitableType=normal |
+| 查看 | 查看详情 | 列表页-行操作 | 常显 | 跳转详情页查看模式(editFlag=false) |
+| 删除 | 删除失效申请 | 列表页-行操作 | 仅NEW状态可删除 | 调用DELETE接口，先清空政策行关联再删头 |
+| 刷新 | 刷新详情数据 | 详情页 | 常显 | 重新查询详情数据 |
+| 编辑 | 进入编辑模式 | 详情页 | 非审批中/已审批/挂起/退回状态 | 切换editFlag为true |
+| 保存 | 保存当前修改 | 详情页 | 编辑模式下 | 调用POST保存接口 |
+| 保存并提交 | 保存并提交审批 | 详情页 | 编辑模式下且状态为NEW/REJECTED/WITHDRAW | 先保存再启动工作流 |
+| 新建(行) | 新增失效产品行 | 详情页-产品明细 | 编辑模式下 | 弹出政策产品选择弹窗 |
+| 删除(行) | 删除已选产品行 | 详情页-产品明细 | 编辑模式下且有选中行 | 从行DataSet中移除选中记录 |
 
 </KbCard>
 <KbCard title="保存校验">
+<KbSubTitle>校验1：失效政策行不允许为空 —— 确保至少选择一个要失效的产品行</KbSubTitle>
 
-| 校验项 | 校验规则 | 排查SQL |
-|--------|---------|---------|
-| 失效政策行非空 | 至少选择一行产品明细 | `SELECT COUNT(*) FROM EPM_DISCOUNT_POLICY_ITEM WHERE DISCOUNT_POLICY_DISABLED_ID = :disabledId;` 结果需>0 |
-| 政策申请单号必填 | 头部折扣政策不能为空 | - |
-| 失效原因必填 | 头部失效原因不能为空 | - |
-| 政策类型必填 | 头部政策类型不能为空 | - |
-| 有效日期校验 | 有效开始日期不能大于有效结束日期 | - |
-| 封顶数量校验 | 政策封顶总数量行必须大于单个经销商封顶数量 | - |
-| 编码生成校验 | 所选折扣政策必须存在 | `SELECT * FROM EPM_DISCOUNT_POLICY WHERE DISCOUNT_POLICY_CODE = :code;` 需有结果 |
-| 用户上下文校验 | 必须能获取当前登录用户信息 | - |
+- 第1点：保存时检查discountPolicyItemDTOList是否为空
+- 第2点：如果为空或无有效行(非delete状态)，抛出异常"失效政策行不允许为空"
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT COUNT(*) FROM EPM_DISCOUNT_POLICY_ITEM dpi
+    WHERE dpi.DISCOUNT_POLICY_DISABLED_ID = :discountPolicyDisabledId
+```
+
+<KbSubTitle>校验2：折扣政策必须存在 —— 确保关联的政策编码有效</KbSubTitle>
+
+- 第1点：生成编码时根据discountPolicyCode查询EPM_DISCOUNT_POLICY
+- 第2点：如果查询为空，抛出异常"当前折扣政策不允许失效 请检查"
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT * FROM EPM_DISCOUNT_POLICY dp
+    WHERE dp.DISCOUNT_POLICY_CODE = :discountPolicyCode
+```
 
 </KbCard>
 <KbCard title="提交校验">
+<KbSubTitle>校验1：仅特定状态允许提交 —— 防止重复提交或非法状态提交</KbSubTitle>
 
-| 校验项 | 校验规则 | 排查SQL |
-|--------|---------|---------|
-| 保存校验全部通过 | 同保存校验 | 同上 |
-| 单据状态校验 | 仅新建/拒绝/撤回状态允许提交 | `SELECT HZ_APPROVE_STATUS FROM EPM_DISCOUNT_POLICY_DISABLED WHERE DISCOUNT_POLICY_DISABLED_ID = :id;` 需为NEW/REJECTED/WITHDRAW |
-| 工作流启动校验 | 流程定义编码(flowCode)必须有效 | - |
+- 第1点：前端控制，仅NEW/REJECTED/WITHDRAW/null状态显示"保存并提交"按钮
+- 第2点：保存并提交时先执行保存逻辑，再启动工作流
+
+<KbTip>按钮隐藏</KbTip>
+
+```sql
+SELECT HZ_APPROVE_STATUS FROM EPM_DISCOUNT_POLICY_DISABLED
+    WHERE DISCOUNT_POLICY_DISABLED_ID = :discountPolicyDisabledId
+```
 
 </KbCard>
 <KbCard title="状态机">
+### 状态机
 
+<KbSubTitle>状态机流转图</KbSubTitle>
+
+
+```text
+NEW(新建) ──保存并提交──→ RUN(审批中) ──审批通过──→ APPROVED(已审批)
+  ↑                         │
+  │                         ├──审批拒绝──→ REJECTED(已拒绝) ──保存并提交──→ RUN
+  │                         ├──审批驳回──→ REBUT(已驳回)
+  │                         └──终止──────→ INTERRUPT(已终止)
+  │
+  └──删除──→ (删除)
+
+NEW ──撤回──→ WITHDRAW(已撤回) ──保存并提交──→ RUN
 ```
-新建(NEW) ──保存──→ 新建(NEW)
-   │
-   ├──保存并提交──→ 审批中(RUN)
-   │                    │
-   │                    ├──审批通过──→ 已审批(APPROVED) [触发失效逻辑+CRM推送]
-   │                    ├──审批拒绝──→ 已拒绝(REJECTED) [可重新提交]
-   │                    ├──已撤回──→ 已撤回(WITHDRAW) [可重新提交]
-   │                    └──终止──→ 已终止(INTERRUPT)
-   │
-   └──删除──→ 物理删除（仅NEW状态允许）
-```
+
+<KbSubTitle>状态机列表</KbSubTitle>
+
+
+| 状态机名称 | 状态释义 | 可执行的操作 |
+|-----------|---------|------------|
+| NEW | 新建 | 编辑、保存、保存并提交、删除 |
+| RUN | 审批中 | 无(等待审批结果) |
+| APPROVED | 审批通过 | 无(流程结束) |
+| REJECTED | 审批拒绝 | 编辑、保存、保存并提交 |
+| WITHDRAW | 已撤回 | 编辑、保存、保存并提交 |
+| INTERRUPT | 已终止 | 无(流程结束) |
 
 ---
 
 </KbCard>
+<KbCard num="1" title="表1：EPM_DISCOUNT_POLICY_DISABLED（折扣政策失效头表）">
 
-<KbSubTitle>数据库表详解</KbSubTitle>
-
-<KbCard num="1" title="EPM_DISCOUNT_POLICY_DISABLED（折扣政策失效主表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| DISCOUNT_POLICY_DISABLED_ID | Long | 政策失效ID（主键） |
-| DISCOUNT_POLICY_DISABLED_CODE | String | 政策失效编码（自动生成） |
-| DISCOUNT_POLICY_ID | Long | 关联的折扣政策ID（必填） |
-| ORGANIZATION_ID | Long | 组织ID（必填） |
-| STAT | Long | 单据状态 |
-| WFID | Long | 流程ID |
-| WFFLAG | Long | 流程状态 |
-| NOTE | String | 失效原因 |
-| IS_CAL_AD | Long | 是否计广告费 |
-| HZ_INSTANCE_ID | Long | 流程实例ID（关联hwkf_run_instance） |
-| HZ_APPROVE_STATUS | String | 审批状态（值集：HWKF.APPROVE_STATUS） |
-| CALLBACK_SOURCE | String | 外部审批回调来源 |
-| CREATOR | String | 创建人 |
-| CREATETIME | Date | 创建时间 |
-| UPDATOR | String | 修改人 |
-| UPDATETIME | Date | 修改时间 |
-| CREATION_DATE | Date | 审计创建时间 |
-| CREATED_BY | Long | 审计创建人 |
-| LAST_UPDATED_BY | Long | 审计修改人 |
-| LAST_UPDATE_DATE | Date | 审计修改时间 |
-| OBJECT_VERSION_NUMBER | Long | 乐观锁版本号 |
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| DISCOUNT_POLICY_DISABLED_ID | BIGINT | 政策失效ID(主键) | - | 自增主键 |
+| DISCOUNT_POLICY_DISABLED_CODE | VARCHAR | 政策失效编码 | 政策失效编号 | 新建时按编码规则自动生成，工程规则AE.GC_DISCOUNT_POLICY_DISABLED |
+| STAT | BIGINT | 单据状态 | - | 默认值待确认 |
+| WFID | BIGINT | 流程ID | - | 工作流实例ID |
+| WFFLAG | BIGINT | 流程状态 | - | 工作流状态标记 |
+| CREATOR | VARCHAR | 创建人(旧字段) | - | 系统自动记录 |
+| CREATETIME | DATE | 创建时间(旧字段) | - | 系统自动记录 |
+| UPDATOR | VARCHAR | 修改人(旧字段) | - | 系统自动记录 |
+| UPDATETIME | DATE | 修改时间(旧字段) | - | 系统自动记录 |
+| DISCOUNT_POLICY_ID | BIGINT | 关联政策ID | 政策申请单号 | 必填，LOV选择后带入 |
+| ORGANIZATION_ID | BIGINT | 组织ID | - | 必填，取用户上下文DEPT |
+| NOTE | VARCHAR | 失效原因 | 失效原因 | 必填，用户手动输入 |
+| IS_CAL_AD | BIGINT | 是否计广告费 | - | 默认0(否) |
+| HZ_INSTANCE_ID | BIGINT | 流程实例ID | - | 工作流启动后回写 |
+| HZ_APPROVE_STATUS | VARCHAR | 审批状态 | 单据状态 | 默认NEW，审批过程中更新 |
+| CALLBACK_SOURCE | VARCHAR | 外部审批回调来源 | - | OA审批推送后设为WAIT |
+| CREATION_DATE | DATETIME | 创建时间 | 申请时间 | 框架自动记录 |
+| CREATED_BY | BIGINT | 创建人ID | 申请人 | 框架自动记录 |
+| LAST_UPDATED_BY | BIGINT | 最后修改人ID | - | 框架自动记录 |
+| LAST_UPDATE_DATE | DATETIME | 最后修改时间 | 最后更新时间 | 框架自动记录 |
+| OBJECT_VERSION_NUMBER | BIGINT | 乐观锁版本号 | - | 框架自动维护 |
 
 </KbCard>
 
-<KbCard num="2" title="EPM_DISCOUNT_POLICY_ITEM（折扣政策产品明细行）">
+<KbCard num="2" title="表2：EPM_DISCOUNT_POLICY_ITEM（折扣政策产品明细表，关联表）">
 
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| DISCOUNT_POLICY_ITEM_ID | Long | 政策产品ID（主键） |
-| DISCOUNT_POLICY_ID | Long | 政策ID（必填） |
-| DISCOUNT_POLICY_DISABLED_ID | Long | 关联的失效单ID（失效时写入） |
-| SEQ | Long | 序号 |
-| APPLICATION_TYPE | Long | 申请类型（值集：AE.EPM.APPLICATION_TYPE，1-产品 2-型号 3-全产品） |
-| ITEM_ID | Long | 产品ID |
-| ITEM_CODE | String | 产品编码 |
-| ITEM_NAME | String | 产品名称 |
-| ITEM_MODEL | String | 产品型号 |
-| UOM_NAME | String | 单位 |
-| STAND_PRICE | BigDecimal | 标准单价（含安装） |
-| STANDARD_PRICE | BigDecimal | 标准单价（不含安装） |
-| INSTALL_UNIT_PRICE | BigDecimal | 安装单价 |
-| SUM_INSTALL_UNIT_PRICE | BigDecimal | 安装金额 |
-| PREFERENTIAL_TYPE | Long | 优惠方式（值集：AE.EPM.PREFERENTIAL_TYPE，1-折扣 2-特价） |
-| CAPPING | Long | 封顶数量校验 |
-| TOTAL_CAP_NUMBER | String | 政策封顶总数量行 |
-| CUSTOMER_CAPS_NUMBER | Long | 单个经销商封顶数量 |
-| ACCTLEVEL | Long | 客户等级（值集：AE.EPM.CUSTOMER_GRADE） |
-| CITYTYPE | Long | 城市类型（值集：AE.EPM.CITY_LEVEL） |
-| RESPRODCHANNEL | Long | 限制产品渠道 |
-| CRM_LINE_ID | String | 外部行ID（CRM） |
-| ITEM_COST | BigDecimal | 物料实际成本单价 |
-| TASKDISCOUNT | BigDecimal | 任务返点折扣率 |
-| CAL_CONTRACT_DISCOUNT | String | 计合同折扣 |
-| CAL_ADVERTISE_EXPENSES | String | 计广告费 |
-| CAL_BILLING_DISCOUNT | String | 计开单折扣 |
-| VALID_STAT | Long | 生效状态（0-有效，3-已失效） |
-| ITEM_MANAGE_TYPE | String | 产品品类 |
-| PROD_DISCOUNT | BigDecimal | 产品最高折扣率 |
-| PROD_DISC_CHANNEL | String | 产品最高折扣率渠道 |
-| REMARK | String | 备注 |
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| DISCOUNT_POLICY_ITEM_ID | BIGINT | 政策产品ID(主键) | - | 自增主键 |
+| DISCOUNT_POLICY_ID | BIGINT | 政策ID | - | 关联政策头 |
+| DISCOUNT_POLICY_DISABLED_ID | BIGINT | 政策失效ID | - | 关联失效申请，为空表示未失效；审批通过后该行validStat更新为3 |
+| APPLICATION_TYPE | BIGINT | 申请类型 | 申请类型 | 值集AE.EPM.APPLICATION_TYPE(1-产品/2-型号/3-全产品) |
+| ITEM_ID | BIGINT | 产品ID | - | 关联产品主档 |
+| ITEM_CODE | VARCHAR | 产品编码 | 产品编码 | - |
+| ITEM_NAME | VARCHAR | 产品名称 | 产品名称 | - |
+| ITEM_MODEL | VARCHAR | 产品型号 | 产品型号 | - |
+| UOM_NAME | VARCHAR | 单位 | 单位 | - |
+| STAND_PRICE | DECIMAL | 标准单价(含安装) | 标准单价(元) | - |
+| PREFERENTIAL_TYPE | BIGINT | 优惠方式 | 优惠方式 | 值集AE.EPM.PREFERENTIAL_TYPE(1-折扣/2-特价) |
+| CAPPING | BIGINT | 封顶数量校验 | 封顶数量校验 | 1=否/2=是 |
+| INSTALL_UNIT_PRICE | DECIMAL | 安装单价 | - | - |
+| STANDARD_PRICE | DECIMAL | 标准单价(不含安装) | - | - |
+| VALID_STAT | BIGINT | 生效状态 | 是否已终止 | 0=有效/3=已失效；审批通过后更新为3 |
+| CRM_LINE_ID | VARCHAR | CRM行ID | - | 推送CRM时使用 |
+| TOTAL_CAP_NUMBER | VARCHAR | 政策封顶总数量行 | - | - |
+| CUSTOMER_CAPS_NUMBER | BIGINT | 单个经销商封顶数量 | - | - |
 
 </KbCard>
 
-<KbCard num="3" title="EPM_DISCOUNT_POLICY_ITEM_LINE（折扣政策阶梯明细行）">
+<KbCard num="3" title="表3：EPM_DISCOUNT_POLICY（折扣政策头表，上游关联表）">
 
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| DISCOUNT_POLICY_ITEM_LINE_ID | Long | 二级明细ID（主键） |
-| DISCOUNT_POLICY_ITEM_ID | Long | 政策产品ID |
-| DISCOUNT_POLICY_ID | Long | 政策ID |
-| GROUPING | Long | 分组标识 |
-| MINIMUM_QTY | Long | 起订量 |
-| CAPPING_QTY | Long | 封顶量 |
-| SPECIAL_OFFER | BigDecimal | 特价 |
-| DISCOUNT_RATE | BigDecimal | 折扣率 |
-| SPECIAL_DISCOUNT_RATE | BigDecimal | 特价折扣率 |
-| VALUE_CHAIN | BigDecimal | 价值链 |
-
-</KbCard>
-
-<KbCard num="4" title="EPM_DISCOUNT_POLICY（折扣政策头表，关联查询）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| DISCOUNT_POLICY_ID | Long | 政策ID（主键） |
-| DISCOUNT_POLICY_CODE | String | 政策单号 |
-| DISCOUNT_POLICY_NAME | String | 政策名称 |
-| POLICY_TYPE | Long | 政策类型（值集：AE.EPM.POLICY_TYPE） |
-| CUSTOMER_ID | Long | 适用客户ID |
-| SALE_AREA_NAME | String | 适用区域名称 |
-| PROVINCE_NAME | String | 适用省份 |
-| CUSTOMER_CLASS | Long | 适用客户分类 |
-| EFFECTIVE_DATE_START | Date | 有效开始日期 |
-| EFFECTIVE_DATE_END | Date | 有效结束日期 |
-| IS_MAKT | Long | 是否营销中台（0-否，2-是） |
-| SUITABLE_TYPE | String | 适用类型（normal-通用/工程，special-专项） |
-| VALID | Long | 有效状态（1-未审核，2-有效，3-失效） |
-| HZ_APPROVE_STATUS | String | 审批状态 |
-
-</KbCard>
-
-<KbCard num="5" title="EPM_DISCOUNT_POLICY_CUSTOMER（折扣政策客户表，关联查询）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| PK_ID | Long | 主键ID |
-| DISCOUNT_POLICY_ID | Long | 政策ID |
-| CUSTOMER_ID | Long | 客户ID |
-| CUSTOMER_CODE | String | 客户编码 |
-| CUSTOMER_NAME | String | 客户名称 |
-| IS_IMPORTANCE | Long | 是否主要 |
-| SHORT_NAME | String | 客户简称 |
-
-</KbCard>
-
-<KbCard num="6" title="OBJ_ATTACH_REL（附件关联表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| ATTACH_REL_ID | Long | 主键 |
-| ATTACHMENT_UUID | String | 附件ID |
-| ATTACH_CONF_ID | Long | 对象配置ID |
-| OBJ_ID | Long | 业务对象ID（关联DISCOUNT_POLICY_DISABLED_ID） |
-| ATTACH_TYPE_ID | Long | 对象附件类型ID |
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| DISCOUNT_POLICY_ID | BIGINT | 政策ID(主键) | - | - |
+| DISCOUNT_POLICY_CODE | VARCHAR | 政策编码 | 政策申请编号 | - |
+| DISCOUNT_POLICY_NAME | VARCHAR | 政策名称 | 政策名称 | - |
+| POLICY_TYPE | BIGINT | 政策类型 | 政策类型 | 值集AE.EPM.POLICY_TYPE |
+| SUITABLE_TYPE | VARCHAR | 适用类型 | - | normal=通用折扣/ special=专项折扣 |
+| IS_MAKT | BIGINT | 是否样品 | - | 0=非样品/2=样品 |
+| VALID | BIGINT | 有效状态 | - | 1=未生效/2=已生效/3=已失效；全部行失效时更新为3 |
+| CUSTOMER_CLASS | BIGINT | 客户分类 | 适用客户分类 | - |
+| SALE_AREA_NAME | VARCHAR | 销售区域名称 | 适用区域 | - |
+| PROVINCE_NAME | VARCHAR | 省份名称 | 适用省份 | - |
+| EFFECTIVE_DATE_START | DATE | 有效开始日期 | 有效开始日期 | - |
+| EFFECTIVE_DATE_END | DATE | 有效结束日期 | 有效结束日期 | - |
 
 ---
 
@@ -391,80 +766,59 @@ WHERE DISCOUNT_POLICY_ID = :discountPolicyId
 <tbody>
           <tr>
             <td style="color:#DC2626;font-weight:600;">失效政策行不允许为空</td>
-            <td style="font-size:13px;">保存时未选择任何产品明细行</td>
-            <td style="font-size:13px;">检查是否选择了失效行</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;">保存</td>
+            <td style="font-size:13px;">未选择任何要失效的产品行，需至少选择一行</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
             <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
           </tr>
           <tr>
-            <td style="color:#DC2626;font-weight:600;">无法获上线文信息</td>
-            <td style="font-size:13px;">生成编码时获取不到当前登录用户</td>
-            <td style="font-size:13px;">检查用户登录状态和Token有效性</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="color:#DC2626;font-weight:600;">当前折扣政策不允许失效 请检查</td>
+            <td style="font-size:13px;">保存(编码生成)</td>
+            <td style="font-size:13px;">关联的政策编码在EPM_DISCOUNT_POLICY中不存在</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
             <td style="font-size:13px;text-align:center;"><a href="#err-detail-2" class="view-btn">查看</a></td>
           </tr>
           <tr>
-            <td style="color:#DC2626;font-weight:600;">当前折扣政策不允许失效 请检查</td>
-            <td style="font-size:13px;">生成编码时根据政策单号查不到对应政策</td>
-            <td style="font-size:13px;">检查关联的政策单号是否正确</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="color:#DC2626;font-weight:600;">仅新建状态单据允许删除.</td>
+            <td style="font-size:13px;">删除</td>
+            <td style="font-size:13px;">非NEW状态的单据不允许删除</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
             <td style="font-size:13px;text-align:center;"><a href="#err-detail-3" class="view-btn">查看</a></td>
           </tr>
           <tr>
             <td style="color:#DC2626;font-weight:600;">未找到该单据</td>
-            <td style="font-size:13px;">删除时根据ID查不到失效单</td>
-            <td style="font-size:13px;">检查失效单ID是否正确</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;">删除</td>
+            <td style="font-size:13px;">传入的discountPolicyDisabledId在数据库中不存在</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
             <td style="font-size:13px;text-align:center;"><a href="#err-detail-4" class="view-btn">查看</a></td>
           </tr>
           <tr>
-            <td style="color:#DC2626;font-weight:600;">仅新建状态单据允许删除.</td>
-            <td style="font-size:13px;">删除非新建状态的失效单</td>
-            <td style="font-size:13px;">检查单据审批状态</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="color:#DC2626;font-weight:600;">无法获上线文信息</td>
+            <td style="font-size:13px;">保存(编码生成)</td>
+            <td style="font-size:13px;">无法获取当前登录用户上下文信息</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
             <td style="font-size:13px;text-align:center;"><a href="#err-detail-5" class="view-btn">查看</a></td>
           </tr>
           <tr>
             <td style="color:#DC2626;font-weight:600;">政策失效id不能为空</td>
-            <td style="font-size:13px;">工作流审批完成时传入的objId为空</td>
-            <td style="font-size:13px;">检查工作流回调参数</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;">工作流回调</td>
+            <td style="font-size:13px;">工作流审批回调时objId为空</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
             <td style="font-size:13px;text-align:center;"><a href="#err-detail-6" class="view-btn">查看</a></td>
           </tr>
           <tr>
             <td style="color:#DC2626;font-weight:600;">政策明细推送crm出错,请稍后再试</td>
-            <td style="font-size:13px;">审批通过后推送CRM返回null</td>
-            <td style="font-size:13px;">检查CRM接口连通性和参数</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;">审批通过</td>
+            <td style="font-size:13px;">CRM接口返回null</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
             <td style="font-size:13px;text-align:center;"><a href="#err-detail-7" class="view-btn">查看</a></td>
           </tr>
           <tr>
             <td style="color:#DC2626;font-weight:600;">政策明细推送crm出错：{lineId}:{message}</td>
-            <td style="font-size:13px;">审批通过后推送CRM返回失败</td>
-            <td style="font-size:13px;">检查CRM返回的错误信息</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;">审批通过</td>
+            <td style="font-size:13px;">CRM接口返回success=false</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
             <td style="font-size:13px;text-align:center;"><a href="#err-detail-8" class="view-btn">查看</a></td>
-          </tr>
-          <tr>
-            <td style="color:#DC2626;font-weight:600;">请先选择折扣政策！</td>
-            <td style="font-size:13px;">新建产品明细行时未先选择折扣政策</td>
-            <td style="font-size:13px;">先选择政策申请单号</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
-            <td style="font-size:13px;text-align:center;"><a href="#err-detail-9" class="view-btn">查看</a></td>
-          </tr>
-          <tr>
-            <td style="color:#DC2626;font-weight:600;">请选择要删除的明细</td>
-            <td style="font-size:13px;">批量删除行时未选中任何行</td>
-            <td style="font-size:13px;">勾选需要删除的行</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
-            <td style="font-size:13px;text-align:center;"><a href="#err-detail-10" class="view-btn">查看</a></td>
-          </tr>
-          <tr>
-            <td style="color:#DC2626;font-weight:600;">明细的政策封顶总数量行必须大于单个经销商封顶数量</td>
-            <td style="font-size:13px;">封顶数量校验不通过</td>
-            <td style="font-size:13px;">检查TOTAL_CAP_NUMBER和CUSTOMER_CAPS_NUMBER</td>
-            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
-            <td style="font-size:13px;text-align:center;"><a href="#err-detail-11" class="view-btn">查看</a></td>
           </tr>
 </tbody></table></div>
 
@@ -473,28 +827,28 @@ WHERE DISCOUNT_POLICY_ID = :discountPolicyId
     <a href="#" class="close-btn">&times;</a>
     <h4><span style="color:#7C3AED;">报错：</span>失效政策行不允许为空</h4>
     <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>检查是否选择了失效行<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>SELECT COUNT(*) FROM EPM_DISCOUNT_POLICY_ITEM WHERE DISCOUNT_POLICY_DISABLED_ID = :disabledId;</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>未选择任何要失效的产品行，需至少选择一行</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
   </div>
 </div>
 
 <div id="err-detail-2" class="error-detail-overlay">
   <div class="error-detail-box" v-pre>
     <a href="#" class="close-btn">&times;</a>
-    <h4><span style="color:#7C3AED;">报错：</span>无法获上线文信息</h4>
+    <h4><span style="color:#7C3AED;">报错：</span>当前折扣政策不允许失效 请检查</h4>
     <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>检查用户登录状态和Token有效性<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>-</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>关联的政策编码在EPM_DISCOUNT_POLICY中不存在</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
   </div>
 </div>
 
 <div id="err-detail-3" class="error-detail-overlay">
   <div class="error-detail-box" v-pre>
     <a href="#" class="close-btn">&times;</a>
-    <h4><span style="color:#7C3AED;">报错：</span>当前折扣政策不允许失效 请检查</h4>
+    <h4><span style="color:#7C3AED;">报错：</span>仅新建状态单据允许删除.</h4>
     <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>检查关联的政策单号是否正确<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>SELECT * FROM EPM_DISCOUNT_POLICY WHERE DISCOUNT_POLICY_CODE = :code;</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>非NEW状态的单据不允许删除</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
   </div>
 </div>
 
@@ -503,18 +857,18 @@ WHERE DISCOUNT_POLICY_ID = :discountPolicyId
     <a href="#" class="close-btn">&times;</a>
     <h4><span style="color:#7C3AED;">报错：</span>未找到该单据</h4>
     <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>检查失效单ID是否正确<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>SELECT * FROM EPM_DISCOUNT_POLICY_DISABLED WHERE DISCOUNT_POLICY_DISABLED_ID = :id;</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>传入的discountPolicyDisabledId在数据库中不存在</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
   </div>
 </div>
 
 <div id="err-detail-5" class="error-detail-overlay">
   <div class="error-detail-box" v-pre>
     <a href="#" class="close-btn">&times;</a>
-    <h4><span style="color:#7C3AED;">报错：</span>仅新建状态单据允许删除.</h4>
+    <h4><span style="color:#7C3AED;">报错：</span>无法获上线文信息</h4>
     <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>检查单据审批状态<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>SELECT HZ_APPROVE_STATUS FROM EPM_DISCOUNT_POLICY_DISABLED WHERE DISCOUNT_POLICY_DISABLED_ID = :id;</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>无法获取当前登录用户上下文信息</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
   </div>
 </div>
 
@@ -523,8 +877,8 @@ WHERE DISCOUNT_POLICY_ID = :discountPolicyId
     <a href="#" class="close-btn">&times;</a>
     <h4><span style="color:#7C3AED;">报错：</span>政策失效id不能为空</h4>
     <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>检查工作流回调参数<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>-</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>工作流审批回调时objId为空</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
   </div>
 </div>
 
@@ -533,8 +887,8 @@ WHERE DISCOUNT_POLICY_ID = :discountPolicyId
     <a href="#" class="close-btn">&times;</a>
     <h4><span style="color:#7C3AED;">报错：</span>政策明细推送crm出错,请稍后再试</h4>
     <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>检查CRM接口连通性和参数<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>查看日志：Method wfComplete() toCRM</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>CRM接口返回null</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
   </div>
 </div>
 
@@ -543,38 +897,8 @@ WHERE DISCOUNT_POLICY_ID = :discountPolicyId
     <a href="#" class="close-btn">&times;</a>
     <h4><span style="color:#7C3AED;">报错：</span>政策明细推送crm出错：{lineId}:{message}</h4>
     <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>检查CRM返回的错误信息<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>查看日志：Method wfComplete() toCRM</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
-  </div>
-</div>
-
-<div id="err-detail-9" class="error-detail-overlay">
-  <div class="error-detail-box" v-pre>
-    <a href="#" class="close-btn">&times;</a>
-    <h4><span style="color:#7C3AED;">报错：</span>请先选择折扣政策！</h4>
-    <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>先选择政策申请单号<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>-</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
-  </div>
-</div>
-
-<div id="err-detail-10" class="error-detail-overlay">
-  <div class="error-detail-box" v-pre>
-    <a href="#" class="close-btn">&times;</a>
-    <h4><span style="color:#7C3AED;">报错：</span>请选择要删除的明细</h4>
-    <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>勾选需要删除的行<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>-</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
-  </div>
-</div>
-
-<div id="err-detail-11" class="error-detail-overlay">
-  <div class="error-detail-box" v-pre>
-    <a href="#" class="close-btn">&times;</a>
-    <h4><span style="color:#7C3AED;">报错：</span>明细的政策封顶总数量行必须大于单个经销商封顶数量</h4>
-    <h5>详细逻辑</h5>
-    <div class="detail-text" v-pre>检查TOTAL_CAP_NUMBER和CUSTOMER_CAPS_NUMBER<br><br><strong style="color:#7C3AED;">排查SQL：</strong><br><code>SELECT TOTAL_CAP_NUMBER, CUSTOMER_CAPS_NUMBER FROM EPM_DISCOUNT_POLICY_ITEM WHERE DISCOUNT_POLICY_ITEM_ID = :itemId;</code></div>
-    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>CRM接口返回success=false</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
   </div>
 </div>
 </KbCard>
@@ -583,80 +907,34 @@ WHERE DISCOUNT_POLICY_ID = :discountPolicyId
   <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
     <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
       <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">工程折扣政策失效提交时isMakt和suitableType参数是什么？**</span>
+      <span style="font-size:15px;">工程折扣政策失效提交后编码规则使用了样品编码规则</span>
     </div>
     <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      A1：列表查询使用suitableType='normal'过滤工程政策；LOV选择弹窗使用isMakt=0, suitableType='normal'筛选工程折扣政策。**注意：当前代码headDS.ts提交时发送isMakt=2, suitableType='special'，与LOV查询参数不一致，疑似为复制样品页面代码未修改的BUG，实际应以isMakt=0, suitableType='normal'为准。**<br>
+      <strong style="color:#7C3AED;">原因：</strong>前端headDS.ts中submit时硬编码覆盖isMakt:2和suitableType:'special'(应为isMakt:0和suitableType:'normal')，导致后端generateCode方法走到样品分支<br>
+      <strong style="color:#7C3AED;">处理：</strong>修改headDS.ts中submit覆盖参数为isMakt:0, suitableType:'normal'
     </div>
   </div>
   <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
     <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
       <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">审批通过后工程折扣政策失效为什么不推送CRM？**</span>
+      <span style="font-size:15px;">审批通过后政策头未变为已失效</span>
     </div>
     <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      A2：通用类型（suitableType=normal，即工程类型）审批通过后不推送CRM，仅更新内部政策行和头的失效状态。仅专项类型（suitableType=special）才推送CRM。<br>
+      <strong style="color:#7C3AED;">原因：</strong>政策下还有未失效的产品行(validStat≠3且不属于本次失效申请)<br>
+      <strong style="color:#7C3AED;">处理：</strong>确认是否还有其他未失效的产品行，需对所有行分别发起失效申请
     </div>
   </div>
   <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
     <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
       <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">如何查看某个政策是否已全部失效？**</span>
+      <span style="font-size:15px;">政策产品选择弹窗无数据</span>
     </div>
     <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      A3：<br>
-      ```sql<br>
-      SELECT DP.DISCOUNT_POLICY_ID, DP.DISCOUNT_POLICY_CODE, DP.VALID,<br>
-      COUNT(*) AS TOTAL_ITEMS,<br>
-      SUM(CASE WHEN DPI.VALID_STAT = 3 THEN 1 ELSE 0 END) AS DISABLED_ITEMS<br>
-      FROM EPM_DISCOUNT_POLICY DP<br>
-      JOIN EPM_DISCOUNT_POLICY_ITEM DPI ON DPI.DISCOUNT_POLICY_ID = DP.DISCOUNT_POLICY_ID<br>
-      WHERE DP.DISCOUNT_POLICY_ID = :policyId<br>
-      GROUP BY DP.DISCOUNT_POLICY_ID, DP.DISCOUNT_POLICY_CODE, DP.VALID;<br>
-      ```<br>
-      当DISABLED_ITEMS = TOTAL_ITEMS时，政策头VALID应已更新为3（已失效）。<br>
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">删除失效单后，关联的政策行状态如何恢复？**</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      A4：删除时调用clearDisabledId清除政策行上的DISCOUNT_POLICY_DISABLED_ID关联，但不会恢复VALID_STAT状态。如果需要恢复，需手动更新。<br>
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q5</span>
-      <span style="font-size:15px;">工程、家装、样品折扣政策失效共用后端代码的差异点是什么？**</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      A5：详见下方共用关系说明。<br>
-      ---<br>
+      <strong style="color:#7C3AED;">原因：</strong>该政策下所有产品行已被失效(validStat=3)或已被其他失效申请关联(discountPolicyDisabledId不为空)<br>
+      <strong style="color:#7C3AED;">处理：</strong>检查政策行状态，确认是否已全部失效
     </div>
   </div>
 </div>
-</KbCard>
-<KbCard title="共用后端代码关系说明">
-
-工程折扣政策失效、家装折扣政策失效、样品及长库龄折扣政策失效三个菜单**共用同一套后端代码**（EpmDiscountPolicyDisabledController + EpmDiscountPolicyDisabledServiceImpl），通过前端传递的isMakt和suitableType参数区分业务类型。
-
-| 菜单 | 前端路由 | LOV参数(isMakt) | LOV参数(suitableType) | 列表查询(suitableType) | 提交参数(isMakt) | 提交参数(suitableType) | 编码规则 |
-|------|---------|----------------|---------------------|---------------------|----------------|---------------------|---------|
-| 工程折扣政策失效 | /engineering-policy-disabled | 0 | normal | normal | 2（疑似BUG，应为0） | special（疑似BUG，应为normal） | GC_DISCOUNT_POLICY_DISABLED |
-| 家装折扣政策失效 | /home-policy-disabled | 0 | special | special | 2 | special | JZ_DISCOUNT_POLICY_DISABLED |
-| 样品及长库龄折扣政策失效 | /sample-policy-disabled | 2 | special | special | 2 | special | YP_DISCOUNT_POLICY_DISABLED |
-
-**差异点汇总：**
-1. **LOV筛选条件不同**：工程选isMakt=0且suitableType=normal的政策；家装选isMakt=0且suitableType=special的政策；样品选isMakt=2且suitableType=special的政策
-2. **列表过滤条件不同**：工程按suitableType=normal过滤；家装和样品按suitableType=special过滤，样品额外按isMakt=2过滤
-3. **编码规则不同**：工程用GC编码规则，家装用JZ编码规则，样品用YP编码规则
-4. **CRM推送逻辑不同**：通用类型（工程，suitableType=normal）审批通过后不推送CRM；专项类型（家装/样品，suitableType=special）审批通过后推送CRM执行失效
-5. **工作流主题不同**：当前统一使用"全渠道样品折扣政策失效"前缀
-
----
-
 </KbCard>
 </div>
 </div>
@@ -667,9 +945,14 @@ WHERE DISCOUNT_POLICY_ID = :discountPolicyId
 <div class="kl-wrap">
 <KbCard title="更新记录">
 
-| 日期 | 版本 | 变更内容 |
-|------|------|---------|
-| 2026-07-28 | - | 初始梳理，完成工程折扣政策失效业务逻辑文档 |
+| 日期 | 提交ID | 提交人 | 提交内容 |
+|------|-------|-------|---------|
+| 2025-09-15 | - | - | 初始创建折扣政策失效功能 |
+
+> 要求：
+> 1. 按倒序展示
+> 2. 只需要包含2026年的提交记录
+
 </KbCard>
 </div>
 </div>

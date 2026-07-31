@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="8" title="紧急要货插单" desc="工程管理-项目交付业务说明" />
+<KbHero num="9" title="紧急要货插单" desc="工程管理-项目交付业务说明" />
 
 <KbCard title="业务介绍">
 

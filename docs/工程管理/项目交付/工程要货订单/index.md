@@ -1,459 +1,1232 @@
----
----
-
 <BreadcrumbTabs />
 
-<div id="logic">
+<div id="biz-intro" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbHero num="1" title="工程要货订单" desc="工程管理-项目交付业务说明" />
 
-<div class="kb-module">
+<KbCard title="业务介绍">
 
-### 数据模型
+<!-- 空白:待补充 -->
 
-**核心表结构**：
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="biz-flow" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="业务流程图">
 
 ```text
-EPM_URGENT_ORDER (紧急要货单据头)
+新建要货订单 → 选择客户/合同/项目/折扣单 → 录入产品明细 → 保存 → 提交审批
+  → 工作流审批通过 → 生成CRM订单 → 推送ERP发货
+  → 审批拒绝/驳回 → 修改后重新提交
+  
+特殊流程：
+  不扣订金申请 → OA审批 → 审批通过后标记无需扣订金
+  修改收货地址 → 校验地址变更限制 → 更新订单地址
+  产品明细导入 → 折扣政策类型导入 / 价目表类型导入
+```
+
+</KbCard>
+
+<KbCard num="2" title="上游依赖">
+
+| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
+|---------|---------|---------|------------|
+| 客户主档 | 数据依赖 | 选择经销商客户，带出客户编码、名称、地址等信息 | 客户已创建且有效 |
+| 工程合同 | 数据依赖 | 选择工程合同，带出合同编码、名称、签约方式、合作结束日期 | 合同状态为已生效 |
+| 项目信息 | 数据依赖 | 选择项目，带出项目编码、名称、进度、项目经理 | 项目已创建 |
+| 折扣单/折扣政策 | 数据依赖 | 选择折扣单或折扣政策，计算产品价格和折扣 | 折扣单/政策已生效 |
+| 编码规则 | 配置依赖 | 生成要货单号，编码规则AE.EPM_SA_OUT_BILL_HEAD | 编码规则已配置 |
+| 工作流引擎 | 配置依赖 | 提交审批，流程编码SAMPLE_ORDER_REQUEST_PROJECT | 工作流已部署 |
+| CRM系统 | 数据依赖 | 审批通过后创建CRM订单 | CRM接口可用 |
+| ERP系统 | 数据依赖 | 推送发货信息 | ERP接口可用 |
+| OA审批系统 | 配置依赖 | 不扣订金申请推送OA审批 | OA单据映射已配置 |
+
+</KbCard>
+
+<KbCard num="3" title="下游影响">
+<div class="ds-impact">
+
+| 下游系统/模块 | 影响内容 | 说明 |
+|---|---|---|
+| CRM系统 | 创建CRM订单 | 审批通过后调用CRM接口创建订单，CRM返回定金金额等信息 |
+| ERP系统 | 推送ERP发货 | 审批通过后推送ERP执行发货 |
+| 客户可发货余额 | 可发货余额扣减 | 订单提交后扣减客户可发货余额 |
+| 工程折扣单 | 折扣单可用量扣减 | 关联折扣单后，折扣单的可用数量/金额相应扣减 |
+
+</div>
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="key-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="重点逻辑1：样品/工程/家装三菜单共用后端代码 共用代码">
+<KbQuote>样品要货订单、工程要货订单、家装要货订单三个菜单共用同一个SaOutBillHeadController和SaOutBillHeadServiceImpl，通过searchFlag、isHome、billType等参数区分</KbQuote>
+
+**具体逻辑**：
+
+- 1、工程要货订单searchFlag=1，样品要货订单searchFlag=2，家装要货订单searchFlag=3
+- 2、工程要货订单工作流编码SAMPLE_ORDER_REQUEST_PROJECT，样品走SAMPLE_ORDER_REQUEST，家装走PURCHASE_ORDER_AWJ
+- 3、工程特有逻辑：校验年度经销合同(checkCustomerContract)、余额账户(getOrderBalance)、定金计算(depositStock)
+</KbCard>
+
+<KbCard num="2" title="重点逻辑2：价格类型与折扣计算 核心逻辑">
+<KbQuote>订单支持三种价格类型，不同类型决定了产品价格的来源和计算方式</KbQuote>
+
+**具体逻辑**：
+
+- 1、priceType=1(折扣单)，通过折扣单ID关联EPM_DISCOUNT_APPLY，产品价格从折扣单行获取
+- 2、priceType=2(折扣政策)，通过折扣政策ID关联EPM_DISCOUNT_POLICY，产品价格从政策行获取
+- 3、priceType=3(价目表)，产品价格从价目表获取，支持批量生成价目表数据(doGetPickPoData)
+</KbCard>
+
+<KbCard num="3" title="重点逻辑3：提交前校验 核心逻辑">
+<KbQuote>提交前执行多项业务校验，确保订单数据完整性和合规性</KbQuote>
+
+**具体逻辑**：
+
+- 1、校验产品行紧急标识(checkLineUrgency)
+- 2、校验业务类型(cheBusinessType)、客户子分类(customerSubClassCheck)
+- 3、校验行数量(checkLineNum)、期望到达日期(checkInDate)、下单数量(doCheckQty)、价格(checkPriceBill)
+- 4、工程特有校验(beforeSubmitCheck)：校验年度经销合同、定金等
+</KbCard>
+
+<KbCard num="4" title="重点逻辑4：审批通过后创建CRM订单 核心逻辑">
+<KbQuote>工作流审批通过后，自动在CRM系统创建对应订单，实现DMS与CRM的数据同步</KbQuote>
+
+**具体逻辑**：
+
+- 1、wfComplete回调中，审批通过时调用doCheckAndCreateCrmOrder
+- 2、创建CRM订单时传入客户、产品、价格、地址等信息
+- 3、CRM返回定金金额(depositAmt)等信息回写订单头
+- 4、如果创建CRM订单失败，抛出异常阻断流程
+</KbCard>
+
+<KbCard num="5" title="重点逻辑5：不扣订金OA申请 特殊逻辑">
+<KbQuote>部分订单无需扣订金，需经OA审批确认后标记</KbQuote>
+
+**具体逻辑**：
+
+- 1、调用doApplicationOa接口推送OA审批
+- 2、OA审批通过后，更新isNodeposit标识和nodepositOaAuditStat状态
+- 3、列表页删除按钮条件中包含nodepositOaAuditStat判断(0/99/null才允许删除)
+</KbCard>
+
+</div>
+</div>
+</div>
+
+<div id="detail-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="界面模块1：列表页">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>序号</td>
+<td>数值框</td>
+<td>行序号</td>
+<td>常显</td>
+<td>自动生成</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>订单状态</td>
+<td>下拉选择框</td>
+<td>订单业务状态</td>
+<td>常显</td>
+<td>来源值集AE.EPM.REQUIRE_BILL.ORDER_STAT</td>
+<td>AE.EPM.REQUIRE_BILL.ORDER_STAT值集</td>
+<td>SA_OUT_BILL_HEAD.ORDER_STAT</td>
+</tr>
+<tr>
+<td>流程状态</td>
+<td>下拉选择框</td>
+<td>审批流程状态</td>
+<td>常显</td>
+<td>来源值集HWKF.APPROVE_STATUS</td>
+<td>HWKF.APPROVE_STATUS值集</td>
+<td>SA_OUT_BILL_HEAD.HZ_APPROVE_STATUS</td>
+</tr>
+<tr>
+<td>要货单号</td>
+<td>文本框</td>
+<td>系统生成的要货单号</td>
+<td>常显</td>
+<td>审批通过后系统自动生成</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.SA_SALEBILLNO</td>
+</tr>
+<tr>
+<td>临时单号</td>
+<td>文本框</td>
+<td>提交前的临时单号</td>
+<td>常显</td>
+<td>系统按编码规则生成</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.INTERIM_BIINO</td>
+</tr>
+<tr>
+<td>订单日期</td>
+<td>日期选择器</td>
+<td>订单创建日期</td>
+<td>常显</td>
+<td>默认当前日期</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.DATE_INVBILL</td>
+</tr>
+<tr>
+<td>申请人</td>
+<td>文本框</td>
+<td>创建人姓名</td>
+<td>常显</td>
+<td>系统自动取当前用户</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>订单类型</td>
+<td>下拉选择框</td>
+<td>销售发货/退货等</td>
+<td>常显</td>
+<td>来源值集AE.EPM.BILL_TYPE</td>
+<td>AE.EPM.BILL_TYPE值集</td>
+<td>SA_OUT_BILL_HEAD.BILL_TYPE</td>
+</tr>
+<tr>
+<td>销售渠道</td>
+<td>下拉选择框</td>
+<td>销售渠道</td>
+<td>常显</td>
+<td>来源值集AE.MKT.SALES_CHANNEL</td>
+<td>AE.MKT.SALES_CHANNEL值集</td>
+<td>SA_OUT_BILL_HEAD.CHANNEL</td>
+</tr>
+<tr>
+<td>产品线</td>
+<td>文本框</td>
+<td>订单产品线</td>
+<td>常显</td>
+<td>来源LOV AE.ORDER_PDT_LINE_SQL</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>业务类型</td>
+<td>下拉选择框</td>
+<td>业务类型</td>
+<td>常显</td>
+<td>来源值集AE.EPM.BUSINESS_TYPE</td>
+<td>AE.EPM.BUSINESS_TYPE值集</td>
+<td>SA_OUT_BILL_HEAD.BUSINESS_TYPE</td>
+</tr>
+<tr>
+<td>客户编码</td>
+<td>文本框</td>
+<td>经销商编码</td>
+<td>常显</td>
+<td>来源客户主档</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>客户名称</td>
+<td>文本框</td>
+<td>经销商名称</td>
+<td>常显</td>
+<td>来源客户主档</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>客户简称</td>
+<td>文本框</td>
+<td>客户简称</td>
+<td>常显</td>
+<td>来源客户主档</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>币种</td>
+<td>文本框</td>
+<td>交易币种</td>
+<td>常显</td>
+<td>来源货币主档</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>开票单位</td>
+<td>文本框</td>
+<td>开票单位名称</td>
+<td>常显</td>
+<td>来源开票单位主档</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>可发货余额</td>
+<td>数值框</td>
+<td>客户可发货余额</td>
+<td>常显</td>
+<td>来源CRM</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.MAY_CONSIGNMENT_AMOUNT</td>
+</tr>
+<tr>
+<td>扣款方式</td>
+<td>下拉选择框</td>
+<td>扣款方式</td>
+<td>常显</td>
+<td>来源值集AE.EPM.DEDUCTIONS_WAY</td>
+<td>AE.EPM.DEDUCTIONS_WAY值集</td>
+<td>SA_OUT_BILL_HEAD.DEDUCTIONS_WAY</td>
+</tr>
+<tr>
+<td>期望到达日期</td>
+<td>日期选择器</td>
+<td>要求到货日期</td>
+<td>常显</td>
+<td>必填，不早于今天</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.IN_DATE</td>
+</tr>
+<tr>
+<td>折扣单号</td>
+<td>文本框</td>
+<td>关联折扣单号</td>
+<td>常显</td>
+<td>选择折扣单后带入</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.DISCOUNT_APPLY_CODE</td>
+</tr>
+<tr>
+<td>订单来源</td>
+<td>下拉选择框</td>
+<td>订单创建来源</td>
+<td>常显</td>
+<td>来源值集AE.EPM.CREATED_SOURCE</td>
+<td>AE.EPM.CREATED_SOURCE值集</td>
+<td>SA_OUT_BILL_HEAD.CREATED_SOURCE</td>
+</tr>
+<tr>
+<td>合同编码</td>
+<td>文本框</td>
+<td>工程合同编码</td>
+<td>常显</td>
+<td>选择合同后带入</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.CONTRACT_CODE</td>
+</tr>
+<tr>
+<td>合同名称</td>
+<td>文本框</td>
+<td>工程合同名称</td>
+<td>常显</td>
+<td>选择合同后带入</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.CONTRACT_NAME</td>
+</tr>
+<tr>
+<td>项目编码</td>
+<td>文本框</td>
+<td>项目编码</td>
+<td>常显</td>
+<td>选择项目后带入</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.PROJECT_CODE</td>
+</tr>
+<tr>
+<td>项目名称</td>
+<td>文本框</td>
+<td>项目名称</td>
+<td>常显</td>
+<td>选择项目后带入</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.PROJECT_NAME</td>
+</tr>
+<tr>
+<td>签约方式</td>
+<td>下拉选择框</td>
+<td>直销/经销</td>
+<td>常显</td>
+<td>来源值集AE.EPM.CONTRACT_TYPE_SHOW</td>
+<td>AE.EPM.CONTRACT_TYPE_SHOW值集</td>
+<td>SA_OUT_BILL_HEAD.CONTRACT_TYPE</td>
+</tr>
+<tr>
+<td>折扣类型</td>
+<td>下拉选择框</td>
+<td>折扣类型</td>
+<td>常显</td>
+<td>来源值集AE.EPM.DISCOUNT_TYPE</td>
+<td>AE.EPM.DISCOUNT_TYPE值集</td>
+<td>SA_OUT_BILL_HEAD.DISCOUNT_TYPE</td>
+</tr>
+<tr>
+<td>审批折扣率</td>
+<td>数值框</td>
+<td>审批通过的折扣率</td>
+<td>常显</td>
+<td>审批后回写</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.DISCOUNT_RATE</td>
+</tr>
+<tr>
+<td>折前总金额</td>
+<td>数值框</td>
+<td>折扣前含税总金额</td>
+<td>常显</td>
+<td>自动计算=各行折前金额合计</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.AMOUNT_TOTAL</td>
+</tr>
+<tr>
+<td>折后总金额</td>
+<td>数值框</td>
+<td>折扣后含税总金额</td>
+<td>常显</td>
+<td>自动计算=各行折后金额合计</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>总数量</td>
+<td>数值框</td>
+<td>产品总数量</td>
+<td>常显</td>
+<td>自动计算=各行数量合计</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.QTY_SUM</td>
+</tr>
+<tr>
+<td>总体积</td>
+<td>数值框</td>
+<td>产品总体积</td>
+<td>常显</td>
+<td>自动计算=各行体积合计</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="界面模块2：详情页-基本信息（头信息）">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>临时单号</td>
+<td>文本框</td>
+<td>临时单号</td>
+<td>常显</td>
+<td>系统自动生成；不可编辑</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.INTERIM_BIINO</td>
+</tr>
+<tr>
+<td>要货单号</td>
+<td>文本框</td>
+<td>正式单号</td>
+<td>常显</td>
+<td>审批通过后系统生成；不可编辑</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.SA_SALEBILLNO</td>
+</tr>
+<tr>
+<td>订单日期</td>
+<td>日期选择器</td>
+<td>订单日期</td>
+<td>常显</td>
+<td>默认当前日期</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.DATE_INVBILL</td>
+</tr>
+<tr>
+<td>申请人</td>
+<td>文本框</td>
+<td>创建人</td>
+<td>常显</td>
+<td>默认当前用户realName；不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>订单状态</td>
+<td>下拉选择框</td>
+<td>订单状态</td>
+<td>常显</td>
+<td>来源值集AE.EPM.REQUIRE_BILL.ORDER_STAT</td>
+<td>AE.EPM.REQUIRE_BILL.ORDER_STAT值集</td>
+<td>SA_OUT_BILL_HEAD.ORDER_STAT</td>
+</tr>
+<tr>
+<td>审核状态</td>
+<td>下拉选择框</td>
+<td>审批状态</td>
+<td>常显</td>
+<td>来源值集HWKF.APPROVE_STATUS</td>
+<td>HWKF.APPROVE_STATUS值集</td>
+<td>SA_OUT_BILL_HEAD.HZ_APPROVE_STATUS</td>
+</tr>
+<tr>
+<td>客户编码</td>
+<td>LOV弹窗</td>
+<td>经销商客户</td>
+<td>常显</td>
+<td>必填；LOV编码BASIC_CUSTOM_ORG_LOV_2，searchFlag=124；选择后带出客户名称、简称、地址等</td>
+<td>工程客户</td>
+<td>-</td>
+</tr>
+<tr>
+<td>交易公司</td>
+<td>LOV弹窗</td>
+<td>交易法人公司</td>
+<td>常显</td>
+<td>必填；LOV编码TRADING_LEGAL_SQL_V</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>订单类型</td>
+<td>下拉选择框</td>
+<td>订单类型</td>
+<td>常显</td>
+<td>默认1(销售发货)；来源值集AE.EPM.BILL_TYPE</td>
+<td>AE.EPM.BILL_TYPE值集</td>
+<td>SA_OUT_BILL_HEAD.BILL_TYPE</td>
+</tr>
+<tr>
+<td>期望到达日期</td>
+<td>日期选择器</td>
+<td>要求到货日期</td>
+<td>常显</td>
+<td>必填；不早于今天</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.IN_DATE</td>
+</tr>
+<tr>
+<td>销售渠道</td>
+<td>下拉选择框</td>
+<td>销售渠道</td>
+<td>常显</td>
+<td>来源值集AE.MKT.SALES_CHANNEL</td>
+<td>AE.MKT.SALES_CHANNEL值集</td>
+<td>SA_OUT_BILL_HEAD.CHANNEL</td>
+</tr>
+<tr>
+<td>工程意向单</td>
+<td>开关</td>
+<td>是否工程意向单</td>
+<td>常显</td>
+<td>1=否/2=是</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.PROJECT_INTENTION</td>
+</tr>
+<tr>
+<td>合同编码</td>
+<td>LOV弹窗</td>
+<td>工程合同</td>
+<td>常显</td>
+<td>LOV编码AE.GET_PROJECT_INTENTION；选择后带出合同名称、签约方式等</td>
+<td>已生效工程合同</td>
+<td>-</td>
+</tr>
+<tr>
+<td>项目编码</td>
+<td>LOV弹窗</td>
+<td>项目信息</td>
+<td>常显</td>
+<td>LOV编码AE.GET_PROJECT_INFO；选择后带出项目名称、进度等</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>折扣单号</td>
+<td>LOV弹窗</td>
+<td>折扣单</td>
+<td>priceType=1时</td>
+<td>LOV编码AE.EPM_DISCOUNT_APPLYS，searchFlag=2</td>
+<td>已生效折扣单</td>
+<td>-</td>
+</tr>
+<tr>
+<td>收货人</td>
+<td>LOV弹窗</td>
+<td>收货人信息</td>
+<td>常显</td>
+<td>LOV编码AE.CUSTOMER_ADDRESS_INFO；选择后带出联系电话、地址</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>折前总金额</td>
+<td>数值框</td>
+<td>折前含税总金额</td>
+<td>常显</td>
+<td>自动计算；不可编辑</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.AMOUNT_TOTAL</td>
+</tr>
+<tr>
+<td>折后总金额</td>
+<td>数值框</td>
+<td>折后含税总金额</td>
+<td>常显</td>
+<td>自动计算；不可编辑</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>定金金额</td>
+<td>数值框</td>
+<td>CRM返回的定金金额</td>
+<td>常显</td>
+<td>CRM创建订单后回写；不可编辑</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.DEPOSIT_AMT</td>
+</tr>
+<tr>
+<td>价格类型</td>
+<td>下拉选择框</td>
+<td>价格来源类型</td>
+<td>常显</td>
+<td>1=折扣单/2=折扣政策/3=价目表</td>
+<td>-</td>
+<td>SA_OUT_BILL_HEAD.PRICE_TYPE</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="界面模块3：详情页-产品明细行">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>产品编码</td>
+<td>文本框</td>
+<td>产品编码</td>
+<td>常显</td>
+<td>选择产品或导入带入</td>
+<td>-</td>
+<td>SA_OUT_BILL_LINE.ITEM_CODE</td>
+</tr>
+<tr>
+<td>产品名称</td>
+<td>文本框</td>
+<td>产品名称</td>
+<td>常显</td>
+<td>选择产品后带入</td>
+<td>-</td>
+<td>SA_OUT_BILL_LINE.ITEM_NAME</td>
+</tr>
+<tr>
+<td>产品型号</td>
+<td>文本框</td>
+<td>产品型号</td>
+<td>常显</td>
+<td>选择产品后带入</td>
+<td>-</td>
+<td>SA_OUT_BILL_LINE.ITEM_MODEL</td>
+</tr>
+<tr>
+<td>单位</td>
+<td>文本框</td>
+<td>计量单位</td>
+<td>常显</td>
+<td>选择产品后带入</td>
+<td>-</td>
+<td>SA_OUT_BILL_LINE.UOM_NAME</td>
+</tr>
+<tr>
+<td>数量</td>
+<td>数值框</td>
+<td>订购数量</td>
+<td>常显</td>
+<td>必填；用户手动输入</td>
+<td>正整数</td>
+<td>SA_OUT_BILL_LINE.QUANTITY</td>
+</tr>
+<tr>
+<td>标准单价</td>
+<td>数值框</td>
+<td>含安装标准单价</td>
+<td>常显</td>
+<td>根据价格类型自动带出</td>
+<td>-</td>
+<td>SA_OUT_BILL_LINE.STAND_PRICE</td>
+</tr>
+<tr>
+<td>折扣率</td>
+<td>数值框</td>
+<td>产品折扣率</td>
+<td>常显</td>
+<td>根据折扣单/政策自动带出</td>
+<td>0-1之间</td>
+<td>SA_OUT_BILL_LINE.DISCOUNT_RATE</td>
+</tr>
+<tr>
+<td>折后单价</td>
+<td>数值框</td>
+<td>折后含税单价</td>
+<td>常显</td>
+<td>自动计算=标准单价×折扣率</td>
+<td>-</td>
+<td>SA_OUT_BILL_LINE.WT_PRICE</td>
+</tr>
+<tr>
+<td>折后金额</td>
+<td>数值框</td>
+<td>折后含税金额</td>
+<td>常显</td>
+<td>自动计算=折后单价×数量</td>
+<td>-</td>
+<td>SA_OUT_BILL_LINE.WT_AMOUNT</td>
+</tr>
+<tr>
+<td>安装单价</td>
+<td>数值框</td>
+<td>安装服务单价</td>
+<td>常显</td>
+<td>根据价格类型带出</td>
+<td>-</td>
+<td>SA_OUT_BILL_LINE.INSTALL_UNIT_PRICE</td>
+</tr>
+<tr>
+<td>体积</td>
+<td>数值框</td>
+<td>单件体积</td>
+<td>常显</td>
+<td>来源产品主档</td>
+<td>-</td>
+<td>SA_OUT_BILL_LINE.CUBAGE</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="选择弹窗">
+<KbSubTitle>弹窗1：客户选择弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| searchFlag | 搜索标识 | 区分工程/样品/家装 | 124 |
+
+**数据范围**
+
+```sql
+客户主档中符合工程条件的有效经销商
+```
+
+<KbSubTitle>弹窗2：合同选择弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| customerId | 客户ID | 当前订单客户 | 1001 |
+
+**数据范围**
+
+```sql
+EPM_PROJECT_CONTRACT中客户匹配且状态为已生效的合同
+```
+
+<KbSubTitle>弹窗3：折扣单选择弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| searchFlag | 搜索标识 | 区分工程 | 2 |
+
+**数据范围**
+
+```sql
+EPM_DISCOUNT_APPLY中已生效且适用工程的折扣单
+```
+
+</KbCard>
+<KbCard title="导入">
+<KbSubTitle>前置约定</KbSubTitle>
+
+
+- 支持两种导入类型：折扣政策类型导入(importProduct)和价目表类型导入(importPriceProduct)
+- 文件格式：Excel(.xlsx)，单次导入上限待确认
+
+
+<KbSubTitle>字段映射</KbSubTitle>
+
+
+| 字段含义 | 是否必输 | 字段格式 | 重复判定字段 |
+|---------|---------|---------|------------|
+| 产品编码 | 是 | 文本 | ITEM_CODE |
+| 数量 | 是 | 数值 | - |
+
+
+<KbSubTitle>处理逻辑</KbSubTitle>
+
+
+- **校验逻辑**：产品编码必须存在且有效；数量必须大于0；产品必须属于当前折扣单/政策的适用范围
+- **导入逻辑**：根据价格类型分别处理——折扣政策类型从政策行匹配价格；价目表类型从价目表匹配价格
+- **重复处理策略**：产品编码重复时覆盖数量
+- **性能方案**：同步处理
+
+
+<KbSubTitle>异常与结果约定</KbSubTitle>
+
+
+- 部分成功/失败时：整批回滚
+- 结果反馈机制：导入失败明细提示
+
+
+<KbSubTitle>运维保障</KbSubTitle>
+
+
+- 日志记录：标准日志
+- 断点续传/重试机制：不支持
+
+
+</KbCard>
+<KbCard title="其他按钮">
+
+| 按钮名称 | 按钮作用 | 所在位置 | 显隐条件/可点击条件 | 影响 |
+|---------|---------|---------|-------------------|------|
+| 新建 | 新增要货订单 | 列表页 | 有创建权限 | 跳转详情页新建模式 |
+| 修改地址 | 修改收货地址 | 列表页 | 有权限 | 弹出ModifyAddress组件修改选中订单的收货地址 |
+| 导出 | 导出列表数据 | 列表页 | 有导出权限 | 调用project-order-export接口，searchFlag=1 |
+| 查看 | 查看详情 | 列表页-行操作 | 常显 | 跳转详情页查看模式 |
+| 删除 | 删除订单 | 列表页-行操作 | NEW/NO_APPROVED状态且无正式单号且OA不扣订金未审批 | 调用DELETE接口 |
+| 刷新 | 刷新详情数据 | 详情页 | 常显 | 重新查询详情 |
+| 编辑 | 进入编辑模式 | 详情页 | 非审批中/已审批状态 | 切换editFlag |
+| 保存 | 保存当前修改 | 详情页 | 编辑模式下 | 调用POST保存接口 |
+| 保存并提交 | 保存并提交审批 | 详情页 | 编辑模式下且状态允许提交 | 先保存再启动工作流 |
+| 生成价目表 | 生成产品价格数据 | 详情页-产品明细 | priceType=3时 | 调用do-get-pick-po-data接口 |
+| 不扣订金申请 | 申请不扣订金 | 详情页 | 特定条件 | 推送OA审批doApplicationOa |
+| 校验年度经销合同 | 校验客户合同 | 详情页 | 工程订单 | 调用check-customer-contract接口 |
+| 查看库存 | 查看产品库存 | 详情页-产品明细 | 常显 | 弹出库存查询弹窗 |
+
+</KbCard>
+<KbCard title="保存校验">
+<KbSubTitle>校验1：产品明细行不允许为空 —— 确保订单至少有一个产品行</KbSubTitle>
+
+- 第1点：保存时检查产品行列表是否为空
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT COUNT(*) FROM SA_OUT_BILL_LINE WHERE SA_OUT_BILL_HEAD_ID = :saOutBillHeadId
+```
+
+<KbSubTitle>校验2：期望到达日期不早于今天 —— 确保交货期合理</KbSubTitle>
+
+- 第1点：前端控制inDate字段min=今天
+- 第2点：后端checkInDate校验
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT IN_DATE FROM SA_OUT_BILL_HEAD WHERE SA_OUT_BILL_HEAD_ID = :id
+```
+
+</KbCard>
+<KbCard title="提交校验">
+<KbSubTitle>校验1：提交前综合校验(preCheckData) —— 确保订单数据完整合规</KbSubTitle>
+
+- 第1点：校验产品行紧急标识(checkLineUrgency)
+- 第2点：校验业务类型(cheBusinessType)、客户子分类(customerSubClassCheck)
+- 第3点：校验行数量(checkLineNum)、期望到达日期(checkInDate)、下单数量(doCheckQty)、价格(checkPriceBill)
+- 第4点：工程特有校验(beforeSubmitCheck)：年度经销合同、定金等
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT * FROM SA_OUT_BILL_HEAD h 
+    LEFT JOIN SA_OUT_BILL_LINE l ON l.SA_OUT_BILL_HEAD_ID = h.SA_OUT_BILL_HEAD_ID
+    WHERE h.SA_OUT_BILL_HEAD_ID = :id
+```
+
+<KbSubTitle>校验2：价格类型校验(validPriceType) —— 确保价格来源有效</KbSubTitle>
+
+- 第1点：priceType=1时必须关联折扣单(discountApplyId不为空)
+- 第2点：priceType=2时必须关联折扣政策(discountPolicyId不为空)
+- 第3点：priceType=3时产品行必须有价目表价格
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT PRICE_TYPE, DISCOUNT_APPLY_ID, DISCOUNT_POLICY_ID 
+    FROM SA_OUT_BILL_HEAD WHERE SA_OUT_BILL_HEAD_ID = :id
+```
+
+</KbCard>
+<KbCard title="状态机">
+### 状态机
+
+<KbSubTitle>状态机流转图</KbSubTitle>
+
+
+```text
+NEW(新建) ──保存并提交──→ RUN(审批中) ──审批通过──→ APPROVED(已审批) → 生成CRM订单
+  ↑                         │
+  │                         ├──审批拒绝──→ REJECTED(已拒绝) ──修改后保存并提交──→ RUN
+  │                         ├──审批驳回──→ REBUT(已驳回)
+  │                         └──终止──────→ INTERRUPT(已终止)
   │
-  ├──< EPM_URGENT_ORDER_LINE (紧急要货明细行)
-  │       │
-  │       └──< EPM_URGENT_ORDER_LINE_STOCK (紧急要货库存保留记录)
-  │              │
-  │              └── 记录ERP库存占用反馈数量及有效期
-  │
-  ├──< EPM_URGENT_EXTEND (紧急要货延期申请单)
-  │       │
-  │       └──< EPM_URGENT_EXTEND_LINE (紧急要货延期申请明细)
-  │
-  └──< EPM_URGENT_ADJUST (紧急要货插单记录)
+  └──删除──→ (删除)
 
-关联外部表:
-  SA_OUT_BILL_HEAD ←── 紧急要货单.saOutBillHeadId (要货订单头)
-  SA_OUT_BILL_LINE ←── 紧急要货行.saOutBillLineId (要货订单行)
-  CUSTOMER ←── 客户信息
-  LINKCRM.CRM_SALE_ORDER_V ←── CRM订单视图 (库存占用/延期推送)
+NEW/RUN ──撤回──→ WITHDRAW(已撤回) ──保存并提交──→ RUN
 ```
 
-#### 紧急要货单头字段（EPM_URGENT_ORDER）
+<KbSubTitle>状态机列表</KbSubTitle>
 
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| urgentOrderId | URGENT_ORDER_ID | Long | 主键 | 自增生成 |
-| urgentOrderBillno | URGENT_ORDER_BILLNO | String | 紧急要货单号 | 编码规则生成 |
-| saOutBillHeadId | SA_OUT_BILL_HEAD_ID | Long | 要货订单ID | 必填，关联SA_OUT_BILL_HEAD |
-| saSalebillno | SA_SALEBILLNO | String | 要货单号 | 来源于要货订单 |
-| dateApproval | DATE_APPROVAL | LocalDateTime | 审批日期 | 工作流审批通过时=LocalDateTime.now() |
-| hzInstanceId | HZ_INSTANCE_ID | Long | H0流程实例ID | 工作流启动时赋值 |
-| hzApproveStatus | HZ_APPROVE_STATUS | String | H0流程审批状态 | APPROVED/RUN/NEW等 |
 
-#### 紧急要货行字段（EPM_URGENT_ORDER_LINE）
+| 状态机名称 | 状态释义 | 可执行的操作 |
+|-----------|---------|------------|
+| NEW | 新建 | 编辑、保存、保存并提交、删除 |
+| RUN | 审批中 | 无(等待审批结果) |
+| APPROVED | 审批通过 | 无(流程结束，CRM订单已创建) |
+| REJECTED | 审批拒绝 | 编辑、保存、保存并提交 |
+| WITHDRAW | 已撤回 | 编辑、保存、保存并提交 |
+| INTERRUPT | 已终止 | 无(流程结束) |
+| NO_APPROVED | 无需审批 | 编辑、保存、删除 |
 
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| urgentOrderLineId | URGENT_ORDER_LINE_ID | Long | 主键 | 自增生成 |
-| urgentOrderId | URGENT_ORDER_ID | Long | 紧急要货单ID | 关联头表 |
-| itemId | ITEM_ID | Long | 产品ID | 来源于sa_out_bill_line |
-| itemCode | ITEM_CODE | String | 产品编码 | 来源于base_view_item_org |
-| itemName | ITEM_NAME | String | 产品名称 | 来源于base_view_item_org |
-| qtyBill | QTY_BILL | Long | 订单数量 | 来源于sa_out_bill_line.qty_bill |
-| notShippedQty | NOT_SHIPPED_QTY | Long | 未出库数量 | = qty_bill - confirm_out_qty - cancel_qty |
-| urgentQty | URGENT_QTY | Long | 紧急要货数量 | 前端传入 |
-| intfResult | INTF_RESULT | String | 接口调用状态 | S=成功, E=错误 |
-| intfInfo | INTF_INFO | String | 错误信息 | ERP接口返回 |
-| validityTerm | VALIDITY_TERM | Long | 有效天数 | 审批通过时从系统参数VALIDITY_OF_STOCK_RETENTION读取 |
-| validDate | VALID_DATE | LocalDateTime | 有效期至 | ERP返回的EFFECTIVE_DATE_TO |
-| isCancel | IS_CANCEL | Long | 有效否 | 2=已取消/已失效 |
-| isOverdue | IS_OVERDUE | Long | 是否已超期 | 2=是，ERP返回"超期"释放时置为2 |
-| reservedQty | RESERVED_QTY | BigDecimal | 已占用数量 | ERP返回后累加更新 |
-| preReservedQty | PRE_RESERVED_QTY | BigDecimal | 已预占数量 | ERP返回后更新；插单调整时加减 |
-| releasedQty | RELEASED_QTY | Long | 已释放数量 | ERP释放后更新 |
+---
 
-#### 行有效性校验 — valid()
+</KbCard>
+<KbCard num="1" title="表1：SA_OUT_BILL_HEAD（要货订单头表）">
 
-```text
-行有效条件（全部满足）:
-  ✓ intfResult == 'S'   (接口调用成功)
-  ✓ isOverdue != 2      (未超期)
-  ✓ isCancel != 2       (未取消)
-  ✓ validDate >= now    (有效期未过)
-  ✓ reservedQty + preReservedQty + releasedQty != 1  (数量未用完)
-```
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| SA_OUT_BILL_HEAD_ID | BIGINT | 单据ID(主键) | - | 序列sq_SA_OUT_BILL_HEAD自增 |
+| SA_SALEBILLNO | VARCHAR | 正式单号 | 要货单号 | 审批通过后按编码规则生成 |
+| INTERIM_BIINO | VARCHAR | 临时单号 | 临时单号 | 提交前按编码规则生成 |
+| DATE_INVBILL | DATE | 单据日期 | 订单日期 | 默认当前日期 |
+| CUSTOMER_ID | BIGINT | 客户ID | 客户编码 | LOV选择后带入 |
+| DEPT_ID | BIGINT | 部门ID | - | 取用户上下文DEPT |
+| ORGANIZATION_ID | BIGINT | 组织ID | - | 取用户上下文 |
+| BILL_TYPE | INTEGER | 单据类型 | 订单类型 | 1=销售发货/2=销售退货/3=委托代销；默认1 |
+| CHANNEL | LONG | 销售渠道 | 销售渠道 | 值集AE.MKT.SALES_CHANNEL |
+| BUSINESS_TYPE | LONG | 业务类型 | 业务类型 | 值集AE.EPM.BUSINESS_TYPE |
+| IN_DATE | DATE | 要求到货日期 | 期望到达日期 | 必填，不早于今天 |
+| CONTRACT_ID | BIGINT | 合同ID | 合同编码 | LOV选择后带入 |
+| CONTRACT_CODE | VARCHAR | 合同编码 | 合同编码 | 选择合同后带入 |
+| CONTRACT_NAME | VARCHAR | 合同名称 | 合同名称 | 选择合同后带入 |
+| CONTRACT_TYPE | LONG | 签约方式 | 签约方式 | 1=直销/2=经销 |
+| CONTRACT_EXPIRE_DATE | DATE | 合作结束时间 | 合作结束日期 | 选择合同后带入 |
+| PROJECT_ID | BIGINT | 项目ID | 项目编码 | LOV选择后带入 |
+| PROJECT_CODE | VARCHAR | 项目编码 | 项目编码 | 选择项目后带入 |
+| PROJECT_NAME | VARCHAR | 项目名称 | 项目名称 | 选择项目后带入 |
+| TRADING_COMPANY_ID | BIGINT | 交易公司ID | 交易公司 | LOV选择后带入 |
+| BILLING_UNIT_ID | BIGINT | 开票单位ID | 开票单位 | 选择交易公司后自动带出 |
+| DISCOUNT_APPLY_ID | BIGINT | 折扣单ID | 折扣单号 | priceType=1时LOV选择 |
+| DISCOUNT_APPLY_CODE | VARCHAR | 折扣单号 | 折扣单号 | 选择折扣单后带入 |
+| DISCOUNT_POLICY_ID | BIGINT | 政策头ID | - | priceType=2时带入 |
+| PRICE_TYPE | INTEGER | 价格类型 | 价格类型 | 1=折扣单/2=折扣政策/3=价目表 |
+| DISCOUNT_TYPE | LONG | 折扣类型 | 折扣类型 | 值集AE.EPM.DISCOUNT_TYPE |
+| DISCOUNT_RATE | DECIMAL | 折扣率 | 审批折扣率 | 审批后回写 |
+| AMOUNT_TOTAL | DECIMAL | 折前含税总金额 | 折前总金额 | 自动计算=各行折前金额合计 |
+| AMOUNT_TOTAL_NOTAX | DECIMAL | 未税总金额 | - | 自动计算 |
+| QTY_SUM | DECIMAL | 合计数量 | 总数量 | 自动计算=各行数量合计 |
+| MAY_CONSIGNMENT_AMOUNT | DECIMAL | 可发货余额 | 可发货余额 | 来源CRM |
+| DEPOSIT_AMT | DECIMAL | 定金金额 | 定金金额 | CRM创建订单后回写 |
+| IS_DEDUCT_DEPOSIT | LONG | 是否扣定金 | - | 1=否/2=是 |
+| IS_NODEPOSIT | LONG | 无需扣订金 | - | OA审批后更新 |
+| NODEPOSIT_OA_AUDIT_STAT | LONG | 不扣定金OA审核状态 | - | 0=未审批/99=审批中/2=通过 |
+| DEDUCTIONS_WAY | LONG | 扣款方式 | 扣款方式 | 值集AE.EPM.DEDUCTIONS_WAY |
+| ORDER_STAT | LONG | 订单状态 | 订单状态 | 值集AE.EPM.REQUIRE_BILL.ORDER_STAT |
+| PROJECT_INTENTION | LONG | 工程意向单 | 意向单 | 1=否/2=是 |
+| CREATED_SOURCE | LONG | 订单来源 | 订单来源 | 值集AE.EPM.CREATED_SOURCE |
+| ORDER_PDT_LINE | LONG | 订单产品线 | 产品线 | LOV选择 |
+| CUSTOMER_ADDRESS_ID | BIGINT | 收货地址ID | - | 选择收货人后带入 |
+| TAKE_MAN | VARCHAR | 收货人 | 收货人 | 选择收货人后带入 |
+| PHONE_CODE | VARCHAR | 联系电话 | 联系电话 | 选择收货人后带入 |
+| HZ_INSTANCE_ID | BIGINT | 流程实例ID | - | 工作流启动后回写 |
+| HZ_APPROVE_STATUS | VARCHAR | 审批状态 | 审核状态 | 默认NEW |
+| CALLBACK_SOURCE | VARCHAR | 外部审批回调来源 | - | OA审批推送后设为WAIT |
+| CREATION_DATE | DATETIME | 创建时间 | - | 框架自动记录 |
+| CREATED_BY | BIGINT | 创建人ID | 申请人 | 框架自动记录 |
+| LAST_UPDATED_BY | BIGINT | 最后修改人ID | - | 框架自动记录 |
+| LAST_UPDATE_DATE | DATETIME | 最后修改时间 | - | 框架自动记录 |
+| OBJECT_VERSION_NUMBER | BIGINT | 乐观锁版本号 | - | 框架自动维护 |
 
-#### 库存保留记录（EPM_URGENT_ORDER_LINE_STOCK）
+</KbCard>
 
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| pkId | PK_ID | Long | 主键 | 自增生成 |
-| urgentOrderLineId | URGENT_ORDER_LINE_ID | Long | 紧急要货行ID | 关联行表 |
-| seq | SEQ | Long | 序号 | = MAX(seq)+1 |
-| reservedQty | RESERVED_QTY | BigDecimal | 库存保留数量 | ERP返回；插单时可负数 |
-| preReservedQty | PRE_RESERVED_QTY | BigDecimal | 库存预占数量 | ERP返回 |
-| reservedDate | RESERVED_DATE | LocalDateTime | 保留日期 | ERP返回/插单时=now() |
-| validDate | VALID_DATE | LocalDateTime | 保留有效期 | ERP返回的EFFECTIVE_DATE_TO |
-| isCancel | IS_CANCEL | Long | 有效否 | 1=有效, 2=已失效 |
-| releasedType | RELEASED_TYPE | String | 释放类型 | 插单时="插单" |
+<KbCard num="2" title="表2：SA_OUT_BILL_LINE（要货订单行表）">
 
-</div>
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| SA_OUT_BILL_LINE_ID | BIGINT | 行ID(主键) | - | 自增主键 |
+| SA_OUT_BILL_HEAD_ID | BIGINT | 头ID | - | 关联订单头 |
+| ITEM_ID | BIGINT | 产品ID | - | 关联产品主档 |
+| ITEM_CODE | VARCHAR | 产品编码 | 产品编码 | - |
+| ITEM_NAME | VARCHAR | 产品名称 | 产品名称 | - |
+| ITEM_MODEL | VARCHAR | 产品型号 | 产品型号 | - |
+| UOM_NAME | VARCHAR | 单位 | 单位 | - |
+| QUANTITY | DECIMAL | 数量 | 数量 | 必填，用户输入 |
+| STAND_PRICE | DECIMAL | 标准单价(含安装) | 标准单价 | 根据价格类型带出 |
+| DISCOUNT_RATE | DECIMAL | 折扣率 | 折扣率 | 根据折扣单/政策带出 |
+| WT_PRICE | DECIMAL | 折后含税单价 | 折后单价 | 自动计算=标准单价×折扣率 |
+| WT_AMOUNT | DECIMAL | 折后含税金额 | 折后金额 | 自动计算=折后单价×数量 |
+| INSTALL_UNIT_PRICE | DECIMAL | 安装单价 | 安装单价 | 根据价格类型带出 |
+| CUBAGE | DECIMAL | 体积 | 体积 | 来源产品主档 |
+| APPLICATION_TYPE | LONG | 申请类型 | - | 1-产品/2-型号/3-全产品 |
+| PREFERENTIAL_TYPE | LONG | 优惠方式 | - | 1-折扣/2-特价 |
 
-<div class="kb-module-alt">
+---
 
-### 延期申请与插单调整
-
-#### 延期申请单字段（EPM_URGENT_EXTEND）
-
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| urgentExtendId | URGENT_EXTEND_ID | Long | 主键 | 自增生成 |
-| urgentExtendBillno | URGENT_EXTEND_BILLNO | String | 延期单号 | 编码规则URGENT_EXTEND_BILLNO |
-| urgentOrderId | URGENT_ORDER_ID | Long | 紧急要货单ID | 关联头表 |
-| extendValidDate | EXTEND_VALID_DATE | LocalDate | 有效期延期至 | 前端传入，须>已延期的最大有效期 |
-| stat | STAT | Long | 单据状态 | 新建=SAVE，审批通过=5(APPROVED) |
-| hzApproveStatus | HZ_APPROVE_STATUS | String | H0流程审批状态 | APPROVED/RUN等 |
-
-#### 延期行字段（EPM_URGENT_EXTEND_LINE）
-
-| 字段名 | 数据库列名 | 类型 | 含义 |
-|--------|-----------|------|------|
-| urgentExtendLineId | URGENT_EXTEND_LINE_ID | Long | 主键 |
-| urgentOrderLineId | URGENT_ORDER_LINE_ID | Long | 紧急要货行ID |
-| validDate | VALID_DATE | LocalDate | 原有效期至 |
-| extendValidDate | EXTEND_VALID_DATE | LocalDate | 申请延期至 |
-| intfResult | INTF_RESULT | String | 接口状态 S/E |
-| cannotExtend | CANNOT_EXTEND | Long | 不满足延期条件 2=是 |
-
-#### 插单记录字段（EPM_URGENT_ADJUST）
-
-| 字段名 | 数据库列名 | 类型 | 含义 | 取值/赋值逻辑 |
-|--------|-----------|------|------|-------------|
-| adjustId | ADJUST_ID | Long | 主键 | EPM_URGENT_ADJUST_S.NEXTVAL |
-| urgentOrderLineId | URGENT_ORDER_LINE_ID | Long | 紧急要货行ID | 必填 |
-| adjustType | ADJUST_TYPE | String | 调整类型 | "+"=调增(申请方), "-"=调减(被调整方) |
-| adjustQty | ADJUST_QTY | BigDecimal | 调整数量 | 前端传入 |
-| relAdjustId | REL_ADJUST_ID | Long | 关联插单行ID | 申请方与被调整方互相关联 |
-| reservedIntfResult | RESERVED_INTF_RESULT | String | 接口状态 S/E | |
-| customerId | CUSTOMER_ID | Long | 客户ID | 申请方/调整方各自客户 |
-| deliveryBaseCode | DELIVERY_BASE_CODE | String | 发货基地编码 | 来源于紧急要货行 |
-
-</div>
-
-<div class="kb-module">
-
-### 紧急要货核心流程
-
-#### 创建/保存逻辑
-
-1. **前端发起**：基于已有要货订单(sa_out_bill_head)，选择可紧急要货的订单行
-2. **行数据筛选条件**（selectUrgentItem）：
-   - 未出库数量 > 0：`(qty_bill - confirm_out_qty - cancel_qty) > 0`
-   - 不禁止紧急要货：`cannot_urgent_order IS NULL OR <> 2`
-   - 排除已添加的行
-3. **行数据保存**：区分新增(urgentOrderLineId==null)和更新
-
-#### 审批通过回调 — wfComplete()
-
-1. 设置 dateApproval = LocalDateTime.now()
-2. 从系统参数表读取有效天数(VALIDITY_OF_STOCK_RETENTION)
-3. 批量更新所有明细行的 validityTerm = 有效天数
-4. **调用库存占用申请**：doReserveApply()
+</KbCard>
 
 </div>
-
-<div class="kb-module-alt">
-
-### 库存占用申请逻辑
-
-#### doReserveApply() — 向ERP(EBS)发送库存占用请求
-
-```text
-事务隔离: REQUIRES_NEW（独立事务）
-
-流程:
-1. 参数校验 → 只能使用一种参数传递方式
-2. 查询库存占用申请参数 → queryReserveApply SQL
-3. 判断订单行是否已取消(isCancel==2)
-4. 对未成功的行(intfResult!='S'):
-   ├── 已取消 → 设置 intfResult='E', intfInfo='该要货信息已取消...'
-   └── 未取消 → 构造EBS请求 → 调用ErpSdkService.stockReserveApply()
-5. 解析EBS响应(L_RET_STATUS)
-6. 处理反馈数据(reserveFeedbackProcess):
-   ├── 从X_RESERVE_OUT_TBL_ITEM提取CRM_LINE_ID列表
-   ├── 查询对应的紧急要货行
-   ├── 解析ERP返回数据:
-   │   ├── RESERVED_QUANTITY → 保留数量
-   │   ├── PRE_RESERVED_QUANTITY → 预占数量
-   │   ├── RESERVED_DATE/RESERVED_TIME → 保留日期
-   │   └── EFFECTIVE_DATE_TO → 有效期至
-   ├── 插入EPM_URGENT_ORDER_LINE_STOCK记录
-   └── 更新紧急要货行的reservedQty、preReservedQty、validDate
-```
-
+</div>
 </div>
 
-<div class="kb-module">
+<div id="permission" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="权限控制">
 
-### 延期申请逻辑
+<!-- 空白:待补充 -->
 
-#### 延期详情查询
-
-- 查询条件：HZ_APPROVE_STATUS='APPROVED' 且存在有效的紧急要货行
-- 有效行条件：intfResult='S', isOverdue!=2, isCancel!=2, validDate>当前日期
-- 计算maxValidDate：所有有效行的最大validDate
-
-#### 延期保存/更新
-
-1. 校验：延期时间 > 已延期的最大时间
-2. 检查是否存在未审核完毕的延期申请单
-3. 新建：生成单据号 → 创建头记录(stat=SAVE) → 插入延期行
-4. 更新：更新延期头 → 删除旧行重新插入 → 保存附件
-
-#### 延期审批通过回调 — wfComplete()
-
-1. 若延期日期早于今天：全部行标记cannotExtend=2
-2. 将行分为可推送ERP(valid()=true)和已失效两组
-3. 对已失效行对应的延期行：设置cannotExtend=2
-4. 对可推送行：调用toExtend()发送ERP延期请求
-5. 成功(S)：更新延期行intfResult → 更新紧急要货行validDate=extendValidDate
-6. 失败(E)：更新延期行intfResult和intfInfo
-
+</KbCard>
+</div>
+</div>
 </div>
 
-<div class="kb-module-alt">
+<div id="faq" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="报错一览表" :hover="false">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:27%"><col style="width:13%"><col style="width:32%"><col style="width:14%"><col style="width:14%"></colgroup>
+<thead><tr><th>报错信息</th><th>提示节点</th><th>根因与解决方案</th><th>等级</th><th>详细逻辑</th></tr></thead>
+<tbody>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">产品明细行不允许为空</td>
+            <td style="font-size:13px;">保存</td>
+            <td style="font-size:13px;">未录入任何产品行</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">期望到达日期不能早于今天</td>
+            <td style="font-size:13px;">保存/提交</td>
+            <td style="font-size:13px;">inDate早于当前日期</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-2" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">价格类型校验失败</td>
+            <td style="font-size:13px;">提交</td>
+            <td style="font-size:13px;">priceType与关联折扣单/政策不匹配</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-3" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">年度经销合同校验失败</td>
+            <td style="font-size:13px;">提交(工程)</td>
+            <td style="font-size:13px;">客户无有效年度经销合同</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-4" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">下单数量超出限制</td>
+            <td style="font-size:13px;">提交</td>
+            <td style="font-size:13px;">产品下单数量超过可下单数量或坎级限制</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-5" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">CRM订单创建失败</td>
+            <td style="font-size:13px;">审批通过</td>
+            <td style="font-size:13px;">CRM接口返回错误</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-6" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">仅新建状态单据允许删除</td>
+            <td style="font-size:13px;">删除</td>
+            <td style="font-size:13px;">非NEW/NO_APPROVED状态不允许删除</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-7" class="view-btn">查看</a></td>
+          </tr>
+</tbody></table></div>
 
-### 插单调整逻辑
-
-#### 插单流程
-
-```text
-1. 查询可发起插单的行 → intfResult='S', isOverdue!=2, validDate>=当前日期, preReservedQty>0
-2. 查询可被插单的行 → 同发货基地+同产品编码+不同客户, reservedQty>0
-3. 发送插单请求 → pushAdjust()
-   ├── 校验：总调整数量不超过申请行preReservedQty
-   ├── 校验：单行调整数量不超过adjustReservedQty
-   ├── 构造EBS请求 → 调用epmUrgentAdjustInft发送插单调整
-   ├── 解析EBS响应 → 获取X_RESERVE_OUT_TBL_ITEM
-   └── 更新数量:
-       ├── 申请方: reservedQty += adjustQty, preReservedQty -= adjustQty
-       └── 调整方: reservedQty += adjustQty, preReservedQty -= adjustQty
-   └── 插入库存保留记录:
-       ├── 申请方: reservedQty=adjustQty(正数)
-       └── 调整方: reservedQty=-adjustQty(负数), releasedType="插单"
-   └── 插入插单记录:
-       ├── 申请方: adjustType='+'
-       └── 调整方: adjustType='-'
-       └── 通过relAdjustId互相关联
-   └── 对被调整方重新发送库存占用申请(doReserveApply)
-```
-
+<div id="err-detail-1" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>产品明细行不允许为空</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>未录入任何产品行</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
-<div class="kb-module">
-
-### 流程发起前校验
-
-#### workFlowStartVolidate()
-
-```text
-校验逻辑:
-  关联sa_out_bill_head → 判断 order_stat IN (1, 11) 或 HZ_APPROVE_STATUS = 'NE'
-  若 count > 0 → 抛出异常: "紧急要货订单对应的要货单状态为EBS退回或者制单状态，流程失败!"
-```
-
-### API接口清单
-
-| URL | HTTP方法 | 功能说明 |
-|-----|---------|---------|
-| `/v1/{orgId}/epm-urgent-orders/` | GET | 紧急要货单据头分页列表 |
-| `/v1/{orgId}/epm-urgent-orders/detail` | GET | 紧急要货单详情(含行+库存+延期+插单) |
-| `/v1/{orgId}/epm-urgent-orders/work-flow-start-volidate` | GET | 流程发起前校验 |
-| `/v1/{orgId}/epm-urgent-order-lines/select-urgent-item` | GET | 可紧急要货行弹窗查询 |
-| `/v1/{orgId}/epm-urgent-extends/detail` | GET | 延期申请单详情 |
-| `/v1/{orgId}/epm-urgent-extends/` | POST | 创建或更新延期申请单 |
-| `/v1/{orgId}/epm-urgent-extends/` | DELETE | 删除延期申请单 |
-| `/v1/{orgId}/epm-urgent-adjusts/get-sa-out-bill-data` | GET | 查询可发起插单的行 |
-| `/v1/{orgId}/epm-urgent-adjusts/verify-data` | GET | 插单数据校验 |
-| `/v1/{orgId}/epm-urgent-adjusts/select-sa-out-line` | GET | 查询可被插单的行 |
-| `/v1/{orgId}/epm-urgent-adjusts/push-adjust` | POST | 发送插单请求 |
-
+<div id="err-detail-2" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>期望到达日期不能早于今天</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>inDate早于当前日期</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
+<div id="err-detail-3" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>价格类型校验失败</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>priceType与关联折扣单/政策不匹配</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
-<div id="faq">
-
-<div class="kb-module-alt">
-
-### 常见问题 FAQ
-
-#### Q1: 紧急要货单流程提交失败？
-
-流程发起前校验(workFlowStartVolidate)：检查要货单状态。若 order_stat IN (1,11) 或 HZ_APPROVE_STATUS='NE'(EBS退回)，则报错。
-
-排查SQL：
-```text
-SELECT order_stat, hz_approve_status
-FROM SA_OUT_BILL_HEAD
-WHERE sa_out_bill_head_id = #{要货单id}
-```
-
-#### Q2: ERP库存占用接口返回错误？
-
- intfResult='E' 表示接口调用失败。常见原因：
-1. CRM订单行ID缺失(CRM_LINE_ID为空)
-2. ERP系统内部错误
-3. 订单行已取消(isCancel==2)
-
-排查SQL：
-```text
-SELECT urgent_order_line_id, intf_result, intf_info, intf_time
-FROM EPM_URGENT_ORDER_LINE
-WHERE urgent_order_id = #{紧急要货单id}
-```
-
-#### Q3: 延期申请提交失败？
-
-延期时间必须 > 已延期的最大时间，且不能存在未审核完毕的延期申请单。常见错误：
-- "延期时间不能小于等于已延期的最大时间"
-- "该紧急要货单存在有未审核完毕的延期申请单"
-
-排查SQL：
-```text
-SELECT urgent_extend_id, stat, extend_valid_date
-FROM EPM_URGENT_EXTEND
-WHERE urgent_order_id = #{紧急要货单id}
-```
-
-#### Q4: 延期审批通过但行标记cannotExtend=2？
-
-审批回调时检查：延期日期早于今天 → 全部行标记cannotExtend=2；行有效性校验valid()返回false → 对应延期行标记cannotExtend=2。
-
-#### Q5: 插单调整数量校验失败？
-
-校验规则：
-- 同一申请行的总adjustQty不超过其preReservedQty
-- 单行adjustQty不超过adjustReservedQty
-失败信息："该记录的数量目前已不符合调整需求，请检查"
-
-排查SQL：
-```text
-SELECT urgent_order_line_id, reserved_qty, pre_reserved_qty
-FROM EPM_URGENT_ORDER_LINE
-WHERE intf_result='S' AND is_overdue!=2 AND valid_date >= SYSDATE
-```
-
-#### Q6: 插单后库存保留数量异常？
-
-插单调整后，申请方reservedQty增加、preReservedQty减少；调整方同样。被调整方会重新发送库存占用申请(doReserveApply)。检查EPM_URGENT_ORDER_LINE_STOCK记录确认调整是否生效。
-
-#### Q7: 紧急要货行变为无效？
-
-行无效的5种情况：接口未成功(intfResult!='S')、已超期(isOverdue==2)、已取消(isCancel==2)、有效期已过(validDate<now)、数量用完(reservedQty+preReservedQty+releasedQty==1)。
-
-#### Q8: 提货时间变更校验失败？
-
-校验要货订单是否存在未完成的紧急要货行变更或延期申请。若存在则变更失败。
-
+<div id="err-detail-4" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>年度经销合同校验失败</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>客户无有效年度经销合同</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
+<div id="err-detail-5" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>下单数量超出限制</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>产品下单数量超过可下单数量或坎级限制</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
-<div id="troubleshoot">
-
-<div class="kb-module">
-
-### 排查工作流
-
-#### Step 1: 确认要货订单状态
-
-```text
-SELECT sa_out_bill_head_id, order_stat, hz_approve_status
-FROM SA_OUT_BILL_HEAD
-WHERE sa_out_bill_head_id = #{要货单id}
-```
-
-预期：order_stat NOT IN (1,11)，HZ_APPROVE_STATUS NOT 'NE'
-
-#### Step 2: 确认紧急要货单头和行
-
-```text
-SELECT urgent_order_id, urgent_order_billno, hz_approve_status, date_approval
-FROM EPM_URGENT_ORDER
-WHERE sa_out_bill_head_id = #{要货单id}
-
-SELECT urgent_order_line_id, item_code, item_name, urgent_qty, intf_result, intf_info, 
-  reserved_qty, pre_reserved_qty, valid_date, is_cancel, is_overdue
-FROM EPM_URGENT_ORDER_LINE
-WHERE urgent_order_id = #{紧急要货单id}
-```
-
-#### Step 3: 确认库存保留记录
-
-```text
-SELECT pk_id, seq, reserved_qty, pre_reserved_qty, reserved_date, valid_date, is_cancel, released_type
-FROM EPM_URGENT_ORDER_LINE_STOCK
-WHERE urgent_order_line_id IN (SELECT urgent_order_line_id FROM EPM_URGENT_ORDER_LINE WHERE urgent_order_id = #{紧急要货单id})
-```
-
-#### Step 4: 确认延期申请状态
-
-```text
-SELECT urgent_extend_id, urgent_extend_billno, stat, hz_approve_status, extend_valid_date
-FROM EPM_URGENT_EXTEND
-WHERE urgent_order_id = #{紧急要货单id}
-```
-
-#### Step 5: 确认插单记录
-
-```text
-SELECT adjust_id, urgent_order_line_id, adjust_type, adjust_qty, customer_id, 
-  reserved_intf_result, rel_adjust_id
-FROM EPM_URGENT_ADJUST
-WHERE urgent_order_line_id IN (行ID列表)
-```
-
+<div id="err-detail-6" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>CRM订单创建失败</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>CRM接口返回错误</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
 </div>
 
+<div id="err-detail-7" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>仅新建状态单据允许删除</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>非NEW/NO_APPROVED状态不允许删除</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+</KbCard>
+<KbCard title="常见问题">
+<div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">审批通过后要货单号为空</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>编码规则AE.EPM_SA_OUT_BILL_HEAD未配置或已失效<br>
+      <strong style="color:#7C3AED;">处理：</strong>检查编码规则配置
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">产品价格带出为0</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>折扣单/政策中该产品无对应行，或价目表中无该产品价格<br>
+      <strong style="color:#7C3AED;">处理：</strong>检查折扣单/政策是否包含该产品
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">删除按钮不显示</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>订单已有正式单号(saSalebillno不为空)或OA不扣订金审批中(nodepositOaAuditStat不为0/99/null)<br>
+      <strong style="color:#7C3AED;">处理：</strong>确认订单状态是否允许删除
+    </div>
+  </div>
+</div>
+</KbCard>
+</div>
+</div>
 </div>
 
-<div id="history">
+<div id="changelog" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="更新记录">
 
-<div class="kb-module-alt">
+| 日期 | 提交ID | 提交人 | 提交内容 |
+|------|-------|-------|---------|
+| 2025-09-15 | - | - | 初始创建工程要货订单功能 |
 
-### 历史排查记录
-
-| 日期 | 问题描述 | 排查结果 | 解决方案 |
-|------|---------|---------|---------|
-| — | 暂无历史排查记录 | — | — |
-
+> 要求：
+> 1. 按倒序展示
+> 2. 只需要包含2026年的提交记录
+</KbCard>
+</div>
+</div>
 </div>
 
+<div id="history" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="历史排查记录">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
-
-<div id="related">
-
-<div class="kb-module">
-
-### 关联模块
-
-#### 上游依赖
-
-| 模块 | 说明 | 影响方式 |
-|------|------|---------|
-| 要货订单(SA_OUT_BILL_HEAD/LINE) | 紧急要货基于要货订单发起 | 要货单状态影响流程发起 |
-| CRM订单系统 | 库存占用/延期推送需CRM订单行ID | CRM数据缺失导致ERP接口失败 |
-| ERP(EBS)系统 | 库存占用/延期/插单均调用EBS接口 | EBS返回数据影响保留数量和有效期 |
-| 客户信息(CUSTOMER) | 插单时需不同客户筛选 | 客户数据影响插单匹配 |
-| 产品信息 | 行数据需产品编码/名称/型号 | 产品数据影响行展示 |
-| 系统参数 | 有效天数(VALIDITY_OF_STOCK_RETENTION) | 参数值影响有效期计算 |
-| 工作流系统 | 紧急要货和延期均走工作流审批 | 流程状态变更触发后续操作 |
-
-#### 下游影响
-
-| 模块 | 说明 | 影响方式 |
-|------|------|---------|
-| ERP库存 | 库存占用/释放/调整影响ERP库存数据 | 占用数量减少可用库存 |
-| 要货订单提货时间 | 提货时间变更需校验紧急要货行 | 未完成变更阻塞提货时间修改 |
-| 发货基地 | 库存占用按发货基地分配 | 不同基地的库存独立管理 |
-| 工程服务费报销 | 紧急要货行的计合同折扣/广告费/开单折扣标志 | 影响服务费计算 |
-
 </div>
-
 </div>
