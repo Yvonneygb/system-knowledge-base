@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="2" title="经销商额度外限额" desc="门店管理-门店设置业务说明" />
+<KbHero num="2" title="经销商额度外限额" desc="设置经销商的额度外限额，控制经销商在额度外可报销的金额上限" />
 
 <KbCard title="业务介绍">
 
@@ -28,7 +28,6 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
-| 无 | 无下游影响 | 本功能为纯设置/档案管理，不向任何下游系统/模块写入数据 |
 
 </div>
 </KbCard>
@@ -42,26 +41,40 @@
 <KbCard num="1" title="2.1 额度外限额管理">
 **具体逻辑**：
 
+- 1、为每个经销商+门店组合配置额度外限额预算
+- 2、额度外总额（outlimitBudTotal）含税，不含税额度外总额（notaxOutlimitBudTotal）不含税
+- 3、税率（taxRate）用于含税/不含税金额转换
 </KbCard>
 
 <KbCard num="2" title="2.2 额度使用跟踪">
 **具体逻辑**：
 
+- 1、当月1~12月已用额度（thisOutlimitBudUsed1~12）按月跟踪使用情况
+- 2、下月1~12月已用额度（nextOutlimitBudUsed1~12）预占下年额度
+- 3、累计已用额度（totalOutlimitBudUsed）= 各月已用之和
+- 4、额度外剩余（outlimitBudSur）= 额度外总额 - 累计已用额度
 </KbCard>
 
 <KbCard num="3" title="2.3 上年结转">
 **具体逻辑**：
 
+- 1、上年额度外总额（lastOutlimitBudTotal）、上年已用（lastOutlimitBudUsed）、上年剩余（lastOutlimitBudSur）
+- 2、用于年度结转时计算可结转额度
 </KbCard>
 
 <KbCard num="4" title="2.4 额度调整">
 **具体逻辑**：
 
+- 1、额度外调整额（outlimitBudAdj）和调整单号（outlimitBudAdjNo）记录调整信息
+- 2、剩余核销金额（surWriteoffAmt）跟踪待核销余额
 </KbCard>
 
 <KbCard num="5" title="2.5 批量导入">
 **具体逻辑**：
 
+- 1、importFlag 标识数据是否通过导入产生
+- 2、支持批量导入经销商额度外限额数据
+- 3、--
 </KbCard>
 
 </div>
@@ -72,16 +85,52 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard title="选择弹窗">
+<KbSubTitle>选择弹窗</KbSubTitle>
+
+- **经销商LOV**：选择经销商，带出编码、名称、简称
+- **门店LOV**：选择门店，带出编码、名称、地址、面积、城市区域
+- **交易公司LOV**：选择交易公司，带出编码和名称
+- **开票单元LOV**：选择开票单元，带出编码和名称
+
 </KbCard>
 <KbCard title="导入">
+支持批量导入，导入后 importFlag 标记为导入数据
+
 </KbCard>
 <KbCard title="其他按钮">
+
+| 按钮名称 | 操作说明 | 可用条件 |
+|---------|---------|---------|
+| 新增 | 新增一条额度外限额 | 始终可用 |
+| 保存 | 保存当前编辑数据 | 编辑状态 |
+| 导入 | 批量导入额度外限额数据 | 始终可用 |
+| 按年度查询 | 按预算年度筛选限额数据 | 始终可用 |
+
 </KbCard>
 <KbCard title="保存校验">
+<KbSubTitle>经销商不能为空</KbSubTitle>
+
+
+<KbSubTitle>门店不能为空</KbSubTitle>
+
+
+<KbSubTitle>预算年度不能为空</KbSubTitle>
+
+
+<KbSubTitle>同一经销商+门店+年度不允许重复</KbSubTitle>
+
+
 </KbCard>
 <KbCard title="提交校验">
 </KbCard>
 <KbCard title="状态机">
+
+```text
+编辑中 ──保存──→ 已保存（可继续编辑）
+```
+
+---
+
 </KbCard>
 <KbCard num="1" title="4.1 MKT_OUTLIMIT_BUD_HEADER（经销商额度外限额表）">
 
@@ -179,6 +228,82 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard title="报错一览表" :hover="false">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:27%"><col style="width:13%"><col style="width:32%"><col style="width:14%"><col style="width:14%"></colgroup>
+<thead><tr><th>报错信息</th><th>提示节点</th><th>根因与解决方案</th><th>等级</th><th>详细逻辑</th></tr></thead>
+<tbody>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">经销商不能为空</td>
+            <td style="font-size:13px;">未选择经销商</td>
+            <td style="font-size:13px;">选择经销商后保存</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">门店不能为空</td>
+            <td style="font-size:13px;">未选择门店</td>
+            <td style="font-size:13px;">选择门店后保存</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-2" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">预算年度不能为空</td>
+            <td style="font-size:13px;">未填写预算年度</td>
+            <td style="font-size:13px;">选择预算年度后保存</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-3" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">数据重复</td>
+            <td style="font-size:13px;">同一经销商+门店+年度已存在</td>
+            <td style="font-size:13px;">检查是否已录入相同组合的数据</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-4" class="view-btn">查看</a></td>
+          </tr>
+</tbody></table></div>
+
+<div id="err-detail-1" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>经销商不能为空</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>选择经销商后保存</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+
+<div id="err-detail-2" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>门店不能为空</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>选择门店后保存</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+
+<div id="err-detail-3" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>预算年度不能为空</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>选择预算年度后保存</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+
+<div id="err-detail-4" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>数据重复</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>检查是否已录入相同组合的数据</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+</KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
 </div>

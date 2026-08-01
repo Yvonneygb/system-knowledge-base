@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="3" title="新建门店申请" desc="门店管理-门店档案业务说明" />
+<KbHero num="3" title="新建门店申请" desc="新建门店申请流程，包括门店信息录入、资质审核、审批流转等环节" />
 
 <KbCard title="业务介绍">
 
@@ -28,7 +28,6 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
-| 无 | 无下游影响 | 本功能为纯设置/档案管理，不向任何下游系统/模块写入数据 |
 
 </div>
 </KbCard>
@@ -42,26 +41,46 @@
 <KbCard num="1" title="2.1 门店编码自动生成">
 **具体逻辑**：
 
+- 1、审批通过时调用`getMktTerminalCode`方法生成门店编码
+- 2、编码规则：城市车辆编码(barCode) + 事业部编码(divisionCode) + 5位流水号
+- 3、流水号通过Redis自增key实现：`ae:terminal:{divisionCode}:{barCode}`
+- 4、业务意义：保证门店编码全局唯一且可追溯归属区域和事业部
 </KbCard>
 
 <KbCard num="2" title="2.2 审批通过自动创建门店档案">
 **具体逻辑**：
 
+- 1、审批通过后调用`syncMktTerminal`方法，将申请单数据通过MapStruct转换为门店档案实体
+- 2、新建门店档案时设置`usable=2`（有效），记录审核人和审核时间
+- 3、同时将申请单的审批状态更新为APPROVED
+- 4、业务意义：确保门店档案的创建必须经过审批，避免随意建店
 </KbCard>
 
 <KbCard num="3" title="2.3 附件迁移">
 **具体逻辑**：
 
+- 1、审批通过后，将申请单的附件（attachConfId=8122）迁移到门店档案（attachConfId=8123）
+- 2、迁移时重新设置objId为新创建的门店ID
+- 3、根据用户所属部门匹配对应的attachTypeId
+- 4、业务意义：申请阶段的附件自动归档到门店档案下
 </KbCard>
 
 <KbCard num="4" title="2.4 工作流提交参数构造">
 **具体逻辑**：
 
+- 1、提交工作流时传递关键业务参数：applyId、terminalApplyId、startRealName、custId、terminalType、terminalNameFlag、terminalStat、tradeYears、oALinkTitle
+- 2、`terminalNameFlag`根据门店类型和名称判断：类型=2返回"1"，名称含"五金店"或"优选店"返回"2"，其他返回"3"
+- 3、`oALinkTitle`格式：`新建门店申请_门店名称_申请单号_更新时间`
+- 4、业务意义：工作流节点根据这些参数进行条件分支和审批人路由
 </KbCard>
 
 <KbCard num="5" title="2.5 工作流回调统一处理">
 **具体逻辑**：
 
+- 1、继承AbstractTerminalServiceImpl的`workFlowEvent`方法统一分发审批结果
+- 2、审批通过(APPROVED) → onWfComplete：创建门店档案+迁移附件
+- 3、驳回(REBUT)/退回(RETURN)/终止(INTERRUPT)/撤回(WITHDRAW)/拒绝(REJECTED) → onWfBreak：仅更新审批状态
+- 4、--
 </KbCard>
 
 </div>
@@ -72,16 +91,72 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard title="选择弹窗">
+<KbSubTitle>选择弹窗 <KbBadge type="purple">单选</KbBadge></KbSubTitle>
+
+**入参**
+
+| 字段名 | 中文名 | 释义 | 示例 |
+|-------|-------|------|------|
+| 分销商选择 | d_cust_id/d_cust_code/d_cust_name | 选择所属分销商 |  |
+| 行政区划选择 | province_areaid/city_areaid/county_areaid | 选择省市区，带出名称 |  |
+
 </KbCard>
 <KbCard title="导入">
+无导入功能。
+
 </KbCard>
 <KbCard title="其他按钮">
+
+| 按钮名称 | 功能说明 |
+|---------|---------|
+| 新增 | 新建门店申请单 |
+| 保存 | 保存草稿，不提交审批 |
+| 提交 | 保存并提交工作流审批 |
+| 审批通过同步 | 手动触发syncMktTerminal（审批通过后调用） |
+
 </KbCard>
 <KbCard title="保存校验">
+<KbSubTitle>terminalApplyNo（申请单号）不能为空（@NotBlank）</KbSubTitle>
+
+
+<KbSubTitle>soreManagersCount（店长数量）不能为空（@NotNull）</KbSubTitle>
+
+
+<KbSubTitle>guideCount（导购员数量）不能为空（@NotNull）</KbSubTitle>
+
+
+<KbSubTitle>designerCount（设计师数量）不能为空（@NotNull）</KbSubTitle>
+
+
+<KbSubTitle>serviceEngineerCount（服务工程师数量）不能为空（@NotNull）</KbSubTitle>
+
+
+<KbSubTitle>hzApproveStatus（审批状态）不能为空（@NotBlank）</KbSubTitle>
+
+
 </KbCard>
 <KbCard title="提交校验">
+<KbSubTitle>校验申请单数据必须存在，否则抛出"单据信息不匹配"</KbSubTitle>
+
+
+<KbSubTitle>校验工作流编码必须正确</KbSubTitle>
+
+
 </KbCard>
 <KbCard title="状态机">
+
+```
+[新建/草稿] --提交--> [审批中(RUN)] --审批通过--> [已批准(APPROVED)]
+                          |
+                          +--驳回--> [已驳回(REBUT)]
+                          +--退回--> [已退回(RETURN)]
+                          +--终止--> [已终止(INTERRUPT)]
+                          +--撤回--> [已撤回(WITHDRAW)]
+                          +--拒绝--> [已拒绝(REJECTED)]
+```
+
+---
+
 </KbCard>
 <KbCard num="1" title="MKT_TERMINAL_APPLY">
 
@@ -186,6 +261,82 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard title="报错一览表" :hover="false">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:27%"><col style="width:13%"><col style="width:32%"><col style="width:14%"><col style="width:14%"></colgroup>
+<thead><tr><th>报错信息</th><th>提示节点</th><th>根因与解决方案</th><th>等级</th><th>详细逻辑</th></tr></thead>
+<tbody>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">单据信息不匹配</td>
+            <td style="font-size:13px;">根据terminalApplyId未查到申请单</td>
+            <td style="font-size:13px;">确认申请单ID是否正确，数据是否已被删除</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">流程中objid为空，流程失败!</td>
+            <td style="font-size:13px;">工作流回调时objId为空或&lt;=0</td>
+            <td style="font-size:13px;">检查工作流配置，确认objId正确传递</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-2" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">未获取到用户信息</td>
+            <td style="font-size:13px;">用户附加信息中无userType</td>
+            <td style="font-size:13px;">检查用户登录状态和权限配置</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-3" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">未获取到事业部信息</td>
+            <td style="font-size:13px;">用户附加信息中无DEPT</td>
+            <td style="font-size:13px;">联系管理员配置用户所属事业部</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-4" class="view-btn">查看</a></td>
+          </tr>
+</tbody></table></div>
+
+<div id="err-detail-1" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>单据信息不匹配</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>确认申请单ID是否正确，数据是否已被删除</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+
+<div id="err-detail-2" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>流程中objid为空，流程失败!</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>检查工作流配置，确认objId正确传递</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+
+<div id="err-detail-3" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>未获取到用户信息</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>检查用户登录状态和权限配置</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+
+<div id="err-detail-4" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>未获取到事业部信息</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>联系管理员配置用户所属事业部</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+</KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
 </div>

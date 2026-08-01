@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="2" title="门店档案" desc="门店管理-门店档案业务说明" />
+<KbHero num="2" title="门店档案" desc="门店档案管理，维护门店的基本信息、经营状态、历史变更记录等" />
 
 <KbCard title="业务介绍">
 
@@ -28,7 +28,6 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
-| 无 | 无下游影响 | 本功能为纯设置/档案管理，不向任何下游系统/模块写入数据 |
 
 </div>
 </KbCard>
@@ -42,16 +41,25 @@
 <KbCard num="1" title="2.1 列表查询自动填充组织与经销商">
 **具体逻辑**：
 
+- 1、当前端未传入组织ID时，自动从当前登录用户的附加信息中获取DEPT作为组织ID
+- 2、当前端未传入经销商编码时，自动从当前登录用户附加信息中获取DC作为经销商编码
+- 3、业务意义：经销商用户登录后只能查看本经销商下的门店，无需手动选择
 </KbCard>
 
 <KbCard num="2" title="2.2 保存逻辑仅允许局部字段维护">
 **具体逻辑**：
 
+- 1、保存接口仅更新`otherCondition`（其他情况说明）和`terminalAreaChange`（门店面积变动说明）两个字段
+- 2、不允许通过此接口修改门店核心属性（如编码、名称、经销商等），核心属性变更需走变更申请流程
+- 3、业务意义：保护门店核心数据的一致性，变更必须经过审批
 </KbCard>
 
 <KbCard num="3" title="2.3 LOV查询接口">
 **具体逻辑**：
 
+- 1、`finFeeApplyLov`：为门店装修申请与进度提供门店选择LOV，增加装修提前天数校验参数
+- 2、`custDhReimburseHead`：为门头展板报销申请提供门店信息查询
+- 3、--
 </KbCard>
 
 </div>
@@ -64,14 +72,30 @@
 <KbCard title="选择弹窗">
 </KbCard>
 <KbCard title="导入">
+支持批量导入，导入数据通过`import_flag`字段标识。
+
 </KbCard>
 <KbCard title="其他按钮">
+
+| 按钮名称 | 功能说明 |
+|---------|---------|
+| 查询 | 按条件分页查询门店档案列表 |
+| 保存 | 仅保存其他情况说明和面积变动说明 |
+
 </KbCard>
 <KbCard title="保存校验">
+<KbSubTitle>校验门店ID对应的数据必须存在，否则抛出"数据不存在"</KbSubTitle>
+
+
 </KbCard>
 <KbCard title="提交校验">
 </KbCard>
 <KbCard title="状态机">
+
+本菜单无工作流状态机。门店状态`terminal_stat`由新建门店申请和变更申请审批后写入。
+
+---
+
 </KbCard>
 <KbCard num="1" title="MKT_TERMINAL">
 
@@ -182,6 +206,65 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard title="报错一览表" :hover="false">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:27%"><col style="width:13%"><col style="width:32%"><col style="width:14%"><col style="width:14%"></colgroup>
+<thead><tr><th>报错信息</th><th>提示节点</th><th>根因与解决方案</th><th>等级</th><th>详细逻辑</th></tr></thead>
+<tbody>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">数据不存在</td>
+            <td style="font-size:13px;">保存时根据terminalId未查到对应门店记录</td>
+            <td style="font-size:13px;">确认门店ID是否正确，数据是否已被删除</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">未获取到用户信息</td>
+            <td style="font-size:13px;">用户附加信息中无userType</td>
+            <td style="font-size:13px;">检查用户登录状态和权限配置</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-2" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">未获取到事业部信息</td>
+            <td style="font-size:13px;">用户附加信息中无DEPT</td>
+            <td style="font-size:13px;">联系管理员配置用户所属事业部</td>
+            <td style="font-size:13px;"><span style="background:#F5F3FF;color:#7C3AED;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">toast提醒</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-3" class="view-btn">查看</a></td>
+          </tr>
+</tbody></table></div>
+
+<div id="err-detail-1" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>数据不存在</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>确认门店ID是否正确，数据是否已被删除</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+
+<div id="err-detail-2" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>未获取到用户信息</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>检查用户登录状态和权限配置</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+
+<div id="err-detail-3" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>未获取到事业部信息</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>联系管理员配置用户所属事业部</div>
+    <div class="detail-tip" v-pre>提示型提醒（toast），不阻断操作；按提示补充或修正数据后重试</div>
+  </div>
+</div>
+</KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
 </div>
