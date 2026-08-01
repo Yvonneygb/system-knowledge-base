@@ -1,0 +1,537 @@
+<BreadcrumbTabs />
+
+<div id="biz-intro" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbHero num="2" title="额度内冲销报表" desc="财务管理-预提与冲销业务说明" />
+
+<KbCard title="业务介绍">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="biz-flow" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="业务流程图">
+
+```text
+门店费用兑现数据 ──手工触发更新──> 冲销数据生成(按交易公司+法人+年月+兑现模式汇总)
+                                        │
+                                        ├── 按兑现模式区分新旧科目(GGFDXRZJC=新科目)
+                                        ├── 含税金额=兑现总额，不含税金额=含税/税率
+                                        ├── 初始单据状态=制单(1)
+                                        │
+                                        ▼
+                                  执行(推共享) ──推送冲销数据到共享接口──> 共享系统处理
+                                        │                                    │
+                                        ▼                                    ▼
+                                  校验数据完整性                     共享返回成功(S)/失败
+                                        │                                    │
+                                        ▼                                    ▼
+                                  构建借贷模式行数据               更新billStatus=3(审批中)
+                                  (借:费用科目/贷:应付科目)       或报错展示共享错误信息
+```
+
+</KbCard>
+
+<KbCard num="2" title="上游依赖">
+
+| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
+|---------|---------|---------|------------|
+| 门店费用兑现数据(new_writeoff_in_quota_view) | 数据依赖 | 冲销数据基于门店费用兑现视图数据生成 | 兑现数据已入账 |
+| 事业部基础设置(DIVISION_BASE_SET) | 配置依赖 | 获取事业部编码，用于生成冲销单号前缀 | 事业部已配置 |
+| 冲销税率(Inlimit_Tax_Rate) | 配置依赖 | 计算不含税金额=含税金额/税率 | 税率已配置 |
+| 共享接口(ArrowFsscSdk.inLimitBudPush) | 配置依赖 | 执行时推送冲销数据到共享系统 | 共享接口可用 |
+| LOV配置(AE.SIE.POSITION_LDAP_CODE) | 配置依赖 | 获取申请人职位编码 | LOV已配置 |
+
+</KbCard>
+
+<KbCard num="3" title="下游影响">
+<div class="ds-impact">
+
+| 下游系统/模块 | 影响内容 | 说明 |
+|---|---|---|
+| 财务共享(FSCC) | 预算释放 | 执行时推送冲销数据(负数金额)到共享系统，释放预算占用 |
+| 服务费冲销 | 冲销单状态流转 | 推送成功后，冲销单billStatus更新为3(审批中) |
+
+</div>
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="key-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard num="1" title="重点逻辑1：更新冲销数据 更新">
+<KbQuote>手工触发从视图查询上月兑现数据，按维度汇总生成或更新冲销记录</KbQuote>
+
+**具体逻辑**：
+
+- 1、updateReversalData接口自动取上月年月(startDate=当前月-1)
+- 2、从new_writeoff_in_quota_view视图查询冲销源数据
+- 3、按entid+tradingCompanyCode+billingUnitCode+yearmonth+cashOutMode维度分组
+- 4、查询事业部信息(DivisionBaseSet)、交易公司名称、法人客户名称补充到冲销记录
+- 5、含税金额writeoffTaxAmt=兑现总额totalAmount，不含税金额：旧科目=含税/税率，新科目(GGFDXRZJC)=含税
+- 6、按inWriteoffHeadno查询已有记录billStatus，若存在制单状态则更新金额，否则新增
+- 7、冲销头单号inWriteoffHeadno按编码规则生成，前缀取事业部divisionCode或默认"QT"
+</KbCard>
+
+<KbCard num="2" title="重点逻辑2：执行推送共享 执行">
+<KbQuote>将冲销数据推送到共享系统进行预算释放，实现财务冲销入账</KbQuote>
+
+**具体逻辑**：
+
+- 1、前端通过Modal弹窗输入年月(yearMonth)和交易公司编码(tradingCompanyCode)后调用execReversalData
+- 2、按tradingCompanyCode+yearMonth查询冲销头数据(LimitBudPushDTO)，为空则报错"要执行的数据为空！"
+- 3、推送参数attribute1="2"(冲销标识)，attribute2=yearMonth
+- 4、金额取负数：若apportionAmount&gt;0则加"-"前缀
+- 5、行数据按借贷模式构建：新科目(GGFDXRZJC)借22411015/贷60010101(金额/1.13)，旧科目借66015001/贷22411008(金额/1.06)
+- 6、共享接口返回processStatus="S"则成功，更新billStatus=3(审批中)；否则报错展示processMsgData
+</KbCard>
+
+<KbCard num="3" title="重点逻辑3：新旧科目区分处理">
+<KbQuote>根据兑现模式(cashOutMode)区分新旧会计科目，影响借贷方向和税率计算</KbQuote>
+
+**具体逻辑**：
+
+- 1、cashOutMode="GGFDXRZJC"为新科目模式，不含税金额=含税金额(即新科目不除税率)
+- 2、新科目执行推送时：借方feeTypeCode=22411015，贷方feeTypeCode=60010101，金额=原金额/1.13
+- 3、旧科目执行推送时：借方feeTypeCode=66015001，贷方feeTypeCode=22411008，金额=原金额/1.06
+</KbCard>
+
+</div>
+</div>
+</div>
+
+<div id="detail-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="界面模块1：额度内冲销列表页">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>单据状态</td>
+<td>下拉选择框</td>
+<td>冲销单状态</td>
+<td>常显</td>
+<td>1-制单/3-审批中/7-作废</td>
+<td>1,3,7</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.BILL_STATUS</td>
+</tr>
+<tr>
+<td>冲销头单号</td>
+<td>文本框</td>
+<td>冲销批次单据编码</td>
+<td>常显</td>
+<td>按编码规则生成</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.IN_WRITEOFF_HEADNO</td>
+</tr>
+<tr>
+<td>冲销单号</td>
+<td>文本框</td>
+<td>冲销明细单号</td>
+<td>常显</td>
+<td>按编码规则生成</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.IN_WRITEOFF_NO</td>
+</tr>
+<tr>
+<td>年</td>
+<td>文本框</td>
+<td>冲销年度</td>
+<td>常显</td>
+<td>来源于yearmonth</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>月</td>
+<td>文本框</td>
+<td>冲销月份</td>
+<td>常显</td>
+<td>来源于yearmonth</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>事业部</td>
+<td>下拉选择框</td>
+<td>事业部</td>
+<td>常显</td>
+<td>值集epm.division</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.DIVISION_ID</td>
+</tr>
+<tr>
+<td>交易公司</td>
+<td>文本框</td>
+<td>交易公司名称</td>
+<td>常显</td>
+<td>-</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.TRADING_COMPANY_NAME</td>
+</tr>
+<tr>
+<td>法人编码</td>
+<td>文本框</td>
+<td>法人编码</td>
+<td>常显</td>
+<td>-</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.BILLING_UNIT_CODE</td>
+</tr>
+<tr>
+<td>法人名称</td>
+<td>文本框</td>
+<td>法人名称</td>
+<td>常显</td>
+<td>-</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.BILLING_UNIT_NAME</td>
+</tr>
+<tr>
+<td>冲销含税金额</td>
+<td>数值框</td>
+<td>冲销含税总额</td>
+<td>常显</td>
+<td>-</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.WRITEOFF_TAX_AMT</td>
+</tr>
+<tr>
+<td>冲销不含税金额</td>
+<td>数值框</td>
+<td>冲销不含税总额</td>
+<td>常显</td>
+<td>-</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.WRITEOFF_NOTAX_AMT</td>
+</tr>
+<tr>
+<td>币种</td>
+<td>文本框</td>
+<td>币种</td>
+<td>常显</td>
+<td>默认CNY</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>成本中心</td>
+<td>文本框</td>
+<td>成本中心名称</td>
+<td>常显</td>
+<td>-</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.COST_CENTER_NAME</td>
+</tr>
+<tr>
+<td>会计科目</td>
+<td>文本框</td>
+<td>会计科目名称</td>
+<td>常显</td>
+<td>-</td>
+<td>-</td>
+<td>FIN_FEE_WRITEOFF_IN_QUOTA.SUBJECT_NAME</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="界面模块2：执行弹窗">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:17%"><col style="width:12%"><col style="width:21%"><col style="width:12%"><col style="width:16%"></colgroup>
+<thead><tr>
+<th>字段名</th>
+<th>组件</th>
+<th>业务释义</th>
+<th>显隐条件</th>
+<th>取值/赋值逻辑</th>
+<th>合法值</th>
+<th>数据库列名</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>年月</td>
+<td>文本框</td>
+<td>执行冲销的年月</td>
+<td>弹窗显示</td>
+<td>必填，格式yyyy-MM</td>
+<td>年月格式</td>
+<td>-</td>
+</tr>
+<tr>
+<td>交易公司编码</td>
+<td>文本框</td>
+<td>交易公司编码</td>
+<td>弹窗显示</td>
+<td>必填</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>交易公司</td>
+<td>文本框</td>
+<td>交易公司名称</td>
+<td>弹窗显示</td>
+<td>非必填</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody></table></div>
+</KbCard>
+
+<KbCard title="选择弹窗">
+</KbCard>
+<KbCard title="导入">
+</KbCard>
+<KbCard title="其他按钮">
+
+| 按钮名称 | 按钮作用 | 所在位置 | 显隐条件/可点击条件 | 影响 |
+|---------|---------|---------|-------------------|------|
+| 执行 | 推送冲销数据到共享系统 | Header按钮 | 有权限 | 弹出执行弹窗，输入年月和交易公司后调用/v1/{orgId}/writeoff-in-quota/exec-reversal-data |
+| 导出 | 导出冲销数据Excel | Header按钮 | 有权限 | 调用/v1/0/writeoff-in-quota/export |
+
+</KbCard>
+<KbCard title="保存校验">
+<KbSubTitle>校验1：执行时数据不能为空 —— 确保有数据可执行</KbSubTitle>
+
+- 第1点：按tradingCompanyCode+yearMonth查询LimitBudPushDTO，为空则报错
+
+<KbTip>阻断性报错</KbTip>
+
+```sql
+SELECT * FROM FIN_FEE_WRITEOFF_IN_QUOTA WHERE TRADING_COMPANY_CODE = '{交易公司编码}' AND YEARMONTH = '{年月}'
+```
+
+</KbCard>
+<KbCard title="提交校验">
+</KbCard>
+<KbCard title="状态机">
+### 状态机
+
+<KbSubTitle>状态机流转图</KbSubTitle>
+
+
+```text
+[制单1] ──执行推送──> [审批中3]
+```
+
+<KbSubTitle>状态机列表</KbSubTitle>
+
+
+| 状态机名称 | 状态释义 | 可执行的操作 |
+|-----------|---------|------------|
+| 1 | 制单 | 执行、更新 |
+| 3 | 审批中 | 无 |
+
+---
+
+</KbCard>
+<KbCard num="1" title="表1：FIN_FEE_WRITEOFF_IN_QUOTA（额度内冲销预提数据表）">
+
+| 字段名 | 类型 | 释义 | 对应界面字段 | 逻辑 |
+|-------|------|------|------------|------|
+| IN_WRITEOFF_ID | INTEGER | 冲销主键ID | - | 自增主键 |
+| IN_WRITEOFF_NO | VARCHAR | 冲销单号 | 冲销单号 | 按编码规则生成 |
+| IN_WRITEOFF_HEADNO | VARCHAR | 冲销头单据编码 | 冲销头单号 | 按编码规则生成，同批次共享 |
+| YEARMONTH | VARCHAR | 年月 | 年/月 | 格式yyyy-MM |
+| BILLING_UNIT_CODE | VARCHAR | 法人编码 | 法人编码 | 来源于兑现数据 |
+| BILLING_UNIT_NAME | VARCHAR | 法人名称 | 法人名称 | 来源于客户主数据 |
+| ENTID | BIGINT | 组织ID | - | 来源于兑现数据 |
+| ENTNAME | VARCHAR | 事业部名称 | 事业部 | 来源于DivisionBaseSet |
+| COST_CENTER_CODE | VARCHAR | 成本中心编码 | - | 来源于兑现数据 |
+| COST_CENTER_NAME | VARCHAR | 成本中心名称 | 成本中心 | 来源于兑现数据 |
+| TRADING_COMPANY_NAME | VARCHAR | 交易公司名称 | 交易公司 | 来源于兑现数据 |
+| TRADING_COMPANY_CODE | VARCHAR | 交易公司编码 | - | 来源于兑现数据 |
+| WRITEOFF_TAX_AMT | DECIMAL | 冲销含税总额 | 冲销含税金额 | =兑现总额 |
+| WRITEOFF_NOTAX_AMT | DECIMAL | 冲销不含税总额 | 冲销不含税金额 | 新科目=含税；旧科目=含税/税率 |
+| WRITEOFF_SUMAMT | DECIMAL | 出库冲销总额 | - | - |
+| SYNC_ITEM | DATE | 同步时间 | - | 数据生成时间 |
+| BILL_STATUS | INTEGER | 单据状态 | 单据状态 | 1-制单/3-审批中/7-作废 |
+| DIVISION_ID | INTEGER | 事业部词汇值 | 事业部 | 来源于DivisionBaseSet |
+| SUBJECT_NAME | VARCHAR | 会计科目名称 | 会计科目 | - |
+| CASH_OUT_MODE | VARCHAR | 兑现模式 | - | GGFDXRZJC=新科目，其他=旧科目 |
+| DATA_LOG | VARCHAR | 运算记录 | - | JSON格式记录计算参数 |
+
+---
+
+</KbCard>
+
+</div>
+</div>
+</div>
+
+<div id="permission" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="权限控制">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="faq" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="报错一览表" :hover="false">
+<div class="kb-field-scroll">
+<table class="kb-field-tbl">
+<colgroup><col style="width:27%"><col style="width:13%"><col style="width:32%"><col style="width:14%"><col style="width:14%"></colgroup>
+<thead><tr><th>报错信息</th><th>提示节点</th><th>根因与解决方案</th><th>等级</th><th>详细逻辑</th></tr></thead>
+<tbody>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">要执行的数据为空！</td>
+            <td style="font-size:13px;">执行</td>
+            <td style="font-size:13px;">按交易公司+年月查询不到冲销数据，需先更新冲销数据</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-1" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">共享接口返回null,执行共享接口失败！</td>
+            <td style="font-size:13px;">执行</td>
+            <td style="font-size:13px;">共享接口调用失败，检查共享系统连通性</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-2" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">共享返回的错误信息</td>
+            <td style="font-size:13px;">执行</td>
+            <td style="font-size:13px;">共享系统处理失败，根据具体错误信息排查</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-3" class="view-btn">查看</a></td>
+          </tr>
+          <tr>
+            <td style="color:#DC2626;font-weight:600;">执行冲销数据接口异常！</td>
+            <td style="font-size:13px;">执行</td>
+            <td style="font-size:13px;">执行过程中发生未知异常</td>
+            <td style="font-size:13px;"><span style="background:#FEF2F2;color:#DC2626;padding:2px 8px;border-radius:3px;font-weight:600;font-size:12px;">阻断性报错</span></td>
+            <td style="font-size:13px;text-align:center;"><a href="#err-detail-4" class="view-btn">查看</a></td>
+          </tr>
+</tbody></table></div>
+
+<div id="err-detail-1" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>要执行的数据为空！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>按交易公司+年月查询不到冲销数据，需先更新冲销数据</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-2" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>共享接口返回null,执行共享接口失败！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>共享接口调用失败，检查共享系统连通性</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-3" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>共享返回的错误信息</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>共享系统处理失败，根据具体错误信息排查</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+
+<div id="err-detail-4" class="error-detail-overlay">
+  <div class="error-detail-box" v-pre>
+    <a href="#" class="close-btn">&times;</a>
+    <h4><span style="color:#7C3AED;">报错：</span>执行冲销数据接口异常！</h4>
+    <h5>详细逻辑</h5>
+    <div class="detail-text" v-pre>（该报错的详细逻辑细则待补充；以下为表格中「根因与解决方案」供参考：）<br>执行过程中发生未知异常</div>
+    <div class="detail-tip" v-pre>阻断性报错，需修正对应数据后才能继续保存/提交</div>
+  </div>
+</div>
+</KbCard>
+<KbCard title="常见问题">
+<div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">更新冲销数据后金额为0</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>new_writeoff_in_quota_view视图中无上月兑现数据，或事业部未配置DivisionBaseSet<br>
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">执行推送后状态未更新为审批中</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>共享接口返回成功但updateOptional执行异常<br>
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">新旧科目金额计算不一致</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>cashOutMode字段值判断错误，或税率Inlimit_Tax_Rate配置变更<br>
+      <strong style="color:#7C3AED;">处理：</strong>检查DATA_LOG字段中的运算记录，核对cashOutMode和税率
+    </div>
+  </div>
+</div>
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="changelog" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="更新记录">
+
+| 日期 | 提交ID | 提交人 | 提交内容 |
+|------|-------|-------|---------|
+| 2026-07-31 | - | - | 初始生成知识库文档 |
+
+> 要求：
+> 1. 按倒序展示
+> 2. 只需要包含2026年的提交记录
+</KbCard>
+</div>
+</div>
+</div>
+
+<div id="history" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="历史排查记录">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
+</div>
+</div>
+</div>

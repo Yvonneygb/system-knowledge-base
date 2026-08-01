@@ -119,11 +119,18 @@
                       <svg v-if="sub.label === '项目到款认领'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 00-2-2v0a2 2 0 00-2 2v0"/><path d="M14 10V4a2 2 0 00-2-2v0a2 2 0 00-2 2v6"/><path d="M10 10.5V6a2 2 0 00-2-2v0a2 2 0 00-2 2v8"/><path d="M18 8a2 2 0 114 0v6a8 8 0 11-16 0v-4a2 2 0 014 0"/></svg>
                       <svg v-if="sub.label === '项目到款认领撤销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
                       <svg v-if="sub.label === '工程服务费冲销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v6a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/><line x1="9" y1="14" x2="15" y2="20"/><line x1="15" y1="14" x2="9" y2="20"/></svg>
+                      <svg v-if="sub.label === '额度内冲销报表'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                      <svg v-if="sub.label === '额度内预提报表'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/><rect x="9" y="11" width="10" height="2"/><rect x="9" y="15" width="8" height="2"/><rect x="9" y="19" width="6" height="2"/></svg>
                       <svg v-if="sub.label === '广告费调整申请单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg>
                       <svg v-if="sub.label === '政策性补贴申请'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>
                       <svg v-if="sub.label === '销售提价兑现'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                       <svg v-if="sub.label === '经销商余额明细查询'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h7"/><path d="M16 16h6"/><path d="M19 13v6"/><circle cx="12" cy="12" r="2"/></svg>
                       <svg v-if="sub.label === '客户金税发票号码查询'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+                      <svg v-if="sub.label === '待兑现折扣折让对账单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H9"/><path d="M14 9h-1"/></svg>
+                      <svg v-if="sub.label === '额度内市场推广服务费对账单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                      <svg v-if="sub.label === '额度外预算总额'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <svg v-if="sub.label === '法人对账单'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                      <svg v-if="sub.label === '广告费余额查询'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
                       <svg v-if="sub.label === '样品及长库龄折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/><path d="M4 4l6 6"/></svg>
                       <svg v-if="sub.label === '工程折扣政策'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 12h8"/><circle cx="12" cy="8" r="2"/><path d="M8 16l4-4 4 4"/></svg>
                       <svg v-if="sub.label === '工程核销发票上传'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
@@ -298,6 +305,8 @@ const secondaryNav = {
       icon: 'fa-solid fa-receipt',
       items: [
         { label: '工程服务费冲销', link: '/财务管理/预提与冲销/工程服务费冲销/', icon: 'fa-solid fa-scissors' },
+        { label: '额度内冲销报表', link: '/财务管理/预提与冲销/额度内冲销报表/', icon: 'fa-solid fa-table' },
+        { label: '额度内预提报表', link: '/财务管理/预提与冲销/额度内预提报表/', icon: 'fa-solid fa-chart-bar' },
       ]
     },
     {
@@ -315,6 +324,12 @@ const secondaryNav = {
       items: [
         { label: '经销商余额明细查询', link: '/财务管理/对账单/经销商余额明细查询/', icon: 'fa-solid fa-wallet' },
         { label: '客户金税发票号码查询', link: '/财务管理/对账单/客户金税发票号码查询/', icon: 'fa-solid fa-receipt' },
+        { label: '待兑现折扣折让对账单', link: '/财务管理/对账单/待兑现折扣折让对账单/', icon: 'fa-solid fa-file-contract' },
+        { label: '额度内市场推广服务费对账单', link: '/财务管理/对账单/额度内市场推广服务费对账单/', icon: 'fa-solid fa-file-invoice-dollar' },
+        { label: '额度外预算总额', link: '/财务管理/对账单/额度外预算总额/', icon: 'fa-solid fa-coins' },
+        { label: '法人对账单', link: '/财务管理/对账单/法人对账单/', icon: 'fa-solid fa-building' },
+        { label: '广告费余额查询', link: '/财务管理/对账单/广告费余额查询/', icon: 'fa-solid fa-ad' },
+        { label: '政策性补贴申请', link: '/财务管理/对账单/政策性补贴申请/', icon: 'fa-solid fa-award' },
       ]
     }
   ]
