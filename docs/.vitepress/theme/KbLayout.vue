@@ -71,6 +71,8 @@
                 <svg v-if="group.label === '门店设置'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 7v1a3 3 0 006 0V7m0 1a3 3 0 006 0V7m0 1a3 3 0 006 0V7H3l2-4h14l2 4"/><path d="M5 21V10.85M19 21V10.85"/></svg>
                 <svg v-if="group.label === '门店档案'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="9" y2="9"/></svg>
                 <svg v-if="group.label === '门店装修'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/><circle cx="12" cy="6" r="1"/><path d="M15 12l-6 6"/><path d="M15 18l-6-6"/></svg>
+                <svg v-if="group.label === '门店报表'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                <svg v-if="group.label === '广告投放'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 3v4M8 3v4M4 7h16"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
                 <svg v-if="group.label === '样品及长库龄管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3l-1 5h7l-1-5"/><rect x="3" y="8" width="18" height="13" rx="2"/><circle cx="9" cy="14" r="2"/><circle cx="15" cy="14" r="2"/></svg>
                 <svg v-if="group.label === '预提与冲销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v6a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
                 <svg v-if="group.label === '值集配置'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="10" y1="6.5" x2="14" y2="6.5"/><line x1="10" y1="17.5" x2="14" y2="17.5"/><line x1="6.5" y1="10" x2="6.5" y2="14"/><line x1="17.5" y1="10" x2="17.5" y2="14"/></svg>
@@ -334,6 +336,27 @@ const secondaryNav = {
         { label: '样品及长库龄折扣政策', link: '/门店管理/样品及长库龄管理/样品及长库龄折扣政策/', icon: 'fa-solid fa-tags' },
         { label: '样品及长库龄折扣政策失效', link: '/门店管理/样品及长库龄管理/样品及长库龄折扣政策失效/', icon: 'fa-solid fa-ban' },
       ]
+    },
+    {
+      label: '门店报表',
+      icon: 'fa-solid fa-table',
+      items: [
+        { label: '门店统计分析', link: '/门店管理/门店报表/门店统计分析/', icon: 'fa-solid fa-chart-bar' },
+        { label: '出库单计算广告费明细报表', link: '/门店管理/门店报表/出库单计算广告费明细报表/', icon: 'fa-solid fa-file-invoice' },
+        { label: '店面额度内兑现余额表', link: '/门店管理/门店报表/店面额度内兑现余额表/', icon: 'fa-solid fa-coins' },
+        { label: '额度外占用预算明细', link: '/门店管理/门店报表/额度外占用预算明细/', icon: 'fa-solid fa-file-lines' },
+        { label: '户外广告分布', link: '/门店管理/门店报表/户外广告分布/', icon: 'fa-solid fa-map' },
+        { label: '门店区域分布', link: '/门店管理/门店报表/门店区域分布/', icon: 'fa-solid fa-location-dot' },
+      ]
+    },
+    {
+      label: '广告投放',
+      icon: 'fa-solid fa-bullhorn',
+      items: [
+        { label: '广告报销发票兑现', link: '/门店管理/广告投放/广告报销发票兑现/', icon: 'fa-solid fa-receipt' },
+        { label: '广告费报销', link: '/门店管理/广告投放/广告费报销/', icon: 'fa-solid fa-file-invoice-dollar' },
+        { label: '广告投放申请', link: '/门店管理/广告投放/广告投放申请/', icon: 'fa-solid fa-pen-to-square' },
+      ]
     }
   ],
   '开发管理': [
@@ -427,6 +450,8 @@ function resolveGroup(path) {
   if (path.includes('/门店管理/门店设置/')) return '门店设置'
   if (path.includes('/门店管理/门店档案/')) return '门店档案'
   if (path.includes('/门店管理/门店装修/')) return '门店装修'
+  if (path.includes('/门店管理/门店报表/')) return '门店报表'
+  if (path.includes('/门店管理/广告投放/')) return '广告投放'
   if (path.includes('/门店管理/')) return '样品及长库龄管理'
   if (path.includes('/财务管理/调整单/')) return '调整单'
   if (path.includes('/财务管理/对账单/')) return '对账单'
