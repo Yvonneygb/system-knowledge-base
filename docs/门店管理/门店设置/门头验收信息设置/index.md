@@ -18,9 +18,20 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```text
+开始 → 新增验收信息项 → 填写验收项目+比例等 → 保存 → 完成
+```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
+
+| 依赖模块 | 依赖说明 |
+|---------|---------|
+| 系统词汇 mkt.decorate_project | 装修项目取值来源 |
+| 门店验收信息设置主表 | 行明细关联主表(setId) |
+
 </KbCard>
 
 <KbCard num="3" title="下游影响">
@@ -28,6 +39,8 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
+| 门店验收与报销 | 影响说明 | 验收报销时通过 getAcceptanceInfo 接口获取验收信息设置，自动填充验收项目行 |
+| 门店验收申请 | 影响说明 | 验收申请时根据设置项生成待填写的验收信息行 |
 
 </div>
 </KbCard>
@@ -89,11 +102,9 @@
 
 </KbCard>
 <KbCard title="保存校验">
-<KbSubTitle>验收项目不能为空</KbSubTitle>
+- 验收项目不能为空
 
-
-<KbSubTitle>序号不能重复</KbSubTitle>
-
+- 序号不能重复
 
 </KbCard>
 <KbCard title="提交校验">
@@ -175,6 +186,33 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">验收信息设置如何被下游使用？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>门店验收报销时通过 `getAcceptanceInfo` 接口（FinFeeCheckBxHeaderController）获取当前用户对应的验收信息设置行，自动转换为验收报销的验收行数据。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">验收申请时提供标识的作用？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>is_ys_provide=1 时，该验收信息项在验收申请环节需要用户填写；=0 时，该信息项不强制在申请环节提供。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">该页面是hold低代码页面吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>是，该页面基于hold低代码平台配置，无独立Controller，通过FinFeeCheckBxHeaderController的getAcceptanceInfo接口提供数据访问。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

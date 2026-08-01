@@ -18,9 +18,47 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```
+[填写新建门店申请] --> [保存草稿] --> [MKT_TERMINAL_APPLY插入, stat=SAVE]
+       |
+       v
+[提交审批] --> [wfProcSubmit] --> [启动工作流NEW_STORE_APPLY]
+       |                              |
+       |                              v
+       |                     [hzApproveStatus=RUN]
+       |
+       v
+[工作流审批] --> 审批通过 --> [onWfComplete]
+       |                         |
+       |                         +--> [生成门店编码] --> [syncMktTerminal]
+       |                         |         |
+       |                         |         v
+       |                         |   [MKT_TERMINAL插入, usable=2]
+       |                         |         |
+       |                         |         v
+       |                         |   [迁移附件: attachConfId 8122→8123]
+       |                         |
+       |                         +--> [hzApproveStatus=APPROVED]
+       |
+       +--> 驳回/退回/终止/撤回/拒绝 --> [onWfBreak]
+                                           |
+                                           v
+                                   [hzApproveStatus=对应状态]
+```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
+
+| 上游来源 | 说明 | 关联方式 |
+|---------|------|---------|
+| 经销商主数据 | 选择所属经销商 | custId/custCode/custName |
+| 分销商主数据 | 选择所属分销商 | dCustId/dCustCode/dCustName |
+| 行政区划 | 选择省市区 | provinceAreaid/cityAreaid/countyAreaid |
+| 事业部基础设置 | 获取事业部编码用于生成门店编码 | DivisionBaseSet |
+| 系统词汇表 | 门店类型、装修等级、产权归属等LOV | LOV翻译 |
+
 </KbCard>
 
 <KbCard num="3" title="下游影响">
@@ -28,6 +66,9 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
+| 门店档案(MKT_TERMINAL) | 审批通过后自动创建门店档案 | 全字段同步 |
+| 附件关系(OBJ_ATTACH_REL) | 审批通过后迁移附件到门店档案 | attachConfId从8122变更为8123 |
+| 工作流引擎 | 启动NEW_STORE_APPLY流程 | hzInstanceId |
 
 </div>
 </KbCard>
@@ -116,31 +157,23 @@
 
 </KbCard>
 <KbCard title="保存校验">
-<KbSubTitle>terminalApplyNo（申请单号）不能为空（@NotBlank）</KbSubTitle>
+- terminalApplyNo（申请单号）不能为空（@NotBlank）
 
+- soreManagersCount（店长数量）不能为空（@NotNull）
 
-<KbSubTitle>soreManagersCount（店长数量）不能为空（@NotNull）</KbSubTitle>
+- guideCount（导购员数量）不能为空（@NotNull）
 
+- designerCount（设计师数量）不能为空（@NotNull）
 
-<KbSubTitle>guideCount（导购员数量）不能为空（@NotNull）</KbSubTitle>
+- serviceEngineerCount（服务工程师数量）不能为空（@NotNull）
 
-
-<KbSubTitle>designerCount（设计师数量）不能为空（@NotNull）</KbSubTitle>
-
-
-<KbSubTitle>serviceEngineerCount（服务工程师数量）不能为空（@NotNull）</KbSubTitle>
-
-
-<KbSubTitle>hzApproveStatus（审批状态）不能为空（@NotBlank）</KbSubTitle>
-
+- hzApproveStatus（审批状态）不能为空（@NotBlank）
 
 </KbCard>
 <KbCard title="提交校验">
-<KbSubTitle>校验申请单数据必须存在，否则抛出"单据信息不匹配"</KbSubTitle>
+- 校验申请单数据必须存在，否则抛出"单据信息不匹配"
 
-
-<KbSubTitle>校验工作流编码必须正确</KbSubTitle>
-
+- 校验工作流编码必须正确
 
 </KbCard>
 <KbCard title="状态机">
@@ -339,6 +372,42 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">门店编码什么时候生成？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>门店编码在审批通过后调用syncMktTerminal方法时生成，不在保存草稿时生成。编码规则为：城市车辆编码+事业部编码+5位Redis流水号。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">审批通过后门店档案没有创建怎么办？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">原因：</strong>A: 检查工作流回调是否正常触发，确认onWfComplete方法是否执行成功。常见原因：MapStruct转换失败、MKT_TERMINAL插入异常等。<br>
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">stat字段和hz_approve_status字段有什么区别？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>stat字段已弃用，当前审批状态统一使用hz_approve_status字段管理。stat字段保留仅为兼容历史数据。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">terminalNameFlag参数的含义？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>工作流条件分支参数：门店类型=2时返回"1"，门店名称含"五金店"或"优选店"返回"2"，其他返回"3"。用于工作流节点根据门店类型和名称走不同审批路径。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

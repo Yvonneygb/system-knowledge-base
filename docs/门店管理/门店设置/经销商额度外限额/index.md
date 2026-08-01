@@ -18,9 +18,25 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```text
+开始 → 新增额度外限额 → 填写经销商+门店+额度信息 → 保存 → 完成
+                  │
+                  └→ 批量导入 → 保存 → 完成
+```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
+
+| 依赖模块 | 依赖说明 |
+|---------|---------|
+| 事业部 | 新增时需选择事业部，决定数据归属范围 |
+| 经销主档 | 选择经销商，带出经销商编码、名称、简称 |
+| 门店主档 | 选择门店，带出门店编码、名称、地址、面积 |
+| 交易公司 | 选择交易公司，带出编码和名称 |
+| 开票单元 | 选择开票单元，带出编码和名称 |
+
 </KbCard>
 
 <KbCard num="3" title="下游影响">
@@ -28,6 +44,8 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
+| 门店验收报销 | 影响说明 | 验收报销时查询经销商的额度外限额，判断是否超额及处理策略 |
+| 额度外预算调整 | 影响说明 | 额度外限额调整单引用当前限额数据进行调整 |
 
 </div>
 </KbCard>
@@ -108,17 +126,13 @@
 
 </KbCard>
 <KbCard title="保存校验">
-<KbSubTitle>经销商不能为空</KbSubTitle>
+- 经销商不能为空
 
+- 门店不能为空
 
-<KbSubTitle>门店不能为空</KbSubTitle>
+- 预算年度不能为空
 
-
-<KbSubTitle>预算年度不能为空</KbSubTitle>
-
-
-<KbSubTitle>同一经销商+门店+年度不允许重复</KbSubTitle>
-
+- 同一经销商+门店+年度不允许重复
 
 </KbCard>
 <KbCard title="提交校验">
@@ -306,6 +320,33 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">额度外限额如何被下游使用？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>门店验收报销时查询经销商+门店+年度对应的额度外限额，判断报销金额是否超额，超额时根据报销标准中的额度外超额处理策略决定是否允许。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">当月已用额度和下月已用额度如何更新？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>验收报销单审批通过后，根据报销月份自动累加到对应月份的已用额度字段。跨年报销累加到下年对应月份。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">该页面是hold低代码页面吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>是，该页面基于hold低代码平台配置，无独立Controller，通过MktOutlimitBudHeaderRepository访问数据，支持selectByBudYear按年度查询。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

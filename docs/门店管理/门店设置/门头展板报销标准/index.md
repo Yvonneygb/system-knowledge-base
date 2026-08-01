@@ -18,9 +18,24 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```text
+开始 → 新建报销标准 → 填写头信息+行信息 → 保存 → 提交审批 → 审批通过 → 生效 → (作废/失效)
+                                    ↓                    ↓
+                              保存校验              审批拒绝 → 修改 → 重新提交
+```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
+
+| 依赖模块 | 依赖说明 |
+|---------|---------|
+| 事业部 | 新增时需选择事业部，决定数据归属范围 |
+| 系统词汇 quota_type | 额度类型取值来源 |
+| 系统词汇 quota_out_limit | 额度外超额处理策略取值来源 |
+| 系统词汇 AE.MKT.POLICY_STANDARD_PROJECT | 行-装修项目取值来源 |
+
 </KbCard>
 
 <KbCard num="3" title="下游影响">
@@ -28,6 +43,8 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
+| 门店验收与报销 | 影响说明 | 验收报销时引用已生效的报销标准，计算额度内/外金额 |
+| 门店装修申请 | 影响说明 | 装申请时根据标准等级和装修项目匹配报销标准 |
 
 </div>
 </KbCard>
@@ -102,31 +119,23 @@
 
 </KbCard>
 <KbCard title="保存校验">
-<KbSubTitle>政策编码不能为空</KbSubTitle>
+- 政策编码不能为空
 
+- 政策名称不能为空
 
-<KbSubTitle>政策名称不能为空</KbSubTitle>
+- 结束时间需&gt;=开始时间
 
+- 使用额度外预算为Y时，年度必填
 
-<KbSubTitle>结束时间需&gt;=开始时间</KbSubTitle>
-
-
-<KbSubTitle>使用额度外预算为Y时，年度必填</KbSubTitle>
-
-
-<KbSubTitle>行信息至少一行</KbSubTitle>
-
+- 行信息至少一行
 
 </KbCard>
 <KbCard title="提交校验">
-<KbSubTitle>头信息保存校验通过</KbSubTitle>
+- 头信息保存校验通过
 
+- 行信息完整无空值
 
-<KbSubTitle>行信息完整无空值</KbSubTitle>
-
-
-<KbSubTitle>工作流 `STORE_POLICY_STANDARD_HEAD` 启动成功</KbSubTitle>
-
+- 工作流 `STORE_POLICY_STANDARD_HEAD` 启动成功
 
 </KbCard>
 <KbCard title="状态机">
@@ -284,6 +293,33 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">报销标准如何被下游引用？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>下游门店验收报销通过 `/v1/{organizationId}/policy-standard-heads/valid-head` 接口查询已生效标准，再通过 `/do-select` 接口获取对应行明细进行金额匹配。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">审批拒绝后如何处理？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>审批拒绝后可修改数据重新提交审批流程。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">额度内标准和额度外标准如何区分？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>行信息中 within_standard 为额度内标准金额，outside_standard 为额度外标准金额，根据门店实际用量是否在额度范围内匹配对应标准。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

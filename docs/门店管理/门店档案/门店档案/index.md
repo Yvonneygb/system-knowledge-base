@@ -18,9 +18,30 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```
+[前端storeChange页面] --> [查询门店档案列表] --> [展示门店基础信息]
+                              |
+                              v
+                        [维护门店档案] --> [保存其他情况说明/面积变动说明] --> [MKT_TERMINAL更新]
+                              |
+                              v
+                        [门店装修申请LOV] --> [finFeeApplyLov接口]
+                              |
+                              v
+                        [门头展板报销LOV] --> [custDhReimburseHead接口]
+```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
+
+| 上游来源 | 说明 | 关联方式 |
+|---------|------|---------|
+| 新建门店申请审批通过 | 审批通过后自动创建门店档案 | MktTerminalApplyServiceImpl.onWfComplete → insertSelective |
+| 门店变更申请审批通过 | 审批通过后更新门店档案 | MktTerminalModifyServiceImpl.onWfComplete → updateByPrimaryKeySelective |
+| 门店档案导入 | 批量导入门店基础数据 | importFlag标识 |
+
 </KbCard>
 
 <KbCard num="3" title="下游影响">
@@ -28,6 +49,10 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
+| 门店变更申请 | 变更申请需选择已有门店 | terminalId |
+| 门店装修申请与进度 | 装修申请需关联门店 | terminalId |
+| 门店验收与报销 | 报销申请需关联门店 | terminalId |
+| 门头展板报销申请 | 报销需查询门店信息 | terminalId |
 
 </div>
 </KbCard>
@@ -84,8 +109,7 @@
 
 </KbCard>
 <KbCard title="保存校验">
-<KbSubTitle>校验门店ID对应的数据必须存在，否则抛出"数据不存在"</KbSubTitle>
-
+- 校验门店ID对应的数据必须存在，否则抛出"数据不存在"
 
 </KbCard>
 <KbCard title="提交校验">
@@ -267,6 +291,33 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">为什么保存时只能修改其他情况说明和面积变动说明？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>门店核心属性（编码、名称、经销商、地址等）的变更必须通过"门店变更申请"菜单走审批流程，确保数据变更可追溯。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">门店编码是如何生成的？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>门店编码在新建门店申请审批通过时自动生成，规则为：城市车辆编码 + 事业部编码 + 5位流水号（Redis自增序列）。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">前端为什么没有独立页面？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>门店档案作为基础数据，在storeChange（门店变更申请）页面中引用展示，不提供独立的新增/编辑入口，新增走新建门店申请，变更走变更申请。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

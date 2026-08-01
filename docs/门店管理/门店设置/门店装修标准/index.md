@@ -18,9 +18,22 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```text
+开始 → 新建装修标准 → 填写头信息+行信息 → 保存 → (审核) → 完成
+```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
+
+| 依赖模块 | 依赖说明 |
+|---------|---------|
+| 事业部 | 新增时需选择事业部，决定数据归属范围 |
+| 系统词汇 mkt.decorate_project | 行-装修项目取值来源 |
+| 系统词汇 fixup_grade | 行-门店装修等级取值来源 |
+| 值列表 decorate_subsidy_mode | 行-补贴方式取值来源 |
+
 </KbCard>
 
 <KbCard num="3" title="下游影响">
@@ -28,6 +41,8 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
+| 门店验收与报销 | 影响说明 | 验收报销时通过 doSearchDecorate 接口查询门店等级对应的装修标准，计算额度内/外金额 |
+| 门店装修申请 | 影响说明 | 装申请时根据门店等级和面积范围匹配装修标准行 |
 
 </div>
 </KbCard>
@@ -97,25 +112,19 @@
 
 </KbCard>
 <KbCard title="保存校验">
-<KbSubTitle>事业部不能为空</KbSubTitle>
+- 事业部不能为空
 
+- 行信息至少一行
 
-<KbSubTitle>行信息至少一行</KbSubTitle>
+- 面积范围小于等于需大于面积范围大于
 
-
-<KbSubTitle>面积范围小于等于需大于面积范围大于</KbSubTitle>
-
-
-<KbSubTitle>有效结束日期需&gt;=有效开始日期</KbSubTitle>
-
+- 有效结束日期需&gt;=有效开始日期
 
 </KbCard>
 <KbCard title="提交校验">
-<KbSubTitle>头信息保存校验通过</KbSubTitle>
+- 头信息保存校验通过
 
-
-<KbSubTitle>行信息完整无空值</KbSubTitle>
-
+- 行信息完整无空值
 
 </KbCard>
 <KbCard title="状态机">
@@ -240,6 +249,33 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">装修标准如何被下游使用？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>门店验收报销时通过 `doSearchDecorate` 或 `searchDecorate` 接口，传入门店等级和装修项目，返回匹配的装修标准行明细用于金额计算。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">面积范围如何匹配？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>门店面积A匹配条件为：uper_area &lt; A &lt;= lower_area，即左开右闭区间。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">该页面是hold低代码页面吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>是，该页面基于hold低代码平台配置，无独立Controller，通过TerminalDecorateStandardRepository访问数据。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

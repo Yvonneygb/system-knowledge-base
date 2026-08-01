@@ -18,9 +18,54 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```
+[选择门店] --> [填写变更信息] --> [保存草稿] --> [MKT_TERMINAL_MODIFY插入, stat=SAVE]
+       |              |
+       |              v
+       |        [自动记录变更前数据(XXX_H字段)]
+       |
+       v
+[提交审批] --> [wfProcSubmit] --> [validTerminalStat校验]
+       |                              |
+       |                              v
+       |                     [启动工作流SUB_STORE_UPDATE_APPLY]
+       |                              |
+       |                              v
+       |                     [hzApproveStatus=RUN]
+       |
+       v
+[工作流审批] --> 审批通过 --> [onWfComplete]
+       |                         |
+       |                         +--> [MktTerminalConvert.toMktTerminalByModify]
+       |                         |         |
+       |                         |         v
+       |                         |   [MKT_TERMINAL更新为变更后数据]
+       |                         |         |
+       |                         |         v
+       |                         |   [记录审核人/审核时间]
+       |                         |
+       |                         +--> [hzApproveStatus=APPROVED]
+       |
+       +--> 驳回/退回/终止/撤回/拒绝 --> [onWfBreak]
+                                           |
+                                           v
+                                   [hzApproveStatus=对应状态]
+```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
+
+| 上游来源 | 说明 | 关联方式 |
+|---------|------|---------|
+| 门店档案(MKT_TERMINAL) | 变更申请必须基于已有门店 | terminalId |
+| 经销商主数据 | 变更所属经销商 | custId/custCode/custName |
+| 分销商主数据 | 变更所属分销商 | dCustId/dCustCode/dCustName |
+| 行政区划 | 变更省市区 | provinceAreaid/cityAreaid/countyAreaid |
+| 事业部基础设置 | 获取事业部编码用于生成变更单号 | DivisionBaseSet |
+| 编码规则 | 生成变更单编码 | RuleCodeEnum.TERMINAL_MODIFY_CODE |
+
 </KbCard>
 
 <KbCard num="3" title="下游影响">
@@ -28,6 +73,10 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
+| 门店档案(MKT_TERMINAL) | 审批通过后更新门店档案为变更后数据 | 全字段更新 |
+| 门店装修申请与进度 | 撤店校验时检查是否有未审完的装修单 | terminalId |
+| 门店验收与报销 | 撤店校验时检查是否有未审完的报销单 | terminalId |
+| 工作流引擎 | 启动SUB_STORE_UPDATE_APPLY流程 | hzInstanceId |
 
 </div>
 </KbCard>
@@ -124,22 +173,17 @@
 
 </KbCard>
 <KbCard title="保存校验">
-<KbSubTitle>Controller层调用`validObject(modifyDTO)`进行DTO基础校验</KbSubTitle>
+- Controller层调用`validObject(modifyDTO)`进行DTO基础校验
 
+- 新建时自动生成变更单编码
 
-<KbSubTitle>新建时自动生成变更单编码</KbSubTitle>
-
-
-<KbSubTitle>新建时自动设置stat=SAVE、divisionId、entid、entname</KbSubTitle>
-
+- 新建时自动设置stat=SAVE、divisionId、entid、entname
 
 </KbCard>
 <KbCard title="提交校验">
-<KbSubTitle>校验变更单数据必须存在，否则抛出"单据信息不匹配"</KbSubTitle>
+- 校验变更单数据必须存在，否则抛出"单据信息不匹配"
 
-
-<KbSubTitle>撤店校验(validTerminalStat)：当terminalStat=2时，检查是否存在未审完的装修申请或报销单</KbSubTitle>
-
+- 撤店校验(validTerminalStat)：当terminalStat=2时，检查是否存在未审完的装修申请或报销单
 
 </KbCard>
 <KbCard title="状态机">
@@ -417,6 +461,51 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">变更前数据是如何记录的？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>选择门店后，系统自动从门店档案中读取当前数据填入变更前字段（后缀_H），变更后字段由用户编辑。审批通过后，变更后数据写回门店档案。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">撤店申请为什么提交失败？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>撤店(terminalStat=2)前，系统会校验该门店是否存在未审批完成的装修申请单或验收报销单。如有，需先审批通过或作废这些单据后才能提交撤店申请。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">saveDataSubmit方法为什么是空的？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>当前saveDataSubmit方法未实现具体逻辑，提交审批功能通过工作流的wfProcSubmit方法实现。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">变更单编码如何生成？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>通过编码规则引擎CodeRuleBuilder生成，规则编码为TERMINAL_MODIFY_CODE，参数包含divisionCode（事业部编码）。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q5</span>
+      <span style="font-size:15px;">变更申请审批通过后门店档案哪些字段会被更新？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>审批通过后，通过MapStruct的toMktTerminalByModify方法将变更后数据映射到门店档案，更新除主键和版本号外的所有业务字段，同时记录审核人和审核时间。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

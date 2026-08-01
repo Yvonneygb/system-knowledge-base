@@ -18,9 +18,20 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```text
+开始 → 新增照片类型项 → 填写照片项目名称+拍摄要求等 → 保存 → 完成
+```
+
 </KbCard>
 
 <KbCard num="2" title="上游依赖">
+
+| 依赖模块 | 依赖说明 |
+|---------|---------|
+| 门店装修申请 | 照片关联门店装修申请ID(terminalApplyId) |
+| 门店验收报销 | 照片关联验收报销ID(checkBxId) |
+
 </KbCard>
 
 <KbCard num="3" title="下游影响">
@@ -28,6 +39,8 @@
 
 | 下游系统/模块 | 影响内容 | 说明 |
 |---|---|---|
+| 门店验收与报销 | 影响说明 | 验收报销时根据照片设置项生成待上传照片行，要求上传装修前/后照片 |
+| 门店装修申请 | 影响说明 | 装申请时根据照片设置项要求上传对应类型照片 |
 
 </div>
 </KbCard>
@@ -86,11 +99,9 @@
 
 </KbCard>
 <KbCard title="保存校验">
-<KbSubTitle>照片项目名称不能为空</KbSubTitle>
+- 照片项目名称不能为空
 
-
-<KbSubTitle>门店装修申请ID不能为空（terminalApplyId）</KbSubTitle>
-
+- 门店装修申请ID不能为空（terminalApplyId）
 
 </KbCard>
 <KbCard title="提交校验">
@@ -188,6 +199,33 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">照片设置如何被下游使用？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>门店验收报销和装修申请时，根据照片设置项生成待上传照片行，用户需按拍摄要求上传装修前/后照片。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">装修前照片和装修后照片的区别？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>装修前照片（docid）为必填，记录装修前门店状态；装修后照片（afterDocId）为选填，记录装修完成后的门店状态。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">该页面是hold低代码页面吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>是，该页面基于hold低代码平台配置，无独立Controller，通过FinFeeCheckBxPhoto实体直接访问。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>
