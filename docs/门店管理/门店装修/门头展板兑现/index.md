@@ -122,11 +122,11 @@
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
+| DELETE | /do-delete | 删除 |
+| POST | /do-save | 保存 |
+| GET | /do-select | 详情 |
+| GET | /do-select-print | 打印详情 |
+| GET | /sum-cash-out | 计算兑现数值 |
 
 </KbCard>
 
@@ -134,8 +134,8 @@
 
 | 方法 | 触发时机 | 逻辑说明 |
 |------|------|------|
-| 方法 | 触发时机 | 逻辑说明 |
-| 方法 | 触发时机 | 逻辑说明 |
+| wfProcSubmit | 提交审批 | 启动工作流实例 |
+| wfComplete | 审批完成 | 更新审核状态 |
 
 </KbCard>
 
@@ -143,54 +143,54 @@
 
 | 字段名 | 类型 | 说明 |
 |------|------|------|
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
+| id | Long | 主键 |
+| customer_legal_id | Long | 交易公司法人中间表ID |
+| reimburse_head_id | Long | 门头报销单ID |
+| bx_type | Long | 报销类型 |
+| year | Long | 预算年度 |
+| in_early_cashout_ratio | BigDecimal | 额度内提前兑现比例 |
+| cashout_no | String | 兑换单编码 |
+| out_cashout_ratio | BigDecimal | 额度外兑现比例 |
+| remark | String | 备注 |
+| created | Date | 创建时间 |
+| last_upd | Date | 最后更新时间 |
+| last_upd_by | String | 最后更新人 |
+| entid | Long | 事业部ID |
+| division_id | Long | 事业部词汇值 |
+| audit_stat | String | 审核状态 |
+| stat | Long | 状态 |
+| wfid | Long | 流程ID |
+| wfflag | Long | 流程状态 |
+| in_cashout_apply_amt | BigDecimal | 额度内申请兑现金额 |
+| out_cashout_apply_amt | BigDecimal | 额度外申请兑现金额 |
+| in_valid_date | LocalDate | 额度内兑现有效期 |
+| out_valid_date | LocalDate | 额度外兑现有效期 |
+| fin_date | LocalDate | 入账日期 |
+| status | String | 生效状态 |
+| customer_id | Long | 经销商ID |
+| in_apply_amt | BigDecimal | 额度内报销申请金额 |
+| in_biz_amt | BigDecimal | 额度内业务批准金额 |
+| in_fin_amt | BigDecimal | 额度内财务批准金额 |
+| out_apply_amt | BigDecimal | 额度外报销申请金额 |
+| out_biz_amt | 8BigDecimal | 额度外业务批准金额 |
+| out_fin_amt | BigDecimal | 额度外财务批准金额 |
+| bzs_des_method | String | 保证书设计师验收方式(1视频/2现场) |
+| bzs_des_name | String | 保证书设计师保证人 |
+| bzs_des_time | LocalDateTime | 保证书验收时间 |
+| bzs_biz_method | String | 保证书区域经理验收方式 |
+| bzs_biz_name | String | 保证书区域经理保证人 |
+| bzs_biz_time | LocalDateTime | 保证书区域经理保证事件 |
+| pay_type | Long | 支付方式 |
+| trading_company_code | String | 交易公司编码 |
+| out_this_sur_cashout_amt | BigDecimal | 额度外剩余未兑现金额 |
+| in_this_sur_cashout_amt | BigDecimal | 额度内剩余未兑现金额 |
+| check_time | LocalDateTime | 审核通过时间 |
+| fin_amt | BigDecimal | 入账金额 |
+| cost_center_code | String | 运营中心编码 |
+| cost_center_name | String | 运营中心名称 |
+| ext_account_id | String | 余额账户ID |
+| hz_instance_id | Long | H0流程实例ID |
+| hz_approve_status | String | H0流程审批状态(必填) |
 
 </KbCard>
 
@@ -217,9 +217,9 @@
 
 | 问题 | 原因/解决方案 |
 |------|------|
-| 问题 | 原因/解决方案 |
-| 问题 | 原因/解决方案 |
-| 问题 | 原因/解决方案 |
+| 兑现比例超限 | 检查已兑现比例，确保本次兑现后总额不超过100% |
+| 删除报状态不允许 | 仅NEW和REBUT状态可删除 |
+| 保证书内容为空 | 确认关联的门头报销单行表数据完整 |
 
 </KbCard>
 </div>

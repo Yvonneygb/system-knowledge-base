@@ -121,13 +121,13 @@
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
+| GET | /lov | 变更列表(分页) |
+| GET | /do-select | 变更明细 |
+| GET | /do-select-print | 变更明细-打印 |
+| DELETE | /delete | 删除变更 |
+| POST | /operate | 作废 |
+| POST | /do-save | 保存 |
+| GET | /role | 成员查询 |
 
 </KbCard>
 
@@ -135,9 +135,9 @@
 
 | 方法 | 触发时机 | 逻辑说明 |
 |------|------|------|
-| 方法 | 触发时机 | 逻辑说明 |
-| 方法 | 触发时机 | 逻辑说明 |
-| 方法 | 触发时机 | 逻辑说明 |
+| wfProcSubmit | 提交审批 | 启动工作流实例 |
+| wfComplete | 审批完成 | 通过→onWfComplete；驳回→onWfBreak |
+| onWfComplete | 审批通过 | 计算超期/扣减，回写原申请单 |
 
 </KbCard>
 
@@ -145,31 +145,31 @@
 
 | 字段名 | 类型 | 说明 |
 |------|------|------|
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
+| terminal_change_id | Long | 主键ID(变更ID) |
+| terminal_change_no | String | 变更单号 |
+| terminal_apply_id | Long | 关联装修申请ID(必填) |
+| terminal_apply_no | String | 关联装修申请单号 |
+| terminal_id | Long | 门店ID |
+| terminal_code | String | 门店编码 |
+| terminal_name | String | 门店名称 |
+| cust_id | Long | 经销商ID |
+| cust_code | String | 经销商编码 |
+| cust_name | String | 经销商名称 |
+| short_name | String | 经销商简称 |
+| cust_full_name | String | 经销商拼接名称 |
+| customer_class | Long | 经营属性 |
+| d_cust_id | Long | 分销商ID |
+| d_cust_code | String | 分销商编码 |
+| d_cust_name | String | 分销商名称 |
+| d_cust_full_name | String | 分销商拼接名称 |
+| province_areaid | Long | 省ID |
+| city_areaid | Long | 市ID |
+| county_areaid | Long | 县/区ID |
+| areaname | String | 拼接省市区 |
+| addr | String | 详细地址 |
+| terminal_type | Long | 门店类型 |
+| store_location_type | Long | 位置类型 |
+| trading_company_id | Long | 交易公司ID(必填-变更后) |
 
 </KbCard>
 
@@ -196,9 +196,9 @@
 
 | 问题 | 原因/解决方案 |
 |------|------|
-| 问题 | 原因/解决方案 |
-| 问题 | 原因/解决方案 |
-| 问题 | 原因/解决方案 |
+| 新增时报"未获取+到门店申请信息" | 关联的装修申请ID不存在 |
+| 删除报"不能删除非制单状态的单据" | 仅NEW状态可删除 |
+| 变更后原申请单未更新 | 检查工作流是否审批通过，onWfComplete是否正常执行 |
 
 </KbCard>
 </div>

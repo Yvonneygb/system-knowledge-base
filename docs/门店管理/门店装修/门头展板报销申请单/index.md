@@ -117,17 +117,17 @@
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
+| GET | /get-reimburse-head-list | 门头报销申请列表(分页) |
+| GET | /get-reimburse-head-detail | 门头报销申请详情 |
+| GET | /do-select | 门头报销申请详情(工作流) |
+| GET | /do-select-print | 打印详情 |
+| GET | /get-cashout-search | 门头兑现查询 |
+| GET | /get-cashout-lov | 门头兑现LOV |
+| POST | /insert-reimburse | 门头报销保存(旧) |
+| DELETE | /do-delete | 删除 |
+| POST | /do-save | 门头报销保存(新) |
+| POST | /get-unit-manage-users | 获取部门负责人 |
+| POST | /get-provincial-manage-users | 获取省级负责人 |
 
 </KbCard>
 
@@ -135,8 +135,8 @@
 
 | 方法 | 触发时机 | 逻辑说明 |
 |------|------|------|
-| 方法 | 触发时机 | 逻辑说明 |
-| 方法 | 触发时机 | 逻辑说明 |
+| wfProcSubmit | 提交审批 | 启动工作流实例 |
+| wfComplete | 审批完成 | 更新审核状态 |
 
 </KbCard>
 
@@ -144,39 +144,39 @@
 
 | 字段名 | 类型 | 说明 |
 |------|------|------|
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
+| id | Long | 主键 |
+| created | Date | 创建时间 |
+| last_upd | Date | 最后更新时间 |
+| last_upd_by | String | 最后更新人 |
+| entid | Long | 事业部ID |
+| division_id | Long | 事业部词汇值 |
+| audit_stat | String | 审核状态 |
+| )stat | Long | 状态 |
+| wfid | Long | 流程ID |
+| wfflag | Long | 流程状态 |
+| reimburse_code | String | 报销编码 |
+| customer_legal_id | Long | 交易公司法人中间表ID |
+| policy_standard_id | Long | 补贴政策ID |
+| year | Long | 年度 |
+| remark | String | 备注 |
+| pay_type | Long | 支付方式 |
+| status | String | 生效状态 |
+| customer_id | Long | 经销商ID |
+| bx_type | Long | 报销类型 |
+| cust_limit_amt | BigDecimal | 经销商限额 |
+| out_excess_amt | BigDecimal | 额度外超限金额 |
+| out_bx_amt | BigDecimal | 额度外实际报销金额 |
+| in_bx_amt | BigDecimal | 额度内实际报销金额 |
+| out_actual_apply_amt | BigDecimal | 额度外实际申请总额 |
+| in_actual_apply_amt | BigDecimal | 额度内实际申请金额 |
+| out_bx_used_amt | BigDecimal | 额度外已报销金额 |
+| trading_company_code | String | 交易公司编码 |
+| in_early_cashout_ratio | BigDecimal | 额度内提前兑现比例 |
+| signature_state | Long | 电子签章状态 |
+| signature_url | String | 电子签章地址 |
+| re_sign_flag | String | 需要重签标识(y/n) |
+| hz_instance_id | Long | H0流程实例ID0ID |
+| hz_approve_status | String | H0流程审批状态(必填) |
 
 </KbCard>
 
@@ -203,8 +203,8 @@
 
 | 问题 | 原因/解决方案 |
 |------|------|
-| 问题 | 原因/解决方案 |
-| 问题 | 原因/解决方案 |
+| 审批人获取为空 | 检查部门/省级负责人配置 |
+| 报销分析数据不完整 | 确认关联的报销单据状态为已启动/已审批/已驳回 |
 
 </KbCard>
 </div>

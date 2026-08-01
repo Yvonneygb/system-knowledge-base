@@ -126,9 +126,9 @@
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
-| 方法 | 路径 | 说明 |
+| GET | /do-select | 兑现明细 |
+| POST | / | 创建或更新兑现 |
+| DELETE | / | 删除兑现 |
 
 </KbCard>
 
@@ -136,10 +136,10 @@
 
 | 方法 | 触发时机 | 逻辑说明 |
 |------|------|------|
-| 方法 | 触发时机 | 逻辑说明 |
-| 方法 | 触发时机 | 逻辑说明 |
-| 方法 | 触发时机 | 逻辑说明 |
-| 方法 | 触发时机 | 逻辑说明 |
+| wfProcSubmit | 提交审批 | 启动工作流实例 |
+| wfComplete | 审批完成 | 通过→onWfComplete；驳回→onWfBreak |
+| onWfComplete | 审批通过 | 更新兑现比例，更新报销单 |
+| onWfBreak | 审批驳回 | 更新状态 |
 
 </KbCard>
 
@@ -147,76 +147,76 @@
 
 | 字段名 | 类型 | 说明 |
 |------|------|------|
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
-| 字段名 | 类型 | 说明 |
+| terminal_cashout_id | Long | 主键ID(兑现ID) |
+| terminal_cashout_code | String | 兑现编码 |
+| check_bx_code | String | 验收报销单号 |
+| check_bx_id | Long | 验收报销ID |
+| cust_id | Long | 经销商ID |
+| cust_code | String | 经销商编码 |
+| short_name | String | 经销商简称 |
+| cust_name | String | 经销商名称 |
+| trading_company_id | Long | 交易公司ID |
+| trading_company_code | String | 交易公司编码 |
+| trading_company_name | String | 交易公司名称 |
+| billing_unit_id | Long | 开票单位ID |
+| billing_unit_code | String | 法人编码 |
+| billing_unit_name | String | 法人名称 |
+| finished_time | LocalDate | 验收完成时间 |
+| out_cashout_end_time | LocalDate | 额度外二次兑现失效日期 |
+| terminal_id | Long | 门店ID |
+| terminal_code | String | 门店编码 |
+| terminal_name | String | 门店名称 |
+| pay_type | Long | 支付方式 |
+| vendor_id | Long | 供应商ID |
+| vendor_code | String | 供应商编码 |
+| vendor_name | String | 供应商名称 |
+| cost_center_id | Long | 成本中心ID |
+| cost_center_code | String | 成本中心编码 |
+| cost_center_name | String | 成本中心名称 |
+| note | String | 备注 |
+| creator_name | String | 申请人 |
+| create_time | Date | 申请时间 |
+| organization_id | Long | 组织ID |
+| stat | Long | 单据状态 |
+| wfid | Long | 流程ID |
+| wfflag | Long | 流程状态 |
+| invoice_tax_rate | Long | 发票税点 |
+| invoice_type | Long | 发票类型 |
+| our_invoicing | Long | 本方开票 |
+| this_sur_cashout_amt | BigDecimal | 剩余未兑现金额(未扣税) |
+| this_bx_proportion | BigDecimal | 申请兑现比例(%) |
+| this_apply_cashout_amt | BigDecimal | 本次申请兑现金额 |
+| after_tax_cashout_amt | BigDecimal | 扣税差后可兑现金额 |
+| fact_invoice_amt | BigDecimal | 实际兑现含税金额 |
+| invoice_tax_amt | BigDecimal | 发票税金 |
+| fact_invoice_notax_amt | BigDecimal | 实际兑现不含税金额 |
+| receipt_status | String | 转货款状态 |
+| invoice_paid_date | LocalDateTime | 入账日期 |
+| invoice_paid_amount | BigDecimal | 入账金额 |
+| reduce_amt | BigDecimal | 核销金额 |
+| cashout_rate | Long | 兑现率 |
+| can_not_tax_bx_amt | BigDecimal | 可兑现金额-不含税 |
+| cashout_type | Long | 兑现类型 |
+| creator | String | 申请人 |
+| checker | String | 审核人 |
+| check_time | LocalDate | 审核日期 |
+| entid | Long | 事业部ID |
+| audit_stat | String | 审核状态 |
+| salezone_org_id | Long | 销售区域ID |
+| salezone_org_name | String | 销售区域 |
+| operat_center_org_id | Long | 运营中心ID |
+| operat_center_org_name | String | 运营中心 |
+| close_cash | Long | 是否关闭剩余未兑现 |
+| error_collection | String | 错误收集器 |
+| ledger_date | LocalDate | 总账日期 |
+| cash_count | String | 兑现次数 |
+| ticket_status | String | 税务接口状态 |
+| ticket_message | String | 税务接口信息 |
+| withholding_time_year | String | 计提年份 |
+| designer | String | 委派设计师 |
+| userid | String | 设计师ID |
+| hz_instance_id | Long | 流程实例ID |
+| hz_approve_status | String | 流程实例状态 |
 
 </KbCard>
 
@@ -243,9 +243,9 @@
 
 | 问题 | 原因/解决方案 |
 |------|------|
-| 问题 | 原因/解决方案 |
-| 问题 | 原因/解决方案 |
-| 问题 | 原因/解决方案 |
+| 推送共享报"接口推送失败" | 检查共享接口连通性和数据格式 |
+| 计提年份未自动带出 | 检查验收报销单号格式，截取逻辑依赖单号前缀 |
+| 兑现比例计算异常 | 确认验收报销单的sumOutCanNotaxBxAmt不为0 |
 
 </KbCard>
 </div>
