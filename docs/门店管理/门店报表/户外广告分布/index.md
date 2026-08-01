@@ -229,6 +229,42 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">为什么只显示apply_type=2的记录？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>本报表专用于户外广告分布，apply_type=2表示户外广告类型
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">为什么只显示审批通过的记录？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>未审批或审批中的申请不代表最终投放，仅已通过记录纳入统计
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">creator字段为什么是经销商编码？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>SQL中creator通过子查询从CUSTOMER表取customer_code，非实际创建人
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">发布日期筛选是精确匹配还是范围？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>当前为精确匹配(to_date等值比较)，非范围查询
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

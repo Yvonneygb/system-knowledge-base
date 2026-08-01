@@ -243,6 +243,42 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">为什么排除CUX_OM_CASH_POOL和CUX_OM_PRICE_RAISE？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>这两个是系统内部虚拟产品（资金池和提价），不参与广告费计算
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">广告费计提比例如何确定？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>由出库单头表的advertising_fee字段决定，在出库单生成时已计算
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">开票金额和实际结算金额的区别？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>开票金额=折后单价×实发数量；实际结算金额=开票金额+扣除广告费+不计广告费
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">广告金额的计算公式？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>当advertising_flag='Y'时：(开票金额+扣除广告费金额)×广告费计提比例；否则为0
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

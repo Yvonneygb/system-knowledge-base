@@ -233,6 +233,42 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">为什么用子查询而不是GROUP BY？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>每个统计维度独立子查询，逻辑清晰但性能有代价
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">装修风格列名含义是什么？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>列名=风格简称+品牌entid后缀，如a6101表示品牌101的A6风格
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">系统归属有哪些？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>1-DMG, 2-华夏名酒连, 3-华美利嘉, 4-金融之家, 5-欧亚达, 6-月星家居, 7-月星家居, 8-其他
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">为什么只展示有门店的经销商？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>SQL使用EXISTS子查询过滤无门店的经销商，避免空行
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

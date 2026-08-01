@@ -200,6 +200,33 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">为什么有些区域门店数量为0？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>区域基础表包含所有行政区域，无门店的区域也会展示
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">terminalNumLow筛选逻辑是什么？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>筛选门店数量小于该阈值的区域，用于找出门店覆盖不足的区域
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">数据按什么排序？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>按areaid ASC排序，即区域编码升序
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

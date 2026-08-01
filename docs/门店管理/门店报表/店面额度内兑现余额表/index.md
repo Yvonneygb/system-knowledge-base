@@ -227,6 +227,42 @@
 </KbCard>
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">月度金额列为什么是36列？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>覆盖前年、当年、次年共3年，每年12个月
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">月度金额列的年份如何确定？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>基于当前系统时间动态生成，如2026年则展示2025/2026/2027三年
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">与额度外占用预算明细报表的区别？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>额度内报表关注兑现余额，含支付方式字段；额度外报表关注占用预算，含两次兑现单号
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">验收报销单号为什么用LOV？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>额度内报表的验收报销单号通过LOV选择确保数据准确性，额度外报表为手工输入
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>
