@@ -5,9 +5,18 @@
 <div class="kl-wrap">
 <KbHero num="2" title="额度内兑现批量复核" desc="额度内兑现的批量复核功能，支持批量审批额度内兑现申请单" />
 
-<KbCard title="业务介绍">
+<KbCard title="基本信息">
 
-<!-- 空白:待补充 -->
+| 项目 | 说明 |
+|------|------|
+| Controller | FinFeeInCashHeadController |
+| API路径 | /v1/{organizationId}/fin-fee-in-cash-heads |
+| Entity | FinFeeInCashHead |
+| 数据库表 | FIN_FEE_IN_CASH_HEAD |
+| 工作流编码 | STORE_FIN_FEE_IN_CASH_HEAD |
+| 前端页面 | finFeeInCashHead |
+| ServiceImpl | FinFeeInCashHeadServiceImpl |
+| 所属模块 | storeManage |
 
 </KbCard>
 </div>
@@ -17,20 +26,27 @@
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
+<KbCard num="1" title="业务流程">
+```
+新建批量复核单 → 选择额度内兑现单(绑定) → 保存 → 提交工作流审批 → 审批通过 → 推送共享/资金池 → 标记兑现单审核完成
+                                                        → 审批驳回 → 修改后重新提交
+```
 </KbCard>
 
-<KbCard num="2" title="上游依赖">
+<KbCard num="2" title="流程说明">
+1. **新建批量复核单**：创建额度内兑现批量复核单，生成复核单号
+2. **绑定兑现单**：选择多个额度内兑现单(FinFeeTerminalCashout)绑定到复核单
+3. **提交审批**：启动工作流`STORE_FIN_FEE_IN_CASH_HEAD`
+4. **审批通过回调(onWfComplete)**：
+   - 推送共享接口(doSendShare)
+   - 更新复核单状态为审核完成
+   - 批量更新绑定的兑现单：auditStat=审核完成，postFlag=Y，hzApproveStatus=APPROVED
+5. **推送共享**：遍历绑定的兑现单，根据支付方式决定推送共享还是资金池
+   - 支付方式=3(折扣折让)：推送资金池(synAdjustCashPoolToEbs)
+   - 其他：推送共享接口
+
 </KbCard>
 
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-
-</div>
-</KbCard>
 </div>
 </div>
 </div>
@@ -39,6 +55,7 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="2.1 新增逻辑（doInsert）">
+
 **具体逻辑**：
 
 - 1、生成复核单号：编码规则`AE.CASH_CODE`，参数包含divisionCode
@@ -47,6 +64,7 @@
 </KbCard>
 
 <KbCard num="2" title="2.2 更新逻辑（doUpdate）">
+
 **具体逻辑**：
 
 - 1、更新主表
@@ -55,6 +73,7 @@
 </KbCard>
 
 <KbCard num="3" title="2.3 删除逻辑（doDelete）">
+
 **具体逻辑**：
 
 - 1、删除主表
@@ -62,6 +81,7 @@
 </KbCard>
 
 <KbCard num="4" title="2.4 审批通过回调（onWfComplete）">
+
 **具体逻辑**：
 
 - 1、推送共享(doSendShare)
@@ -70,6 +90,7 @@
 </KbCard>
 
 <KbCard num="5" title="2.5 推送共享（doSendShare）">
+
 **具体逻辑**：
 
 - 1、查询复核单绑定的兑现单明细
@@ -81,6 +102,7 @@
 </KbCard>
 
 <KbCard num="6" title="2.6 推送资金池（synAdjustCashPoolToEbs）">
+
 **具体逻辑**：
 
 - 1、获取经销商账户(extAccountId)
@@ -92,6 +114,7 @@
 </KbCard>
 
 <KbCard num="7" title="2.7 总账日期获取（getLedgerDate）">
+
 **具体逻辑**：
 
 - 1、查询事业部上月是否存在入账成功的冲销数据
@@ -100,6 +123,7 @@
 </KbCard>
 
 <KbCard num="8" title="2.8 查询兑现单明细（doSelect）">
+
 **具体逻辑**：
 
 - 1、查询复核单基本信息
@@ -115,42 +139,48 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="选择弹窗">
-</KbCard>
-<KbCard title="导入">
+<KbCard title="3.1 API接口列表">
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| 方法 | 路径 | 说明 |
+| 方法 | 路径 | 说明 |
+| 方法 | 路径 | 说明 |
+| 方法 | 路径 | 说明 |
 
 </KbCard>
-<KbCard title="其他按钮">
+
+<KbCard title="3.2 工作流回调">
+
+| 方法 | 触发时机 | 逻辑说明 |
+|------|------|------|
+| 方法 | 触发时机 | 逻辑说明 |
+| 方法 | 触发时机 | 逻辑说明 |
+| 方法 | 触发时机 | 逻辑说明 |
+
 </KbCard>
-<KbCard title="保存校验">
-</KbCard>
-<KbCard title="提交校验">
-</KbCard>
-<KbCard title="状态机">
-</KbCard>
+
 <KbCard num="1" title="表：FIN_FEE_IN_CASH_HEAD">
 
 | 字段名 | 类型 | 说明 |
-|--------|------|------|
-| cash_id | Long | 主键ID(单据ID) |
-| cash_code | String | 单号 |
-| organization_id | Long | 组织ID |
-| creator | String | 申请人 |
-| create_time | Date | 申请日期 |
-| creator_name | String | 申请人名称 |
-| updator | String | 更新人 |
-| update_time | Date | 更新日期 |
-| updator_name | String | 更新人名称 |
-| stat | Long | 单据状态 |
-| wfid | Long | 流程ID |
-| wfflag | Long | 流程状态 |
-| checker | String | 审核人 |
-| check_time | Date | 审核时间 |
-| audit_stat | String | 审核状态 |
-| hz_instance_id | Long | 流程实例ID |
-| hz_approve_status | String | 流程实例状态 |
-
-> 注：兑现单明细通过FinFeeTerminalCashout表的cash_id字段关联
+|------|------|------|
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
+| 字段名 | 类型 | 说明 |
 
 </KbCard>
 
@@ -174,8 +204,14 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard title="常见问题">
-<div class="faq-qa-wrap">
-</div>
+
+| 问题 | 原因/解决方案 |
+|------|------|
+| 问题 | 原因/解决方案 |
+| 问题 | 原因/解决方案 |
+| 问题 | 原因/解决方案 |
+| 问题 | 原因/解决方案 |
+
 </KbCard>
 </div>
 </div>
