@@ -73,6 +73,7 @@
                 <svg v-if="group.label === '门店装修'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/><circle cx="12" cy="6" r="1"/><path d="M15 12l-6 6"/><path d="M15 18l-6-6"/></svg>
                 <svg v-if="group.label === '门店报表'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
                 <svg v-if="group.label === '广告投放'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 3v4M8 3v4M4 7h16"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+                <svg v-if="group.label === '装修报表'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><polyline points="3 9 12 15 21 9"/><line x1="12" y1="15" x2="12" y2="21"/></svg>
                 <svg v-if="group.label === '样品及长库龄管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3l-1 5h7l-1-5"/><rect x="3" y="8" width="18" height="13" rx="2"/><circle cx="9" cy="14" r="2"/><circle cx="15" cy="14" r="2"/></svg>
                 <svg v-if="group.label === '预提与冲销'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v6a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
                 <svg v-if="group.label === '值集配置'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="10" y1="6.5" x2="14" y2="6.5"/><line x1="10" y1="17.5" x2="14" y2="17.5"/><line x1="6.5" y1="10" x2="6.5" y2="14"/><line x1="17.5" y1="10" x2="17.5" y2="14"/></svg>
@@ -357,6 +358,17 @@ const secondaryNav = {
         { label: '广告费报销', link: '/门店管理/广告投放/广告费报销/', icon: 'fa-solid fa-file-invoice-dollar' },
         { label: '广告投放申请', link: '/门店管理/广告投放/广告投放申请/', icon: 'fa-solid fa-pen-to-square' },
       ]
+    },
+    {
+      label: '装修报表',
+      icon: 'fa-solid fa-chart-pie',
+      items: [
+        { label: '门额度内兑现统计报表', link: '/门店管理/装修报表/门额度内兑现统计报表/', icon: 'fa-solid fa-chart-line' },
+        { label: '兑现汇总', link: '/门店管理/装修报表/兑现汇总/', icon: 'fa-solid fa-layer-group' },
+        { label: '门店验收与报销单报表', link: '/门店管理/装修报表/门店验收与报销单报表/', icon: 'fa-solid fa-file-lines' },
+        { label: '门店装修额度外报表', link: '/门店管理/装修报表/门店装修额度外报表/', icon: 'fa-solid fa-sack-dollar' },
+        { label: '门店装修申请与进度更新报表', link: '/门店管理/装修报表/门店装修申请与进度更新报表/', icon: 'fa-solid fa-pen-to-square' },
+      ]
     }
   ],
   '开发管理': [
@@ -452,6 +464,7 @@ function resolveGroup(path) {
   if (path.includes('/门店管理/门店装修/')) return '门店装修'
   if (path.includes('/门店管理/门店报表/')) return '门店报表'
   if (path.includes('/门店管理/广告投放/')) return '广告投放'
+  if (path.includes('/门店管理/装修报表/')) return '装修报表'
   if (path.includes('/门店管理/')) return '样品及长库龄管理'
   if (path.includes('/财务管理/调整单/')) return '调整单'
   if (path.includes('/财务管理/对账单/')) return '对账单'
