@@ -36,6 +36,14 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard num="1" title="重点逻辑">
+**具体逻辑**：
+
+- 1、**事业部维度汇总**：与普通库存查询不同，本页面以事业部为维度汇总展示库存
+- 2、**汇总计算**：将同一事业部下各仓库、各产品的库存数量汇总
+- 3、**数据只读**：本页面仅查询展示，不支持修改
+</KbCard>
+
 </div>
 </div>
 </div>

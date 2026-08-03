@@ -37,6 +37,14 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard num="1" title="重点逻辑">
+**具体逻辑**：
+
+- 1、**价目表查询**：查询产品价目表信息，包含产品编码、名称、价格等
+- 2、**导出功能**：支持将查询结果导出为Excel等格式
+- 3、**数据只读**：本页面仅查询和导出，不支持修改价目表
+</KbCard>
+
 </div>
 </div>
 </div>

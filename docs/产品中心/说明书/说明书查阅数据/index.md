@@ -36,6 +36,14 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard num="1" title="重点逻辑">
+**具体逻辑**：
+
+- 1、**双模式展示**：列表模式展示每条查阅记录明细，汇总模式按说明书维度汇总查阅次数
+- 2、**查阅日志采集**：用户每次查阅说明书时，系统自动记录查阅日志到ES_SEARCH_LOG表
+- 3、**统计维度**：支持按说明书、按时间范围、按查阅人等维度统计
+</KbCard>
+
 </div>
 </div>
 </div>

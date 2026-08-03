@@ -36,6 +36,14 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard num="1" title="重点逻辑">
+**具体逻辑**：
+
+- 1、**基础参数配置**：配置责任制内结价定价的基础参数，包括定价规则、系数等
+- 2、**CRUD操作**：支持新建、编辑、删除、查看配置
+- 3、**无审批流程**：配置保存即生效，无需审批
+</KbCard>
+
 </div>
 </div>
 </div>

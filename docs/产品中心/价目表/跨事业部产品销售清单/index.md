@@ -36,6 +36,14 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard num="1" title="重点逻辑">
+**具体逻辑**：
+
+- 1、**跨事业部查询**：可查询不同事业部下的产品销售清单，突破事业部数据隔离
+- 2、**销售清单数据**：包含产品信息、销售价格、销售数量等关键字段
+- 3、**数据只读**：本页面仅查询展示
+</KbCard>
+
 </div>
 </div>
 </div>

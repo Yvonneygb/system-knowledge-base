@@ -37,6 +37,14 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard num="1" title="重点逻辑">
+**具体逻辑**：
+
+- 1、**跨事业部申请**：申请将产品销售给其他事业部，突破事业部销售限制
+- 2、**申请单管理**：支持新建、编辑、提交、撤回等操作
+- 3、**审批流程**：提交后需审批，审批通过后方可执行跨事业部销售
+</KbCard>
+
 </div>
 </div>
 </div>

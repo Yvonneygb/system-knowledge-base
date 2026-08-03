@@ -36,6 +36,14 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard num="1" title="重点逻辑">
+**具体逻辑**：
+
+- 1、**多维度查询**：支持按仓库、产品、事业部等维度查询库存
+- 2、**实时库存**：查询结果为实时库存数据，直接从LNK_INVENTORYS表读取
+- 3、**分页展示**：列表支持分页，避免大数据量时页面卡顿
+</KbCard>
+
 </div>
 </div>
 </div>

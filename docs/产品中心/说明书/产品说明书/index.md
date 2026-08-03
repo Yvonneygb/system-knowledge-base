@@ -37,6 +37,15 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard num="1" title="重点逻辑">
+**具体逻辑**：
+
+- 1、**说明书与型号关联**：一份说明书可关联多个产品型号，通过ES_SPEC_MODEL表维护多对多关系
+- 2、**说明书与分类关联**：一份说明书可关联多个产品分类，通过ES_SPECCLAS_REF表维护多对多关系
+- 3、**附件管理**：说明书文件存储在ES_DOCS表，支持多文件上传
+- 4、**审批流程**：提交后触发SUB_PRODUCT_SPECIFICATION_MAIN工作流，审批通过后方可生效
+</KbCard>
+
 </div>
 </div>
 </div>
