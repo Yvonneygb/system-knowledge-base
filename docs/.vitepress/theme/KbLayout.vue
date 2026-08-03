@@ -60,6 +60,16 @@
             <line x1="2" y1="12" x2="6" y2="12"/>
             <line x1="18" y1="12" x2="22" y2="12"/>
           </svg>
+          <svg v-if="item.id === '产品中心'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+          <svg v-if="item.id === '电子合同管理'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <path d="M14 2v6h6"/>
+            <path d="M10 13l2-2 4 4"/>
+          </svg>
         </div>
         <span>{{ item.label }}</span>
       </div>
@@ -103,6 +113,13 @@
                 <svg v-if="group.label === '基础管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
                 <svg v-if="group.label === '经销商点将'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                 <svg v-if="group.label === '设计师点将'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                <svg v-if="group.label === '产品资料'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <svg v-if="group.label === '价目表'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                <svg v-if="group.label === '库存'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+                <svg v-if="group.label === '说明书'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                <svg v-if="group.label === '基础管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                <svg v-if="group.label === '经销商'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <svg v-if="group.label === '品牌方'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                 <span>{{ group.label }}</span>
                 <svg class="kb-arrow-svg" :class="{ rotated: expandedGroup === group.label }" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
@@ -212,6 +229,8 @@ const primaryNav = [
   { id: '财务管理', label: '财务管理', icon: 'fa-solid fa-coins' },
   { id: '经销合同管理', label: '经销合同管理', icon: 'fa-solid fa-file-contract' },
   { id: '点将管理', label: '点将管理', icon: 'fa-solid fa-bullseye' },
+  { id: '产品中心', label: '产品中心', icon: 'fa-solid fa-box' },
+  { id: '电子合同管理', label: '电子合同管理', icon: 'fa-solid fa-file-signature' },
   { id: '开发管理', label: '开发管理', icon: 'fa-solid fa-code' },
 ]
 
@@ -483,6 +502,72 @@ const secondaryNav = {
       ]
     }
   ],
+  '产品中心': [
+    {
+      label: '产品资料',
+      icon: 'fa-solid fa-folder-open',
+      items: [
+        { label: '产品列表', link: '/产品中心/产品资料/产品列表/', icon: 'fa-solid fa-list' },
+        { label: '产品分类', link: '/产品中心/产品资料/产品分类/', icon: 'fa-solid fa-sitemap' },
+        { label: '产品变更列表', link: '/产品中心/产品资料/产品变更列表/', icon: 'fa-solid fa-rotate' },
+        { label: '产品SM状态变更申请', link: '/产品中心/产品资料/产品SM状态变更申请/', icon: 'fa-solid fa-pen-to-square' },
+        { label: '产品图册', link: '/产品中心/产品资料/产品图册/', icon: 'fa-solid fa-images' },
+        { label: '产品图片上传', link: '/产品中心/产品资料/产品图片上传/', icon: 'fa-solid fa-upload' },
+        { label: '产品推广等级维护', link: '/产品中心/产品资料/产品推广等级维护/', icon: 'fa-solid fa-star' },
+        { label: '产品推广等级要求配置', link: '/产品中心/产品资料/产品推广等级要求配置/', icon: 'fa-solid fa-sliders' },
+      ]
+    },
+    {
+      label: '价目表',
+      icon: 'fa-solid fa-tags',
+      items: [
+        { label: '价目表查询', link: '/产品中心/价目表/价目表查询/', icon: 'fa-solid fa-search-dollar' },
+        { label: '跨事业部产品产品销售申请', link: '/产品中心/价目表/跨事业部产品产品销售申请/', icon: 'fa-solid fa-shuffle' },
+        { label: '跨事业部产品销售清单', link: '/产品中心/价目表/跨事业部产品销售清单/', icon: 'fa-solid fa-table-list' },
+        { label: '责任制内结价定价瓷砖参数配置', link: '/产品中心/价目表/责任制内结价定价瓷砖参数配置/', icon: 'fa-solid fa-cubes' },
+        { label: '责任制内结价定价基础参数配置', link: '/产品中心/价目表/责任制内结价定价基础参数配置/', icon: 'fa-solid fa-wrench' },
+      ]
+    },
+    {
+      label: '库存',
+      icon: 'fa-solid fa-warehouse',
+      items: [
+        { label: '库存查询', link: '/产品中心/库存/库存查询/', icon: 'fa-solid fa-magnifying-glass' },
+        { label: '事业部库存查询', link: '/产品中心/库存/事业部库存查询/', icon: 'fa-solid fa-building' },
+      ]
+    },
+    {
+      label: '说明书',
+      icon: 'fa-solid fa-book-open',
+      items: [
+        { label: '产品说明书', link: '/产品中心/说明书/产品说明书/', icon: 'fa-solid fa-book' },
+        { label: '说明书查阅数据', link: '/产品中心/说明书/说明书查阅数据/', icon: 'fa-solid fa-chart-line' },
+      ]
+    }
+  ],
+  '电子合同管理': [
+    {
+      label: '基础管理',
+      icon: 'fa-solid fa-gear',
+      items: [
+        { label: '合同模板管理', link: '/电子合同管理/基础管理/合同模板管理/', icon: 'fa-solid fa-file-code' },
+      ]
+    },
+    {
+      label: '经销商',
+      icon: 'fa-solid fa-shop',
+      items: [
+        { label: '合同管理', link: '/电子合同管理/经销商/合同管理/', icon: 'fa-solid fa-file-contract' },
+      ]
+    },
+    {
+      label: '品牌方',
+      icon: 'fa-solid fa-tag',
+      items: [
+        { label: '合同签署异常处理', link: '/电子合同管理/品牌方/合同签署异常处理/', icon: 'fa-solid fa-triangle-exclamation' },
+      ]
+    }
+  ],
   '开发管理': [
     {
       label: '值集配置',
@@ -559,6 +644,8 @@ function resolvePanel(path) {
   if (path.includes('/财务管理/')) return '财务管理'
   if (path.includes('/经销合同管理/')) return '经销合同管理'
   if (path.includes('/点将管理/')) return '点将管理'
+  if (path.includes('/产品中心/')) return '产品中心'
+  if (path.includes('/电子合同管理/')) return '电子合同管理'
   if (path.includes('/开发管理/')) return '开发管理'
   return null
 }
