@@ -70,6 +70,9 @@
             <path d="M14 2v6h6"/>
             <path d="M10 13l2-2 4 4"/>
           </svg>
+          <svg v-if="item.id === '问题反馈'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          </svg>
         </div>
         <span>{{ item.label }}</span>
       </div>
@@ -231,6 +234,7 @@ const primaryNav = [
   { id: '点将管理', label: '点将管理', icon: 'fa-solid fa-bullseye' },
   { id: '产品中心', label: '产品中心', icon: 'fa-solid fa-box' },
   { id: '电子合同管理', label: '电子合同管理', icon: 'fa-solid fa-file-signature' },
+  { id: '问题反馈', label: '问题反馈', icon: 'fa-solid fa-comments' },
   { id: '开发管理', label: '开发管理', icon: 'fa-solid fa-code' },
 ]
 
@@ -568,6 +572,16 @@ const secondaryNav = {
       ]
     }
   ],
+  '问题反馈': [
+    {
+      label: '问题反馈',
+      icon: 'fa-solid fa-comment-dots',
+      items: [
+        { label: '问题反馈', link: '/问题反馈/问题反馈/', icon: 'fa-solid fa-pen-to-square' },
+        { label: '问题回复', link: '/问题反馈/问题回复/', icon: 'fa-solid fa-reply' },
+      ]
+    }
+  ],
   '开发管理': [
     {
       label: '值集配置',
@@ -646,6 +660,7 @@ function resolvePanel(path) {
   if (path.includes('/点将管理/')) return '点将管理'
   if (path.includes('/产品中心/')) return '产品中心'
   if (path.includes('/电子合同管理/')) return '电子合同管理'
+  if (path.includes('/问题反馈/')) return '问题反馈'
   if (path.includes('/开发管理/')) return '开发管理'
   return null
 }
@@ -670,6 +685,10 @@ function resolveGroup(path) {
   if (path.includes('/财务管理/调整单/')) return '调整单'
   if (path.includes('/财务管理/对账单/')) return '对账单'
   if (path.includes('/财务管理/')) return '预提与冲销'
+  if (path.includes('/电子合同管理/品牌方/')) return '品牌方'
+  if (path.includes('/电子合同管理/经销商/')) return '经销商'
+  if (path.includes('/电子合同管理/')) return '基础管理'
+  if (path.includes('/问题反馈/')) return '问题反馈'
   if (path.includes('/开发管理/')) return '值集配置'
   return null
 }
