@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-04" title="产品变更列表" desc="产品变更记录的列表查询" />
+<KbHero num="P18" title="产品变更列表" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,19 +18,36 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```
+产品信息发生变更 → 系统记录变更记录 → 用户进入变更列表页 → 查询变更记录 → 查看变更详情
+```
+
 </KbCard>
 
-<KbCard num="2" title="上游依赖">
+<KbCard num="2" title="1.2 核心业务场景">
+
+<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
+<tr>
+<th>场景</th>
+<th>说明</th>
+</tr>
+<tr>
+<td>变更列表查询</td>
+<td>按产品/变更类型/时间等条件查询变更记录</td>
+</tr>
+<tr>
+<td>变更详情查看</td>
+<td>查看某次变更的详细信息，含变更前后对比</td>
+</tr>
+<tr>
+<td>变更类型</td>
+<td>价格变更、状态变更、属性变更等</td>
+</tr>
+</tbody></table></div>
+
 </KbCard>
 
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-
-</div>
-</KbCard>
 </div>
 </div>
 </div>
@@ -190,6 +207,42 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">变更记录可以手动创建吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>变更记录由系统自动生成，不支持手动创建
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">变更记录可以删除吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>变更记录不可删除，作为审计追溯数据永久保留
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">变更类型有哪些？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>主要包括价格变更（PRICE）、状态变更（STATUS）、属性变更（ATTRIBUTE）等
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">变更详情页无id参数时是什么场景？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>无id时为新建变更记录的入口，但通常变更记录由系统自动生成
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

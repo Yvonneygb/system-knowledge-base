@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-10" title="产品推广等级要求配置" desc="产品推广等级要求的配置管理" />
+<KbHero num="P18" title="产品推广等级要求配置" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,19 +18,40 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```
+用户进入等级要求配置列表 → 查询现有配置 → 新增/编辑配置条件 → 保存生效
+```
+
 </KbCard>
 
-<KbCard num="2" title="上游依赖">
+<KbCard num="2" title="1.2 核心业务场景">
+
+<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
+<tr>
+<th>场景</th>
+<th>说明</th>
+</tr>
+<tr>
+<td>配置列表查询</td>
+<td>查询各推广等级的要求条件配置</td>
+</tr>
+<tr>
+<td>配置新增</td>
+<td>为推广等级新增要求条件</td>
+</tr>
+<tr>
+<td>配置编辑</td>
+<td>修改要求条件的指标、阈值等</td>
+</tr>
+<tr>
+<td>配置删除</td>
+<td>删除不需要的要求条件</td>
+</tr>
+</tbody></table></div>
+
 </KbCard>
 
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-
-</div>
-</KbCard>
 </div>
 </div>
 </div>
@@ -192,6 +213,42 @@ D级要求：无特殊要求（默认等级）
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">同一等级可以配置多个条件吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>可以，多个条件之间为"且"的关系，需同时满足
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">修改配置后现有产品的等级会自动更新吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>修改配置后需触发产品推广等级重新评估流程
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">比较运算符有哪些？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>GTE（≥）、GT（&gt;）、EQ（=）、LTE（≤）、LT（&lt;）
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">指标类型RATE的阈值如何填写？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>直接填写数值，如30表示30%，不需要填0.3
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

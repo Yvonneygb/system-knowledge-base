@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-01" title="产品说明书" desc="产品说明书的创建、编辑、工作流管理" />
+<KbHero num="P18" title="产品说明书" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,231 +18,16 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
 
+1. 用户新建产品说明书，填写说明书基本信息并上传附件文件
+2. 关联产品型号（ES_SPEC_MODEL）和产品分类（ES_SPECCLAS_REF）
+3. 保存草稿或直接提交审批
+4. 审批流程流转（工作流：SUB_PRODUCT_SPECIFICATION_MAIN）
+5. 审批通过后说明书生效，可供查阅
 
-
-
-1
-.
- 
-用
-户
-新
-建
-产
-品
-说
-明
-书
-，
-填
-写
-说
-明
-书
-基
-本
-信
-息
-并
-上
-传
-附
-件
-文
-件
-
-
-2
-.
- 
-关
-联
-产
-品
-型
-号
-（
-E
-S
-_
-S
-P
-E
-C
-_
-M
-O
-D
-E
-L
-）
-和
-产
-品
-分
-类
-（
-E
-S
-_
-S
-P
-E
-C
-C
-L
-A
-S
-_
-R
-E
-F
-）
-
-
-3
-.
- 
-保
-存
-草
-稿
-或
-直
-接
-提
-交
-审
-批
-
-
-4
-.
- 
-审
-批
-流
-程
-流
-转
-（
-工
-作
-流
-：
-S
-U
-B
-_
-P
-R
-O
-D
-U
-C
-T
-_
-S
-P
-E
-C
-I
-F
-I
-C
-A
-T
-I
-O
-N
-_
-M
-A
-I
-N
-）
-
-
-5
-.
- 
-审
-批
-通
-过
-后
-说
-明
-书
-生
-效
-，
-可
-供
-查
-阅
-
-
-
-
-`
-`
-`
-
-
-新
-建
-说
-明
-书
- 
-→
- 
-关
-联
-型
-号
-/
-分
-类
- 
-→
- 
-保
-存
-/
-提
-交
-审
-批
- 
-→
- 
-审
-批
-流
-转
- 
-→
- 
-生
-效
-
-
-`
-`
-`
-
+```
+新建说明书 → 关联型号/分类 → 保存/提交审批 → 审批流转 → 生效
+```
 
 </KbCard>
 </div>
@@ -404,6 +189,33 @@ N
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">说明书提交审批后能否修改？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>审批中和审批通过状态不可修改，审批拒绝后可重新编辑提交。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">一份说明书可以关联多少个型号？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>无数量限制，支持多对多关联。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">附件文件格式有限制吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>通常支持PDF、Word、图片等常见格式，具体以后端校验为准。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

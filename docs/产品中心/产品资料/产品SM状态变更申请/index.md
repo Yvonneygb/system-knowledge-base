@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-03" title="产品SM状态变更申请" desc="产品SM状态的变更申请、审批管理" />
+<KbHero num="P18" title="产品SM状态变更申请" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,19 +18,46 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```
+用户发起SM状态变更申请 → 填写申请信息（头+行） → 提交审批 → 审批通过 → 产品SM状态更新生效
+                                                        ↓
+                                                   审批驳回 → 申请人修改后重新提交
+```
+
 </KbCard>
 
-<KbCard num="2" title="上游依赖">
+<KbCard num="2" title="1.2 核心业务场景">
+
+<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
+<tr>
+<th>场景</th>
+<th>说明</th>
+</tr>
+<tr>
+<td>新建变更申请</td>
+<td>选择产品并填写目标SM状态，提交审批</td>
+</tr>
+<tr>
+<td>审批流程</td>
+<td>工作流审批，支持多级审批</td>
+</tr>
+<tr>
+<td>审批通过</td>
+<td>自动更新产品的SM状态</td>
+</tr>
+<tr>
+<td>审批驳回</td>
+<td>申请人可修改后重新提交</td>
+</tr>
+<tr>
+<td>撤回申请</td>
+<td>审批前申请人可撤回</td>
+</tr>
+</tbody></table></div>
+
 </KbCard>
 
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-
-</div>
-</KbCard>
 </div>
 </div>
 </div>
@@ -251,6 +278,60 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">SM状态有哪些值？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>常见有正常销售、限制销售、停止销售、淘汰等，具体以LOV配置为准
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">为什么SM状态变更需要审批？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>SM状态直接影响产品销售可用性，随意变更可能影响业务，故需审批管控
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">一个申请可以变更多个产品吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>可以，每个产品对应一行记录
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">审批驳回后可以重新提交吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>可以，修改后重新提交审批
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q5</span>
+      <span style="font-size:15px;">草稿状态的申请可以删除吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>可以，仅草稿状态允许删除
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q6</span>
+      <span style="font-size:15px;">审批通过后产品SM状态何时生效？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>审批通过后立即生效，系统自动更新产品SM状态
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

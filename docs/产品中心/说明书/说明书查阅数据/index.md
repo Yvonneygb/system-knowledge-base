@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-02" title="说明书查阅数据" desc="说明书查阅日志数据的查询统计" />
+<KbHero num="P18" title="说明书查阅数据" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,155 +18,15 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
 
+1. 用户进入说明书查阅数据页面
+2. 选择查看模式：列表模式或汇总模式
+3. 系统展示说明书的查阅统计数据（查阅次数、查阅人、查阅时间等）
+4. 支持按条件筛选和排序
 
-
-
-1
-.
- 
-用
-户
-进
-入
-说
-明
-书
-查
-阅
-数
-据
-页
-面
-
-
-2
-.
- 
-选
-择
-查
-看
-模
-式
-：
-列
-表
-模
-式
-或
-汇
-总
-模
-式
-
-
-3
-.
- 
-系
-统
-展
-示
-说
-明
-书
-的
-查
-阅
-统
-计
-数
-据
-（
-查
-阅
-次
-数
-、
-查
-阅
-人
-、
-查
-阅
-时
-间
-等
-）
-
-
-4
-.
- 
-支
-持
-按
-条
-件
-筛
-选
-和
-排
-序
-
-
-
-
-`
-`
-`
-
-
-进
-入
-页
-面
- 
-→
- 
-选
-择
-模
-式
-(
-列
-表
-/
-汇
-总
-)
- 
-→
- 
-查
-询
-统
-计
-数
-据
- 
-→
- 
-展
-示
-结
-果
-
-
-`
-`
-`
-
+```
+进入页面 → 选择模式(列表/汇总) → 查询统计数据 → 展示结果
+```
 
 </KbCard>
 </div>
@@ -258,6 +118,33 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">查阅数据多久更新一次？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>实时更新，每次查阅说明书时自动写入日志。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">列表模式和汇总模式的区别？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>列表模式展示每条查阅明细记录，汇总模式按说明书维度汇总统计查阅次数。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">能否导出查阅数据？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>视前端是否提供导出按钮，具体以后端接口支持为准。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

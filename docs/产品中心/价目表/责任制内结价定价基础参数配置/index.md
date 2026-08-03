@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-15" title="责任制内结价定价基础参数配置" desc="责任制内结价定价基础参数配置管理" />
+<KbHero num="P18" title="责任制内结价定价基础参数配置" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,129 +18,15 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
 
+1. 用户进入责任制内结价定价基础参数配置页面
+2. 新建或编辑参数配置记录
+3. 填写定价规则、系数等基础参数
+4. 保存配置
 
-
-
-1
-.
- 
-用
-户
-进
-入
-责
-任
-制
-内
-结
-价
-定
-价
-基
-础
-参
-数
-配
-置
-页
-面
-
-
-2
-.
- 
-新
-建
-或
-编
-辑
-参
-数
-配
-置
-记
-录
-
-
-3
-.
- 
-填
-写
-定
-价
-规
-则
-、
-系
-数
-等
-基
-础
-参
-数
-
-
-4
-.
- 
-保
-存
-配
-置
-
-
-
-
-`
-`
-`
-
-
-进
-入
-页
-面
- 
-→
- 
-新
-建
-/
-编
-辑
-配
-置
- 
-→
- 
-填
-写
-定
-价
-参
-数
- 
-→
- 
-保
-存
-
-
-`
-`
-`
-
+```
+进入页面 → 新建/编辑配置 → 填写定价参数 → 保存
+```
 
 </KbCard>
 </div>
@@ -253,6 +139,33 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">配置保存后是否需要审批？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>不需要，保存即生效。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">能否同时启用多条配置？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>可以，但同一适用范围内不允许重复。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">已生效的配置能否修改？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>可以修改，修改后立即生效。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

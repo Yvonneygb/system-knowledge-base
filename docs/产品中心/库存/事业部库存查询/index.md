@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-17" title="事业部库存查询" desc="事业部维度的库存查询功能" />
+<KbHero num="P18" title="事业部库存查询" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,134 +18,15 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
 
+1. 用户进入事业部库存查询页面
+2. 选择事业部等查询条件
+3. 系统按事业部维度汇总库存数据
+4. 展示各事业部的库存汇总信息
 
-
-
-1
-.
- 
-用
-户
-进
-入
-事
-业
-部
-库
-存
-查
-询
-页
-面
-
-
-2
-.
- 
-选
-择
-事
-业
-部
-等
-查
-询
-条
-件
-
-
-3
-.
- 
-系
-统
-按
-事
-业
-部
-维
-度
-汇
-总
-库
-存
-数
-据
-
-
-4
-.
- 
-展
-示
-各
-事
-业
-部
-的
-库
-存
-汇
-总
-信
-息
-
-
-
-
-`
-`
-`
-
-
-进
-入
-页
-面
- 
-→
- 
-选
-择
-事
-业
-部
-条
-件
- 
-→
- 
-按
-事
-业
-部
-汇
-总
-查
-询
- 
-→
- 
-展
-示
-结
-果
-
-
-`
-`
-`
-
+```
+进入页面 → 选择事业部条件 → 按事业部汇总查询 → 展示结果
+```
 
 </KbCard>
 </div>
@@ -232,6 +113,24 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">事业部库存查询与普通库存查询的区别？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>事业部库存查询按事业部维度汇总展示，普通库存查询展示明细记录。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">能否查看事业部下的库存明细？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>本页面展示汇总数据，明细需跳转到库存查询页面查看。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

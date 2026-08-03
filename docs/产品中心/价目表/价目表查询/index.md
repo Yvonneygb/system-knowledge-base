@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-11" title="价目表查询" desc="产品价目表的查询功能" />
+<KbHero num="P18" title="价目表查询" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,148 +18,16 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
 
+1. 用户进入价目表查询页面
+2. 设置查询条件（产品、事业部、价格类型等）
+3. 系统查询价目表数据
+4. 展示价目表列表
+5. 支持导出价目表数据
 
-
-
-1
-.
- 
-用
-户
-进
-入
-价
-目
-表
-查
-询
-页
-面
-
-
-2
-.
- 
-设
-置
-查
-询
-条
-件
-（
-产
-品
-、
-事
-业
-部
-、
-价
-格
-类
-型
-等
-）
-
-
-3
-.
- 
-系
-统
-查
-询
-价
-目
-表
-数
-据
-
-
-4
-.
- 
-展
-示
-价
-目
-表
-列
-表
-
-
-5
-.
- 
-支
-持
-导
-出
-价
-目
-表
-数
-据
-
-
-
-
-`
-`
-`
-
-
-进
-入
-页
-面
- 
-→
- 
-设
-置
-查
-询
-条
-件
- 
-→
- 
-查
-询
-价
-目
-表
- 
-→
- 
-展
-示
-结
-果
- 
-→
- 
-可
-选
-导
-出
-
-
-`
-`
-`
-
+```
+进入页面 → 设置查询条件 → 查询价目表 → 展示结果 → 可选导出
+```
 
 </KbCard>
 </div>
@@ -257,6 +125,33 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">导出支持什么格式？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>通常支持Excel格式导出。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">能否在此页面修改价格？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>不能，本页面仅查询和导出，价格修改需通过价目表维护功能。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">价目表数据多久更新一次？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>价目表数据由价目表维护功能写入，查询时实时读取最新数据。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

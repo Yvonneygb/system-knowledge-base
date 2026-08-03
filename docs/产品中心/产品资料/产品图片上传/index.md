@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-08" title="产品图片上传" desc="产品图片的上传与管理" />
+<KbHero num="P18" title="产品图片上传" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,19 +18,40 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```
+用户进入产品详情页 → 在图片区域点击上传 → 选择图片文件 → 上传至服务器 → 图片关联到产品 → 展示缩略图
+```
+
 </KbCard>
 
-<KbCard num="2" title="上游依赖">
+<KbCard num="2" title="1.2 核心业务场景">
+
+<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
+<tr>
+<th>场景</th>
+<th>说明</th>
+</tr>
+<tr>
+<td>图片上传</td>
+<td>上传产品图片，支持单张/批量上传</td>
+</tr>
+<tr>
+<td>图片预览</td>
+<td>查看已上传的产品图片大图</td>
+</tr>
+<tr>
+<td>图片删除</td>
+<td>删除已上传的产品图片</td>
+</tr>
+<tr>
+<td>图片排序</td>
+<td>调整产品图片的显示顺序</td>
+</tr>
+</tbody></table></div>
+
 </KbCard>
 
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-
-</div>
-</KbCard>
 </div>
 </div>
 </div>
@@ -171,6 +192,51 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">支持哪些图片格式？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>支持JPG、JPEG、PNG、GIF、BMP等常见格式
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">单张图片大小限制是多少？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>一般不超过5MB，具体以系统配置为准
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">主图如何设置？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>排序第一的图片自动为主图，可通过拖拽排序调整
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">图片上传失败怎么办？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>检查文件格式和大小是否超限，网络是否正常，支持重新上传
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q5</span>
+      <span style="font-size:15px;">图片存储在哪里？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>文件服务器或对象存储（如OSS/S3），数据库存储路径信息
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-12" title="跨事业部产品产品销售申请" desc="跨事业部产品的销售申请管理" />
+<KbHero num="P18" title="跨事业部产品产品销售申请" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,160 +18,16 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
 
+1. 用户进入跨事业部产品销售申请页面
+2. 新建销售申请单
+3. 填写申请信息（目标事业部、产品、数量、价格等）
+4. 提交申请
+5. 审批通过后可执行跨事业部销售
 
-
-
-1
-.
- 
-用
-户
-进
-入
-跨
-事
-业
-部
-产
-品
-销
-售
-申
-请
-页
-面
-
-
-2
-.
- 
-新
-建
-销
-售
-申
-请
-单
-
-
-3
-.
- 
-填
-写
-申
-请
-信
-息
-（
-目
-标
-事
-业
-部
-、
-产
-品
-、
-数
-量
-、
-价
-格
-等
-）
-
-
-4
-.
- 
-提
-交
-申
-请
-
-
-5
-.
- 
-审
-批
-通
-过
-后
-可
-执
-行
-跨
-事
-业
-部
-销
-售
-
-
-
-
-`
-`
-`
-
-
-新
-建
-申
-请
- 
-→
- 
-填
-写
-申
-请
-信
-息
- 
-→
- 
-提
-交
- 
-→
- 
-审
-批
-流
-转
- 
-→
- 
-审
-批
-通
-过
- 
-→
- 
-执
-行
-销
-售
-
-
-`
-`
-`
-
+```
+新建申请 → 填写申请信息 → 提交 → 审批流转 → 审批通过 → 执行销售
+```
 
 </KbCard>
 </div>
@@ -263,6 +119,24 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">跨事业部销售申请是否需要审批？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>是，提交后需走审批流程。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">审批通过后如何执行销售？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>审批通过后在相关业务模块执行，具体流程视业务而定。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

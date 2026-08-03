@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-14" title="责任制内结价定价瓷砖参数配置" desc="责任制内结价定价瓷砖参数配置管理" />
+<KbHero num="P18" title="责任制内结价定价瓷砖参数配置" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,138 +18,15 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
 
+1. 用户进入瓷砖参数配置页面
+2. 新建或编辑瓷砖品类参数配置
+3. 填写头信息（适用范围、生效条件等）和行信息（具体定价参数）
+4. 保存配置
 
-
-
-1
-.
- 
-用
-户
-进
-入
-瓷
-砖
-参
-数
-配
-置
-页
-面
-
-
-2
-.
- 
-新
-建
-或
-编
-辑
-瓷
-砖
-品
-类
-参
-数
-配
-置
-
-
-3
-.
- 
-填
-写
-头
-信
-息
-（
-适
-用
-范
-围
-、
-生
-效
-条
-件
-等
-）
-和
-行
-信
-息
-（
-具
-体
-定
-价
-参
-数
-）
-
-
-4
-.
- 
-保
-存
-配
-置
-
-
-
-
-`
-`
-`
-
-
-进
-入
-页
-面
- 
-→
- 
-新
-建
-/
-编
-辑
-配
-置
- 
-→
- 
-填
-写
-头
-行
-信
-息
- 
-→
- 
-保
-存
-
-
-`
-`
-`
-
+```
+进入页面 → 新建/编辑配置 → 填写头行信息 → 保存
+```
 
 </KbCard>
 </div>
@@ -297,6 +174,33 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">瓷砖参数配置与基础参数配置的区别？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>基础参数配置为通用定价参数，瓷砖参数配置针对瓷砖品类特殊定价规则，采用头行结构。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">头行关系如何维护？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>在详情页中同时维护头信息和行信息，行信息支持增删改。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">配置是否需要审批？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>不需要，保存即生效。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

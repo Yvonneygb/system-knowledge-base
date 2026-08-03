@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-07" title="产品图册" desc="产品图册的管理与图片关联" />
+<KbHero num="P18" title="产品图册" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,19 +18,44 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
+
+```
+用户进入产品详情页 → 在图册区域管理图册 → 新增/编辑/删除图册 → 向图册中添加/移除图片 → 保存生效
+```
+
 </KbCard>
 
-<KbCard num="2" title="上游依赖">
+<KbCard num="2" title="1.2 核心业务场景">
+
+<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
+<tr>
+<th>场景</th>
+<th>说明</th>
+</tr>
+<tr>
+<td>图册列表</td>
+<td>查看产品下的所有图册</td>
+</tr>
+<tr>
+<td>图册新增</td>
+<td>创建新图册（如"外观图"、"安装图"、"细节图"等）</td>
+</tr>
+<tr>
+<td>图册编辑</td>
+<td>修改图册名称、描述等</td>
+</tr>
+<tr>
+<td>图册删除</td>
+<td>删除图册及其包含的图片关联</td>
+</tr>
+<tr>
+<td>图片管理</td>
+<td>向图册中添加或移除图片</td>
+</tr>
+</tbody></table></div>
+
 </KbCard>
 
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-
-</div>
-</KbCard>
 </div>
 </div>
 </div>
@@ -210,6 +235,51 @@
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">图册和图片是什么关系？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>多对多关系，一张图片可以属于多个图册
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">从图册移除图片会删除图片吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>不会，只移除关联关系，图片本身仍保留
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q3</span>
+      <span style="font-size:15px;">图册封面图如何设置？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>默认取图册中第一张图片，可手动指定图册中任意图片为封面
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q4</span>
+      <span style="font-size:15px;">图册名称有重复限制吗？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>同一产品下图册名称建议不重复，具体以业务规则为准
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q5</span>
+      <span style="font-size:15px;">detailImgListConfig组件在哪里使用？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>嵌入在产品详情页的图册Tab页签中
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>

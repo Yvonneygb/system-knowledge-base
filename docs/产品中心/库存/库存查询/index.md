@@ -3,7 +3,7 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-16" title="库存查询" desc="产品库存的查询功能" />
+<KbHero num="P18" title="库存查询" desc="" />
 
 <KbCard title="业务介绍">
 
@@ -18,135 +18,15 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
 
+1. 用户进入库存查询页面
+2. 设置查询条件（仓库、产品、事业部等）
+3. 系统调用CRM接口查询库存数据
+4. 展示库存列表结果
 
-
-
-1
-.
- 
-用
-户
-进
-入
-库
-存
-查
-询
-页
-面
-
-
-2
-.
- 
-设
-置
-查
-询
-条
-件
-（
-仓
-库
-、
-产
-品
-、
-事
-业
-部
-等
-）
-
-
-3
-.
- 
-系
-统
-调
-用
-C
-R
-M
-接
-口
-查
-询
-库
-存
-数
-据
-
-
-4
-.
- 
-展
-示
-库
-存
-列
-表
-结
-果
-
-
-
-
-`
-`
-`
-
-
-进
-入
-页
-面
- 
-→
- 
-设
-置
-查
-询
-条
-件
- 
-→
- 
-调
-用
-A
-P
-I
-查
-询
- 
-→
- 
-展
-示
-库
-存
-数
-据
-
-
-`
-`
-`
-
+```
+进入页面 → 设置查询条件 → 调用API查询 → 展示库存数据
+```
 
 </KbCard>
 </div>
@@ -234,6 +114,24 @@ I
 <div class="kl-wrap">
 <KbCard title="常见问题">
 <div class="faq-qa-wrap">
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q1</span>
+      <span style="font-size:15px;">库存数据是否实时？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>是，直接从LNK_INVENTORYS表实时查询。
+    </div>
+  </div>
+  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
+    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
+      <span class="kl-num">Q2</span>
+      <span style="font-size:15px;">能否在此页面调整库存？</span>
+    </div>
+    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
+      <strong style="color:#7C3AED;">处理：</strong>不能，本页面仅查询展示，库存调整需通过其他业务单据。
+    </div>
+  </div>
 </div>
 </KbCard>
 </div>
