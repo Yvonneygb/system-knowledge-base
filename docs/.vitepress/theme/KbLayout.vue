@@ -52,6 +52,14 @@
             <line x1="16" y1="17" x2="8" y2="17"/>
             <line x1="10" y1="9" x2="9" y2="9"/>
           </svg>
+          <svg v-if="item.id === '点将管理'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="3"/>
+            <line x1="12" y1="2" x2="12" y2="6"/>
+            <line x1="12" y1="18" x2="12" y2="22"/>
+            <line x1="2" y1="12" x2="6" y2="12"/>
+            <line x1="18" y1="12" x2="22" y2="12"/>
+          </svg>
         </div>
         <span>{{ item.label }}</span>
       </div>
@@ -89,6 +97,12 @@
                 <svg v-if="group.label === '销售合同'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 <svg v-if="group.label === '合同管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
                 <svg v-if="group.label === '报表中心'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                <svg v-if="group.label === '特训营管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17l3-5 4 2 5-7 5 4 3-4"/><circle cx="12" cy="12" r="1"/></svg>
+                <svg v-if="group.label === '策划师点将'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <svg v-if="group.label === '单店培训点将管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                <svg v-if="group.label === '基础管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                <svg v-if="group.label === '经销商点将'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <svg v-if="group.label === '设计师点将'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 <span>{{ group.label }}</span>
                 <svg class="kb-arrow-svg" :class="{ rotated: expandedGroup === group.label }" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
@@ -197,6 +211,7 @@ const primaryNav = [
   { id: '门店管理', label: '门店管理', icon: 'fa-solid fa-store' },
   { id: '财务管理', label: '财务管理', icon: 'fa-solid fa-coins' },
   { id: '经销合同管理', label: '经销合同管理', icon: 'fa-solid fa-file-contract' },
+  { id: '点将管理', label: '点将管理', icon: 'fa-solid fa-bullseye' },
   { id: '开发管理', label: '开发管理', icon: 'fa-solid fa-code' },
 ]
 
@@ -413,6 +428,61 @@ const secondaryNav = {
       ]
     }
   ],
+  '点将管理': [
+    {
+      label: '特训营管理',
+      icon: 'fa-solid fa-campground',
+      items: [
+        { label: '特训营管理', link: '/点将管理/特训营管理/特训营管理/', icon: 'fa-solid fa-campground' },
+        { label: '特训营点将管理', link: '/点将管理/特训营管理/特训营点将管理/', icon: 'fa-solid fa-pen-to-square' },
+        { label: '特训营点将执行', link: '/点将管理/特训营管理/特训营点将执行/', icon: 'fa-solid fa-play' },
+        { label: '活动点将执行', link: '/点将管理/特训营管理/活动点将执行/', icon: 'fa-solid fa-person-running' },
+      ]
+    },
+    {
+      label: '策划师点将',
+      icon: 'fa-solid fa-user-tie',
+      items: [
+        { label: '活动点将管理', link: '/点将管理/策划师点将/活动点将管理/', icon: 'fa-solid fa-list-check' },
+      ]
+    },
+    {
+      label: '单店培训点将管理',
+      icon: 'fa-solid fa-chalkboard-user',
+      items: [
+        { label: '单店点将管理', link: '/点将管理/单店培训点将管理/单店点将管理/', icon: 'fa-solid fa-pen-to-square' },
+        { label: '单店点将执行', link: '/点将管理/单店培训点将管理/单店点将执行/', icon: 'fa-solid fa-play' },
+      ]
+    },
+    {
+      label: '基础管理',
+      icon: 'fa-solid fa-gear',
+      items: [
+        { label: '讲师档案', link: '/点将管理/基础管理/讲师档案/', icon: 'fa-solid fa-id-card' },
+        { label: '档案审批', link: '/点将管理/基础管理/档案审批/', icon: 'fa-solid fa-check-circle' },
+        { label: '讲师排期', link: '/点将管理/基础管理/讲师排期/', icon: 'fa-solid fa-calendar-days' },
+      ]
+    },
+    {
+      label: '经销商点将',
+      icon: 'fa-solid fa-shop',
+      items: [
+        { label: '单店点将', link: '/点将管理/经销商点将/单店点将/', icon: 'fa-solid fa-store' },
+        { label: '活动点将', link: '/点将管理/经销商点将/活动点将/', icon: 'fa-solid fa-party-horn' },
+        { label: '设计点将', link: '/点将管理/经销商点将/设计点将/', icon: 'fa-solid fa-palette' },
+        { label: '特训营', link: '/点将管理/经销商点将/特训营/', icon: 'fa-solid fa-campground' },
+      ]
+    },
+    {
+      label: '设计师点将',
+      icon: 'fa-solid fa-paint-brush',
+      items: [
+        { label: '设计师饱和度', link: '/点将管理/设计师点将/设计师饱和度/', icon: 'fa-solid fa-chart-simple' },
+        { label: '设计师点将管理', link: '/点将管理/设计师点将/设计师点将管理/', icon: 'fa-solid fa-pen-to-square' },
+        { label: '设计师点将执行', link: '/点将管理/设计师点将/设计师点将执行/', icon: 'fa-solid fa-play' },
+      ]
+    }
+  ],
   '开发管理': [
     {
       label: '值集配置',
@@ -488,6 +558,7 @@ function resolvePanel(path) {
   if (path.includes('/门店管理/')) return '门店管理'
   if (path.includes('/财务管理/')) return '财务管理'
   if (path.includes('/经销合同管理/')) return '经销合同管理'
+  if (path.includes('/点将管理/')) return '点将管理'
   if (path.includes('/开发管理/')) return '开发管理'
   return null
 }
