@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as s,d as a}from"./app.b19aa7a3.js";const p=JSON.parse('{"title":"Test Page 2 - with more elements","description":"","frontmatter":{},"headers":[],"relativePath":"test-vue/index.md"}'),i={name:"test-vue/index.md"},o=a("",2),d=[o];function l(n,r,_,c,h,m){return s(),t("div",null,d)}const f=e(i,[["render",l]]);export{p as __pageData,f as default};

@@ -45,6 +45,13 @@
             <polyline points="16 18 22 12 16 6"/>
             <polyline points="8 6 2 12 8 18"/>
           </svg>
+          <svg v-if="item.id === '经销合同管理'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <path d="M14 2v6h6"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <line x1="10" y1="9" x2="9" y2="9"/>
+          </svg>
         </div>
         <span>{{ item.label }}</span>
       </div>
@@ -79,6 +86,9 @@
                 <svg v-if="group.label === '值集配置'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="10" y1="6.5" x2="14" y2="6.5"/><line x1="10" y1="17.5" x2="14" y2="17.5"/><line x1="6.5" y1="10" x2="6.5" y2="14"/><line x1="17.5" y1="10" x2="17.5" y2="14"/></svg>
                 <svg v-if="group.label === '项目商机'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>
                 <svg v-if="group.label === '合同与折扣'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="15" y1="12" x2="9" y2="18"/><circle cx="9.5" cy="12.5" r="1"/><circle cx="14.5" cy="17.5" r="1"/></svg>
+                <svg v-if="group.label === '销售合同'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <svg v-if="group.label === '合同管理'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                <svg v-if="group.label === '报表中心'" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
                 <span>{{ group.label }}</span>
                 <svg class="kb-arrow-svg" :class="{ rotated: expandedGroup === group.label }" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
@@ -186,6 +196,7 @@ const primaryNav = [
   { id: '工程管理', label: '工程管理', icon: 'fa-solid fa-helmet-safety' },
   { id: '门店管理', label: '门店管理', icon: 'fa-solid fa-store' },
   { id: '财务管理', label: '财务管理', icon: 'fa-solid fa-coins' },
+  { id: '经销合同管理', label: '经销合同管理', icon: 'fa-solid fa-file-contract' },
   { id: '开发管理', label: '开发管理', icon: 'fa-solid fa-code' },
 ]
 
@@ -371,6 +382,37 @@ const secondaryNav = {
       ]
     }
   ],
+  '经销合同管理': [
+    {
+      label: '销售合同',
+      icon: 'fa-solid fa-file-signature',
+      items: [
+        { label: '认缴申请', link: '/经销合同管理/销售合同/认缴申请/', icon: 'fa-solid fa-pen-to-square' },
+        { label: '保证金减免申请', link: '/经销合同管理/销售合同/保证金减免申请/', icon: 'fa-solid fa-hand-holding-dollar' },
+        { label: '合同保证金', link: '/经销合同管理/销售合同/合同保证金/', icon: 'fa-solid fa-lock' },
+        { label: '经销合同变更', link: '/经销合同管理/销售合同/经销合同变更/', icon: 'fa-solid fa-rotate' },
+        { label: '年度经销合同', link: '/经销合同管理/销售合同/年度经销合同/', icon: 'fa-solid fa-file-contract' },
+        { label: '认缴概况', link: '/经销合同管理/销售合同/认缴概况/', icon: 'fa-solid fa-chart-pie' },
+      ]
+    },
+    {
+      label: '合同管理',
+      icon: 'fa-solid fa-folder-tree',
+      items: [
+        { label: '合同任务完成率', link: '/经销合同管理/合同管理/合同任务完成率/', icon: 'fa-solid fa-check-double' },
+        { label: '合同任务完成率明细报表', link: '/经销合同管理/合同管理/合同任务完成率明细报表/', icon: 'fa-solid fa-table-list' },
+        { label: '经销合同归档', link: '/经销合同管理/合同管理/经销合同归档/', icon: 'fa-solid fa-box-archive' },
+        { label: '年度营销政策', link: '/经销合同管理/合同管理/年度营销政策/', icon: 'fa-solid fa-ruler-combined' },
+      ]
+    },
+    {
+      label: '报表中心',
+      icon: 'fa-solid fa-chart-bar',
+      items: [
+        { label: '经销合同销售区域报表', link: '/经销合同管理/报表中心/经销合同销售区域报表/', icon: 'fa-solid fa-map-location-dot' },
+      ]
+    }
+  ],
   '开发管理': [
     {
       label: '值集配置',
@@ -445,6 +487,7 @@ function resolvePanel(path) {
   if (path.includes('/工程管理/')) return '工程管理'
   if (path.includes('/门店管理/')) return '门店管理'
   if (path.includes('/财务管理/')) return '财务管理'
+  if (path.includes('/经销合同管理/')) return '经销合同管理'
   if (path.includes('/开发管理/')) return '开发管理'
   return null
 }
