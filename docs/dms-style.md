@@ -206,21 +206,51 @@
 <line x1="470" y1="235" x2="730" y2="235" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arr-gray)"/>
 ```
 
-### 3.4 S 形弯曲路径（绕行/汇入）
+### 3.4 连接线铁律：只允许水平和垂直线段
 
-**应用场景**：节点需要绕过其他元素汇入目标节点时。
+> **所有连接线必须由水平和/或垂直线段组成，禁止使用对角线（斜线）或弯曲弧线。**
+
+#### 3.4.1 基本原则
+
+| 规则 | 说明 |
+|------|------|
+| **只用 `<line>`** | 所有连线使用 `<line>` 元素，禁止 `<path>` 带曲线或对角线 |
+| **只拐直角弯** | 如需改变方向，用多条 `<line>` 拼接成 L 形（一次拐弯）或 ┐ 形（两次拐弯） |
+| **禁止斜线** | x1≠x2 且 y1≠y2 的 `<line>` 即为斜线，禁止使用 |
+| **禁止弯曲路径** | 禁止 `<path d="M... C...">` 或 `<path d="M... Q...">` 等曲线命令 |
+
+#### 3.4.2 常见连线模式
 
 ```xml
-<!-- S 形弯曲路径 -->
-<path d="M 445 480 L 445 520 L 555 520 L 555 540"
-      stroke="#16A34A" stroke-width="2" fill="none" marker-end="url(#arr-green)"/>
+<!-- 1. 水平直线（同 y 坐标） -->
+<line x1="100" y1="252" x2="130" y2="252" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+<!-- 2. 垂直直线（同 x 坐标） -->
+<line x1="700" y1="279" x2="700" y2="315" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+<!-- 3. L 形（先水平后垂直，一次拐弯） -->
+<line x1="280" y1="127" x2="310" y2="127" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line x1="310" y1="127" x2="310" y2="252" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+
+<!-- 4. ┐ 形（先垂直后水平，一次拐弯） -->
+<line x1="850" y1="335" x2="850" y2="279" stroke="#EF4444" stroke-width="1.5"/>
+<line x1="850" y1="279" x2="780" y2="279" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+
+<!-- 5. ┌ 形（先水平后垂直再水平，两次拐弯，用于绕行场景） -->
+<line x1="850" y1="350" x2="890" y2="350" stroke="#EF4444" stroke-width="1.5"/>
+<line x1="890" y1="350" x2="890" y2="279" stroke="#EF4444" stroke-width="1.5"/>
+<line x1="890" y1="279" x2="780" y2="279" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
 ```
 
-| 属性 | 值 | 说明 |
-|------|----|------|
-| 描边 | `#16A34A` 或 `#9CA3AF` | 与分支颜色一致 |
-| 线宽 | `2` | 统一 2px |
-| 填充 | `none` | 路径不填充 |
+#### 3.4.3 错误示例
+
+```xml
+<!-- ❌ 斜线（禁止） -->
+<line x1="260" y1="127" x2="310" y2="252" .../>
+
+<!-- ❌ 弯曲路径（禁止） -->
+<path d="M 445 480 C 445 500, 555 500, 555 540" .../>
+```
 
 ### 3.5 连接线颜色规则
 
@@ -354,14 +384,15 @@
         </filter>
       </defs>
 
-      <!-- 上游支撑容器（蓝色虚线外框） -->
+      <!-- 上游支撑容器（蓝色虚线外框，与下游同一行 y=42） -->
       <rect x="20" y="42" width="240" height="170" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
       <text x="140" y="68" text-anchor="middle" fill="#1D4ED8" font-size="12" font-weight="600">上游支撑</text>
       <!-- 上游支撑节点（白色实线） -->
       <rect x="35" y="82" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
       <text x="85" y="104" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目管理</text>
-      <!-- 上游→主线：蓝色虚线 -->
-      <line x1="260" y1="127" x2="310" y2="252" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <!-- 上游→主线：水平出→垂直下（L形直角，无斜线） -->
+      <line x1="260" y1="127" x2="290" y2="127" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="290" y1="127" x2="290" y2="252" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
 
       <!-- 开始节点（紫色虚线圆角矩形） -->
       <rect x="20" y="230" width="80" height="44" rx="6"
@@ -391,17 +422,18 @@
       <rect x="810" y="335" width="80" height="30" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
       <text x="850" y="355" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
 
-      <!-- 拒绝返回路径（S形弯曲，红色） -->
-      <path d="M 850 335 L 850 310 L 780 310 L 780 279" stroke="#EF4444" stroke-width="1.5" fill="none" marker-end="url(#arr-red)"/>
+      <!-- 拒绝返回路径（L形直角：先垂直上再水平左，无弯曲） -->
+      <line x1="850" y1="335" x2="850" y2="279" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="850" y1="279" x2="780" y2="279" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
 
-      <!-- 下游影响容器（绿色虚线外框） -->
-      <rect x="900" y="420" width="280" height="190" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
-      <text x="1040" y="446" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">下游影响</text>
+      <!-- 下游影响容器（绿色虚线外框，与上游同一行 y=42，对称布局） -->
+      <rect x="900" y="42" width="280" height="170" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="1040" y="68" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">下游影响</text>
       <!-- 下游节点 -->
-      <rect x="920" y="462" width="115" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
-      <text x="977" y="486" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">下游模块A</text>
-      <!-- 主线→下游连线：绿色虚线 -->
-      <line x1="760" y1="440" x2="900" y2="515" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="920" y="82" width="115" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="977" y="106" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">下游模块A</text>
+      <!-- 主线→下游：水平直线（同 y=252，无斜线） -->
+      <line x1="860" y1="252" x2="900" y2="252" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
 
       <!-- 结束节点 -->
       <rect x="645" y="555" width="110" height="40" rx="6"
@@ -434,6 +466,8 @@
 8. **viewBox 坐标需预留余量**：最左边从 x=20 开始，最右边保留至少 20px 边距。
 9. **viewBox 高度必须大于最底部元素的 y+字高**：viewBox 高度 = 最底部元素 y + 文字高度 + 至少 20px 余量。同时必须在 `<svg>` 标签上添加 `style="max-height:none"` 覆盖全局 CSS 的 `max-height:600px` 限制。
 10. **箭头 ID 必须全局唯一**：同一页面中多个 SVG 流程图不可共用相同的 marker id（如 `arr-green`），否则箭头颜色会错乱。建议每个流程图的 marker id 加前缀区分，如 `arr-green-upload`。
+11. **连接线只能用直线，禁止斜线和曲线**：所有连接线必须由水平和/或垂直线段（`<line>`）组成，禁止使用 `<path>` 曲线、对角线（x1≠x2 且 y1≠y2 的 line）等。改变方向时用多条 `<line>` 拼接成 L 形或 ┐ 形直角。
+12. **上游支撑与下游影响必须对齐**：在全链路流程图中，上游支撑和下游影响容器必须放在同一水平行（相同 y 坐标），且高度一致，形成左右对称布局。
 
 ---
 
@@ -501,7 +535,38 @@
 - 支撑服务到主线的连线使用**蓝色虚线箭头** `stroke-dasharray="4,3"`
 - 本业务节点使用**核心高亮样式**（绿色实心 + 白色文字 + 阴影）
 
-### 10.2 分支并行（条件分支流程图）
+### 10.2 对齐三区布局（推荐，上游/下游同行对齐）
+
+> **上游支撑和下游影响必须对齐到同一水平行（相同 y 坐标），形成对称的三区布局。**
+
+```
+┌─── 上游支撑（左上 y=42）───┐              ┌─── 下游影响（右上 y=42）───┐
+│ 项目管理    ·  经销商管理   │              │ 真实性核销引用 · 发票占用  │
+│ 交易公司/法人 · 编码规则    │              │ 折扣政策关联 · 状态更新    │
+│ OCR识别·单位表·工作流      │              │                          │
+└──────────┬─────────────────┘              └──────────┬───────────────┘
+           │ 蓝色虚线箭头                               │ 绿色虚线箭头
+           ↓                                            ↓
+  [开始] → 报备 → 合同 → 订单 → 出库 → ★本业务★ → 判断 → 生效 → 核销 → [结束]
+```
+
+**对齐规则**：
+
+| 规则 | 说明 |
+|------|------|
+| **y 坐标一致** | 上游支撑容器和下游影响容器的 y 坐标必须相同 |
+| **高度一致** | 上游和下游容器的高度必须相同（如都是 170px） |
+| **对称分布** | 上游靠左（x=20），下游靠右（x=920），视觉对称 |
+| **水平连线** | 上游→主线、主线→下游的连接线全部使用水平+垂直直角线段，禁止斜线 |
+| **连接方式** | 上游→主线：水平出 → 垂直下 → 水平入（┐形两段）；主线→下游：水平直线直连 |
+
+**对齐三区布局的 viewBox 计算**：
+```
+宽度 = max(下游容器右边界, 主线结束节点右边界) + 20
+高度 = max(上游/下游容器底部, 主线结束节点底部) + 20
+```
+
+### 10.3 分支并行（条件分支流程图）
 
 适用于有明确条件分叉的场景（如"是否符合抬价范围"），使用菱形判断节点 + 分支虚线外框。
 

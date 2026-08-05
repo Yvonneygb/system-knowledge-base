@@ -21,7 +21,7 @@
   <h4 class="bf-main-title">家装核销发票上传 — 全链路流程图</h4>
   <p class="bf-main-sub">项目报备 → 项目合同 → 订单 → 出库 → 发票上传（本业务）→ 真实性核销 → 抬价返还</p>
   <div class="bf-fc-svg-wrap">
-    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
     <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
@@ -30,7 +30,46 @@
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
   </defs>
 
-  <!-- ========== 上游：前置业务 ========== -->
+  <!-- ========== 上游支撑 & 下游影响（同一行，左右对称） ========== -->
+  <!-- 上游支撑（左上） -->
+  <rect x="20" y="42" width="260" height="170" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="150" y="68" text-anchor="middle" fill="#1D4ED8" font-size="12" font-weight="600">上游支撑</text>
+
+  <rect x="35" y="82" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="90" y="104" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目管理</text>
+  <rect x="155" y="82" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="210" y="104" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商管理</text>
+
+  <rect x="35" y="124" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="90" y="146" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司/法人</text>
+  <rect x="155" y="124" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="210" y="146" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则服务</text>
+
+  <rect x="35" y="166" width="230" height="34" rx="5" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="150" y="188" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OCR识别 · 单位基础表 · 工作流服务</text>
+
+  <!-- 上游→主线：水平出 → 垂直下 → 水平入 -->
+  <line x1="280" y1="127" x2="310" y2="127" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="310" y1="127" x2="310" y2="252" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+
+  <!-- 下游影响（右上，与上游同一 y=42 行） -->
+  <rect x="920" y="42" width="260" height="170" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="1050" y="68" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">下游影响</text>
+
+  <rect x="935" y="82" width="115" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+  <text x="992" y="106" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">真实性核销引用</text>
+  <rect x="1060" y="82" width="110" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+  <text x="1115" y="106" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">发票数据占用</text>
+
+  <rect x="935" y="130" width="115" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+  <text x="992" y="154" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">折扣政策关联</text>
+  <rect x="1060" y="130" width="110" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+  <text x="1115" y="154" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">发票有效状态更新</text>
+
+  <!-- 主线→下游：水平出 → 水平入（同一行水平连接） -->
+  <line x1="860" y1="252" x2="920" y2="252" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+
+  <!-- ========== 主线：前置业务 → 本业务 → 后置业务 ========== -->
   <!-- 开始 -->
   <rect x="20" y="230" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
   <text x="60" y="257" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
@@ -55,7 +94,7 @@
   <rect x="500" y="230" width="80" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
   <text x="540" y="257" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">出库</text>
 
-  <!-- 上游→本业务 -->
+  <!-- 出库→本业务 -->
   <line x1="580" y1="252" x2="620" y2="252" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
   <!-- ========== 本业务：发票上传 ========== -->
@@ -64,22 +103,22 @@
   <text x="700" y="249" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">★ 核销发票上传 ★</text>
   <text x="700" y="269" text-anchor="middle" fill="#DCFCE7" font-size="11">OCR识别 · 发票录入 · 审批</text>
 
-  <!-- 向下到判断 -->
+  <!-- 本业务→审批判断 -->
   <line x1="700" y1="279" x2="700" y2="315" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
   <!-- 审批判断 -->
   <polygon points="700,315 770,350 700,385 630,350" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
   <text x="700" y="353" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
 
-  <!-- 拒绝分支 -->
-  <line x1="770" y1="350" x2="840" y2="350" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+  <!-- 拒绝分支（水平出→垂直上→水平入，三段均为直线） -->
+  <line x1="770" y1="350" x2="850" y2="350" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
   <rect x="810" y="335" width="80" height="30" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
   <text x="850" y="355" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
-  <line x1="850" y1="335" x2="850" y2="310" stroke="#EF4444" stroke-width="1.5"/>
-  <line x1="850" y1="310" x2="780" y2="310" stroke="#EF4444" stroke-width="1.5"/>
-  <line x1="780" y1="310" x2="780" y2="279" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+  <!-- 拒绝返回：垂直上 → 水平左（L形直角，只有一次拐弯） -->
+  <line x1="850" y1="335" x2="850" y2="279" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="850" y1="279" x2="780" y2="279" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
 
-  <!-- 通过分支 -->
+  <!-- 通过分支：垂直下 -->
   <line x1="700" y1="385" x2="700" y2="420" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
   <!-- ========== 下游：后续业务 ========== -->
@@ -87,55 +126,17 @@
   <rect x="640" y="420" width="120" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
   <text x="700" y="445" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">发票生效(valid)</text>
 
-  <line x1="700" y1="460" x2="700" y2="485" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <!-- 发票生效→真实性核销 -->
+  <line x1="700" y1="460" x2="700" y2="475" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
   <!-- 真实性核销 -->
-  <rect x="620" y="485" width="160" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
-  <text x="700" y="512" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">真实性核销</text>
+  <rect x="620" y="475" width="160" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="700" y="500" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">真实性核销</text>
 
   <!-- 结束 -->
-  <line x1="700" y1="529" x2="700" y2="555" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
-  <rect x="645" y="555" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
-  <text x="700" y="580" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
-
-  <!-- ========== 上游支撑服务（左侧纵列） ========== -->
-  <rect x="20" y="42" width="240" height="170" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
-  <text x="140" y="68" text-anchor="middle" fill="#1D4ED8" font-size="12" font-weight="600">上游支撑</text>
-
-  <rect x="35" y="82" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
-  <text x="85" y="104" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目管理</text>
-  <rect x="145" y="82" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
-  <text x="195" y="104" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商管理</text>
-
-  <rect x="35" y="124" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
-  <text x="85" y="146" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司/法人</text>
-  <rect x="145" y="124" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
-  <text x="195" y="146" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则服务</text>
-
-  <rect x="35" y="166" width="210" height="34" rx="5" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
-  <text x="140" y="188" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OCR识别 · 单位基础表 · 工作流服务</text>
-
-  <!-- 上游支撑→本业务连线 -->
-  <line x1="260" y1="127" x2="300" y2="252" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
-
-  <!-- ========== 下游影响（右侧纵列） ========== -->
-  <rect x="900" y="420" width="280" height="190" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
-  <text x="1040" y="446" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">下游影响</text>
-
-  <rect x="920" y="462" width="115" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
-  <text x="977" y="486" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">真实性核销引用</text>
-
-  <rect x="1045" y="462" width="115" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
-  <text x="1102" y="486" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">发票数据占用</text>
-
-  <rect x="920" y="510" width="115" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
-  <text x="977" y="534" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">折扣政策关联</text>
-
-  <rect x="1045" y="510" width="115" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
-  <text x="1102" y="534" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">发票有效状态更新</text>
-
-  <!-- 本业务→下游影响连线 -->
-  <line x1="760" y1="440" x2="900" y2="515" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+  <line x1="700" y1="515" x2="700" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <rect x="645" y="540" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="700" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
 
 </svg>
   </div>
