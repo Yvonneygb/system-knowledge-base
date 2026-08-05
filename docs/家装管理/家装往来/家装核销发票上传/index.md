@@ -21,7 +21,7 @@
   <h4 class="bf-main-title">家装核销发票上传 — 全链路流程图</h4>
   <p class="bf-main-sub">项目报备 → 项目合同 → 订单 → 出库 → 发票上传（本业务）→ 真实性核销 → 抬价返还</p>
   <div class="bf-fc-svg-wrap">
-    <svg class="bf-fc-svg" viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
     <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
