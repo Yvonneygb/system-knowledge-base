@@ -16,46 +16,271 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
 
-```text
-[经销商/内部用户] --> 新建核销发票上传单 --> 选择核销类型(家装项目/经销商/收据)
-  --> 选择项目/经销商/交易公司 --> 上传发票影像(凭证附件)
-  --> OCR自动识别/手工录入发票主要信息和详细信息
-  --> 保存(校验发票重复、明细完整性) --> 提交审批(家装流程:INVOICE_JZHXFPSC_AW)
-  --> 审批中 --> 审批通过(发票有效状态更新为valid) --> 可被真实性核销引用
-  --> 审批拒绝 --> 可修改后重新提交
-```
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">家装核销发票上传 — 全链路流程图</h4>
+  <p class="bf-main-sub">上游依赖（项目管理/经销商/交易公司）→ 发票上传与OCR识别 → 保存校验 → 工作流审批 → 下游影响（真实性核销引用/发票占用/折扣关联）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" viewBox="0 0 1200 950" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+    <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+    <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+  </defs>
 
-<KbTip>OCR 自动识别仅在凭证类型为发票或收据时触发,非发票类型不返回详细信息。</KbTip>
+  <!-- ========== 阶段标签 ========== -->
+  <text x="140" y="22" text-anchor="middle" fill="#6B7280" font-size="11" font-weight="600">上游依赖</text>
+  <text x="600" y="22" text-anchor="middle" fill="#6B7280" font-size="11" font-weight="600">本业务：家装核销发票上传</text>
+  <text x="1060" y="22" text-anchor="middle" fill="#6B7280" font-size="11" font-weight="600">下游影响</text>
+  <line x1="20" y1="28" x2="280" y2="28" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="320" y1="28" x2="880" y2="28" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="920" y1="28" x2="1180" y2="28" stroke="#E5E7EB" stroke-width="1"/>
 
-</KbCard>
-<KbCard num="2" title="上游依赖">
+  <!-- ===== 上游区域（蓝色虚线外框） ===== -->
+  <rect x="20" y="42" width="260" height="190" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="150" y="68" text-anchor="middle" fill="#1D4ED8" font-size="12" font-weight="600">上游系统/服务</text>
 
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 项目管理 | 数据依赖 | 提供家装项目信息(项目编码、名称、地址) | 核销类型为"家装项目"时必选 |
-| 经销商管理 | 数据依赖 | 提供经销商信息(编码、名称) | 核销类型为"家装项目"或"收据"时必选 |
-| 交易公司/法人 | 数据依赖 | 提供交易公司和开票单位信息 | 选择经销商后可选 |
-| OCR识别服务 | 服务依赖 | 识别上传的发票图片，自动填充发票主要信息和详细信息 | 凭证类型为"发票"或"收据"时触发 |
-| 编码规则服务 | 配置依赖 | 生成核销单号(家装规则:AE.JZ_INVOICE_VERIFER_NO) | 新建保存时自动生成 |
-| 工作流服务 | 服务依赖 | 驱动审批流程(家装流程编码:INVOICE_JZHXFPSC_AW) | 提交审批时调用 |
-| 单位基础表(HPFM_UOM) | 数据依赖 | 根据规格型号匹配基本单位 | 保存/导入时自动匹配 |
+  <!-- 上游节点 -->
+  <rect x="40" y="85" width="100" height="40" rx="6" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="90" y="110" text-anchor="middle" fill="#1D4ED8" font-size="12" font-weight="600">项目管理</text>
 
-</KbCard>
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
+  <rect x="160" y="85" width="100" height="40" rx="6" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="210" y="110" text-anchor="middle" fill="#1D4ED8" font-size="12" font-weight="600">经销商管理</text>
 
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 家装真实性核销 | 真实性核销引用 | 审批通过后，发票数据可被家装真实性核销菜单引用进行核销操作 |
-| 核销单据 | 发票数据占用 | 发票代码+发票号码被核销后，其他核销单不能再使用同一发票 |
-| 折扣政策 | 折扣政策关联 | 主表记录折扣政策ID/编码/名称，与折扣政策模块产生关联 |
+  <rect x="40" y="140" width="100" height="40" rx="6" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="90" y="165" text-anchor="middle" fill="#1D4ED8" font-size="12" font-weight="600">交易公司/法人</text>
 
+  <rect x="160" y="140" width="100" height="40" rx="6" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="210" y="165" text-anchor="middle" fill="#1D4ED8" font-size="12" font-weight="600">编码规则服务</text>
+
+  <rect x="40" y="190" width="220" height="32" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="150" y="211" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OCR识别服务 · 单位基础表 · 工作流服务</text>
+
+  <!-- 上游→本业务连接线 -->
+  <line x1="280" y1="137" x2="310" y2="137" stroke="#3B82F6" stroke-width="2" marker-end="url(#arr-blue)"/>
+
+  <!-- ========== 本业务区域 ========== -->
+
+  <!-- 开始节点 -->
+  <rect x="310" y="60" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="350" y="87" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+  <line x1="390" y1="82" x2="420" y2="82" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 步骤1: 新建核销发票上传单 -->
+  <rect x="420" y="60" width="140" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="490" y="87" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">新建核销发票上传单</text>
+  <line x1="560" y1="82" x2="590" y2="82" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 步骤2: 选择核销类型 -->
+  <rect x="590" y="60" width="140" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="660" y="87" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">选择核销类型</text>
+  <line x1="730" y1="82" x2="760" y2="82" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 步骤3: 选择项目/经销商/交易公司 -->
+  <rect x="760" y="60" width="150" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="835" y="87" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">选择项目/经销商/公司</text>
+
+  <!-- 向下 -->
+  <line x1="835" y1="104" x2="835" y2="135" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 步骤4: 上传发票影像 -->
+  <rect x="760" y="135" width="150" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="835" y="162" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">上传发票影像(附件)</text>
+
+  <!-- 向下到判断 -->
+  <line x1="835" y1="179" x2="835" y2="215" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 判断1: 凭证类型？ -->
+  <polygon points="835,215 935,255 835,295 735,255" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="835" y="258" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 凭证类型？</text>
+
+  <!-- 分叉标签 -->
+  <line x1="835" y1="295" x2="835" y2="320" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <line x1="835" y1="320" x2="670" y2="320" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <line x1="835" y1="320" x2="1000" y2="320" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arr-gray)"/>
+
+  <rect x="615" y="305" width="65" height="30" rx="4" fill="#DCFCE7" stroke="#16A34A" stroke-width="1"/>
+  <text x="647" y="325" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">发票/收据</text>
+
+  <rect x="965" y="305" width="65" height="30" rx="4" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1"/>
+  <text x="997" y="325" text-anchor="middle" fill="#6B7280" font-size="11" font-weight="600">非发票</text>
+
+  <line x1="647" y1="335" x2="647" y2="360" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <line x1="997" y1="335" x2="997" y2="360" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arr-gray)"/>
+
+  <!-- 符合分支：OCR识别 -->
+  <rect x="575" y="360" width="145" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="647" y="387" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">OCR自动识别发票</text>
+
+  <!-- OCR判断 -->
+  <line x1="647" y1="404" x2="647" y2="435" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <polygon points="647,435 717,470 647,505 577,470" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="647" y="473" text-anchor="middle" fill="#7C3AED" font-size="11" font-weight="600">⚖ OCR成功？</text>
+
+  <line x1="647" y1="505" x2="647" y2="535" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <rect x="560" y="535" width="90" height="36" rx="4" fill="#DCFCE7" stroke="#16A34A" stroke-width="1"/>
+  <text x="605" y="558" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">成功 ✓</text>
+  <line x1="647" y1="505" x2="647" y2="525" stroke="#9CA3AF" stroke-width="2"/>
+  <line x1="647" y1="525" x2="720" y2="525" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arr-gray)"/>
+  <rect x="700" y="535" width="90" height="36" rx="4" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1"/>
+  <text x="745" y="558" text-anchor="middle" fill="#6B7280" font-size="11" font-weight="600">失败 ✗</text>
+
+  <!-- 不符合分支：手工录入 -->
+  <rect x="925" y="360" width="145" height="44" rx="6" fill="#F9FAFB" stroke="#9CA3AF" stroke-width="1.5"/>
+  <text x="997" y="387" text-anchor="middle" fill="#4B5563" font-size="13" font-weight="600">手工录入发票信息</text>
+
+  <!-- 所有分支汇入：录入主要/详细信息 -->
+  <!-- 成功分支继续 -->
+  <line x1="605" y1="571" x2="605" y2="600" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <!-- 失败分支继续 -->
+  <line x1="745" y1="571" x2="745" y2="590" stroke="#9CA3AF" stroke-width="2"/>
+  <line x1="745" y1="590" x2="605" y2="590" stroke="#9CA3AF" stroke-width="2"/>
+  <line x1="605" y1="590" x2="605" y2="600" stroke="#9CA3AF" stroke-width="2"/>
+  <!-- 不符合分支继续 -->
+  <line x1="997" y1="404" x2="997" y2="590" stroke="#9CA3AF" stroke-width="2"/>
+  <line x1="997" y1="590" x2="605" y2="590" stroke="#9CA3AF" stroke-width="2"/>
+
+  <!-- 步骤5: 录入发票主要信息和详细信息 -->
+  <rect x="460" y="600" width="290" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="605" y="627" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">录入/确认发票主要信息 &amp; 详细信息</text>
+
+  <!-- 向下 -->
+  <line x1="605" y1="644" x2="605" y2="675" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 步骤6: 保存（校验） -->
+  <rect x="460" y="675" width="290" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="605" y="702" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">保存（校验发票重复/明细完整性）</text>
+
+  <!-- 保存校验判断 -->
+  <line x1="605" y1="719" x2="605" y2="750" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <polygon points="605,750 675,785 605,820 535,785" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="605" y="788" text-anchor="middle" fill="#7C3AED" font-size="11" font-weight="600">⚖ 校验通过？</text>
+
+  <!-- 校验不通过返回 -->
+  <line x1="605" y1="750" x2="605" y2="730" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="605" y1="730" x2="480" y2="730" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="480" y1="730" x2="480" y2="697" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+  <text x="545" y="723" text-anchor="middle" fill="#EF4444" font-size="10" font-weight="600">不通过，返回修改</text>
+
+  <!-- 校验通过继续 -->
+  <line x1="605" y1="820" x2="605" y2="850" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 步骤7: 提交审批 -->
+  <rect x="460" y="850" width="290" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="605" y="877" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">提交审批（工作流：INVOICE_JZHXFPSC_AW）</text>
+
+  <!-- 向下到审批判断 -->
+  <line x1="605" y1="894" x2="605" y2="920" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- ========== 下游区域 ========== -->
+  <!-- 审批判断 -->
+  <polygon points="605,920 675,955 605,990 535,955" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="605" y="958" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批结果？</text>
+
+  <!-- 审批通过分支 -->
+  <line x1="605" y1="990" x2="605" y2="1025" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <rect x="555" y="1025" width="100" height="30" rx="4" fill="#DCFCE7" stroke="#16A34A" stroke-width="1"/>
+  <text x="605" y="1045" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">审批通过 ✓</text>
+
+  <!-- 审批拒绝分支 -->
+  <line x1="675" y1="955" x2="780" y2="955" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+  <rect x="740" y="940" width="100" height="30" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+  <text x="790" y="960" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">审批拒绝 ✗</text>
+  <line x1="790" y1="940" x2="790" y2="910" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="790" y1="910" x2="750" y2="910" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="750" y1="910" x2="750" y2="872" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+  <text x="770" y="903" text-anchor="middle" fill="#EF4444" font-size="10" font-weight="600">修改后重提</text>
+
+  <!-- 审批通过后的下游节点 -->
+  <line x1="605" y1="1055" x2="605" y2="1075" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 核心高亮节点：发票有效 -->
+  <rect x="525" y="1075" width="160" height="44" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+  <text x="605" y="1102" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">★ 发票状态 → valid ★</text>
+
+  <!-- 分叉到三个下游 -->
+  <line x1="605" y1="1119" x2="605" y2="1150" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <line x1="605" y1="1150" x2="300" y2="1150" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <line x1="605" y1="1150" x2="605" y2="1150" stroke="#16A34A" stroke-width="2"/>
+  <line x1="605" y1="1150" x2="900" y2="1150" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 下游影响区域（绿色虚线外框） -->
+  <rect x="860" y="1060" width="320" height="150" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="1020" y="1086" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">下游影响</text>
+
+  <!-- 下游节点 -->
+  <rect x="880" y="1100" width="135" height="40" rx="6" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="947" y="1125" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">真实性核销引用</text>
+
+  <rect x="1025" y="1100" width="135" height="40" rx="6" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="1092" y="1125" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">发票数据占用</text>
+
+  <rect x="880" y="1155" width="135" height="40" rx="6" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.5"/>
+  <text x="947" y="1180" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">折扣政策关联</text>
+
+  <!-- 结束节点 -->
+  <rect x="250" y="1135" width="100" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="300" y="1160" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+
+</svg>
+  </div>
+
+  <!-- 图例 -->
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游系统/服务</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-gray"></span> 非发票/OCR失败分支</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 校验不通过/审批拒绝</span>
+  </div>
 </div>
-</KbCard>
+
+<!-- 上游依赖卡片 -->
+<div style="padding:24px 10%; margin-top:32px; margin-bottom:32px;">
+  <div class="kl-card">
+    <div class="kl-card-header" style="margin-bottom:0;">
+      <h3 class="kl-card-title">上游依赖（核销发票上传依赖这些模块先完成）</h3>
+    </div>
+    <div class="kl-desc">发票上传前需确认以下上游模块已就绪：</div>
+    <table class="kl-table" style="margin-top:16px;">
+      <thead><tr><th>上游模块</th><th>依赖类型</th><th>依赖说明</th><th>前置条件</th></tr></thead>
+      <tbody>
+        <tr><td><strong>项目管理</strong></td><td><span class="kl-badge">数据依赖</span></td><td>提供家装项目信息(项目编码、名称、地址)</td><td>核销类型为"家装项目"时必选</td></tr>
+        <tr><td><strong>经销商管理</strong></td><td><span class="kl-badge">数据依赖</span></td><td>提供经销商信息(编码、名称)</td><td>核销类型为"家装项目"或"收据"时必选</td></tr>
+        <tr><td><strong>交易公司/法人</strong></td><td><span class="kl-badge">数据依赖</span></td><td>提供交易公司和开票单位信息</td><td>选择经销商后可选</td></tr>
+        <tr><td><strong>OCR识别服务</strong></td><td><span class="kl-badge">服务依赖</span></td><td>识别上传的发票图片，自动填充发票主要信息和详细信息</td><td>凭证类型为"发票"或"收据"时触发</td></tr>
+        <tr><td><strong>编码规则服务</strong></td><td><span class="kl-badge">配置依赖</span></td><td>生成核销单号(家装规则:AE.JZ_INVOICE_VERIFER_NO)</td><td>新建保存时自动生成</td></tr>
+        <tr><td><strong>工作流服务</strong></td><td><span class="kl-badge">服务依赖</span></td><td>驱动审批流程(家装流程编码:INVOICE_JZHXFPSC_AW)</td><td>提交审批时调用</td></tr>
+        <tr><td><strong>单位基础表(HPFM_UOM)</strong></td><td><span class="kl-badge">数据依赖</span></td><td>根据规格型号匹配基本单位</td><td>保存/导入时自动匹配</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 下游影响卡片 -->
+  <div class="kl-card alt" style="margin-top:32px;">
+    <div class="kl-card-header" style="margin-bottom:0;">
+      <h3 class="kl-card-title">下游影响（审批通过后会触发这些动作）</h3>
+    </div>
+    <div class="kl-desc">核销发票上传审批通过后，会自动触发以下下游业务动作：</div>
+    <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+      <div class="kl-col-box" style="background:#F0FDF4; border-left:3px solid #15803D; padding:14px 16px; border-radius:4px;">
+        <div style="font-weight:600; color:#15803D; margin-bottom:6px;">真实性核销引用</div>
+        <div style="font-size:13px; color:#374151; line-height:1.7;">审批通过后，发票数据可被家装真实性核销菜单引用进行核销操作，发票有效状态更新为 valid</div>
+      </div>
+      <div class="kl-col-box" style="background:#FFF7ED; border-left:3px solid #D97706; padding:14px 16px; border-radius:4px;">
+        <div style="font-weight:600; color:#D97706; margin-bottom:6px;">发票数据占用</div>
+        <div style="font-size:13px; color:#374151; line-height:1.7;">发票代码+发票号码被核销后，其他核销单不能再使用同一发票，防止重复核销</div>
+      </div>
+      <div class="kl-col-box" style="background:#F3F4F6; border-left:3px solid #6B7280; padding:14px 16px; border-radius:4px;">
+        <div style="font-weight:600; color:#6B7280; margin-bottom:6px;">折扣政策关联</div>
+        <div style="font-size:13px; color:#374151; line-height:1.7;">主表记录折扣政策ID/编码/名称，与折扣政策模块产生关联</div>
+      </div>
+    </div>
+  </div>
 </div>
+
 </div>
 </div>
 
