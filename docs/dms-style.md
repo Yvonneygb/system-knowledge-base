@@ -300,9 +300,11 @@
 |------|--------|------|
 | viewBox 宽度 | 根据内容，通常 900~1200 | 确保所有节点可见 |
 | viewBox 高度 | 根据内容，通常 500~800 | 上下留白 |
-| 节点间距（水平） | 40~50px | 两个相邻节点之间的间隔 |
-| 节点间距（垂直） | 20~30px | 纵向节点之间的间隔 |
+| 节点间距（水平） | 30~40px | 两个相邻节点之间的间隔 |
+| 节点间距（垂直） | **13~15px** | 纵向节点紧凑排列，**尽量节省纵向空间**（参考 §10.1 实际样例：核心→判断→发票生效→真实性核销→结束 间距均为 13px） |
 | 行高 | 40~50px | 不同行之间的间距 |
+
+> **纵向紧凑原则**：主流程的纵向链（如 审批→后续步骤→结束）节点间距控制在 **13~15px**，避免大段空白。上下游横带与主流程之间的连接线间隙也尽量压缩（示例：上游带底→开始 35px，结束→下游带 35px）。
 
 ### 5.2 节点尺寸规范
 
@@ -361,7 +363,7 @@
   <p class="bf-main-sub">【简要描述】</p>
   <div class="bf-fc-svg-wrap">
     <!-- ⚠️ 必须加 style="max-height:none" 防止底部被截断 -->
-    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 [W] [H]" xmlns="http://www.w3.org/2000/svg">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <!-- 绿色箭头（主流程） -->
         <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
@@ -384,61 +386,101 @@
         </filter>
       </defs>
 
-      <!-- 上游支撑容器（蓝色虚线外框，与下游同一行 y=42） -->
-      <rect x="20" y="42" width="240" height="170" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
-      <text x="140" y="68" text-anchor="middle" fill="#1D4ED8" font-size="12" font-weight="600">上游支撑</text>
-      <!-- 上游支撑节点（白色实线） -->
-      <rect x="35" y="82" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
-      <text x="85" y="104" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目管理</text>
-      <!-- 上游→主线：水平出→垂直下（L形直角，无斜线） -->
-      <line x1="260" y1="127" x2="290" y2="127" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <line x1="290" y1="127" x2="290" y2="252" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <!-- ========== 上游支撑（正上方横带，子卡片横向平铺） ========== -->
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
 
-      <!-- 开始节点（紫色虚线圆角矩形） -->
-      <rect x="20" y="230" width="80" height="44" rx="6"
-            fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
-      <text x="60" y="257" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
-      <!-- 连接线 -->
-      <line x1="100" y1="252" x2="130" y2="252" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <!-- 7 张子卡片 横向平铺（单行，卡片宽度 120） -->
+      <rect x="150" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="210" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目管理</text>
+      <rect x="280" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="340" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商管理</text>
+      <rect x="410" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="470" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司/法人</text>
+      <rect x="540" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OCR识别服务</text>
+      <rect x="670" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="730" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则服务</text>
+      <rect x="800" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="860" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流服务</text>
+      <rect x="930" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="990" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">单位基础表</text>
 
-      <!-- 步骤节点（绿色实线圆角矩形） -->
-      <rect x="130" y="230" width="100" height="44" rx="6"
-            fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
-      <text x="180" y="257" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">步骤1</text>
+      <!-- 上游→开始：垂直直连（蓝色虚线箭头，无斜线） -->
+      <line x1="60" y1="115" x2="60" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+
+      <!-- ========== 主线：前置业务 → 本业务 → 后置业务（纵向紧凑） ========== -->
+      <!-- 开始 -->
+      <rect x="20" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="60" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="100" y1="172" x2="130" y2="172" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+      <!-- 步骤1 -->
+      <rect x="130" y="150" width="100" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="180" y="177" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">步骤1</text>
+      <line x1="230" y1="172" x2="260" y2="172" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+      <!-- 步骤2 -->
+      <rect x="260" y="150" width="100" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="310" y="177" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">步骤2</text>
+
+      <!-- 步骤2→本业务（水平直线） -->
+      <line x1="360" y1="172" x2="620" y2="172" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
       <!-- 核心高亮节点（绿色实心 + 阴影） -->
-      <rect x="620" y="225" width="160" height="54" rx="6"
+      <rect x="620" y="145" width="160" height="54" rx="6"
             fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
-      <text x="700" y="249" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">★ 核心业务 ★</text>
-      <text x="700" y="269" text-anchor="middle" fill="#DCFCE7" font-size="11">副标题说明</text>
+      <text x="700" y="169" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">★ 核心业务 ★</text>
+      <text x="700" y="189" text-anchor="middle" fill="#DCFCE7" font-size="11">副标题说明</text>
+
+      <!-- 本业务→审批判断 -->
+      <line x1="700" y1="199" x2="700" y2="212" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
       <!-- 判断节点（菱形紫色虚线） -->
-      <polygon points="700,315 770,350 700,385 630,350"
+      <polygon points="700,212 770,247 700,282 630,247"
                fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
-      <text x="700" y="353" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 条件判断？</text>
+      <text x="700" y="250" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 条件判断？</text>
 
       <!-- 拒绝分支（红色箭头 + 红色标签） -->
-      <line x1="770" y1="350" x2="840" y2="350" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
-      <rect x="810" y="335" width="80" height="30" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
-      <text x="850" y="355" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="770" y1="247" x2="850" y2="247" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="805" y="232" width="90" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="850" y="251" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
 
       <!-- 拒绝返回路径（L形直角：先垂直上再水平左，无弯曲） -->
-      <line x1="850" y1="335" x2="850" y2="279" stroke="#EF4444" stroke-width="1.5"/>
-      <line x1="850" y1="279" x2="780" y2="279" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="850" y1="232" x2="850" y2="199" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="850" y1="199" x2="780" y2="199" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
 
-      <!-- 下游影响容器（绿色虚线外框，与上游同一行 y=42，对称布局） -->
-      <rect x="900" y="42" width="280" height="170" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
-      <text x="1040" y="68" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">下游影响</text>
-      <!-- 下游节点 -->
-      <rect x="920" y="82" width="115" height="38" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
-      <text x="977" y="106" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">下游模块A</text>
-      <!-- 主线→下游：水平直线（同 y=252，无斜线） -->
-      <line x1="860" y1="252" x2="900" y2="252" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <!-- 通过分支：垂直下（间距 13px，纵向紧凑） -->
+      <line x1="700" y1="282" x2="700" y2="295" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+      <!-- 后续步骤 -->
+      <rect x="640" y="295" width="120" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="700" y="320" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">后续步骤</text>
+
+      <!-- 后续→结束（间距 13px，纵向紧凑） -->
+      <line x1="700" y1="335" x2="700" y2="401" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
       <!-- 结束节点 -->
-      <rect x="645" y="555" width="110" height="40" rx="6"
+      <rect x="645" y="401" width="110" height="40" rx="6"
             fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
-      <text x="700" y="580" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <text x="700" y="426" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+
+      <!-- 结束→下游：垂直直连（绿色虚线箭头，无斜线） -->
+      <line x1="700" y1="441" x2="700" y2="476" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+
+      <!-- ========== 下游影响（正下方横带，子卡片横向平铺） ========== -->
+      <rect x="50" y="476" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="498" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+
+      <!-- 4 张子卡片 横向平铺（单行，卡片宽度 150） -->
+      <rect x="270" y="512" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="345" y="535" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">下游模块A</text>
+      <rect x="440" y="512" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="515" y="535" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">下游模块B</text>
+      <rect x="610" y="512" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="685" y="535" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">下游模块C</text>
+      <rect x="780" y="512" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="855" y="535" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">下游模块D</text>
     </svg>
   </div>
 
@@ -546,16 +588,30 @@
 
 ```
 容器可用内宽 W（如 1080px）
-单卡宽 w（如 140px）+ 卡间距 g（如 8px）
-所需总宽 = 7×w + 6×g = 7×140 + 6×8 = 1028px
+单卡宽 w（如 120px）+ 卡间距 g（如 10px）
+所需总宽 = 7×w + 6×g = 7×120 + 6×10 = 900px
 起始 x = 容器内左边距 + (W − 所需总宽) / 2   ← 保证整体居中
 ```
+
+**横带（上游/下游）尺寸标准**：
+
+| 元素 | 尺寸 | 说明 |
+|------|------|------|
+| 横带容器 | x=50, width=1100, **height=95** | 贯通居中，上下留白各约 20px |
+| 横带标题 | y=42（带内顶部）, font-size=13 | 顶部居中 |
+| 子卡片（上游） | width=**120**, height=34 | 单行横向平铺，卡片不宜过宽 |
+| 子卡片（下游） | width=**150**, height=36 | 单行横向平铺 |
+| 子卡片间距 | 8~10px（上游）/ 20px（下游） | 整体居中对齐 |
+| 子卡片定位 | y=56（带内，紧贴标题下方） | 避免大段底部留白 |
+| 横带底部留白 | **≤25px** | 子卡片底部到带底，保持紧凑 |
+
+> **横带紧凑原则**：卡片宽度以"刚好容纳文字"为准（上游 7 张取 120、下游 4 张取 150），横带高度固定 95px，子卡片紧贴标题下方（y=56），底部留白控制在 25px 以内，不要留大块空白。
 
 **上下布局的 viewBox 计算**：
 ```
 宽度 = 容器宽度 + 左右边距（如 1100 + 100 = 1200）
-高度 = 上游带底部 + 主流程高度 + 下游带高度 + 20px 余量
-     （例：160 + 420 + 140 + 20 = 740，取 780）
+高度 = 下游带底部 + 20px 余量
+     （实际样例：下游带 y=476, height=95 → 底部 571；+20 = 591，取 600）
 ```
 
 ### 10.2 对齐三区布局（备选，上游/下游左右对称）
@@ -647,7 +703,7 @@ viewBox 高度 = 最底部元素 y 坐标 + 元素高度 + 20px 底部留白
 每个流程图的 `<svg>` 标签必须添加 `style="max-height:none"`，覆盖全局 CSS 中 `.bf-fc-svg` 的 `max-height: 600px` 限制：
 
 ```html
-<svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg">
+<svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
 ```
 
 ### 12.3 常见问题
