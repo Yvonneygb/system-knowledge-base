@@ -19,17 +19,164 @@
 <div class="kl-wrap">
 <KbCard num="1" title="业务流程图">
 
-```text
-[内部用户/经销商] --> 新建家装要货订单 --> 选择家装类型业务(直销/经销)
-  --> 选择价格类型(折扣单/折扣政策/价目表)
-  --> [直销]自动弹出合同选择 --> 选择直销合同 --> 自动带出折扣单/客户/项目/交易公司等信息
-  --> [经销]选择客户 --> 选择交易公司 --> 选择折扣政策/折扣单
-  --> 选择报备项目 --> 填写期望到达日期(自动计算订单类型) --> 添加要货产品明细
-  --> 保存(校验必填项、产品生命状态、紧急行数等) --> 提交审批(OA对象类型9020)
-  --> [折扣单/价目表]生成CRM订单 --> CRM返回订单号
-  --> [折扣政策]送签OA --> OA审批通过后生成CRM订单
-  --> 审批通过 --> 更新项目阶段(首次→已下首单stageId=13, 二次→持续供货中stageId=14)
-```
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">家装要货订单 — 全链路流程图</h4>
+  <p class="bf-main-sub">新建订单 → 家装类型(直销/经销) → 报备项目/价格类型 → 保存提交 → 审批 → 生成CRM订单 → 更新项目阶段</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 960" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+    <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+    <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+  </defs>
+
+  <!-- ========== 上游支撑（正上方横带，10 张子卡片横向平铺） ========== -->
+  <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+
+  <rect x="83"  y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="132" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商管理</text>
+  <rect x="187" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="236" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">直销合同</text>
+  <rect x="291" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="340" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">折扣单管理</text>
+  <rect x="395" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="444" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">折扣政策管理</text>
+  <rect x="499" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="548" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">报备项目</text>
+  <rect x="603" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="652" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司</text>
+  <rect x="707" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="756" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则服务</text>
+  <rect x="811" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="860" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流服务</text>
+  <rect x="915" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="964" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM服务</text>
+  <rect x="1019" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="1068" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">产品生命状态</text>
+
+  <!-- 上游→开始：垂直直连 -->
+  <line x1="60" y1="115" x2="60" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+
+  <!-- ========== 主线 ========== -->
+  <!-- 开始 -->
+  <rect x="20" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="60" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+  <line x1="100" y1="172" x2="140" y2="172" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 核心：新建家装要货订单 -->
+  <rect x="140" y="145" width="190" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+  <text x="235" y="169" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">★ 新建家装要货订单 ★</text>
+  <text x="235" y="189" text-anchor="middle" fill="#DCFCE7" font-size="10">OA对象9020 · 生成CRM订单</text>
+
+  <!-- 核心→家装类型判断 -->
+  <line x1="235" y1="199" x2="235" y2="212" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 判断：家装类型业务？ -->
+  <polygon points="235,212 305,247 235,282 165,247" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="235" y="251" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 家装类型？</text>
+
+  <!-- 分支分叉（从菱形底向下） -->
+  <line x1="235" y1="282" x2="235" y2="295" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <line x1="235" y1="295" x2="120" y2="295" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <line x1="235" y1="295" x2="360" y2="295" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 直销分支 -->
+  <rect x="20" y="295" width="200" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="120" y="312" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">直销：选择直销合同</text>
+  <text x="120" y="328" text-anchor="middle" fill="#166534" font-size="10">自动带出折扣单/客户/项目</text>
+
+  <!-- 经销分支 -->
+  <rect x="250" y="295" width="220" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="360" y="312" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">经销：选择客户·交易公司</text>
+  <text x="360" y="328" text-anchor="middle" fill="#166534" font-size="10">选折扣政策/折扣单</text>
+
+  <!-- 分支汇聚 -->
+  <line x1="120" y1="335" x2="120" y2="355" stroke="#16A34A" stroke-width="2"/>
+  <line x1="120" y1="355" x2="235" y2="355" stroke="#16A34A" stroke-width="2"/>
+  <line x1="360" y1="335" x2="360" y2="355" stroke="#16A34A" stroke-width="2"/>
+  <line x1="360" y1="355" x2="235" y2="355" stroke="#16A34A" stroke-width="2"/>
+
+  <!-- 汇聚 → 选择报备项目·价格类型 -->
+  <line x1="235" y1="355" x2="235" y2="370" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- 选择报备项目·价格类型 -->
+  <rect x="135" y="370" width="200" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="235" y="395" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">选择报备项目·价格类型</text>
+
+  <!-- 填写期望到达日期·产品明细 -->
+  <line x1="235" y1="410" x2="235" y2="423" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <rect x="135" y="423" width="200" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="235" y="448" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">填明细·期望到达日期</text>
+
+  <!-- 保存(校验) -->
+  <line x1="235" y1="463" x2="235" y2="476" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <rect x="135" y="476" width="200" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="235" y="501" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">保存(校验必填/生命状态)</text>
+
+  <!-- 提交审批 -->
+  <line x1="235" y1="516" x2="235" y2="529" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <rect x="135" y="529" width="200" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="235" y="554" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">提交审批(OA 9020)</text>
+
+  <!-- 审批判断 -->
+  <line x1="235" y1="569" x2="235" y2="582" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <polygon points="235,582 305,617 235,652 165,617" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="235" y="621" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+
+  <!-- 拒绝分支 -->
+  <line x1="305" y1="617" x2="390" y2="617" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+  <rect x="350" y="602" width="80" height="30" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+  <text x="390" y="622" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+  <!-- 拒绝返回：垂直上 → 水平左（L形直角） -->
+  <line x1="390" y1="602" x2="390" y2="508" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="390" y1="508" x2="335" y2="508" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+
+  <!-- 通过：生成CRM订单 -->
+  <line x1="235" y1="652" x2="235" y2="665" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <rect x="135" y="665" width="200" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="235" y="685" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">生成CRM订单</text>
+  <text x="235" y="700" text-anchor="middle" fill="#166534" font-size="10">折扣政策类需送签OA后生成</text>
+
+  <!-- 更新项目阶段 -->
+  <line x1="235" y1="705" x2="235" y2="718" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <rect x="135" y="718" width="200" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+  <text x="235" y="743" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">更新项目阶段</text>
+
+  <!-- 结束 -->
+  <line x1="235" y1="758" x2="235" y2="771" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <rect x="180" y="771" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="235" y="796" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+
+  <!-- 结束→下游：垂直直连 -->
+  <line x1="235" y1="811" x2="235" y2="830" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+
+  <!-- ========== 下游影响（正下方横带，4 张子卡片横向平铺） ========== -->
+  <rect x="50" y="830" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="600" y="852" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+
+  <rect x="270" y="866" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+  <text x="345" y="889" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM订单创建</text>
+  <rect x="440" y="866" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+  <text x="515" y="889" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目进度更新</text>
+  <rect x="610" y="866" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+  <text x="685" y="889" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">可下单数量占用</text>
+  <rect x="780" y="866" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+  <text x="855" y="889" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">定金库存占用</text>
+
+</svg>
+  </div>
+
+  <!-- 图例 -->
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
+</div>
 
 </KbCard>
 
