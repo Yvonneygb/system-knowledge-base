@@ -67,10 +67,12 @@
   <polygon points="235,219 305,254 235,289 165,254" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
   <text x="235" y="258" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 家装类型？</text>
 
-  <!-- 分支分叉 -->
-  <line x1="235" y1="289" x2="235" y2="314" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
-  <line x1="235" y1="314" x2="120" y2="314" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
-  <line x1="235" y1="314" x2="360" y2="314" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <!-- 分支分叉：菱形底部 → 水平分叉 → 垂直进入两个分支卡片顶部中心 -->
+  <line x1="235" y1="289" x2="235" y2="300" stroke="#16A34A" stroke-width="2"/>
+  <line x1="235" y1="300" x2="120" y2="300" stroke="#16A34A" stroke-width="2"/>
+  <line x1="235" y1="300" x2="360" y2="300" stroke="#16A34A" stroke-width="2"/>
+  <line x1="120" y1="300" x2="120" y2="314" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+  <line x1="360" y1="300" x2="360" y2="314" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
   <!-- 直销分支（关联的上游单据类型） -->
   <rect x="20" y="314" width="200" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
