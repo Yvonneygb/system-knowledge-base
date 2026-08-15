@@ -1,7 +1,7 @@
 ---
 ---
 
-<BreadcrumbTabs />
+<KbSectionTabs />
 
 <div id="logic">
 
@@ -132,7 +132,7 @@ EPM_DISCOUNT_ECN (折扣变更头表)
 
 </div>
 
-<div id="faq">
+<div id="faq" style="display:none;">
 
 <div class="kb-module">
 
@@ -208,7 +208,7 @@ WHERE DISCOUNT_APPLY_ID = :sourceDiscountApplyId;
 
 </div>
 
-<div id="troubleshoot">
+<div id="troubleshoot" style="display:none;">
 
 <div class="kb-module">
 
@@ -289,7 +289,7 @@ WHERE DISCOUNT_ECN_ID = :ecnId;
 
 </div>
 
-<div id="history">
+<div id="history" style="display:none;">
 
 <div class="kb-module">
 
@@ -319,7 +319,7 @@ WHERE DISCOUNT_ECN_ID = :ecnId;
 
 </div>
 
-<div id="related">
+<div id="related" style="display:none;">
 
 <div class="kb-module">
 

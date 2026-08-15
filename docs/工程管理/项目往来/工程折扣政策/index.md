@@ -1,7 +1,7 @@
 ---
 ---
 
-<BreadcrumbTabs />
+<KbSectionTabs />
 
 <div id="logic">
 
@@ -166,7 +166,7 @@ EPM_DISCOUNT_POLICY (政策头)
 
 </div>
 
-<div id="faq">
+<div id="faq" style="display:none;">
 
 <div class="kb-module">
 
@@ -270,7 +270,7 @@ WHERE DPI.DISCOUNT_POLICY_ID = :policyId
 
 </div>
 
-<div id="troubleshoot">
+<div id="troubleshoot" style="display:none;">
 
 <div class="kb-module">
 
@@ -350,7 +350,7 @@ WHERE DPI.DISCOUNT_POLICY_ID = :policyId;
 
 </div>
 
-<div id="history">
+<div id="history" style="display:none;">
 
 <div class="kb-module">
 
@@ -380,7 +380,7 @@ WHERE DPI.DISCOUNT_POLICY_ID = :policyId;
 
 </div>
 
-<div id="related">
+<div id="related" style="display:none;">
 
 <div class="kb-module">
 

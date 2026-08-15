@@ -1,7 +1,7 @@
 ---
 ---
 
-<BreadcrumbTabs />
+<KbSectionTabs />
 
 <div id="logic">
 
@@ -137,7 +137,7 @@ active_qty = contract_qty - ordered_qty - replaced_qty - delayed_qty
 
 </div>
 
-<div id="faq">
+<div id="faq" style="display:none;">
 
 <div class="kb-module">
 
@@ -222,7 +222,7 @@ WHERE DISCOUNT_APPLY_ID = :discountApplyId;
 
 </div>
 
-<div id="troubleshoot">
+<div id="troubleshoot" style="display:none;">
 
 <div class="kb-module">
 
@@ -308,7 +308,7 @@ AND SOBH.STAT != 5;
 
 </div>
 
-<div id="history">
+<div id="history" style="display:none;">
 
 <div class="kb-module">
 
@@ -338,7 +338,7 @@ AND SOBH.STAT != 5;
 
 </div>
 
-<div id="related">
+<div id="related" style="display:none;">
 
 <div class="kb-module">
 

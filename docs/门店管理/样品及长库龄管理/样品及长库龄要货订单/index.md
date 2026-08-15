@@ -1,7 +1,7 @@
 ---
 ---
 
-<BreadcrumbTabs />
+<KbSectionTabs />
 
 <div id="logic">
 
@@ -139,7 +139,7 @@ SA_OUT_BILL_HEAD (要货订单头表)
 
 </div>
 
-<div id="faq">
+<div id="faq" style="display:none;">
 
 <div class="kb-module">
 
@@ -222,7 +222,7 @@ WHERE DISCOUNT_APPLY_LINE_ID = :applyLineId;
 
 </div>
 
-<div id="troubleshoot">
+<div id="troubleshoot" style="display:none;">
 
 <div class="kb-module">
 
@@ -302,7 +302,7 @@ WHERE SA_OUT_BILL_HEAD_ID = :orderId;
 
 </div>
 
-<div id="history">
+<div id="history" style="display:none;">
 
 <div class="kb-module">
 
@@ -332,7 +332,7 @@ WHERE SA_OUT_BILL_HEAD_ID = :orderId;
 
 </div>
 
-<div id="related">
+<div id="related" style="display:none;">
 
 <div class="kb-module">
 

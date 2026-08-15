@@ -1,7 +1,7 @@
 ---
 ---
 
-<BreadcrumbTabs />
+<KbSectionTabs />
 
 <div id="logic">
 
@@ -164,7 +164,7 @@ saOutBillHead.setDiscountRate(minDiscountRate.orElse(null));
 
 </div>
 
-<div id="faq">
+<div id="faq" style="display:none;">
 
 <div class="kb-module">
 
@@ -253,7 +253,7 @@ WHERE ep.PROJECT_ID = :projectId;
 
 </div>
 
-<div id="troubleshoot">
+<div id="troubleshoot" style="display:none;">
 
 <div class="kb-module">
 
@@ -335,7 +335,7 @@ WHERE SA_OUT_BILL_HEAD_ID = :orderId;
 
 </div>
 
-<div id="history">
+<div id="history" style="display:none;">
 
 <div class="kb-module">
 
@@ -365,7 +365,7 @@ WHERE SA_OUT_BILL_HEAD_ID = :orderId;
 
 </div>
 
-<div id="related">
+<div id="related" style="display:none;">
 
 <div class="kb-module">
 
