@@ -8,13 +8,21 @@
 ## 一、整体容器结构
 
 ```html
-<div class="bf-truth-flow">
-  <h4 class="bf-main-title">【主流程名称】</h4>
-  <p class="bf-main-sub">【一句话流程摘要，如：前置报备 → 抬价判断 → 双分支处理】</p>
-  <div class="bf-fc-svg-wrap">
-    <svg class="bf-fc-svg" viewBox="0 0 [总宽度] [总高度]" xmlns="http://www.w3.org/2000/svg">
-      <!-- 流程图 SVG 内容 -->
-    </svg>
+<div class="tab-pad">
+  <div class="bf-truth-flow">
+    <h4 class="bf-main-title">【主流程名称】</h4>
+    <p class="bf-main-sub">【一句话流程摘要，如：前置报备 → 抬价判断 → 双分支处理】</p>
+    <div class="bf-fc-svg-wrap">
+      <svg class="bf-fc-svg" viewBox="0 0 [总宽度] [总高度]" xmlns="http://www.w3.org/2000/svg">
+        <!-- 流程图 SVG 内容 -->
+      </svg>
+    </div>
+    <div class="bf-fc-legend">
+      <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+      <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+      <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+      <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+    </div>
   </div>
 </div>
 ```
@@ -23,11 +31,13 @@
 
 | 类名 | 用途 | 关键样式 |
 |------|------|---------|
-| `.bf-truth-flow` | 最外层容器 | `background:#FAF5FF; border:1px solid #EDE9FE; border-radius:12px; padding:24px 20px 20px` |
+| `.tab-pad` | Tab 内容区 | `padding:24px 10%; margin-top:32px; margin-bottom:32px` |
+| `.bf-truth-flow` | 流程图最外层容器 | `background:#FAF5FF; border:1px solid #EDE9FE; border-radius:12px; padding:24px 20px 20px` |
 | `.bf-main-title` | 主标题 | `font-size:18px; font-weight:700; color:#4C1D95` |
 | `.bf-main-sub` | 副标题/流程摘要 | `font-size:13px; color:#6D28D9` |
 | `.bf-fc-svg-wrap` | SVG 容器 | `background:#FFF; border:1px solid #E5E7EB; border-radius:8px; padding:16px; display:flex; justify-content:center; overflow-x:auto` |
 | `.bf-fc-svg` | SVG 标签 | `display:block; width:100%; min-width:720px; max-height:600px` |
+| `.bf-fc-legend` | 图例容器 | `display:flex; gap:24px; justify-content:center; margin-top:16px; flex-wrap:wrap` |
 
 ---
 
@@ -358,6 +368,7 @@
 ## 七、完整模板骨架
 
 ```html
+<div class="tab-pad">
 <div class="bf-truth-flow">
   <h4 class="bf-main-title">【流程名称】</h4>
   <p class="bf-main-sub">【简要描述】</p>
@@ -491,6 +502,7 @@
     <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
     <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
   </div>
+</div>
 </div>
 ```
 

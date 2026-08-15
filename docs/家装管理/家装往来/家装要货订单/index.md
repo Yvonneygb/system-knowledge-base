@@ -16,9 +16,6 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
 <div class="bf-truth-flow">
   <h4 class="bf-main-title">家装要货订单 — 全链路流程图</h4>
   <p class="bf-main-sub">开始 → 家装类型分支(直销/经销) → ★新建家装要货订单★ → 审批 → 生成CRM订单 → 更新项目阶段</p>
@@ -154,37 +151,44 @@
   </div>
 </div>
 
-</KbCard>
+<div style="padding:24px 10%; margin-top:32px; margin-bottom:32px;">
+  <div class="kl-card">
+    <div class="kl-card-header" style="margin-bottom:0;">
+      <h3 class="kl-card-title">上游依赖</h3>
+    </div>
+    <div class="kl-desc">家装要货订单依赖以下上游模块先完成：</div>
+    <table class="kl-table" style="margin-top:16px;">
+      <thead><tr><th>上游模块</th><th>依赖类型</th><th>依赖说明</th><th>依赖成立条件</th></tr></thead>
+      <tbody>
+        <tr><td><strong>经销商管理</strong></td><td><span class="kl-badge">数据依赖</span></td><td>提供客户信息(编码、名称、签约方式、币种、收货地址)</td><td>家装类型业务为经销时必选；经销商登录时自动填充</td></tr>
+        <tr><td><strong>直销合同</strong></td><td><span class="kl-badge">数据依赖</span></td><td>提供合同信息(编码、名称、合作结束日期、签约方式)及关联的折扣单</td><td>家装类型业务为直销时必选</td></tr>
+        <tr><td><strong>折扣单管理</strong></td><td><span class="kl-badge">数据依赖</span></td><td>提供折扣单信息(折扣单号、折扣类型、折扣率、有效期)</td><td>价格类型为折扣单时必选</td></tr>
+        <tr><td><strong>折扣政策管理</strong></td><td><span class="kl-badge">数据依赖</span></td><td>提供折扣政策信息(编码、名称、有效期、产品线类型)</td><td>价格类型为折扣政策时必选</td></tr>
+        <tr><td><strong>报备项目</strong></td><td><span class="kl-badge">数据依赖</span></td><td>提供项目信息(编码、名称、项目经理、项目进度)</td><td>价格类型非折扣单时必选</td></tr>
+        <tr><td><strong>交易公司</strong></td><td><span class="kl-badge">数据依赖</span></td><td>提供交易公司和开票单位信息</td><td>选择客户后可选</td></tr>
+        <tr><td><strong>编码规则服务</strong></td><td><span class="kl-badge">配置依赖</span></td><td>生成要货单号(家装规则:AE.EPM_PROJECT_HOME_BILL_HEAD)</td><td>保存时自动生成</td></tr>
+        <tr><td><strong>工作流服务</strong></td><td><span class="kl-badge">服务依赖</span></td><td>驱动审批流程(OA对象类型9020, 单据名称:折扣政策要货)</td><td>提交审批时调用</td></tr>
+        <tr><td><strong>CRM服务</strong></td><td><span class="kl-badge">服务依赖</span></td><td>创建CRM订单、更新项目进度和折扣率</td><td>生成CRM订单时调用</td></tr>
+        <tr><td><strong>产品生命状态服务</strong></td><td><span class="kl-badge">服务依赖</span></td><td>校验产品生命状态(Z8不允许下单,Z6计划淘汰警告等)</td><td>保存/提交时调用</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 经销商管理 | 数据依赖 | 提供客户信息(编码、名称、签约方式、币种、收货地址) | 家装类型业务为经销时必选；经销商登录时自动填充 |
-| 直销合同 | 数据依赖 | 提供合同信息(编码、名称、合作结束日期、签约方式)及关联的折扣单 | 家装类型业务为直销时必选 |
-| 折扣单管理 | 数据依赖 | 提供折扣单信息(折扣单号、折扣类型、折扣率、有效期) | 价格类型为折扣单时必选 |
-| 折扣政策管理 | 数据依赖 | 提供折扣政策信息(编码、名称、有效期、产品线类型) | 价格类型为折扣政策时必选 |
-| 报备项目 | 数据依赖 | 提供项目信息(编码、名称、项目经理、项目进度) | 价格类型非折扣单时必选 |
-| 交易公司 | 数据依赖 | 提供交易公司和开票单位信息 | 选择客户后可选 |
-| 编码规则服务 | 配置依赖 | 生成要货单号(家装规则:AE.EPM_PROJECT_HOME_BILL_HEAD) | 保存时自动生成 |
-| 工作流服务 | 服务依赖 | 驱动审批流程(OA对象类型9020, 单据名称:折扣政策要货) | 提交审批时调用 |
-| CRM服务 | 服务依赖 | 创建CRM订单、更新项目进度和折扣率 | 生成CRM订单时调用 |
-| 产品生命状态服务 | 服务依赖 | 校验产品生命状态(Z8不允许下单,Z6计划淘汰警告等) | 保存/提交时调用 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| CRM系统 | CRM订单创建 | 折扣单/价目表类型直接生成CRM订单；折扣政策类型经OA审批后生成CRM订单 |
-| 项目进度 | 项目进度更新 | 家装要货订单提交后更新报备项目阶段：首次下单→已下首单(stageId=13)，二次下单→持续供货中(stageId=14) |
-| 可下单数量 | 可下单数量占用 | 折扣单类型下订单时扣减可下单数量；但家装+直签+合同限定+折扣单类型时不执行扣减/返还 |
-| 定金库存 | 定金库存占用 | 保存时可查看定金库存信息，预扣定金金额和比例 |
-
-</div>
-</KbCard>
+  <div class="kl-card alt" style="margin-top:32px;">
+    <div class="kl-card-header" style="margin-bottom:0;">
+      <h3 class="kl-card-title">下游影响</h3>
+    </div>
+    <div class="kl-desc">家装要货订单审批通过后会触发以下下游业务动作：</div>
+    <table class="kl-table" style="margin-top:16px;">
+      <thead><tr><th>下游系统/模块</th><th>影响内容</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CRM系统</strong></td><td>CRM订单创建</td><td>折扣单/价目表类型直接生成CRM订单；折扣政策类型经OA审批后生成CRM订单</td></tr>
+        <tr><td><strong>项目进度</strong></td><td>项目进度更新</td><td>家装要货订单提交后更新报备项目阶段：首次下单→已下首单(stageId=13)，二次下单→持续供货中(stageId=14)</td></tr>
+        <tr><td><strong>可下单数量</strong></td><td>可下单数量占用</td><td>折扣单类型下订单时扣减可下单数量；但家装+直签+合同限定+折扣单类型时不执行扣减/返还</td></tr>
+        <tr><td><strong>定金库存</strong></td><td>定金库存占用</td><td>保存时可查看定金库存信息，预扣定金金额和比例</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 </div>
 </div>
