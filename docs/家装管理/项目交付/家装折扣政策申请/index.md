@@ -28,11 +28,9 @@
         <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
         <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
       </defs>
-
       <!-- ========== 上游支撑（正上方横带，6 张子卡片横向平铺） ========== -->
       <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
       <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
-
       <rect x="205" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
       <text x="265" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM产品接口</text>
       <rect x="335" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
@@ -45,27 +43,21 @@
       <text x="785" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集配置</text>
       <rect x="855" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
       <text x="915" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
-
       <!-- 上游→开始：垂直直连 -->
       <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
-
       <!-- 开始 -->
       <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
       <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
       <line x1="235" y1="194" x2="235" y2="219" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
-
       <!-- 核心：新建家装折扣政策申请（创建单内部步骤仅作副标题，不拆节点） -->
       <rect x="125" y="219" width="220" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
       <text x="235" y="243" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">★ 新建家装折扣政策申请 ★</text>
       <text x="235" y="263" text-anchor="middle" fill="#DCFCE7" font-size="10">填写政策头/产品明细/阶梯政策·保存·提交审批</text>
-
       <!-- 核心→审批判断 -->
       <line x1="235" y1="273" x2="235" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
-
       <!-- 判断：审批通过？（工作流→OA审批） -->
       <polygon points="235,300 305,335 235,370 165,335" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
       <text x="235" y="339" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
-
       <!-- T 形分叉：菱形底 → 垂直下 → 水平分叉 → 垂直进入两分支卡片顶部中心 -->
       <line x1="235" y1="370" x2="235" y2="382" stroke="#16A34A" stroke-width="2"/>
       <line x1="235" y1="382" x2="120" y2="382" stroke="#16A34A" stroke-width="2"/>
@@ -74,28 +66,22 @@
       <line x1="120" y1="382" x2="120" y2="396" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
       <!-- 不通过：垂直进入右卡顶部中心（红色） -->
       <line x1="360" y1="382" x2="360" y2="396" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
-
       <!-- 通过分支 → CRM同步·政策生效 -->
       <rect x="20" y="396" width="200" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
       <text x="120" y="423" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">CRM同步·政策生效</text>
-
       <!-- 不通过分支 → 审批拒绝/撤回（退回重编辑） -->
       <rect x="250" y="396" width="220" height="44" rx="6" fill="#FEF2F2" stroke="#EF4444" stroke-width="2"/>
       <text x="360" y="414" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">审批拒绝 / 撤回</text>
       <text x="360" y="430" text-anchor="middle" fill="#DC2626" font-size="10">退回重编辑后重新提交</text>
-
       <!-- 通过 → 结束 -->
       <line x1="120" y1="440" x2="120" y2="470" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
       <rect x="65" y="470" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
       <text x="120" y="495" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
-
       <!-- 结束→下游：垂直直连 -->
       <line x1="120" y1="510" x2="120" y2="550" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
-
       <!-- ========== 下游影响（正下方横带，4 张子卡片横向平铺） ========== -->
       <rect x="50" y="550" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
       <text x="600" y="572" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
-
       <rect x="270" y="586" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
       <text x="345" y="609" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">家装/工程要货订单</text>
       <rect x="440" y="586" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
@@ -104,7 +90,7 @@
       <text x="685" y="609" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">OA系统</text>
       <rect x="780" y="586" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
       <text x="855" y="609" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">折扣政策失效</text>
-    </svg>
+</svg>
   </div>
 
   <div class="bf-fc-legend">
