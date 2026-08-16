@@ -16,56 +16,139 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">家装折扣政策申请 — 全链路流程图</h4>
+  <p class="bf-main-sub">新建申请 → 填写政策头/产品明细/阶梯政策·保存·提交审批 → 工作流OA审批 → 通过(CRM同步·政策生效) / 拒绝·撤回(退回重编辑)</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
 
-```text
-[经销商/业务员发起申请]
-        │
-        ▼
-[家装折扣政策申请-新建] ──→ 填写政策头信息 + 产品明细 + 阶梯政策
-        │
-        ▼
-[保存] ──→ 保存校验(产品行非空/申请类型互斥/封顶数量/新品校验)
-        │
-        ▼
-[提交] ──→ 提交校验(零售折扣底限/产品明细/流程编码) ──→ 启动工作流
-        │
-        ▼
-[工作流审批] ──→ OA推送 ──→ OA审批回调
-        │
-        ├─→ 审批通过 → 状态变为APPROVED → CRM同步
-        ├─→ 审批拒绝 → 状态变为REJECTED
-        └─→ 撤回 → 状态变为WITHDRAW
-```
+      <!-- ========== 上游支撑（正上方横带，6 张子卡片横向平铺） ========== -->
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
 
-</KbCard>
+      <rect x="205" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="265" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM产品接口</text>
+      <rect x="335" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="395" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">EBS物料成本</text>
+      <rect x="465" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="525" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM零售底限</text>
+      <rect x="595" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="655" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部基础设置</text>
+      <rect x="725" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="785" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集配置</text>
+      <rect x="855" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="915" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
 
-<KbCard num="2" title="上游依赖">
+      <!-- 上游→开始：垂直直连 -->
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
 
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| CRM产品接口 | 数据依赖 | 获取产品信息（编码、名称、型号、价格、生命状态等） | 选择产品编码/型号时调用 |
-| EBS物料成本接口 | 数据依赖 | 获取产品实际成本单价、生命状态、库龄、新品标记 | 保存时获取产品扩展数据 |
-| CRM零售折扣底限接口 | 数据依赖 | 获取产品零售折扣底限和底限渠道 | 点击"获取零售折扣底限"按钮时 |
-| 事业部基础设置 | 配置依赖 | 获取出厂折扣率，用于特价反算折扣率和价值链计算 | 保存时必用 |
-| 值集配置 | 配置依赖 | 政策类型、订单类型、业务类型、优惠方式、申请类型等值集 | 页面下拉选项渲染 |
-| 工作流引擎 | 配置依赖 | 流程定义和审批节点配置 | 提交时启动工作流 |
+      <!-- 开始 -->
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="219" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
-</KbCard>
+      <!-- 核心：新建家装折扣政策申请（创建单内部步骤仅作副标题，不拆节点） -->
+      <rect x="125" y="219" width="220" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="243" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">★ 新建家装折扣政策申请 ★</text>
+      <text x="235" y="263" text-anchor="middle" fill="#DCFCE7" font-size="10">填写政策头/产品明细/阶梯政策·保存·提交审批</text>
 
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
+      <!-- 核心→审批判断 -->
+      <line x1="235" y1="273" x2="235" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
 
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 家装/工程要货订单 | 订单匹配折扣政策 | 家装订单/工程订单下单时，根据经销商+订单类型+币种匹配折扣政策，计算订单行折扣率和特价 |
-| CRM系统 | 政策数据同步 | 审批通过后，折扣政策数据同步至CRM系统，CRM用于价格计算和政策管控 |
-| OA系统 | 审批推送与回调 | 提交后推送OA审批，OA审批结果回调更新本系统审批状态 |
-| 折扣政策失效 | 政策引用失效 | 政策到期或手动失效后，关联的"家装折扣政策失效"单据可引用此政策 |
+      <!-- 判断：审批通过？（工作流→OA审批） -->
+      <polygon points="235,300 305,335 235,370 165,335" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="339" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
 
+      <!-- T 形分叉：菱形底 → 垂直下 → 水平分叉 → 垂直进入两分支卡片顶部中心 -->
+      <line x1="235" y1="370" x2="235" y2="382" stroke="#16A34A" stroke-width="2"/>
+      <line x1="235" y1="382" x2="120" y2="382" stroke="#16A34A" stroke-width="2"/>
+      <line x1="235" y1="382" x2="360" y2="382" stroke="#16A34A" stroke-width="2"/>
+      <!-- 通过：垂直进入左卡顶部中心（绿色） -->
+      <line x1="120" y1="382" x2="120" y2="396" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <!-- 不通过：垂直进入右卡顶部中心（红色） -->
+      <line x1="360" y1="382" x2="360" y2="396" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+
+      <!-- 通过分支 → CRM同步·政策生效 -->
+      <rect x="20" y="396" width="200" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="120" y="423" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">CRM同步·政策生效</text>
+
+      <!-- 不通过分支 → 审批拒绝/撤回（退回重编辑） -->
+      <rect x="250" y="396" width="220" height="44" rx="6" fill="#FEF2F2" stroke="#EF4444" stroke-width="2"/>
+      <text x="360" y="414" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">审批拒绝 / 撤回</text>
+      <text x="360" y="430" text-anchor="middle" fill="#DC2626" font-size="10">退回重编辑后重新提交</text>
+
+      <!-- 通过 → 结束 -->
+      <line x1="120" y1="440" x2="120" y2="470" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="65" y="470" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="120" y="495" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+
+      <!-- 结束→下游：垂直直连 -->
+      <line x1="120" y1="510" x2="120" y2="550" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+
+      <!-- ========== 下游影响（正下方横带，4 张子卡片横向平铺） ========== -->
+      <rect x="50" y="550" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="572" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+
+      <rect x="270" y="586" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="345" y="609" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">家装/工程要货订单</text>
+      <rect x="440" y="586" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="515" y="609" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM系统</text>
+      <rect x="610" y="586" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="685" y="609" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">OA系统</text>
+      <rect x="780" y="586" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="855" y="609" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">折扣政策失效</text>
+    </svg>
+  </div>
+
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/撤回</span>
+  </div>
 </div>
-</KbCard>
+
+<div style="padding:24px 10%; margin-top:32px; margin-bottom:32px;">
+  <div class="kl-card">
+    <div class="kl-card-header" style="margin-bottom:0;">
+      <h3 class="kl-card-title">上游依赖</h3>
+    </div>
+    <div class="kl-desc">家装折扣政策申请依赖以下上游模块先完成：</div>
+    <table class="kl-table" style="margin-top:16px;">
+      <thead><tr><th>上游模块</th><th>依赖类型</th><th>依赖说明</th><th>依赖成立条件</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CRM产品接口</strong></td><td><span class="kl-badge">数据依赖</span></td><td>获取产品信息（编码、名称、型号、价格、生命状态等）</td><td>选择产品编码/型号时调用</td></tr>
+        <tr><td><strong>EBS物料成本接口</strong></td><td><span class="kl-badge">数据依赖</span></td><td>获取产品实际成本单价、生命状态、库龄、新品标记</td><td>保存时获取产品扩展数据</td></tr>
+        <tr><td><strong>CRM零售折扣底限接口</strong></td><td><span class="kl-badge">数据依赖</span></td><td>获取产品零售折扣底限和底限渠道</td><td>点击"获取零售折扣底限"按钮时</td></tr>
+        <tr><td><strong>事业部基础设置</strong></td><td><span class="kl-badge">配置依赖</span></td><td>获取出厂折扣率，用于特价反算折扣率和价值链计算</td><td>保存时必用</td></tr>
+        <tr><td><strong>值集配置</strong></td><td><span class="kl-badge">配置依赖</span></td><td>政策类型、订单类型、业务类型、优惠方式、申请类型等值集</td><td>页面下拉选项渲染</td></tr>
+        <tr><td><strong>工作流引擎</strong></td><td><span class="kl-badge">配置依赖</span></td><td>流程定义和审批节点配置</td><td>提交时启动工作流</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kl-card alt" style="margin-top:32px;">
+    <div class="kl-card-header" style="margin-bottom:0;">
+      <h3 class="kl-card-title">下游影响</h3>
+    </div>
+    <div class="kl-desc">家装折扣政策审批通过后会触发以下下游业务动作：</div>
+    <table class="kl-table" style="margin-top:16px;">
+      <thead><tr><th>下游系统/模块</th><th>影响内容</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><strong>家装/工程要货订单</strong></td><td><span class="kl-badge">订单匹配</span></td><td>下单时根据经销商+订单类型+币种匹配折扣政策，计算订单行折扣率和特价</td></tr>
+        <tr><td><strong>CRM系统</strong></td><td><span class="kl-badge">数据同步</span></td><td>审批通过后折扣政策数据同步至CRM系统，用于价格计算和政策管控</td></tr>
+        <tr><td><strong>OA系统</strong></td><td><span class="kl-badge">审批推送</span></td><td>提交后推送OA审批，OA审批结果回调更新本系统审批状态</td></tr>
+        <tr><td><strong>折扣政策失效</strong></td><td><span class="kl-badge">引用失效</span></td><td>政策到期或手动失效后，关联的"家装折扣政策失效"单据可引用此政策</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 </div>
 </div>
