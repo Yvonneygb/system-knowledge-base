@@ -245,8 +245,6 @@ const secondaryNav = {
       icon: 'fa-solid fa-arrow-right-arrow-left',
       items: [
         { label: '家装真实性核销', link: '/家装管理/项目往来/家装真实性核销/', icon: 'fa-solid fa-shield-halved' },
-        { label: '家装要货订单', link: '/家装管理/项目往来/家装要货订单/', icon: 'fa-solid fa-box-shipment' },
-        { label: '家装折扣政策', link: '/家装管理/项目往来/家装折扣政策/', icon: 'fa-solid fa-percent' },
       ]
     },
     {
