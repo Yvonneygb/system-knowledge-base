@@ -25,23 +25,73 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程">
-```
-新建门头报销申请 → 选择经销商/年度/政策 → 填写行表(门店/金额) → 保存 → 提交工作流审批 → 审批通过 → 可发起门头兑现
-                                                                        → 审批驳回 → 修改后重新提交
-```
-</KbCard>
-
-<KbCard num="2" title="流程说明">
-1. **新建门头报销申请**：选择经销商、年度、补贴政策，填写报销类型和支付方式
-2. **行表填写**：录入各门店的门头展板报销金额，区分额度内/额度外
-3. **报销分析**：自动计算各项目的申请金额、业务>8业务批准金额、财务批准金额
-4. **提交审批**：启动工作流`SUB_STORE_HEAD_PROCESS_DOOR`，审批人通过部门E负责人和省级负责人接口获取
-5. **审批通过**：可发起门头兑现
-
-</KbCard>
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">门头展板报销申请单 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建门头报销申请单★ → ⚖审批通过？ → 可发起门头兑现 → 结束（拒绝则修改后重提）</p>
+  <div class="bf-fc-svg-wrap">
+<svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1100 660" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+<marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+<marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+<marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+</defs>
+<rect x="25" y="20" width="1050" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="550" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+<rect x="159" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="234" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商主档</text>
+<rect x="317" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="392" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">补贴政策</text>
+<rect x="475" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="550" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">门店主档</text>
+<rect x="633" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="708" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+<rect x="791" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="866" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则服务</text>
+<line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+<rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+<line x1="235" y1="194" x2="235" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="148" y="210" width="174" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+<text x="235" y="232" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建门头报销申请单★</text>
+<text x="235" y="252" text-anchor="middle" fill="#DCFCE7" font-size="10">选经销商/年度/政策·录门店金额·保存</text>
+<line x1="235" y1="264" x2="235" y2="290" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<polygon points="235,290 305,320 235,350 165,320" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="235" y="324" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+<line x1="305" y1="320" x2="410" y2="320" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+<rect x="410" y="306" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+<text x="450" y="325" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+<line x1="450" y1="306" x2="450" y2="237" stroke="#EF4444" stroke-width="1.5"/>
+<line x1="450" y1="237" x2="322" y2="237" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+<line x1="235" y1="350" x2="235" y2="366" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="150" y="366" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+<text x="235" y="391" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">审批通过生效</text>
+<line x1="235" y1="406" x2="235" y2="422" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="150" y="422" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+<text x="235" y="447" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">可发起门头兑现</text>
+<line x1="235" y1="462" x2="235" y2="478" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="180" y="478" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="235" y="503" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+<line x1="235" y1="518" x2="235" y2="540" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+<rect x="25" y="540" width="1050" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="550" y="562" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+<rect x="238" y="576" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="313" y="601" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">门头兑现</text>
+<rect x="396" y="576" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="471" y="601" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">报销分析统计</text>
+<rect x="554" y="576" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="629" y="601" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">验收人员保证书</text>
+<rect x="712" y="576" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="787" y="601" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">额度已申请统计</text>
+</svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

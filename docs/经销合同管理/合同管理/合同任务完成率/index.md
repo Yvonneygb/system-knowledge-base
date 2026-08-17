@@ -16,37 +16,50 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-经销合同详情页 → 内嵌"合同任务完成率"Tab → 查询合同任务拆分数据
-                                                    ↓
-                              展示1月~12月各月新开发网点任务数
-                                                    ↓
-                              校验: sum(月度明细) = 新开发网点个数
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 经销合同(SA_SALE_CONTRACT_HEAD) | 数据依赖 | 合同头ID作为查询条件，获取任务拆分数据 | 内嵌于合同详情页 |
-| 新开发网点个数 | 数据依赖 | 校验月度明细之和是否等于新开发网点个数 | 保存合同时校验 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 经销合同保存校验 | 经销合同保存校验 | 经销合同保存时，若新开发网点任务不为空，校验月度明细之和必须等于新开发网点个数，否则阻断保存 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">合同任务完成率 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★查询合同任务完成率★ → 结束（展示1-12月网点任务，随经销合同保存校验联动）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 660" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="280" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="380" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销合同(合同头)</text>
+      <rect x="500" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">月度拆分数据表</text>
+      <rect x="720" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="820" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(事业部)</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="290" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="420" y="290" width="360" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="315" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★查询合同任务完成率★</text>
+      <text x="600" y="335" text-anchor="middle" fill="#DCFCE7" font-size="10">展示1-12月网点任务·校验明细和=新开发网点个数</text>
+      <line x1="600" y1="344" x2="600" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="555" y="460" width="90" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="485" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="500" x2="600" y2="540" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="540" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="562" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="250" y="586" width="320" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="410" y="609" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">经销合同保存校验</text>
+      <rect x="630" y="586" width="320" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="790" y="609" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">月度任务一致性校验</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+  </div>
 </div>
 </div>
 </div>

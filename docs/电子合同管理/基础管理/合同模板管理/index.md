@@ -16,54 +16,68 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```
-[品牌方管理员] --> [新增合同模板] --> [填写模板基本信息]
-                                        |
-                                        v
-                                [配置合同条款]
-                                        |
-                                        v
-                                [配置签署流程]
-                                        |
-                                        v
-                                [保存为草稿/启用模板]
-                                        |
-                              +---------+---------+
-                              v                   v
-                        [启用模板]          [禁用模板]
-                              |                   |
-                              v                   v
-                    [可供合同签署使用]    [不可用于新建合同]
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 依赖来源 | 依赖内容 | 说明 |
-|---------|---------|------|
-| 值集管理 | MBO.CONTRACT_TEMPLATE | 合同模板类型值集 |
-| 值集管理 | MBO.CONTRACT_TEMPLATE_STATUS | 合同模板状态值集 |
-| 值集管理 | MBO.CONTRACT_SUB_TEMPLATE | 合同子模板类型值集 |
-| 组织架构 | 品牌/公司信息 | 模板归属品牌方 |
-| 用户权限 | 品牌方管理员角色 | 仅品牌方有配置权限 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 合同签署 | 模板被引用创建合同 | 启用状态的模板可被合同签署流程引用 |
-| 合同条款 | 条款内容被带入合同 | 模板中配置的条款自动带入新合同 |
-| 签署流程 | 签署节点被带入合同 | 模板中配置的签署流程自动带入新合同 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">合同模板管理 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新增/配置合同模板★ → ⚖是否启用？ → 启用(可签署)/禁用(草稿) → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="193" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="268" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(模板类型)</text>
+      <rect x="359" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="434" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(模板状态)</text>
+      <rect x="525" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(子模板)</text>
+      <rect x="691" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="766" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">组织架构(品牌)</text>
+      <rect x="857" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="932" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">用户权限(管理员)</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="290" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="290" width="280" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="315" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新增/配置合同模板★</text>
+      <text x="600" y="335" text-anchor="middle" fill="#DCFCE7" font-size="10">填基本信息·配条款·配签署流程·保存草稿</text>
+      <line x1="600" y1="344" x2="600" y2="372" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,372 670,410 600,448 530,410" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="414" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 是否启用？</text>
+      <line x1="600" y1="448" x2="600" y2="470" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="510" y="470" width="180" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="497" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">启用(可签署)</text>
+      <line x1="670" y1="410" x2="750" y2="410" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arr-gray)"/>
+      <rect x="750" y="392" width="150" height="40" rx="6" fill="#FFFFFF" stroke="#9CA3AF" stroke-width="1.5"/>
+      <text x="825" y="417" text-anchor="middle" fill="#4B5563" font-size="12" font-weight="600">禁用(草稿)</text>
+      <line x1="825" y1="432" x2="825" y2="580" stroke="#9CA3AF" stroke-width="1.5"/>
+      <line x1="825" y1="580" x2="645" y2="580" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+      <line x1="600" y1="514" x2="600" y2="560" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="555" y="560" width="90" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="585" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="600" x2="600" y2="660" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="660" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="682" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="355" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="430" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">合同签署(引用模板)</text>
+      <rect x="525" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">合同条款(带入)</text>
+      <rect x="695" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="770" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">签署流程(带入)</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#9CA3AF;"></span> 禁用分支</span>
+  </div>
 </div>
 </div>
 </div>

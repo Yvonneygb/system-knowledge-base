@@ -16,70 +16,55 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```
-用户进入报表页面
-        │
-        ▼
-设置查询条件（合同年度/经销商/事业部/审批状态等）
-        │
-        ▼
-点击查询 ──→ POST /v1/{orgId}/contractReport/sa-sale-contract-head/search
-        │              │
-        │              ▼
-        │         ae-report服务
-        │              │
-        │              ▼
-        │         SaSaleContractHeadService.saSaleContractHeadSearch()
-        │              │
-        │              ▼
-        │         SaSaleContractHeadRepository → SaSaleContractHeadMapper.saSaleContractHeadSearch()
-        │              │
-        │              ▼
-        │         SQL查询（JOIN区域表+事业部+用户+LISTAGG排除区域）
-        │              │
-        │              ▼
-        │         返回Page<SaSaleContractHeadSearchVO>
-        │
-        ▼
-展示报表数据（含区域层级+排除区域）
-        │
-        ▼
-点击导出 ──→ GET /v1/{orgId}/contractReport/sa-sale-contract-head/export
-        │              │
-        │              ▼
-        │         查询数据 → MapStruct转换 → @ProcessLovValue翻译值集 → Excel导出
-        │
-        ▼
-导出完成
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游服务/模块 | 依赖说明 | 接口/方式 |
-|---|---|---|
-| SA_SALE_CONTRACT_HEAD | 经销合同主数据，报表查询的数据源 | 直接读表 |
-| SA_SALE_CONTRACT_AREA | 经销合同区域信息，提供国/省/市/区县/乡镇五级区域 | LEFT JOIN |
-| EXCLUDE_AREA_REL | 排除区域关系，LISTAGG拼接不包含地区说明 | LEFT JOIN |
-| DIVISION_BASE_SET | 事业部基础设置，翻译事业部名称 | 子查询 |
-| hzero.iam_user | 用户信息表，翻译更新人姓名 | LEFT JOIN |
-| EPMS.SCPDICT | 数据字典，翻译销售合同类型名称 | LEFT JOIN |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 无 | 影响说明 | 纯查询报表，无下游写入影响 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">经销合同销售区域报表 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★经销合同销售区域报表★(查询/导出) → 结束（纯查询报表·无下游写入）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="112" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="187" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">合同主数据</text>
+      <rect x="277" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="352" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">合同区域表</text>
+      <rect x="442" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="517" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">排除区域表</text>
+      <rect x="607" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="682" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部设置</text>
+      <rect x="772" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="847" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">平台用户表</text>
+      <rect x="937" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="1012" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">数据字典</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="430" y="230" width="340" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★经销合同销售区域报表★</text>
+      <text x="600" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">多条件筛选/五级区域展示/排除区域/导出Excel</text>
+      <line x1="600" y1="284" x2="600" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="545" y="400" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="425" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="440" x2="600" y2="460" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="460" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="482" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="500" y="498" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="521" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">无下游写入影响</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑系统</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

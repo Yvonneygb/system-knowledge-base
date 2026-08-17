@@ -16,42 +16,67 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-新建补贴申请 → 选择资金池来源类型/来源单据 → 录入明细行(经销商/交易公司/法人/申请金额) → 保存
-  → 提交审批 → 工作流审批(SA_POLICY_SPECIAL_MCS_AW) → OA送签
-  → OA审批通过 → 更新审批金额 → 工作流完成(APPROVED)
-  → 审批拒绝 → 工作流完成(REJECTED)
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 客户主档 | 数据依赖 | 选择经销商客户，带出客户编码、名称、事业部 | 客户已创建且有效 |
-| 交易公司 | 数据依赖 | 选择交易法人公司 | 交易公司已配置 |
-| 法人主档 | 数据依赖 | 选择法人实体 | 法人已配置 |
-| 编码规则 | 配置依赖 | 生成补贴单号，编码规则AE.POLICY_SPECIAL_HEADER_NO | 编码规则已配置 |
-| 工作流引擎 | 配置依赖 | 提交审批，流程编码SA_POLICY_SPECIAL_MCS_AW | 工作流已部署 |
-| OA审批系统 | 配置依赖 | 推送OA待办审批 | OA单据映射已配置 |
-| EBS系统 | 数据依赖 | 查询资金池余额(getCapitalPoolQuery) | EBS接口可用 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 资金池 | 资金池余额扣减 | 审批通过后，根据审批金额扣减对应资金池余额 |
-| 来源单据 | 来源单据关联 | 通过sourceBillId和sourceBillType关联来源单据(如报销单/兑现单) |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">政策性补贴申请 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建政策性补贴申请★ → ⚖审批通过？(工作流SA_POLICY_SPECIAL_MCS_AW + OA送签) → 结束（拒绝则工作流REJECTED）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1100 590" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="20" y="20" width="1060" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="100" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="160" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户主档</text>
+      <rect x="230" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="290" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司</text>
+      <rect x="360" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="420" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">法人主档</text>
+      <rect x="490" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="550" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="620" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="680" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="750" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="810" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA审批系统</text>
+      <rect x="880" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="940" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">EBS系统</text>
+      <line x1="550" y1="115" x2="550" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="500" y="150" width="100" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="550" y1="194" x2="550" y2="214" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="214" width="180" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="550" y="238" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建政策性补贴申请★</text>
+      <text x="550" y="256" text-anchor="middle" fill="#DCFCE7" font-size="10">选资金池来源/来源单据·录入明细·保存</text>
+      <line x1="550" y1="268" x2="550" y2="292" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="550,292 622,327 550,362 478,327" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="331" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="622" y1="327" x2="712" y2="327" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="667" y="312" width="90" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="712" y="331" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="712" y1="312" x2="712" y2="241" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="712" y1="241" x2="640" y2="241" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="550" y1="362" x2="550" y2="386" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="495" y="386" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="411" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="550" y1="426" x2="550" y2="470" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="20" y="470" width="1060" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="492" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="390" y="508" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="465" y="531" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">资金池</text>
+      <rect x="560" y="508" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="635" y="531" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">来源单据</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

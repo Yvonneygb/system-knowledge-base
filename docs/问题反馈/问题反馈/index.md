@@ -16,22 +16,65 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程">
-
-```
-经销商新建反馈单 → 编辑反馈内容 → 提交反馈 → [品牌方回复] → 查看回复与评价 → 取消/删除
-```
-
-1. 经销商在列表页点击"新建"，进入反馈表单页
-2. 填写反馈类型、反馈内容、联系人等信息，可暂存（保存）或直接提交
-3. 提交后反馈单状态变更为"已提交"，等待品牌方回复
-4. 经销商可在详情页查看品牌方的回复记录和评价信息
-5. 已提交但未回复的反馈单可取消；草稿状态的反馈单可删除
-
----
-
-</KbCard>
+<div class="bf-truth-flow">
+<h4 class="bf-main-title">【问题反馈】 — 全链路流程图</h4>
+<p class="bf-main-sub">开始 → 新建反馈单 → ★提交反馈★ → ⚖品牌方是否已回复？ → 查看回复与评价 → 结束（未回复可取消）</p>
+<div class="bf-fc-svg-wrap">
+<svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+<marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+<marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+<marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+</defs>
+<rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+<rect x="410" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="470" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商主档</text>
+<rect x="540" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">反馈类型值集</text>
+<rect x="670" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="730" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部</text>
+<line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+<rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+<line x1="600" y1="194" x2="600" y2="222" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="520" y="222" width="160" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+<text x="600" y="249" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">新建反馈单</text>
+<line x1="600" y1="266" x2="600" y2="294" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="515" y="294" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+<text x="600" y="318" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★提交反馈★</text>
+<text x="600" y="338" text-anchor="middle" fill="#DCFCE7" font-size="10">填类型/内容/联系人·提交</text>
+<line x1="600" y1="348" x2="600" y2="376" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<polygon points="600,376 670,406 600,436 530,406" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="410" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 是否已回复？</text>
+<line x1="670" y1="406" x2="780" y2="406" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+<rect x="735" y="391" width="90" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+<text x="780" y="410" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">取消 ✗</text>
+<line x1="780" y1="391" x2="780" y2="330" stroke="#EF4444" stroke-width="1.5"/>
+<line x1="780" y1="330" x2="515" y2="330" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+<line x1="600" y1="436" x2="600" y2="464" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="520" y="464" width="160" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+<text x="600" y="491" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">查看回复与评价</text>
+<line x1="600" y1="508" x2="600" y2="536" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="545" y="536" width="110" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="563" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+<line x1="600" y1="580" x2="600" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+<rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+<rect x="440" y="634" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="515" y="657" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">问题回复(事业部端)</text>
+<rect x="610" y="634" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="685" y="657" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">经销商评价展示</text>
+</svg>
+</div>
+<div class="bf-fc-legend">
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+<span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 取消/驳回</span>
+</div>
 </div>
 </div>
 </div>

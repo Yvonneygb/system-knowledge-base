@@ -16,43 +16,64 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-年度营销政策配置 → 保存(新增/修改) → 生效 → 失效
-                         ↓
-               校验行数据(执行类型/执行值)
-                         ↓
-               按执行类型处理子表:
-               - 违约金: 保存适用合同类型
-               - 次年折扣/返点: 保存适用合同类型 + 阶梯区间
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 事业部基础配置 | 配置依赖 | 获取事业部名称，用于详情展示 | 查询详情时 |
-| 值集AE.EXECUTE_TYPE | 配置依赖 | 执行类型下拉选项(违约金/次年折扣/返点) | 新增/修改行数据时 |
-| 值集AE.CALCULATION_METHOD | 配置依赖 | 计算方式下拉选项(正价/非正价) | 执行类型为返点时 |
-| 值集AE.EXECUTE_VAL_TYPE | 配置依赖 | 执行值类型下拉选项(比例/金额) | 执行类型为违约金时 |
-| 值集AE.SALES_CONTRACT_TYPE | 配置依赖 | 合同类型下拉选项 | 配置适用合同类型时 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 经销合同关年度营销政策 | 经销合同关年度营销政策 | 经销合同保存时，通过policyRelevanceContract方法匹配年度营销政策，将返点/违约金/次年折扣的政策行ID写入合同头表 |
-| 年度营销政策重算 | 年度营销政策重算 | 年度营销政策执行计算时，引用政策头配置的执行类型、阶梯区间、合同类型等参数 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">年度营销政策 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★配置年度营销政策★ → ⚖生效操作？ → 生效(互斥旧政策)/失效 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="270" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="345" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部基础配置</text>
+      <rect x="440" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="515" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(执行类型)</text>
+      <rect x="610" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="685" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(计算方式)</text>
+      <rect x="780" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="855" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(合同类型)</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="290" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="290" width="280" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="315" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★配置年度营销政策★</text>
+      <text x="600" y="335" text-anchor="middle" fill="#DCFCE7" font-size="10">填事业部/年度·配执行类型行(违约金/折扣/返点)·保存</text>
+      <line x1="600" y1="344" x2="600" y2="372" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,372 670,410 600,448 530,410" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="414" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 生效操作？</text>
+      <line x1="600" y1="448" x2="600" y2="470" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="510" y="470" width="180" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="497" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">生效(互斥旧政策)</text>
+      <line x1="670" y1="410" x2="750" y2="410" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arr-gray)"/>
+      <rect x="750" y="392" width="150" height="40" rx="6" fill="#FFFFFF" stroke="#9CA3AF" stroke-width="1.5"/>
+      <text x="825" y="417" text-anchor="middle" fill="#4B5563" font-size="12" font-weight="600">失效(终态)</text>
+      <line x1="825" y1="432" x2="825" y2="580" stroke="#9CA3AF" stroke-width="1.5"/>
+      <line x1="825" y1="580" x2="645" y2="580" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+      <line x1="600" y1="514" x2="600" y2="560" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="555" y="560" width="90" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="585" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="600" x2="600" y2="660" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="660" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="682" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="250" y="712" width="320" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="410" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">经销合同关年度营销政策</text>
+      <rect x="630" y="712" width="320" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="790" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">年度营销政策重算</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#9CA3AF;"></span> 失效分支</span>
+  </div>
 </div>
 </div>
 </div>

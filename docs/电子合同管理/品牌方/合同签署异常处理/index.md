@@ -16,56 +16,70 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```
-[合同签署异常] --> [品牌方查看异常列表] --> [选择异常合同]
-                                            |
-                    +-------+-------+-------+-------+-------+
-                    |       |       |       |       |       |
-                    v       v       v       v       v       v
-               [拒签处理] [OA驳回  [用印异常 [推送门户 [OA作废  [其他异常
-                        处理]   处理]   处理]   驳回处理] 处理]
-                    |       |       |       |       |       |
-                    v       v       v       v       v       v
-               [状态流转] [状态流转] [状态流转] [状态流转] [状态流转] [状态流转]
-                    |       |       |       |       |       |
-                    +-------+-------+-------+-------+-------+
-                                            |
-                                            v
-                                    [异常处理完成]
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 依赖来源 | 依赖内容 | 说明 |
-|---------|---------|------|
-| 合同签署流程 | 异常状态合同 | 签署过程中产生异常状态的合同流入本页面 |
-| 值集管理 | MBO.CONTRACT_TYPE | 合同类型值集 |
-| 值集管理 | MBO.CONTRACT_STATUS | 合同状态值集 |
-| 值集管理 | MBO.CONTRACT_SUB_TEMPLATE | 合同子模板类型值集 |
-| 值集管理 | MBO.CONTRACT_SUB_TYPE | 合同子类型值集 |
-| OA系统 | OA审批结果回调 | OA驳回/通过结果回传 |
-| 用印系统 | 用印结果回调 | 用印成功/异常结果回传 |
-| 合同模板 | 模板配置信息 | 合同关联的模板信息 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 经销商合同管理 | 合同状态变更 | 异常处理后的状态变更同步至经销商端 |
-| OA系统 | 推送OA审批 | 部分异常处理后需重新推送OA |
-| 用印系统 | 重新发起用印 | 用印异常处理后可重新发起用印 |
-| 门户系统 | 合同推送门户 | 合同完成后推送至门户供查看 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">合同签署异常处理 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★合同签署异常处理★ → ⚖是否可恢复？ → 状态流转恢复/终止合同 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="193" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="268" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">合同签署流程</text>
+      <rect x="359" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="434" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(合同类型/状态)</text>
+      <rect x="525" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA系统</text>
+      <rect x="691" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="766" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">用印系统</text>
+      <rect x="857" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="932" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">合同模板</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="290" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="290" width="280" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="315" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★合同签署异常处理★</text>
+      <text x="600" y="335" text-anchor="middle" fill="#DCFCE7" font-size="10">查看异常列表·选异常合同·按类型处理</text>
+      <line x1="600" y1="344" x2="600" y2="372" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,372 670,410 600,448 530,410" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="414" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 是否可恢复？</text>
+      <line x1="600" y1="448" x2="600" y2="470" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="510" y="470" width="180" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="497" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">状态流转恢复</text>
+      <line x1="670" y1="410" x2="750" y2="410" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arr-gray)"/>
+      <rect x="750" y="392" width="150" height="40" rx="6" fill="#FFFFFF" stroke="#9CA3AF" stroke-width="1.5"/>
+      <text x="825" y="417" text-anchor="middle" fill="#4B5563" font-size="12" font-weight="600">终止合同</text>
+      <line x1="825" y1="432" x2="825" y2="580" stroke="#9CA3AF" stroke-width="1.5"/>
+      <line x1="825" y1="580" x2="645" y2="580" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+      <line x1="600" y1="514" x2="600" y2="560" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="555" y="560" width="90" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="585" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="600" x2="600" y2="660" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="660" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="682" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="270" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="345" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">经销商合同管理</text>
+      <rect x="440" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="515" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">OA系统(重推)</text>
+      <rect x="610" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="685" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">用印系统(重用印)</text>
+      <rect x="780" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="855" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">门户系统(推送)</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#9CA3AF;"></span> 终止/异常分支</span>
+  </div>
 </div>
 </div>
 </div>

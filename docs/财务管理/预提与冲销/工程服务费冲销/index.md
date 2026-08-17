@@ -16,61 +16,73 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-工程服务费预提数据 ──定时任务(ExpenseWriteoffInQuotaJob)──> 冲销数据自动生成
-                                                        │
-                                                        ├── 按年月+交易公司+法人+事业部维度汇总
-                                                        ├── 区分工程/家装(isHome): 工程前缀GCCX, 家装前缀JZCX
-                                                        ├── 冲销头单号=前缀+交易公司编码+年月(去横线)
-                                                        ├── 含税金额=未兑现总额, 不含税=含税/税率
-                                                        ├── 初始单据状态=制单(1)
-                                                        │
-                                                        ▼
-                                                  列表查询/详情查看
-                                                        │
-                                                        ▼
-                                                  推送FSSC ──doserviceWithHolding──> 共享财务系统处理
-                                                        │                                    │
-                                                        ▼                                    ▼
-                                                  校验冲销单号必填                   共享返回成功(S)/失败
-                                                  查询头数据和行明细
-                                                  金额取负数(冲销)
-                                                  构建借贷模式行数据
-                                                        │                                    │
-                                                        ▼                                    ▼
-                                                  更新billStatus=3(审批中)          报错展示共享错误信息
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 工程服务费预提数据 | 数据依赖 | 定时任务基于预提数据自动生成冲销数据，冲销金额=未兑现服务费总额 | 预提数据已生成且审批通过 |
-| 事业部基础设置(DIVISION_BASE_SET) | 配置依赖 | 获取事业部编码和名称，用于生成冲销单号 | 事业部已配置 |
-| 冲销税率(EPM_INLIMIT_TAX_RATE) | 配置依赖 | 计算不含税金额=含税金额/税率 | 税率已配置 |
-| 成本中心(SCPCOSTCENTER) | 配置依赖 | 推送共享时按事业部+渠道(4)查询成本中心编码 | 成本中心已配置 |
-| 共享接口(FsccSdkService.postToSie) | 配置依赖 | 推送FSSC时调用共享财务接口 | 共享接口可用 |
-| 编码规则(AE.WRITE_OFF_NO) | 配置依赖 | 生成冲销单号writeoffNo | 编码规则已配置 |
-| 工作流(FIN_SVC_EXP_ACC) | 配置依赖 | 冲销单提交审批使用工作流FIN_SVC_EXP_ACC | 工作流已部署 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 财务共享(FSCC) | 预算释放 | 推送FSSC时金额取负数(冲销)，释放预提时占用的预算 |
-| 服务费冲销 | 冲销单状态流转 | 推送成功后billStatus更新为3(审批中) |
-| 服务费冲销 | 定时任务重算 | ExpenseWriteoffInQuotaJob定时任务按时间段自动生成冲销数据，制单状态(1)的记录可被更新 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程服务费冲销 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 工程服务费预提数据 → ★生成工程服务费冲销单★(定时任务) → ⚖审批通过？(工作流FIN_SVC_EXP_ACC) → 推送FSSC → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1100 700" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="20" y="20" width="1060" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="100" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="160" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工程服务费预提数据</text>
+      <rect x="230" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="290" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部基础设置</text>
+      <rect x="360" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="420" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">冲销税率</text>
+      <rect x="490" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="550" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">成本中心</text>
+      <rect x="620" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="680" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">共享接口</text>
+      <rect x="750" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="810" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="880" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="940" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流</text>
+      <line x1="550" y1="115" x2="550" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="500" y="150" width="100" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="550" y1="194" x2="550" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="430" y="210" width="240" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="550" y="235" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">工程服务费预提数据</text>
+      <line x1="550" y1="250" x2="550" y2="268" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="440" y="268" width="220" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="550" y="292" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★生成工程服务费冲销单★</text>
+      <text x="550" y="310" text-anchor="middle" fill="#DCFCE7" font-size="10">定时任务ExpenseWriteoffInQuotaJob汇总</text>
+      <line x1="550" y1="322" x2="550" y2="340" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="550,340 622,378 550,416 478,378" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="382" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="622" y1="378" x2="712" y2="378" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="667" y="363" width="90" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="712" y="382" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="712" y1="363" x2="712" y2="295" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="712" y1="295" x2="640" y2="295" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="550" y1="416" x2="550" y2="432" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="432" width="180" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="550" y="457" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送FSSC</text>
+      <line x1="550" y1="472" x2="550" y2="500" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="495" y="500" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="525" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="550" y1="540" x2="550" y2="584" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="20" y="584" width="1060" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="606" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="390" y="622" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="465" y="645" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">财务共享(FSCC)</text>
+      <rect x="560" y="622" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="635" y="645" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">服务费冲销</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

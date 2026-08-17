@@ -16,40 +16,53 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-EBS共享系统(认款数据) ──同步──> 合同保证金(查询页面)
-                                    │
-                                    ├── 撤销认款 ──> 更新认缴记录状态 ──> 更新合同认缴状态 ──> 推送CRM
-                                    │
-                                    └── 认缴申请 ──> 跳转至【认缴申请】页面
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| EBS共享系统 | 数据依赖 | 同步EBS认款数据（收款编号、认款金额、法人编码等） | EBS存在认款记录 |
-| 保证金标准设定 | 配置依赖 | 确定各合同类型的保证金标准金额 | 已配置保证金标准 |
-| 年度经销合同 | 数据依赖 | 合同认缴状态更新依赖合同数据 | 合同已生效 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 撤销认款后更新合同认缴状态 | 撤销认款后更新合同认缴状态 | 撤销认款后，将对应合同的"是否缴清"标识更新为N，并推送缴清状态至CRM |
-| 撤销认款后更新认缴概况 | 撤销认款后更新认缴概况 | 撤销认款后，将认缴概况表中对应记录的"是否缴清"标识更新为N |
-| 认缴申请跳转 | 认缴申请跳转 | 点击认缴申请按钮，携带当前认款记录信息跳转至【认缴申请】页面 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">合同保证金 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★合同保证金管理★(查询/撤销认款/认缴申请) → 结束（撤销更新合同与认缴概况·推送CRM；认缴申请跳转）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="270" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="370" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">EBS共享系统</text>
+      <rect x="500" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">保证金标准设定</text>
+      <rect x="730" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="830" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">年度经销合同</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="430" y="230" width="340" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★合同保证金管理★</text>
+      <text x="600" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">查询认款记录/撤销认款/认缴申请跳转</text>
+      <line x1="600" y1="284" x2="600" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="545" y="400" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="425" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="440" x2="600" y2="460" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="460" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="482" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="270" y="498" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="370" y="521" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">更新合同认缴状态</text>
+      <rect x="500" y="498" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="521" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">更新认缴概况</text>
+      <rect x="730" y="498" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="830" y="521" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">跳转认缴申请</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑系统</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

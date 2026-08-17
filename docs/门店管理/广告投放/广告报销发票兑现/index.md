@@ -16,46 +16,71 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-广告投放申请(审批通过) → 广告费报销(审批通过) → 广告报销发票兑现(提交审批)
-    ↓                                          ↓
-额度内兑现: 回写申请单/验收单/报销单交易公司    额度外兑现: 同步额度外预算已使用金额
-    ↓                                          ↓
-审批通过 → wfComplete回调                      审批通过 → 调用ERP资金池调整接口
-    ↓
-支付方式=费用转到款时: 设置总账日期/发票到款信息
-    ↓
-推送MBO系统
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 广告费报销单(FIN_FEE_BX_HEADER) | 数据依赖 | 发票兑现基于已审批通过的报销单创建，继承报销单的交易公司、经销商等信息 | 报销单审批通过（HZ_APPROVE_STATUS=APPROVED） |
-| 广告投放申请单(FIN_FEE_APPLY_HEADER) | 数据依赖 | 额度内兑现完成后回写申请单的可交易公司信息 | 兑现类型=额度内且审批通过 |
-| 额度外预算模块(MKT_OUTLIMIT_BUD_HEADER) | 数据依赖 | 额度外兑现时更新已使用金额到预算导入 | 兑现类型=额度外且saveType=1 |
-| ERP资金池接口 | 配置依赖 | 审批通过后调用ERP资金池调整接口同步兑现数据 | 审批通过 |
-| MBO系统 | 配置依赖 | 审批通过后推送兑现数据到MBO | 审批通过 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 额度外预算数据更新 | 额度外预算数据更新 | 额度外兑现审批通过后，更新MKT_OUTLIMIT_BUD_HEADER中对应月份的已使用金额，并重新计算剩余金额 |
-| 申请单/验收单/报销单交易公司回写 | 申请单/验收单/报销单交易公司回写 | 额度内兑现审批通过后，回写广告投放申请单、验收单、报销单的交易公司信息 |
-| ERP系统 | ERP侧资金池调整 | 审批通过后调用ERP资金池调整接口，将兑现金额同步到ERP系统 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">广告报销发票兑现 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 广告费报销(已通过) → ★新建广告报销发票兑现★ → ⚖审批通过？ → 推送ERP资金池/推送MBO → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1100 675" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="20" y="20" width="1060" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="230" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="290" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">广告费报销单</text>
+      <rect x="360" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="420" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">广告投放申请单</text>
+      <rect x="490" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="550" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">额度外预算模块</text>
+      <rect x="620" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="680" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">ERP资金池接口</text>
+      <rect x="750" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="810" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">MBO系统</text>
+      <line x1="550" y1="115" x2="550" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="500" y="150" width="100" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="550" y1="194" x2="550" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="420" y="210" width="260" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="550" y="235" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">广告费报销(已审批通过)</text>
+      <line x1="550" y1="250" x2="550" y2="268" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="430" y="268" width="240" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="550" y="292" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建广告报销发票兑现★</text>
+      <text x="550" y="310" text-anchor="middle" fill="#DCFCE7" font-size="10">录入兑现金额·提交审批</text>
+      <line x1="550" y1="322" x2="550" y2="340" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="550,340 622,378 550,416 478,378" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="382" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="622" y1="378" x2="712" y2="378" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="667" y="363" width="90" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="712" y="382" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="712" y1="363" x2="712" y2="295" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="712" y1="295" x2="640" y2="295" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="550" y1="416" x2="550" y2="432" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="430" y="432" width="240" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="550" y="457" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送ERP资金池/推送MBO</text>
+      <line x1="550" y1="472" x2="550" y2="500" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="495" y="500" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="525" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="550" y1="540" x2="550" y2="560" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="20" y="560" width="1060" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="582" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="305" y="598" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="380" y="621" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">额度外预算数据更新</text>
+      <rect x="475" y="598" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="550" y="621" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">交易公司回写</text>
+      <rect x="645" y="598" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="720" y="621" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">ERP系统</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

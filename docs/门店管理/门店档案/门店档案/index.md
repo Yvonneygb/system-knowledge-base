@@ -16,46 +16,55 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```
-[前端storeChange页面] --> [查询门店档案列表] --> [展示门店基础信息]
-                              |
-                              v
-                        [维护门店档案] --> [保存其他情况说明/面积变动说明] --> [MKT_TERMINAL更新]
-                              |
-                              v
-                        [门店装修申请LOV] --> [finFeeApplyLov接口]
-                              |
-                              v
-                        [门头展板报销LOV] --> [custDhReimburseHead接口]
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游来源 | 说明 | 关联方式 |
-|---------|------|---------|
-| 新建门店申请审批通过 | 审批通过后自动创建门店档案 | MktTerminalApplyServiceImpl.onWfComplete → insertSelective |
-| 门店变更申请审批通过 | 审批通过后更新门店档案 | MktTerminalModifyServiceImpl.onWfComplete → updateByPrimaryKeySelective |
-| 门店档案导入 | 批量导入门店基础数据 | importFlag标识 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 门店变更申请 | 变更申请需选择已有门店 | terminalId |
-| 门店装修申请与进度 | 装修申请需关联门店 | terminalId |
-| 门店验收与报销 | 报销申请需关联门店 | terminalId |
-| 门头展板报销申请 | 报销需查询门店信息 | terminalId |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">门店档案 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★门店档案维护★ → 结束（上游由新建/变更申请审批通过及导入生成，下游供变更/装修/报销等模块引用）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="210" y="56" width="240" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="330" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">新建门店申请(审批通过)</text>
+      <rect x="480" y="56" width="240" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">门店变更申请(审批通过)</text>
+      <rect x="750" y="56" width="240" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="870" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">门店档案导入</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="545" y="150" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="175" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="190" x2="600" y2="220" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="470" y="220" width="260" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="244" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★门店档案维护★</text>
+      <text x="600" y="263" text-anchor="middle" fill="#DCFCE7" font-size="10">查询·维护说明/面积变动</text>
+      <line x1="600" y1="274" x2="600" y2="304" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="545" y="304" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="329" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="344" x2="600" y2="384" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="384" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="406" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="280" y="422" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="380" y="445" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">门店变更申请</text>
+      <rect x="500" y="422" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="445" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">门店装修申请与进度</text>
+      <rect x="720" y="422" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="820" y="445" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">门店验收与报销</text>
+      <rect x="940" y="422" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="1040" y="445" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">门头展板报销申请</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

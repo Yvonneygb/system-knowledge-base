@@ -16,42 +16,77 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-签收返利明细 → 按事业部+法人+经销商+交易主体汇总 → 生成兑现汇总单
-  → 推送ERP(EBS synAdjustCashPoolToEbs) → 更新推送状态(SUCCESS/FAIL)
-  
-服务费兑现流程(并行)：
-创建兑现单 → 提交工作流(EXPENSE_TO_CASH) → 审批通过 → 推送FSSC(财务共享)
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 销售价格行(SA_SALEPRICE_LINE) | 数据依赖 | 返点数据来源，含月/季/年返点率 | 价格行已生效且有返点 |
-| 返利明细 | 数据依赖 | 签收后的返利明细作为兑现数据来源 | 返利明细已签收(signFlag=Y)且未兑现(redemptionFlag=N) |
-| 工作流引擎 | 配置依赖 | 服务费兑现审批，流程编码EXPENSE_TO_CASH(按区域分D/N/X/B) | 工作流已部署 |
-| ERP系统(EBS) | 数据依赖 | 推送兑现数据到ERP(synAdjustCashPoolToEbs) | EBS接口可用 |
-| FSSC系统 | 数据依赖 | �6审6批通过后推送财务共享 | FSSC接口可用 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 返利明细 | 兑现标识更新 | 生成兑现汇总单后，返点记录的redemptionFlag更新为Y(已兑现)，关联cashDetailsId |
-| ERP系统 | ERP侧资金池调整 | 推送EBS后，ERP侧执行资金池调整(sourceType="真实性核销返利") |
-| 兑现汇总单 | 推送状态更新 | ERP推送成功后pushStatus=SUCCESS，失败则=FAIL |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">销售提价兑现 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 签收返利明细 → ★生成兑现汇总单★ → ⚖审批通过？ → 推送ERP(EBS)（并行：服务费兑现推送FSSC）→ 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1100 700" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="20" y="20" width="1060" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="230" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="290" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">销售价格行</text>
+      <rect x="360" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="420" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">返利明细</text>
+      <rect x="490" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="550" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="620" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="680" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">ERP系统(EBS)</text>
+      <rect x="750" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="810" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">FSSC系统</text>
+      <line x1="550" y1="115" x2="550" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="500" y="150" width="100" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="550" y1="194" x2="550" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="430" y="210" width="240" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="550" y="235" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">签收返利明细</text>
+      <line x1="550" y1="250" x2="550" y2="268" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="440" y="268" width="220" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="550" y="292" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★生成兑现汇总单★</text>
+      <text x="550" y="310" text-anchor="middle" fill="#DCFCE7" font-size="10">按事业部+法人+经销商汇总</text>
+      <line x1="660" y1="295" x2="770" y2="295" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="690" y="275" width="180" height="40" rx="5" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+      <text x="780" y="300" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">推送FSSC·服务费兑现</text>
+      <text x="780" y="314" text-anchor="middle" fill="#166534" font-size="9">并行·工作流EXPENSE_TO_CASH</text>
+      <line x1="780" y1="315" x2="780" y2="520" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="780" y1="520" x2="605" y2="520" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <line x1="550" y1="322" x2="550" y2="340" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="550,340 622,378 550,416 478,378" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="382" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="622" y1="378" x2="712" y2="378" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="667" y="363" width="90" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="712" y="382" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="712" y1="363" x2="712" y2="295" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="712" y1="295" x2="640" y2="295" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="550" y1="416" x2="550" y2="432" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="432" width="180" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="550" y="457" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送ERP(EBS)</text>
+      <line x1="550" y1="472" x2="550" y2="500" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="495" y="500" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="525" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="550" y1="540" x2="550" y2="584" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="20" y="584" width="1060" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="606" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="305" y="622" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="380" y="645" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">返利明细</text>
+      <rect x="475" y="622" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="550" y="645" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">ERP系统</text>
+      <rect x="645" y="622" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="720" y="645" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">兑现汇总单</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

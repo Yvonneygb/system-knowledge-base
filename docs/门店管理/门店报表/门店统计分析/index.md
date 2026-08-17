@@ -16,42 +16,55 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```
-用户进入报表页面(hlod低代码)
-  │
-  ├─ 输入查询条件（事业部/销售区域/运营中心/省份/城市/经销商编码）
-  │
-  ├─ 点击查询 → POST /v1/{organizationId}/terminalReport/mkt-terminal-distribution/search
-  │
-  ├─ 查看按经销商维度汇总的门店综合统计
-  │
-  └─ 可导出 → GET /v1/{organizationId}/terminalReport/mkt-terminal-distribution/export
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游数据源 | 说明 | 关联方式 |
-|-----------|------|---------|
-| MKT_TERMINAL | 门店档案 | 各维度COUNT子查询统计 |
-| CUSTOMER | 客户/经销商 | 主查询驱动表 |
-| CUSTOMER_ORG | 客户组织关系 | 经销商的事业部/省市区/销售区域/运营中心 |
-| DIVISION_BASE_SET | 事业部基础设置 | 事业部名称翻译 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">门店统计分析 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★门店统计分析★ → 结束（上游取门店/经销商/组织数据，下游支撑经销商结构与经营决策；支持导出Excel）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="170" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="270" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">门店档案</text>
+      <rect x="390" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="490" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户/经销商</text>
+      <rect x="610" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="710" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户组织关系</text>
+      <rect x="830" y="56" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="930" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部基础设置</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="545" y="150" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="175" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="190" x2="600" y2="220" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="470" y="220" width="260" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="244" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★门店统计分析★</text>
+      <text x="600" y="263" text-anchor="middle" fill="#DCFCE7" font-size="10">选条件·查询·多维汇总·导出Excel</text>
+      <line x1="600" y1="274" x2="600" y2="304" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="545" y="304" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="329" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="344" x2="600" y2="384" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="384" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="406" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="280" y="422" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="380" y="445" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">经销商结构分析</text>
+      <rect x="500" y="422" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="445" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">门店布局参考</text>
+      <rect x="720" y="422" width="200" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="820" y="445" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">经营决策支撑</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

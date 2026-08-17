@@ -16,54 +16,69 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-用户选择原合同 ──> 新建变更(校验原合同状态) ──> 填写变更信息 ──> 保存(状态:新建)
-                                                              │
-                                                  ┌───────────┴───────────┐
-                                                  │                       │
-                                            保存并提交                继续编辑
-                                                  │                       │
-                                          启动工作流(CONTRACT_JXHTBG_AW_XS)  │
-                                                  │                       │
-                                          状态:已提交/审批中            │
-                                                  │                       │
-                                          ┌───────┴───────┐             │
-                                          │               │             │
-                                      审批通过          审批驳回         │
-                                          │               │             │
-                                  生成新合同            状态回退          │
-                                          │                               │
-                                  推送CRM/OA                              │
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 年度经销合同 | 数据依赖 | 变更的原合同数据 | 原合同已生效且未被归档 |
-| 经销商主数据 | 数据依赖 | 经销商信息 | 经销商已存在 |
-| 销售区域 | 配置依赖 | 合同授权区域 | 区域数据已维护 |
-| 工作流引擎 | 配置依赖 | 审批流程CONTRACT_JXHTBG_AW_XS | 工作流已部署 |
-| CRM系统 | 数据依赖 | 推送变更信息至CRM | CRM接口可用 |
-| OA系统 | 数据依赖 | 推送变更审批至OA | OA接口可用 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 审批通过后生成新合同 | 审批通过后生成新合同 | 变更审批通过后，基于原合同和变更内容生成新的年度经销合同 |
-| 推送CRM和OA | 推送CRM和OA | 变更审批通过后，将变更信息推送至CRM系统和OA系统 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">经销合同变更 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★经销合同变更★ → ⚖审批通过？ → 生成新合同(推送CRM/OA) → 结束（驳回则回退修改）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 640" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="112" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="187" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">年度经销合同</text>
+      <rect x="277" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="352" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商主数据</text>
+      <rect x="442" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="517" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">销售区域</text>
+      <rect x="607" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="682" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="772" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="847" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM系统</text>
+      <rect x="937" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="1012" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA系统</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="230" width="280" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★经销合同变更★</text>
+      <text x="600" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">选原合同/填变更信息/区域校验</text>
+      <line x1="600" y1="284" x2="600" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,300 680,340 600,380 520,340" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="344" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="680" y1="340" x2="755" y2="340" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="755" y="325" width="90" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="800" y="344" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">驳回 ✗</text>
+      <line x1="800" y1="325" x2="800" y2="200" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="800" y1="200" x2="700" y2="200" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="700" y1="200" x2="700" y2="257" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="600" y1="380" x2="600" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="490" y="400" width="220" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="425" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">生成新合同</text>
+      <line x1="600" y1="440" x2="600" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="545" y="460" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="485" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="500" x2="600" y2="520" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="520" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="542" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="335" y="558" width="250" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="460" y="581" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">生成新年度合同</text>
+      <rect x="615" y="558" width="250" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="740" y="581" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">推送CRM与OA</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑系统</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

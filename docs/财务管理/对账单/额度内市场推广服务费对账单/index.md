@@ -16,36 +16,55 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-用户选择查询条件(事业部/交易公司/法人/年月) → 查询BUD_INLIMIT_BALANCE_ACCOUNT头表 + BUD_INLIMIT_ACCOUNT_LINE行表 → 展示对账单列表
-  → 可选：重新生成对账单数据(regenerate) → 按条件重新计算并生成对账单
-  → 可选：更新推送状态(updateStatus) → 批量更新推送状态
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 广告费余额 | 数据依赖 | 对账单数据基于MKT_INLIMIT_BALANCE_HEADER广告费余额数据计算 | 广告费余额数据已同步 |
-| 营销中台 | 数据依赖 | 额度内兑现、出库单计提等数据来源于营销中台 | 营销中台数据同步正常 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 对账单推送 | 推送对账单 | 推送状态(sendStatus)更新后，可能触发对账单推送到外部系统 |
-| 对账单重生成 | 重新生成对账单 | regenerate操作会重新计算并覆盖已有对账单数据 |
-
+<div class="bf-truth-flow">
+<h4 class="bf-main-title">【额度内市场推广服务费对账单】 — 全链路流程图</h4>
+<p class="bf-main-sub">开始 → 选择查询条件 → ★额度内市场推广服务费对账单★ → 展示对账单列表 → 结束（可重生成/更新推送状态）</p>
+<div class="bf-fc-svg-wrap">
+<svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 660" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+<marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+<marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+<marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+</defs>
+<rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+<rect x="430" y="56" width="160" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="510" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">广告费余额</text>
+<rect x="610" y="56" width="160" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="690" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">营销中台</text>
+<line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+<rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+<line x1="600" y1="194" x2="600" y2="226" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="515" y="226" width="170" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+<text x="600" y="253" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">选择查询条件</text>
+<line x1="600" y1="270" x2="600" y2="302" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="460" y="302" width="280" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+<text x="600" y="327" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★额度内市场推广服务费对账单★</text>
+<text x="600" y="346" text-anchor="middle" fill="#DCFCE7" font-size="10">查BUD_INLIMIT_BALANCE_ACCOUNT</text>
+<line x1="600" y1="356" x2="600" y2="388" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="510" y="388" width="180" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+<text x="600" y="413" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">展示对账单列表</text>
+<line x1="600" y1="428" x2="600" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="545" y="460" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="485" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+<line x1="600" y1="500" x2="600" y2="532" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+<rect x="50" y="532" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="554" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+<rect x="360" y="568" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="460" y="590" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">对账单推送(外部系统)</text>
+<rect x="590" y="568" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="690" y="590" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">对账单重生成</text>
+</svg>
 </div>
-</KbCard>
+<div class="bf-fc-legend">
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+<span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+</div>
 </div>
 </div>
 </div>

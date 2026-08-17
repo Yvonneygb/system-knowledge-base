@@ -16,293 +16,62 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
-
-
-
-
-`
-`
-`
-
-
-讲
-师
-排
-期
-查
-询
- 
-→
- 
-查
-看
-讲
-师
-可
-用
-时
-间
-段
- 
-→
- 
-添
-加
-排
-期
-（
-占
-用
-讲
-师
-时
-间
-）
- 
-→
- 
-供
-点
-将
-时
-选
-择
-讲
-师
-
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-↓
-
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-取
-消
-排
-期
-（
-释
-放
-讲
-师
-时
-间
-）
-
-
-`
-`
-`
-
-
-
-
-1
-.
- 
-用
-户
-在
-讲
-师
-排
-期
-页
-面
-查
-询
-讲
-师
-的
-时
-间
-排
-期
-情
-况
-
-
-2
-.
- 
-为
-讲
-师
-添
-加
-排
-期
-，
-占
-用
-讲
-师
-特
-定
-时
-间
-段
-
-
-3
-.
- 
-排
-期
-信
-息
-供
-点
-将
-业
-务
-查
-询
-讲
-师
-可
-用
-时
-间
-时
-使
-用
-
-
-4
-.
- 
-如
-需
-释
-放
-讲
-师
-时
-间
-，
-可
-取
-消
-排
-期
-
-
-
-
--
--
--
-
-
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">讲师排期 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 查询讲师排期 → ★排期维护★ → 讲师时间占用/释放 → 供点将查询可用时间 → 结束（上游：讲师档案/点将业务）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="116" y="56" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="231" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">讲师档案</text>
+      <rect x="362" y="56" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="477" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">单店点将</text>
+      <rect x="608" y="56" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="723" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">特训营点将</text>
+      <rect x="854" y="56" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="969" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">活动点将</text>
+      <line x1="560" y1="115" x2="560" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="515" y="150" width="90" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="560" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="560" y1="194" x2="560" y2="228" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="228" width="200" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="560" y="255" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">查询讲师排期</text>
+      <line x1="560" y1="272" x2="560" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="450" y="300" width="220" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="560" y="325" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★讲师排期维护★</text>
+      <text x="560" y="345" text-anchor="middle" fill="#DCFCE7" font-size="10">添加(冲突校验)·取消释放</text>
+      <line x1="560" y1="354" x2="560" y2="386" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="475" y="386" width="170" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="560" y="413" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">讲师时间占用/释放</text>
+      <line x1="560" y1="430" x2="560" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="465" y="460" width="190" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="560" y="487" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">供点将查询可用时间</text>
+      <line x1="560" y1="504" x2="560" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="515" y="540" width="90" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="560" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="560" y1="580" x2="560" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="280" y="638" width="300" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="430" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">点将业务(讲师选择)</text>
+      <rect x="620" y="638" width="300" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="770" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">讲师饱和度统计</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#16A34A;"></span> 下游影响/数据展示</span>
+  </div>
 </div>
 </div>
 </div>

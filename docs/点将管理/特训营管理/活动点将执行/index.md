@@ -16,435 +16,66 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
-
-
-
-
-`
-`
-`
-
-
-活
-动
-点
-将
-申
-请
-审
-批
-通
-过
- 
-→
- 
-执
-行
-跟
-踪
-(
-查
-看
-进
-度
-/
-完
-成
-情
-况
-)
- 
-→
- 
-执
-行
-完
-成
-
-
-`
-`
-`
-
-
-
-
-<
-d
-i
-v
- 
-c
-l
-a
-s
-s
-=
-"
-k
-b
--
-f
-i
-e
-l
-d
--
-s
-c
-r
-o
-l
-l
-"
->
-<
-t
-a
-b
-l
-e
- 
-c
-l
-a
-s
-s
-=
-"
-k
-b
--
-f
-i
-e
-l
-d
--
-t
-b
-l
-"
->
-<
-t
-b
-o
-d
-y
->
-
-
-<
-t
-r
->
-
-
-<
-t
-h
->
-操
-作
-<
-/
-t
-h
->
-
-
-<
-t
-h
->
-说
-明
-<
-/
-t
-h
->
-
-
-<
-t
-h
->
-前
-置
-条
-件
-<
-/
-t
-h
->
-
-
-<
-/
-t
-r
->
-
-
-<
-t
-r
->
-
-
-<
-t
-d
->
-查
-看
-执
-行
-列
-表
-<
-/
-t
-d
->
-
-
-<
-t
-d
->
-查
-看
-已
-审
-批
-通
-过
-的
-活
-动
-点
-将
-申
-请
-执
-行
-情
-况
-<
-/
-t
-d
->
-
-
-<
-t
-d
->
-活
-动
-点
-将
-申
-请
-已
-审
-批
-通
-过
-<
-/
-t
-d
->
-
-
-<
-/
-t
-r
->
-
-
-<
-t
-r
->
-
-
-<
-t
-d
->
-查
-看
-执
-行
-详
-情
-<
-/
-t
-d
->
-
-
-<
-t
-d
->
-查
-看
-单
-条
-活
-动
-点
-将
-申
-请
-的
-执
-行
-进
-度
-明
-细
-<
-/
-t
-d
->
-
-
-<
-t
-d
->
-无
-<
-/
-t
-d
->
-
-
-<
-/
-t
-r
->
-
-
-<
-t
-r
->
-
-
-<
-t
-d
->
-跟
-踪
-执
-行
-进
-度
-<
-/
-t
-d
->
-
-
-<
-t
-d
->
-实
-时
-查
-看
-执
-行
-完
-成
-率
-、
-关
-键
-节
-点
-状
-态
-<
-/
-t
-d
->
-
-
-<
-t
-d
->
-无
-<
-/
-t
-d
->
-
-
-<
-/
-t
-r
->
-
-
-<
-/
-t
-b
-o
-d
-y
->
-<
-/
-t
-a
-b
-l
-e
->
-<
-/
-d
-i
-v
->
-
-
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">活动点将执行 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 查看已生效活动点将 → ★执行跟踪★ → 执行完成·更新状态 → 回写执行记录 → 结束（上游：活动点将管理审批生效）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="122" y="56" width="180" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="212" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">活动点将管理</text>
+      <rect x="316" y="56" width="180" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="406" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">策划师主档</text>
+      <rect x="510" y="56" width="180" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">讲师档案</text>
+      <rect x="704" y="56" width="180" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="794" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商主档</text>
+      <rect x="898" y="56" width="180" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="988" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">门店主档</text>
+      <line x1="560" y1="115" x2="560" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="515" y="150" width="90" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="560" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="560" y1="194" x2="560" y2="228" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="465" y="228" width="190" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="560" y="255" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">查看已生效活动点将</text>
+      <line x1="560" y1="272" x2="560" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="450" y="300" width="220" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="560" y="325" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★活动点将执行跟踪★</text>
+      <text x="560" y="345" text-anchor="middle" fill="#DCFCE7" font-size="10">进度/完成情况跟踪</text>
+      <line x1="560" y1="354" x2="560" y2="386" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="465" y="386" width="190" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="560" y="413" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">执行完成·更新状态</text>
+      <line x1="560" y1="430" x2="560" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="465" y="460" width="190" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="560" y="487" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">回写活动执行记录</text>
+      <line x1="560" y1="504" x2="560" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="515" y="540" width="90" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="560" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="560" y1="580" x2="560" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="150" y="638" width="280" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="290" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">活动执行记录</text>
+      <rect x="460" y="638" width="280" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">讲师排期(占用)</text>
+      <rect x="770" y="638" width="280" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="910" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM订单状态</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#16A34A;"></span> 下游影响/数据展示</span>
+  </div>
 </div>
 </div>
 </div>

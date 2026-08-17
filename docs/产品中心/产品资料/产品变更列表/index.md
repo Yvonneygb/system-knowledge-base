@@ -16,38 +16,54 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```
-产品信息发生变更 → 系统记录变更记录 → 用户进入变更列表页 → 查询变更记录 → 查看变更详情
-```
-
-</KbCard>
-
-<KbCard num="2" title="1.2 核心业务场景">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>场景</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>变更列表查询</td>
-<td>按产品/变更类型/时间等条件查询变更记录</td>
-</tr>
-<tr>
-<td>变更详情查看</td>
-<td>查看某次变更的详细信息，含变更前后对比</td>
-</tr>
-<tr>
-<td>变更类型</td>
-<td>价格变更、状态变更、属性变更等</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
+<div class="bf-truth-flow">
+<h4 class="bf-main-title">产品变更列表 — 全链路流程图</h4>
+<p class="bf-main-sub">开始 → ★产品变更记录(系统自动生成)★ → 查看变更详情(前后对比) → 结束（只读追溯，无审批）</p>
+<div class="bf-fc-svg-wrap">
+<svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+<marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+<marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+<marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+</defs>
+<rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+<rect x="386" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="435" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">产品主档</text>
+<rect x="496" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="545" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">SM状态变更</text>
+<rect x="606" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="655" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">图片属性变更</text>
+<rect x="716" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="765" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+<line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+<rect x="545" y="150" width="110" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+<line x1="600" y1="194" x2="600" y2="220" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="500" y="220" width="200" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+<text x="600" y="244" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★产品变更记录★</text>
+<text x="600" y="263" text-anchor="middle" fill="#DCFCE7" font-size="10">系统自动生成·查询列表·查看前后对比</text>
+<line x1="600" y1="274" x2="600" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="545" y="300" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="325" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+<line x1="600" y1="340" x2="600" y2="380" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+<rect x="50" y="380" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="402" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+<rect x="355" y="418" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="430" y="441" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">审计追溯</text>
+<rect x="525" y="418" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="600" y="441" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">推广等级评估</text>
+<rect x="695" y="418" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="770" y="441" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM/订单</text>
+</svg>
+</div>
+<div class="bf-fc-legend">
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑/触发源</span>
+</div>
 </div>
 </div>
 </div>

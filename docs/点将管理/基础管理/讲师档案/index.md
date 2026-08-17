@@ -16,383 +16,69 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
-
-
-
-
-`
-`
-`
-
-
-讲
-师
-档
-案
-创
-建
- 
-→
- 
-填
-写
-个
-人
-档
-案
-/
-讲
-师
-档
-案
- 
-→
- 
-提
-交
-审
-批
- 
-→
- 
-审
-批
-通
-过
- 
-→
- 
-档
-案
-生
-效
-
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-↓
-
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-审
-批
-拒
-绝
- 
-→
- 
-修
-改
-后
-重
-新
-提
-交
-
-
-`
-`
-`
-
-
-
-
-1
-.
- 
-用
-户
-在
-讲
-师
-档
-案
-列
-表
-页
-新
-建
-讲
-师
-档
-案
-
-
-2
-.
- 
-进
-入
-详
-情
-页
-，
-在
-"
-个
-人
-档
-案
-"
-和
-"
-讲
-师
-档
-案
-"
-两
-个
-T
-a
-b
-页
-签
-下
-分
-别
-维
-护
-信
-息
-
-
-3
-.
- 
-个
-人
-档
-案
-T
-a
-b
-：
-管
-理
-讲
-师
-基
-本
-个
-人
-信
-息
-（
-姓
-名
-、
-联
-系
-方
-式
-、
-所
-属
-组
-织
-等
-）
-
-
-4
-.
- 
-讲
-师
-档
-案
-T
-a
-b
-：
-管
-理
-讲
-师
-资
-质
-信
-息
-（
-讲
-师
-类
-型
-、
-等
-级
-、
-价
-格
-等
-）
-
-
-5
-.
- 
-填
-写
-完
-成
-后
-，
-提
-交
-审
-批
-，
-审
-批
-流
-转
-至
-档
-案
-审
-批
-菜
-单
-处
-理
-
-
-6
-.
- 
-审
-批
-通
-过
-后
-档
-案
-状
-态
-更
-新
-为
-生
-效
-；
-审
-批
-拒
-绝
-可
-修
-改
-后
-重
-新
-提
-交
-
-
-
-
--
--
--
-
-
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">讲师档案 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★讲师档案创建★ → 提交审批 → ⚖审批通过？ → 档案生效 → 结束（拒绝退回修改重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="116" y="56" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="231" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">组织主档</text>
+      <rect x="362" y="56" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="477" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(类型·等级)</text>
+      <rect x="608" y="56" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="723" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">讲师价格体系</text>
+      <rect x="854" y="56" width="230" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="969" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流(审批)</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="228" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="135" y="228" width="200" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="252" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★讲师档案创建★</text>
+      <text x="235" y="270" text-anchor="middle" fill="#DCFCE7" font-size="10">个人/讲师档案双Tab</text>
+      <line x1="235" y1="282" x2="235" y2="308" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="308" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="333" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">提交审批</text>
+      <line x1="235" y1="348" x2="235" y2="368" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,368 305,408 235,448 165,408" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="412" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="305" y1="408" x2="388" y2="408" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="388" y="394" width="84" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="430" y="413" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="394" x2="430" y2="254" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="254" x2="335" y2="254" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="448" x2="235" y2="468" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="468" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="493" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">档案生效</text>
+      <line x1="235" y1="508" x2="235" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="540" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="580" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="150" y="638" width="280" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="290" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">档案审批(待审)</text>
+      <rect x="460" y="638" width="280" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">讲师排期(可选)</text>
+      <rect x="770" y="638" width="280" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="910" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">点将业务(选用讲师)</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

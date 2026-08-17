@@ -16,39 +16,58 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-开始 → 新增额度外限额 → 填写经销商+门店+额度信息 → 保存 → 完成
-                  │
-                  └→ 批量导入 → 保存 → 完成
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 依赖模块 | 依赖说明 |
-|---------|---------|
-| 事业部 | 新增时需选择事业部，决定数据归属范围 |
-| 经销主档 | 选择经销商，带出经销商编码、名称、简称 |
-| 门店主档 | 选择门店，带出门店编码、名称、地址、面积 |
-| 交易公司 | 选择交易公司，带出编码和名称 |
-| 开票单元 | 选择开票单元，带出编码和名称 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 门店验收报销 | 影响说明 | 验收报销时查询经销商的额度外限额，判断是否超额及处理策略 |
-| 额度外预算调整 | 影响说明 | 额度外限额调整单引用当前限额数据进行调整 |
-
+<div class="bf-truth-flow">
+<h4 class="bf-main-title">【经销商额度外限额】 — 全链路流程图</h4>
+<p class="bf-main-sub">开始 → ★维护额度外限额★ → 保存生效 → 结束（下游验收报销据此判断超额）</p>
+<div class="bf-fc-svg-wrap">
+<svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+<marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+<marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+<marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+</defs>
+<rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+<rect x="280" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="340" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部</text>
+<rect x="410" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="470" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销主档</text>
+<rect x="540" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">门店主档</text>
+<rect x="670" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="730" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司</text>
+<rect x="800" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="860" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">开票单元</text>
+<line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+<rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+<line x1="600" y1="194" x2="600" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="515" y="210" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+<text x="600" y="234" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★维护额度外限额★</text>
+<text x="600" y="254" text-anchor="middle" fill="#DCFCE7" font-size="10">选经销商/门店·录入限额·保存</text>
+<line x1="600" y1="264" x2="600" y2="292" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="520" y="292" width="160" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+<text x="600" y="319" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">保存生效</text>
+<line x1="600" y1="336" x2="600" y2="364" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="545" y="364" width="110" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="391" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+<line x1="600" y1="408" x2="600" y2="428" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+<rect x="50" y="428" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="450" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+<rect x="440" y="462" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="515" y="485" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">门店验收报销</text>
+<rect x="610" y="462" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="685" y="485" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">额度外预算调整</text>
+</svg>
 </div>
-</KbCard>
+<div class="bf-fc-legend">
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+<span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+</div>
 </div>
 </div>
 </div>

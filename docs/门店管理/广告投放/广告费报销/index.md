@@ -16,46 +16,75 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-广告投放申请(审批通过) → 广告费报销(新建/提交审批)
-    ↓
-提交前校验: 检查同一申请单是否已有在途报销单
-    ↓
-提交审批 → 推送OA审批(额度内/额度外区分)
-    ↓
-OA审批回调 → 同意: 更新报销单数据+设置回调来源=OA_PASS
-           → 不同意: 设置回调来源=OA_REJECT
-    ↓
-审批通过后 → 可创建发票兑现单
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 广告投放申请单(FIN_FEE_APPLY_HEADER) | 数据依赖 | 报销单基于已审批通过的投放申请单创建，继承申请单的经销商、门店、广告信息等 | 申请单审批通过（HZ_APPROVE_STATUS=APPROVED） |
-| OA审批系统 | 配置依赖 | 报销单提交后推送OA审批，OA回调更新报销数据 | 提交审批时 |
-| 额度内可用资源额度 | 数据依赖 | 额度内报销时校验本次报销金额不超过可用资源额度 | 报销类型=额度内 |
-| 供应商主数据 | 配置依赖 | OA回调时根据供应商编码匹配供应商ID | OA审批同意且回传供应商信息时 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 发票兑现单创建 | 发票兑现单创建 | 报销单审批通过后，可基于该报销单创建发票兑现单（FIN_FEE_CASHOUT_HEADER） |
-| 额度外超预算扣减 | 额度外超预算扣减 | 额度外报销审批通过后，扣减BUD_OVER_BUDGET中对应费用类型的税总额 |
-| OA审批流程 | OA审批流程 | 提交后推送OA审批，OA审批结果回调更新报销单数据 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">广告费报销 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 广告投放申请单(审批通过) → ★广告费报销单★ → ⚖OA审批通过？ → 发票兑现单 → 结束（不同意则驳回修改后重新提交）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 725" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="275" y="56" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="325" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">广告投放申请单</text>
+      <rect x="385" y="56" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="435" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA审批系统</text>
+      <rect x="495" y="56" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="545" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">可用资源额度</text>
+      <rect x="605" y="56" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="655" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">供应商主数据</text>
+      <rect x="715" y="56" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="765" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则服务</text>
+      <rect x="825" y="56" width="100" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="875" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <line x1="300" y1="115" x2="300" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="260" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="300" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="300" y1="194" x2="300" y2="220" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="170" y="220" width="260" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="300" y="247" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">广告投放申请单(审批通过)</text>
+      <line x1="300" y1="264" x2="300" y2="290" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="110" y="290" width="380" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="300" y="314" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★ 广告费报销单 ★</text>
+      <text x="300" y="332" text-anchor="middle" fill="#DCFCE7" font-size="10">选申请单·报销类型(额度内/额度外)·填报销金额·提交前校验·推送OA</text>
+      <line x1="300" y1="344" x2="300" y2="364" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="300,364 380,404 300,444 220,404" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="300" y="408" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ OA审批通过？</text>
+      <line x1="380" y1="404" x2="550" y2="404" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="500" y="390" width="100" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="550" y="409" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">驳回 ✗</text>
+      <line x1="550" y1="390" x2="550" y2="317" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="550" y1="317" x2="490" y2="317" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="300" y1="444" x2="300" y2="470" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="470" width="240" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="300" y="497" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">发票兑现单</text>
+      <line x1="300" y1="514" x2="300" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="245" y="540" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="300" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="300" y1="580" x2="300" y2="610" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="610" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="632" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="290" y="646" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="360" y="670" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">发票兑现单·创建</text>
+      <rect x="450" y="646" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="520" y="670" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">超预算·税总额扣减</text>
+      <rect x="610" y="646" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="680" y="670" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">OA回调·数据更新</text>
+      <rect x="770" y="646" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="840" y="670" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">报销单·状态流转</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

@@ -16,37 +16,57 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-用户选择查询条件(事业部/交易公司/法人/年月/经销商) → 查询待兑现折扣折让对账单数据 → 展示对账单列表
-  → 可选：查看对账单详情 → 展示对账单明细信息
-  → 可选：打印对账单 → 生成对账单打印报表
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 折扣折让政策 | 数据依赖 | 对账单数据基于已审批的折扣折让政策兑现数据 | 折扣折让政策已审批生效 |
-| 经销商主数据 | 数据依赖 | 经销维度的对账单关联经销商基础信息 | 经销商主数据已维护 |
-| CRM基础数据 | 配置依赖 | 法人、交易公司、事业部等基础数据来源于CRM模块 | CRM基础数据已配置 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 对账单查询 | 查询对账单数据 | 待兑现折扣折让对账单为纯查询报表，不产生下游数据变更 |
-| 对账单打印 | 打印对账单 | 打印操作仅生成报表，不影响业务数据 |
-
+<div class="bf-truth-flow">
+<h4 class="bf-main-title">【待兑现折扣折让对账单】 — 全链路流程图</h4>
+<p class="bf-main-sub">开始 → 选择查询条件 → ★待兑现折扣折让对账单★ → 展示对账单列表 → 结束（可查看详情/打印）</p>
+<div class="bf-fc-svg-wrap">
+<svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 660" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+<marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+<marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+<marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+</defs>
+<rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+<rect x="370" y="56" width="140" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="440" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">折扣折让政策</text>
+<rect x="530" y="56" width="140" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商主数据</text>
+<rect x="690" y="56" width="140" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+<text x="760" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM基础数据</text>
+<line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+<rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+<line x1="600" y1="194" x2="600" y2="226" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="515" y="226" width="170" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+<text x="600" y="253" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">选择查询条件</text>
+<line x1="600" y1="270" x2="600" y2="302" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="460" y="302" width="280" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+<text x="600" y="327" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★待兑现折扣折让对账单★</text>
+<text x="600" y="346" text-anchor="middle" fill="#DCFCE7" font-size="10">选事业部/经销商·查对账单</text>
+<line x1="600" y1="356" x2="600" y2="388" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="510" y="388" width="180" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+<text x="600" y="413" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">展示对账单列表</text>
+<line x1="600" y1="428" x2="600" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+<rect x="545" y="460" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="485" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+<line x1="600" y1="500" x2="600" y2="532" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+<rect x="50" y="532" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="600" y="554" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+<rect x="360" y="568" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="460" y="590" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">对账单查询(纯查询)</text>
+<rect x="590" y="568" width="200" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+<text x="690" y="590" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">对账单打印(报表)</text>
+</svg>
 </div>
-</KbCard>
+<div class="bf-fc-legend">
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+<span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+<span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+</div>
 </div>
 </div>
 </div>

@@ -16,48 +16,69 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-广告投放申请(新建/提交审批)
-    ↓
-提交前校验: 申请总金额必须大于0
-    ↓
-提交审批 → 推送OA审批(额度内/额度外区分)
-    ↓
-额度外申请: 推送OA前扣减超预算税总额
-    ↓
-OA审批回调 → 同意: 更新申请单数据+计算占比+设置回调来源=OA_PASS
-           → 不同意: 恢复超预算税总额+设置回调来源=OA_REJECT
-    ↓
-审批通过 → 可创建广告费报销单
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| OA审批系统 | 配置依赖 | 申请单提交后推送OA审批，OA回调更新申请数据 | 提交审批时 |
-| 额度内可用资源额度(ERP接口) | 数据依赖 | 额度内申请时从ERP接口获取可用资源额度 | 查询可用金额时 |
-| 额度外超预算模块(BUD_OVER_BUDGET) | 数据依赖 | 额度外申请推送OA前扣减超预算税总额，OA驳回时恢复 | 报销类型=额度外 |
-| 供应商主数据 | 配置依赖 | 存储广告公司/供应商信息 | 新建时 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 广告费报销单创建 | 广告费报销单创建 | 申请单审批通过后，可基于该申请单创建广告费报销单（FIN_FEE_BX_HEADER） |
-| 额度外超预算占用 | 额度外超预算占用 | 额度外申请推送OA审批后，扣减BUD_OVER_BUDGET中对应费用类型(66014602)的税总额 |
-| OA审批流程 | OA审批流程 | 提交后推送OA审批，OA审批结果回调更新申请单数据 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">广告投放申请 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建广告投放申请★ → 提交前校验(金额&gt;0) → 推送OA审批 → ⚖审批通过？ → 结束（通过可创建报销单）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1100 675" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="20" y="20" width="1060" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="295" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="355" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA审批系统</text>
+      <rect x="425" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="485" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">额度内可用额度(ERP)</text>
+      <rect x="555" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="615" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">额度外超预算模块</text>
+      <rect x="685" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="745" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">供应商主数据</text>
+      <line x1="550" y1="115" x2="550" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="500" y="150" width="100" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="550" y1="194" x2="550" y2="214" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="214" width="180" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="550" y="238" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建广告投放申请★</text>
+      <text x="550" y="256" text-anchor="middle" fill="#DCFCE7" font-size="10">新建/提交·录入申请信息</text>
+      <line x1="550" y1="268" x2="550" y2="286" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="410" y="286" width="280" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="550" y="311" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">提交前校验(申请总额&gt;0)</text>
+      <line x1="550" y1="326" x2="550" y2="344" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="450" y="344" width="200" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="550" y="369" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送OA审批</text>
+      <line x1="550" y1="384" x2="550" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="550,400 622,435 550,470 478,435" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="439" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="622" y1="435" x2="712" y2="435" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="667" y="420" width="90" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="712" y="439" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="712" y1="420" x2="712" y2="241" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="712" y1="241" x2="640" y2="241" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="550" y1="470" x2="550" y2="488" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="495" y="488" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="550" y="513" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="550" y1="528" x2="550" y2="560" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="20" y="560" width="1060" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="550" y="582" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="305" y="598" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="380" y="621" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">广告费报销单创建</text>
+      <rect x="475" y="598" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="550" y="621" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">额度外超预算占用</text>
+      <rect x="645" y="598" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="720" y="621" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">OA审批流程</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

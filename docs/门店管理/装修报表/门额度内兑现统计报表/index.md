@@ -16,45 +16,86 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-额度内兑现数据(FIN_FEE_CASHOUT_HEADER, cashoutType=1)
-  │
-  ├─────────────────────────────────────────┐
-  │                                         │
-额度内兑现批量复核数据(FIN_FEE_IN_CASH_HEAD) │
-  │                                         │
-  ▼                                         ▼
-门额度内兑现统计报表（hlod低代码报表页面）
-  │
-  ├─ 按条件筛选查询（门店编码/名称/经销商/日期范围/审批状态等）
-  ├─ 列表展示额度内兑现及批量复核汇总信息
-  └─ 可导出报表数据
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 门店装修额度内兑现 | 数据依赖 | 额度内兑现数据来源于兑现头表(cashoutType=1) | 额度内兑现单已创建 |
-| 额度内兑现批量复核 | 数据依赖 | 批量复核数据来源于复核头表 | 批量复核单已创建 |
-| 门店验收与报销单 | 数据依赖 | 兑现单关联验收报销单信息 | 验收报销单已创建 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 无 | 无下游影响 | 无直接下游影响 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">门额度内兑现统计报表 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 门店验收与报销单 → 额度内兑现单 → 额度内兑现批量复核单 → ★门额度内兑现统计报表★ → ⚖输出方式？ → 页面查看/导出Excel → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 888" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="263" y="56" width="104" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="315" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">门店验收与报销单</text>
+      <rect x="377" y="56" width="104" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="429" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">额度内兑现单</text>
+      <rect x="491" y="56" width="104" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="543" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">额度内批量复核</text>
+      <rect x="605" y="56" width="104" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="657" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">hlod报表引擎</text>
+      <rect x="719" y="56" width="104" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="771" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">预算年度/组织</text>
+      <rect x="833" y="56" width="104" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="885" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">门店主数据</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="220" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="480" y="220" width="240" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="247" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">门店验收与报销单</text>
+      <line x1="600" y1="264" x2="600" y2="290" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="480" y="290" width="240" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="317" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">额度内兑现单</text>
+      <line x1="600" y1="334" x2="600" y2="360" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="460" y="360" width="280" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="387" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">额度内兑现批量复核单</text>
+      <line x1="600" y1="404" x2="600" y2="430" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="400" y="430" width="400" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="454" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★ 门额度内兑现统计报表 ★</text>
+      <text x="600" y="472" text-anchor="middle" fill="#DCFCE7" font-size="10">查询条件(门店/经销商/年度/审批状态)·兑现与批量复核关联统计</text>
+      <line x1="600" y1="484" x2="600" y2="504" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,504 680,544 600,584 520,544" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="548" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 输出方式？</text>
+      <line x1="600" y1="584" x2="600" y2="596" stroke="#16A34A" stroke-width="2"/>
+      <line x1="600" y1="596" x2="500" y2="596" stroke="#16A34A" stroke-width="2"/>
+      <line x1="600" y1="596" x2="700" y2="596" stroke="#16A34A" stroke-width="2"/>
+      <line x1="500" y1="596" x2="500" y2="617" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <line x1="700" y1="596" x2="700" y2="617" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="420" y="617" width="160" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="500" y="642" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">页面查看</text>
+      <rect x="620" y="617" width="160" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="700" y="642" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">导出Excel</text>
+      <line x1="500" y1="657" x2="500" y2="677" stroke="#16A34A" stroke-width="2"/>
+      <line x1="700" y1="657" x2="700" y2="677" stroke="#16A34A" stroke-width="2"/>
+      <line x1="500" y1="677" x2="600" y2="677" stroke="#16A34A" stroke-width="2"/>
+      <line x1="700" y1="677" x2="600" y2="677" stroke="#16A34A" stroke-width="2"/>
+      <line x1="600" y1="677" x2="600" y2="703" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="545" y="703" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="728" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="743" x2="600" y2="773" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="773" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="795" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="290" y="809" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="360" y="833" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">额度内兑现统计</text>
+      <rect x="450" y="809" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="520" y="833" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">批量复核进度跟踪</text>
+      <rect x="610" y="809" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="680" y="833" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">Excel导出归档</text>
+      <rect x="770" y="809" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="840" y="833" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">内部管理决策参考</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:12px;height:12px;background:#16A34A;border-radius:2px;"></span> 本菜单核心报表节点</span>
+  </div>
 </div>
 </div>
 </div>

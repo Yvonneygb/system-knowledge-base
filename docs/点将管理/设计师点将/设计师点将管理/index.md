@@ -16,335 +16,68 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程">
-#
-#
- 
-一
-、
-业
-务
-流
-程
-
-
-
-
-1
-.
- 
-设
-计
-师
-/
-管
-理
-员
-进
-入
-【
-设
-计
-师
-点
-将
-管
-理
-】
-菜
-单
-，
-新
-建
-设
-计
-点
-将
-申
-请
-
-
-2
-.
- 
-填
-写
-点
-将
-信
-息
-：
-设
-计
-师
-、
-服
-务
-经
-销
-商
-、
-服
-务
-门
-店
-、
-服
-务
-时
-间
-等
-
-
-3
-.
- 
-提
-交
-申
-请
-，
-触
-发
-审
-批
-流
-程
-
-
-4
-.
- 
-审
-批
-流
-程
-依
-次
-经
-过
-：
-
-
- 
- 
- 
--
- 
-*
-*
-讲
-师
-审
-批
-*
-*
-（
-d
-e
-s
-i
-g
-n
-A
-p
-p
-l
-y
-L
-e
-c
-t
-u
-r
-e
-r
-A
-p
-p
-r
-o
-v
-a
-l
-）
-：
-讲
-师
-确
-认
-可
-提
-供
-服
-务
-
-
- 
- 
- 
--
- 
-*
-*
-门
-店
-审
-批
-*
-*
-（
-d
-e
-s
-i
-g
-n
-A
-p
-p
-l
-y
-T
-e
-r
-m
-i
-n
-a
-l
-A
-p
-p
-r
-o
-v
-a
-l
-）
-：
-门
-店
-确
-认
-接
-受
-服
-务
-
-
- 
- 
- 
--
- 
-*
-*
-常
-规
-审
-批
-*
-*
-（
-d
-e
-s
-i
-g
-n
-A
-p
-p
-l
-y
-A
-p
-p
-r
-o
-v
-a
-l
-）
-：
-业
-务
-审
-批
-
-
-5
-.
- 
-审
-批
-通
-过
-后
-，
-点
-将
-生
-效
-，
-进
-入
-执
-行
-阶
-段
-
-
-6
-.
- 
-支
-持
-取
-消
-审
-批
-（
-d
-e
-s
-i
-g
-n
-A
-p
-p
-l
-y
-C
-a
-n
-c
-e
-l
-A
-p
-p
-r
-o
-v
-a
-l
-）
-，
-取
-消
-已
-提
-交
-的
-点
-将
-
-
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">设计师点将管理 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建设计师点将申请★ → ⚖审批通过？ → 点将生效执行 → 结束（拒绝则修改重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="193" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="268" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">设计师主档</text>
+      <rect x="359" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="434" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商主档</text>
+      <rect x="525" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">门店主档</text>
+      <rect x="691" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="766" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="857" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="932" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集(级别/类型)</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="290" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="480" y="290" width="240" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="315" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建设计师点将申请★</text>
+      <text x="600" y="335" text-anchor="middle" fill="#DCFCE7" font-size="10">选设计师·经销商·门店·服务时间·保存</text>
+      <line x1="600" y1="344" x2="600" y2="372" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,372 670,410 600,448 530,410" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="414" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="600" y1="448" x2="600" y2="470" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="510" y="470" width="180" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="497" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">点将生效执行</text>
+      <line x1="600" y1="514" x2="600" y2="560" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="555" y="560" width="90" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="585" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="600" x2="600" y2="660" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <line x1="670" y1="410" x2="770" y2="410" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="725" y="395" width="90" height="30" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="770" y="415" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="770" y1="410" x2="770" y2="317" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="770" y1="317" x2="720" y2="317" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <rect x="50" y="660" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="682" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="355" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="430" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">设计师饱和度统计</text>
+      <rect x="525" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">服务排期执行</text>
+      <rect x="695" y="712" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="770" y="735" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">点将执行记录</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑服务</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

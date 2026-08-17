@@ -16,51 +16,77 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-经销合同归档列表 → 新建归档合同 → 保存 → 保存并提交(启动工作流) → 审批通过 → 归档生效
-                     ↓                                          ↓
-              填写合同基本信息                              工作流: SA_SALE_CONTRACT_HEAD_GD
-              选择经销商/交易公司/合同类型                      ↓
-              配置授权区域/排除区域                        流程启动校验:
-              配置任务拆分/渠道信息                        - 合同开始日期须为月度第一天
-              关联年度营销政策                            - 合同类型时间范围校验
-                                                        - 授权区域冲突校验
-                                                        - 新开发网点月度明细校验
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 年度营销政策(ANNUAL_DEALER_POLICY_HEAD) | 数据依赖 | 保存合同时匹配年度营销政策，获取返点/违约金/次年折扣的政策行ID | 合同保存时自动匹配 |
-| 客户主数据(CUSTOM) | 数据依赖 | 获取经销商信息、法人信息 | 选择经销商时 |
-| 交易公司 | 数据依赖 | 获取交易公司信息 | 选择交易公司时 |
-| 保证金标准(CM_DEPOSITS_PAY_STANDARD) | 数据依赖 | 根据事业部+合同类型获取保证金标准金额 | 合同保存时自动计算 |
-| 区域树(SCPAREA) | 数据依赖 | 校验授权区域是否冲突 | 保存合同时 |
-| 值集AE.SALES_CONTRACT_TYPE | 配置依赖 | 合同类型下拉选项 | 新建/修改合同时 |
-| 系统配置Contract_Delay_Date | 配置依赖 | 延迟发货天数配置，用于计算延迟发货日期 | 合同保存时 |
-| 归档天数配置 | 配置依赖 | 合同应归档时间=合同开始日期+归档天数 | 保存合同时 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| CRM系统同步 | CRM系统同步 | 合同审批通过后推送合同信息至CRM系统，包括经销商编码、合同编号、开始/结束日期等 |
-| MBO经销合同同步 | MBO经销合同同步 | 审批通过后调用MBO Feign接口distributionAdd同步经销合同数据 |
-| 旧合同经销期限调整 | 旧合同经销期限调整 | 审批通过后，若存在原合同，将原合同的结束日期改为新合同开始日期-1天 |
-| 合同归档日期生成 | 合同归档日期生成 | 审批通过后自动生成归档日期(合同开始日期+归档天数) |
-| 合同生效状态变更 | 合同生效状态变更 | 审批通过后valid字段更新为2(生效) |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">经销合同归档 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建经销合同归档★ → ⚖审批通过？ → 归档生效(CRM/MBO同步·旧合同调整) → 结束（拒绝则修改重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 640" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><polygon points="0,0 10,5 0,10" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="150" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="210" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">年度营销政策</text>
+      <rect x="280" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="340" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户主数据</text>
+      <rect x="410" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="470" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司</text>
+      <rect x="540" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">保证金标准</text>
+      <rect x="670" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="730" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">区域树</text>
+      <rect x="800" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="860" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">合同类型值集</text>
+      <rect x="930" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="990" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">系统配置</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="560" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="500" y="230" width="200" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建经销合同归档★</text>
+      <text x="600" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">基本信息/经销商/区域/年度政策/任务拆分</text>
+      <line x1="600" y1="284" x2="600" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,300 680,340 600,380 520,340" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="344" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="680" y1="340" x2="755" y2="340" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="755" y="325" width="90" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="800" y="344" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="800" y1="325" x2="800" y2="200" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="800" y1="200" x2="700" y2="200" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="700" y1="200" x2="700" y2="257" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="600" y1="380" x2="600" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="520" y="400" width="160" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="425" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">归档生效</text>
+      <line x1="600" y1="440" x2="600" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="545" y="460" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="485" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="500" x2="600" y2="520" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="520" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="542" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="185" y="558" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="260" y="581" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM系统同步</text>
+      <rect x="355" y="558" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="430" y="581" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">MBO合同同步</text>
+      <rect x="525" y="558" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="581" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">旧合同期限调整</text>
+      <rect x="695" y="558" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="770" y="581" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">合同归档日期生成</text>
+      <rect x="865" y="558" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="940" y="581" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">合同生效状态变更</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑系统</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>
