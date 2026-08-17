@@ -16,74 +16,79 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-核销发票上传(EPM_UPLOAD_INVOICE_VERIFER) ──关联发票上传单──> 真实性核销(新建)
-                                                              │
-                                                              ├── 选择项目/合同/经销商
-                                                              ├── 选择出库单行(获取可核销数量)
-                                                              ├── 选择发票信息(获取可核销数量)
-                                                              ├── 填写本次核销数量
-                                                              │
-                                                              ▼
-                                                        保存(校验核销数量/日期产品)
-                                                              │
-                                                              ▼
-                                                        提交审批(启动工作流INVOICE_TRUTH_VERIFY)
-                                                              │
-                                                    ┌─────────┴─────────┐
-                                                    ▼                   ▼
-                                              审批通过              审批驳回
-                                              (更新出库单行核销数量)  (流程中断)
-                                              (更新发票明细有效状态)
-                                              (触发返利计算)
-                                                    │
-                                                    ▼
-                                              核销完成
-
-              ┌──────────────────────────────────────────────────────────┐
-              │          取消核销/作废发票流程                              │
-              │  支持5种操作类型：                                        │
-              │  invoice-按发票取消  invoiceDetail-按发票明细取消          │
-              │  invLine-按出库单行取消  veriferDetail-按核销明细取消      │
-              │  obsInvoice-作废发票                                     │
-              │  取消后：核销明细状态→canceled，出库单行可核销数量回加       │
-              │  作废后：发票有效状态→obsolete                              │
-              └──────────────────────────────────────────────────────────┘
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 核销发票上传(EPM_UPLOAD_INVOICE_VERIFER) | 数据依赖 | 提供核销发票上传单及发票详细信息，真实性核销基于发票上传数据 | 核销发票上传单审批通过 |
-| 出库单行(INV_OUT_BILL_LINE) | 数据依赖 | 提供可核销的出库单行数据，含可核销数量和已核销数量 | 出库单已签收确认，可核销数量>0 |
-| 折扣政策 | 数据依赖 | 核销时触发返利计算，关联折扣政策 | 折扣政策有效 |
-| 编码规则 | 配置依赖 | 生成真实性核销单号 | 编码规则已配置 |
-| 工作流(INVOICE_TRUTH_VERIFY) | 配置依赖 | 工程真实性核销审批流程 | 工作流已部署 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 出库确认 | 出库行核销数量更新 | 审批通过后，出库单行(INV_OUT_BILL_LINE)的已核销数量(USED_VERIFY_NUM)增加，可核销数量(CAN_VERIFY_NUM)减少 |
-| 发票管理 | 发票明细状态更新 | 审批通过后，核销发票明细(EPM_VERIFER_INVOICE_DETAILS)有效状态更新为valid |
-| 返利计算 | 触发返利重算 | 审批通过后，若出库单行渠道上调价不为空且大于0，触发返利计算(operationRebateBiz) |
-| 核销单据 | 取消核销关联处理 | 取消核销后，核销明细状态更新为canceled，出库单行可核销数量回加，已核销数量减少；若核销单处于审批中则中断审批 |
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程真实性核销 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 核销发票上传单(关联) → ★新建真实性核销单★ → 提交审批(工作流TRUTH_VERIFY) → ⚖审批通过？ → 更新出库行/发票状态/触发返利 / 驳回中断 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="120" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="175" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">核销发票上传</text>
+      <rect x="250" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="305" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">出库单行</text>
+      <rect x="380" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="435" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">折扣政策</text>
+      <rect x="510" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="565" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="640" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="695" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="145" y="210" width="180" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="235" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">核销发票上传单(关联)</text>
+      <line x1="235" y1="250" x2="235" y2="266" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="266" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="290" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建真实性核销单★</text>
+      <text x="235" y="308" text-anchor="middle" fill="#DCFCE7" font-size="10">选出库行/发票/填数量·保存</text>
+      <line x1="235" y1="320" x2="235" y2="336" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="336" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="361" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">提交审批(工作流TRUTH_VERIFY)</text>
+      <line x1="235" y1="376" x2="235" y2="392" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,392 305,432 235,472 165,432" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="436" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="235" y1="472" x2="235" y2="488" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="140" y="488" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="513" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">更新出库行/发票状态/触发返利</text>
+      <line x1="235" y1="528" x2="235" y2="544" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="544" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="569" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="584" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <line x1="305" y1="432" x2="430" y2="432" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="380" y="417" width="100" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="430" y="436" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">驳回中断✗</text>
+      <line x1="430" y1="432" x2="430" y2="293" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="293" x2="315" y2="293" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="200" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="275" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">出库确认·核销数量</text>
+      <rect x="375" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="450" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">发票管理·状态</text>
+      <rect x="550" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="625" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">返利计算·触发重算</text>
+      <rect x="725" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="800" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">核销单据·取消处理</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批驳回/中断</span>
+  </div>
 </div>
-</KbCard>
 </div>
 </div>
-</div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">

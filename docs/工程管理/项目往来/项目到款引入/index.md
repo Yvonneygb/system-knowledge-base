@@ -16,63 +16,66 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-ERP系统(到款数据)
-    │
-    │ ErpSdk.getErpReceipt() 调用ERP接口获取到款数据
-    ▼
-定时任务(PaymentImportErpJob) / 页面手动引入
-    │
-    │ 分布式锁(SYNC_PAYMENT_IMPORT_ERP)控制并发
-    ▼
-到款引入处理(paymentImportErpProcess)
-    │
-    ├── 已存在(按外部到款单ID匹配) → 更新已认款金额/剩余可认款金额/认领状态/票据类型/引入状态
-    │
-    └── 不存在 → 校验经销商/法人/交易公司/事业部 → 新增到款记录
-    │
-    ▼
-EPM_PAYMENT_IMPORT(到款引入主表)
-    │
-    ├── 到款认领(EpmPaymentAllot) → 认领时校验引入状态(verifyImportStat)
-    │
-    ├── 兑付操作(draftPayment) → 商票兑付 → EPM_PAYMENT_IMPORT_RCD(兑付记录)
-    │
-    └── 剩余可认款金额查询 → 虚拟到款单:本地计算 / 实际到款单:实时查ERP
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| ERP系统 | 数据依赖 | 通过ErpSdk.getErpReceipt()获取ERP到款数据，是到款引入的唯一数据来源 | ERP接口可用，传入到款单号或时间范围 |
-| 客户主数据(Customer) | 数据依赖 | 引入时根据ERP返回的经销商编码/汇款单位编码匹配客户信息，获取客户ID | ERP返回的经销商编码在系统中存在 |
-| 交易公司(EpmTradingCompany) | 数据依赖 | 引入时根据ERP返回的交易公司编码匹配交易公司信息 | ERP返回的交易公司编码在系统中存在 |
-| 事业部(DivisionBaseSet) | 数据依赖 | 引入时根据ERP返回的事业部名称匹配事业部信息，获取事业部ID和组织ID | ERP返回的事业部名称在系统中存在 |
-| 分布式锁(SYNC_PAYMENT_IMPORT_ERP) | 配置依赖 | 控制到款引入ERP接口的并发访问，防止重复引入 | 锁等待时间5秒，租约时间60秒 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 项目到款认领 | 提供认领前提 | 到款引入数据是到款认领的前提，认领时需校验到款单引入状态是否允许认领（"信用卡拖欠款项冲销"/"暂停付款"/"冲销付款"/"资金不足"状态不允许认领）；认领时实时查询到款单剩余可认款金额，实际到款单会实时调ERP接口获取最新数据 |
-| 兑付记录 | 写入兑付记录 | 商票类型到款单发起兑付后，插入兑付记录，更新兑付状态为SUCCESS，同时将认领明细的可兑现标识改为Y |
-| 应收事务处理 | 生成虚拟到款单 | 应收事务处理可生成虚拟到款单(BILL_TYPE=VIRTUAL_RECEIPT)，虚拟到款单的剩余可认款金额通过本地计算而非实时查ERP |
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">项目到款引入 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ERP接口获取(定时/手动) → ★新建到款引入单★ → 写入主表EPM_PAYMENT_IMPORT → 结束（下游支撑认领/兑付/虚拟单）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="120" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="175" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">ERP系统</text>
+      <rect x="250" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="305" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户主数据</text>
+      <rect x="380" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="435" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司</text>
+      <rect x="510" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="565" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部</text>
+      <rect x="640" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="695" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">分布式锁</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="145" y="210" width="180" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="235" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">ERP接口获取(定时/手动)</text>
+      <line x1="235" y1="250" x2="235" y2="266" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="266" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="290" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建到款引入单★</text>
+      <text x="235" y="308" text-anchor="middle" fill="#DCFCE7" font-size="10">已存在更新/不存在新增·保存</text>
+      <line x1="235" y1="320" x2="235" y2="344" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="140" y="344" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="369" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">写入主表EPM_PAYMENT_IMPORT</text>
+      <line x1="235" y1="384" x2="235" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="400" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="425" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="440" x2="235" y2="560" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="560" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="582" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="300" y="596" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="375" y="619" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目到款认领</text>
+      <rect x="525" y="596" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="619" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">兑付记录</text>
+      <rect x="750" y="596" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="825" y="619" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">应收虚拟到款单</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#16A34A;"></span> 引入数据落地/下游前置</span>
+  </div>
 </div>
-</KbCard>
 </div>
 </div>
-</div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">

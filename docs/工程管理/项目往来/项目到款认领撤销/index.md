@@ -16,59 +16,79 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-项目到款认领(EPM_PAYMENT_ALLOT) ──选择已认领明细──> 撤销认领(新建)
-                                                      │
-                                                      ├── 选择项目 → 填写撤销原因
-                                                      ├── 选择已认领明细行 → 保存(校验可结算服务费)
-                                                      │
-                                                      ▼
-                                                提交审批(启动工作流EPM_PAYMENT_ALLOT_CANCEL)
-                                                      │
-                                            ┌─────────┴─────────┐
-                                            ▼                   ▼
-                                      审批通过              审批驳回
-                                      (推送ERP撤销数据)      (流程中断)
-                                      (更新认领明细撤销标识=Y)
-                                      (回加到款单可认领金额)
-                                            │
-                                            ▼
-                                      ERP撤销完成
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 项目到款认领(EPM_PAYMENT_ALLOT) | 数据依赖 | 提供已认领的明细数据，撤销基于认领明细 | 认领单审批状态=APPROVED，明细撤销标识=N |
-| 到款引入(EPM_PAYMENT_IMPORT) | 数据依赖 | 撤销审批通过后回加到款单可认领金额 | 到款单存在且有效 |
-| ERP核销接口(EPMS_AR_APPLY) | 配置依赖 | 撤销审批通过后推送ERP撤销数据(负数金额) | ERP接口可用 |
-| 编码规则(AE.EPM_PAYMENT_ALLOT_CANCEL_NO) | 配置依赖 | 生成撤销单号 | 编码规则已配置 |
-| 工作流(EPM_PAYMENT_ALLOT_CANCEL) | 配置依赖 | 撤销审批流程 | 工作流已部署 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 项目到款单 | 可认领金额回加 | 撤销审批通过后，按认领单维度将撤销的认领金额回加到对应到款单(EPM_PAYMENT_IMPORT)的可认领金额(UNALLOT_AMT) |
-| 项目到款认领 | 认领明细撤销标记 | 撤销审批通过后，对应认领明细行(EPM_PAYMENT_ALLOT_DETAIL)的撤销标识(CANCEL_FLAG)更新为Y，该明细不可再次撤销 |
-| ERP系统 | 推送核销撤销 | 撤销审批通过后，推送负数金额核销数据到ERP，包含AR_APPLY(应收撤销)、OM_CLAIM(出库认领撤销)、OM_APPLY(出库核销撤销) |
-| 项目到款认领 | 记录撤销时间 | 撤销审批通过后，更新撤销单头的撤销时间(CANCEL_DATE) |
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">项目到款认领撤销 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 已认领明细 → ★新建撤销认领单★ → 提交审批(工作流CANCEL) → ⚖审批通过？ → 推送ERP撤销/回加可认领金额 / 驳回中断 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="120" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="175" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">到款认领</text>
+      <rect x="250" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="305" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">到款引入</text>
+      <rect x="380" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="435" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">ERP核销</text>
+      <rect x="510" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="565" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="640" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="695" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="145" y="210" width="180" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="235" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">已认领明细(EPM_PAYMENT_ALLOT)</text>
+      <line x1="235" y1="250" x2="235" y2="266" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="266" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="290" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建撤销认领单★</text>
+      <text x="235" y="308" text-anchor="middle" fill="#DCFCE7" font-size="10">选项目/明细·填撤销原因·保存</text>
+      <line x1="235" y1="320" x2="235" y2="336" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="336" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="361" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">提交审批(工作流CANCEL)</text>
+      <line x1="235" y1="376" x2="235" y2="392" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,392 305,432 235,472 165,432" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="436" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="235" y1="472" x2="235" y2="488" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="140" y="488" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="513" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">推送ERP撤销/回加可认领金额</text>
+      <line x1="235" y1="528" x2="235" y2="544" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="544" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="569" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="584" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <line x1="305" y1="432" x2="430" y2="432" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="380" y="417" width="100" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="430" y="436" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">驳回中断✗</text>
+      <line x1="430" y1="432" x2="430" y2="293" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="293" x2="315" y2="293" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="200" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="275" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">到款单·回加金额</text>
+      <rect x="375" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="450" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">认领明细·撤销标记Y</text>
+      <rect x="550" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="625" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">ERP系统·推送撤销</text>
+      <rect x="725" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="800" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">认领单·撤销时间</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批驳回/中断</span>
+  </div>
 </div>
-</KbCard>
 </div>
 </div>
-</div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">

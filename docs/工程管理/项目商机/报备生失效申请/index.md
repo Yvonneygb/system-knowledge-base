@@ -16,57 +16,80 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-项目报备（已生效）
-       │
-       ├──[报备失效申请]──> 新建失效申请单 ──> 提交审批 ──> 审批通过 ──> 报备状态变更为"已失效"
-       │                                                              │
-       │                                                              ├── 更新项目有效状态为3（已失效）
-       │                                                              ├── 推送失效信息到CRM
-       │                                                              └── 删除ES索引数据
-       │
-       └──[恢复生效申请]──> 新建恢复生效申请单 ──> 提交审批 ──> 审批通过 ──> 报备状态变更为"已生效"
-                                                                      │
-                                                                      ├── 更新项目有效状态为2（已生效）
-                                                                      ├── 推送生效信息到CRM
-                                                                      └── 推送ES索引数据
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 项目报备（EPM_REPORT） | 数据依赖 | 失效/生效申请必须基于已存在的项目报备数据，审批通过后需查询报备信息推送CRM和操作ES | 项目报备数据存在 |
-| 项目信息（EPM_PROJECT） | 数据依赖 | 审批通过后需更新项目有效状态字段 | 项目已创建且存在PROJECT_ID |
-| 客户信息（CUSTOMER） | 数据依赖 | 推送CRM时需获取客户简称 | 报备关联的客户ID有效 |
-| 编码规则（HPFM_CODE_RULE） | 配置依赖 | 新建申请单时自动生成单号，失效和恢复生效使用不同编码规则 | 编码规则已配置 |
-| 工作流引擎 | 配置依赖 | 提交审批依赖工作流引擎驱动 | 工作流定义已配置 |
-| CRM系统（EBS接口） | 数据依赖 | 审批通过后推送报备有效状态变更信息到CRM | 非家装单体报备失效（MONOMER_TYPE≠2） |
-| ES搜索引擎 | 数据依赖 | 单体报备（REPORT_TYPE=1）审批通过后需同步ES索引：失效时删除，生效时推送 | 报备类型为单体报备 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 项目报备 | 项目有效状态变更 | 审批通过后，项目的有效状态（PROJECT_VALID）会被更新：失效申请设为3（已失效），恢复生效申请设为2（已生效） |
-| CRM系统 | CRM系统数据同步 | 审批通过后，通过EBS接口（INDIVIREPORT_ADD）将报备有效状态变更推送到CRM系统，失效时传validStatus=0，生效时传validStatus=1 |
-| ES搜索引擎 | ES索引数据变更 | 单体报备（REPORT_TYPE=1）审批通过后：失效时删除ES文档，恢复生效时重新推送ES文档 |
-| 工程合同 | 合同关联影响 | 报备失效后，关联的项目合同中报备有效状态会同步显示为"已失效"，影响合同相关业务 |
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">报备生失效申请 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建失效/恢复生效申请★ → ⚖审批通过？ → 项目有效状态变更 / 推送CRM·ES·合同联动 → 结束（拒绝则修改重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="206" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="255" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目报备</text>
+      <rect x="321" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="370" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目信息</text>
+      <rect x="436" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="485" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户信息</text>
+      <rect x="551" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="666" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="715" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="781" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="830" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM系统</text>
+      <rect x="896" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="945" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">ES搜索引擎</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="230" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★失效/恢复生效申请★</text>
+      <text x="235" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">选申请类型·填说明·保存</text>
+      <line x1="235" y1="284" x2="235" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,300 305,340 235,380 165,340" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="344" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="305" y1="340" x2="430" y2="340" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="325" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="344" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="340" x2="430" y2="257" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="257" x2="315" y2="257" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="380" x2="235" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="400" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="425" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">项目有效状态变更</text>
+      <line x1="235" y1="440" x2="235" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="460" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="485" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送CRM·ES·合同联动</text>
+      <line x1="235" y1="500" x2="235" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="540" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="580" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="270" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="345" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目报备状态变更</text>
+      <rect x="440" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="515" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM系统同步</text>
+      <rect x="610" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="685" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">ES索引变更</text>
+      <rect x="780" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="855" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程合同关联</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
-</KbCard>
 </div>
 </div>
-</div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">

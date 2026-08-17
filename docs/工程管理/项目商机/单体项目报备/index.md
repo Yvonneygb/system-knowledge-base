@@ -16,58 +16,88 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```
-新建报备 → 保存 → 提交(查重拦截校验) → OA审批推送 → 审批通过/驳回
-  │                                    │
-  │                                    ├─ 审批通过 → 同步到项目表(EPM_PROJECT) → 推送CRM(报备信息+地址) → 推送ES
-  │                                    │
-  │                                    └─ 审批驳回 → 状态回退为新建 → 可申诉后重新提交
-  │
-  ├─ 查重拦截 → 项目冲突 → 申诉提交 → 重新审批
-  │
-  ├─ 二次报备 → 同一项目编码可报备第二次
-  │
-  ├─ 报备生效/失效 → 项目冻结/解冻
-  │
-  └─ 批量删除(仅草稿状态可删)
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游系统/模块 | 依赖内容 | 说明 |
-|---|---|---|
-| OA系统 | 审批流程推送 | 单体项目报备通过OA单据关系表(EPM_OA_BILL_REF)关联OA表单 |
-| CRM系统 | 经销商/客户数据 | 报备时选择经销商，数据来源于CRM |
-| ES搜索引擎 | 查重比对 | 工程单体报备查重通过ES进行相似度匹配 |
-| HZERO工作流 | 流程实例管理 | 流程编码: PROJECT_DTBB_MAIN |
-| 值集配置 | 查重开关/白名单 | AE.REPEAT_REPORT_VERIFY_ORG(查重开关), AE.REPORT_SIMILARCHK_SKIPLIST(白名单) |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| CRM系统 | 报备信息推送 | 审批通过后推送报备信息(indivireportAdd接口)和收货地址到CRM |
-| ES搜索引擎 | 报备数据索引 | 审批通过后推送数据到ES索引(IDX_EPM_REPORT) |
-| 工程合同 | 合同关联报备 | 经销商合同创建时关联单体报备，校验报备是否生效 |
-| 工程折扣 | 折扣关联报备 | 折扣政策申请时关联报备项目 |
-| 项目冻结/解冻 | 报备有效期管理 | 超过有效周期未产生合同则冻结，可申请解冻 |
-| 项目失效 | 报备失效推送CRM | 失效时推送信息到CRM |
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">单体项目报备 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建单体报备★ → ⚖查重拦截？ → 推送OA审批 → ⚖审批通过？ → 同步项目表·推送CRM·ES → 结束（拒绝/冲突可重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="210" y="56" width="140" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="280" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA系统</text>
+      <rect x="370" y="56" width="140" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="440" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM系统</text>
+      <rect x="530" y="56" width="140" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">ES搜索引擎</text>
+      <rect x="690" y="56" width="140" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="760" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">HZERO工作流</text>
+      <rect x="850" y="56" width="140" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="920" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集配置</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="220" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="220" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="244" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建单体报备★</text>
+      <text x="235" y="262" text-anchor="middle" fill="#DCFCE7" font-size="10">选经销商·填信息·保存</text>
+      <line x1="235" y1="274" x2="235" y2="284" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,284 305,324 235,364 165,324" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="328" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 查重通过？</text>
+      <line x1="305" y1="324" x2="430" y2="324" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="380" y="309" width="95" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="427" y="328" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">项目冲突✗</text>
+      <line x1="430" y1="324" x2="430" y2="205" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="205" x2="235" y2="205" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="364" x2="235" y2="384" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="384" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="409" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送OA审批</text>
+      <line x1="235" y1="424" x2="235" y2="444" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,444 305,484 235,524 165,484" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="488" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="305" y1="484" x2="430" y2="484" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="469" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="488" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="484" x2="430" y2="205" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="205" x2="235" y2="205" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="524" x2="235" y2="544" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="544" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="569" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">同步项目表·推送CRM·ES</text>
+      <line x1="235" y1="584" x2="235" y2="624" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="624" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="649" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="664" x2="235" y2="684" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="684" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="706" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="100" y="722" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="175" y="745" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM系统</text>
+      <rect x="270" y="722" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="345" y="745" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">ES索引</text>
+      <rect x="440" y="722" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="515" y="745" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程合同</text>
+      <rect x="610" y="722" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="685" y="745" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程折扣</text>
+      <rect x="780" y="722" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="855" y="745" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目冻结/解冻</text>
+      <rect x="950" y="722" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="1025" y="745" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目失效</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 查重/审批拒绝</span>
+  </div>
 </div>
-</KbCard>
-
 </div>
 </div>
-</div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">

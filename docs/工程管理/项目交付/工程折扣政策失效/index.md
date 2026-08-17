@@ -16,40 +16,80 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-工程折扣政策申请(已生效) → 选择政策行发起失效申请 → 保存/提交 → 工作流审批
-  → 审批通过 → 更新政策行失效状态(validStat=3) → 判断政策头是否全部失效 → 推送CRM(专项折扣)
-  → 审批拒绝/驳回/终止 → 流程结束，政策行不变
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 工程折扣政策申请 | 数据依赖 | 失效申请必须关联一条已生效的折扣政策，从中选择要失效的产品行 | 政策状态为已生效(valid=2) |
-| 编码规则配置 | 配置依赖 | 生成政策失效单号，编码规则AE.GC_DISCOUNT_POLICY_DISABLED | 编码规则已配置且生效 |
-| 工作流引擎 | 配置依赖 | 提交时启动审批流程，流程编码DISCOUNT_POLICY_DISABLED | 工作流已部署 |
-| CRM系统 | 数据依赖 | 审批通过后推送CRM失效信息（仅专项折扣） | suitableType≠normal |
-| OA审批系统 | 配置依赖 | 推送OA待办审批，回调更新审批状态 | OA单据映射已配置 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 工程折扣政策 | 政策行失效 | 审批通过后，所选政策行的validStat更新为3(已失效)，该行不再参与折扣计算 |
-| 工程折扣政策 | 政策头失效 | 当政策下所有产品行均失效时，政策头valid更新为3(已失效)，整个政策不再生效 |
-| CRM系统 | CRM侧政策失效 | 审批通过后，专项折扣(suitableType≠normal)推送CRM接口policyDisabled，标记CRM侧政策行失效 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程折扣政策失效 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建失效申请★ → ⚖审批通过？ → 更新政策行失效/推送CRM → ⚖是否全失效 → (是)更新政策头失效 → 结束（拒绝则修改重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="280" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="340" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工程折扣政策申请</text>
+      <rect x="410" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="470" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则配置</text>
+      <rect x="540" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="670" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="730" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM系统</text>
+      <rect x="800" y="56" width="120" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="860" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA审批系统</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="230" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建工程折扣政策失效★</text>
+      <text x="235" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">选政策行·填失效原因·保存</text>
+      <line x1="235" y1="284" x2="235" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,300 305,340 235,380 165,340" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="344" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="305" y1="340" x2="430" y2="340" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="325" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="344" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="340" x2="430" y2="257" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="257" x2="320" y2="257" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="380" x2="235" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="400" width="160" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="425" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">更新政策行失效(validStat=3)</text>
+      <line x1="315" y1="420" x2="355" y2="420" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="355" y="400" width="175" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="442" y="425" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">推送CRM(专项折扣)</text>
+      <line x1="235" y1="440" x2="235" y2="455" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,455 305,495 235,535 165,495" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="499" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 政策是否全部失效？</text>
+      <line x1="235" y1="535" x2="235" y2="550" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="160" y="550" width="150" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="575" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">更新政策头失效(valid=3)</text>
+      <line x1="235" y1="590" x2="235" y2="620" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <line x1="165" y1="495" x2="110" y2="495" stroke="#9CA3AF" stroke-width="1.5"/>
+      <line x1="110" y1="495" x2="110" y2="620" stroke="#9CA3AF" stroke-width="1.5"/>
+      <line x1="110" y1="620" x2="235" y2="620" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+      <rect x="180" y="620" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="645" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="660" x2="235" y2="680" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="680" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="702" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="355" y="718" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="430" y="741" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">政策行失效</text>
+      <rect x="525" y="718" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="741" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">政策头失效</text>
+      <rect x="695" y="718" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="770" y="741" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM侧政策失效</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

@@ -16,56 +16,79 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-工程服务费报销单(已审核通过) + 合同回款
-  │
-  ▼
-新建工程服务费兑现单 → 选择经销商/合同 → 查询可兑现的报销明细
-  │
-  ▼
-选择报销明细 → 自动计算可兑现金额(服务费-质保金-税金-其他扣款)
-  │
-  ▼
-填写本次申请兑现金额 → 保存
-  │
-  ▼
-提交 → 启动H0工作流(EXPENSE_TO_CASH，按区域D/N/X/B区分) → 审批
-  │
-  ▼
-审批通过 → 推送财务共享(FSCC)
-  │
-  ├─ FSCC审批通过 → 更新状态为已核销 → 触发付款
-  └─ FSCC审批拒绝 → 更新状态为拒绝
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 工程服务费报销 | 数据依赖 | 兑现基于已审核通过的报销单 | 报销单审批状态=APPROVED |
-| 工程合同 | 数据依赖 | 兑现关联合同，获取合同回款总额 | 合同已生效 |
-| 经销商 | 数据依赖 | 兑现关联经销商 | 经销商已存在 |
-| H0工作流引擎 | 配置依赖 | 提交审批使用H0工作流(EXPENSE_TO_CASH) | 工作流已配置，按区域(D/N/X/B)区分 |
-| 财务共享(FSCC) | 配置依赖 | 审批通过后推送FSCC进行共享审批 | FSCC接口已配置 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 财务共享(FSCC) | 推送FSCC共享审批 | 审批通过后推送兑现数据到FSCC，FSCC进行共享审批和付款处理 |
-| 工程服务费报销 | 更新已兑现金额 | 兑现后更新报销单的已兑现金额(TOTAL_CASH_AMT) |
-| 付款流程 | 触发付款更新状态 | FSCC审批通过后触发付款，更新付款状态(PAYMENT_STATUS) |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程服务费兑现 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建兑现单★ → 双轨审批(H0+FSCC) → 已核销·触发付款 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 771" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="333.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="382.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工程服务费报销</text>
+      <rect x="442.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="491.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工程合同</text>
+      <rect x="551.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商</text>
+      <rect x="660.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="709.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">H0工作流</text>
+      <rect x="769.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="818.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">财务共享FSCC</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="2" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="212" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="212" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="236" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建兑现单★</text>
+      <text x="235" y="254" text-anchor="middle" fill="#DCFCE7" font-size="10" font-weight="400">选报销明细·计算可兑现金额</text>
+      <line x1="235" y1="266" x2="235" y2="284" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,284 305,324 235,364 165,324" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="328" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">H0审批通过？</text>
+      <line x1="305" y1="324" x2="445" y2="324" stroke="#EF4444" stroke-width="2"/>
+      <rect x="445" y="309" width="90" height="30" rx="4" fill="#FFFFFF" stroke="#EF4444" stroke-width="1"/>
+      <text x="490" y="328" text-anchor="middle" fill="#EF4444" font-size="11" font-weight="600">拒绝</text>
+      <line x1="550" y1="324" x2="550" y2="237" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="550" y1="237" x2="320" y2="237" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="364" x2="235" y2="382" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="382" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="407" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送财务共享(FSCC)</text>
+      <line x1="235" y1="422" x2="235" y2="440" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,440 305,480 235,520 165,480" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="484" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">FSCC审批通过？</text>
+      <line x1="305" y1="480" x2="445" y2="480" stroke="#EF4444" stroke-width="2"/>
+      <rect x="445" y="465" width="90" height="30" rx="4" fill="#FFFFFF" stroke="#EF4444" stroke-width="1"/>
+      <text x="490" y="484" text-anchor="middle" fill="#EF4444" font-size="11" font-weight="600">拒绝</text>
+      <line x1="550" y1="480" x2="550" y2="237" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="550" y1="237" x2="320" y2="237" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="520" x2="235" y2="538" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="538" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="563" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">已核销·触发付款</text>
+      <line x1="235" y1="578" x2="235" y2="596" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="596" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="621" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="636" x2="235" y2="656" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)" stroke-dasharray="4,3"/>
+      <rect x="50" y="656" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="678" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="355.0" y="692" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="430.0" y="715" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">财务共享FSCC</text>
+      <rect x="525.0" y="692" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600.0" y="715" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">报销已兑现</text>
+      <rect x="695.0" y="692" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="770.0" y="715" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">付款流程</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

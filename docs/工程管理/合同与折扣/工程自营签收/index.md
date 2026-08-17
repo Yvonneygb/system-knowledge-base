@@ -16,50 +16,73 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-自营工程合同(已生效) → 新建签收单 → 选择合同 → 加载合同出库明细
-  ↓
-设置签收方式(手动/自动/扫码) → 勾选本次签收行 → 设置签收时间
-  ↓
-保存 → 生成签收单号，校验合同
-  ↓
-提交 → 启动审批流程(PROJECT_DRP_DIFFPROC_BILL)
-  ↓
-审批通过 → 签收状态="签收完成"+验收状态="验收完成" → 推送ERP
-审批驳回 → 签收状态="驳回"
-  ↓
-ERP返回结果 → 更新签收行入账状态(PENDING→TRANSFER→ACCOUNTED)
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 自营工程合同 | 数据依赖 | 签收基于自营工程合同，获取合同出库明细 | 合同有效状态=2(已生效)，签收方式已配置 |
-| 出库确认行 | 数据依赖 | 签收行来源于出库确认行，记录签收数量 | 存在未签收的出库确认行 |
-| 编码规则配置 | 配置依赖 | 生成签收单号 | 编码规则已配置且生效 |
-| 工作流引擎 | 配置依赖 | 审批流程PROJECT_DRP_DIFFPROC_BILL | 流程已部署且可用 |
-| ERP系统 | 配置依赖 | 签收数据推送ERP入账 | ERP接口可用 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 工程项目合同 | 签收数量金额更新 | 审批通过后，更新合同的已签收数量和已签收金额 |
-| 出库确认 | 签收状态更新 | 签收后更新出库确认行的签收数量和签收状态 |
-| ERP系统 | 签收入账推送 | 签收审批通过后，构造签收数据推送ERP入账；ERP返回结果后更新签收行入账状态 |
-| 服务费预提 | 预提金额计算 | 审批时计算本次签收合同总额和预提金额 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程自营签收 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建工程自营签收单★ → ⚖审批通过？(驳回) → 签收完成·验收完成 → 推送ERP入账 → 结束（下游：合同/出库确认/ERP/服务费预提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="175" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="250" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">自营工程合同</text>
+      <rect x="345" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="420" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">出库确认行</text>
+      <rect x="515" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="590" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则配置</text>
+      <rect x="685" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="760" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="855" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="930" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">ERP系统</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="230" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建工程自营签收单★</text>
+      <text x="235" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">选合同/加载出库明细·设签收方式·保存校验</text>
+      <line x1="235" y1="284" x2="235" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,300 305,340 235,380 165,340" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="344" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="305" y1="340" x2="430" y2="340" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="325" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="344" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">驳回 ✗</text>
+      <line x1="430" y1="340" x2="430" y2="257" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="257" x2="315" y2="257" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="380" x2="235" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="400" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="425" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">签收完成·验收完成</text>
+      <line x1="235" y1="440" x2="235" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="460" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="485" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送ERP入账</text>
+      <line x1="235" y1="500" x2="235" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="540" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="580" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="260" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="335" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程项目合同</text>
+      <rect x="430" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="505" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">出库确认</text>
+      <rect x="600" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="675" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">ERP系统</text>
+      <rect x="770" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="845" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">服务费预提</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

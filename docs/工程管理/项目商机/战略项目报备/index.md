@@ -16,56 +16,95 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```
-新建报备 → 保存 → 提交(发起流程) → OA审批(一次报备) → 一次报备通过/拒绝
-                                                      ↓
-                                              一次报备通过后可发起二次报备
-                                                      ↓
-                                              OA审批(二次报备) → 二次报备通过/拒绝
-                                                      ↓
-                                              审核通过 → 写入项目档案(EPM_PROJECT)
-                                                      ↓
-                                              项目生效 → 可关联单体报备/合同
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 依赖项 | 说明 |
-|--------|------|
-| 经销商主数据 | 报备时需选择经销商，来源为客户主数据 |
-| 交易公司 | 报备时需选择交易公司，需维护事业部关联关系 |
-| OA表单配置 | 需维护EPMS单据和OA表单对应关系表(OA_BILL_REF)，单据名称为"战略项目报备一次"和"战略项目报备二次" |
-| 公司参数 | 需配置项目有效周期参数(Proj_Effective_Cycle) |
-| 事业部基础设置 | 事业部信息用于权限控制和区域划分 |
-| 值集配置 | epm.project_source、epm.project_type、epm.operating_mode、epm.background等 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 单体项目报备 | 关联战略项目 | 单体报备可关联战略项目，关联后取战略项目区域经理作为审批人 |
-| 工程合同 | 合同关联报备 | 合同创建时关联报备项目，战略报备信息强制写回合同 |
-| 折扣政策 | 政策关联报备 | 折扣政策申请时关联报备项目 |
-| 战略报备变更 | 发起报备变更 | 审核通过后可发起战略报备变更(经销商变更/网点变更) |
-| 项目档案 | 档案新增/更新 | 一次报备通过时新增项目档案，二次报备通过时更新项目档案 |
-| 项目授权 | 授权信息写入 | 审核通过时将报备经销商授权写入项目授权表 |
-| CRM推送 | 报备信息推送 | 单体报备审核通过后推送报备信息到CRM(战略报备不推送) |
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">战略项目报备 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建战略报备★ → ⚖一次报备审批？ → 发起二次报备 → ⚖二次报备审批？ → 写入项目档案 → 项目生效 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 860" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="256" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="305" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商主数据</text>
+      <rect x="364" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="413" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司</text>
+      <rect x="472" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="521" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA表单配置</text>
+      <rect x="580" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="629" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">公司参数</text>
+      <rect x="688" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="737" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部设置</text>
+      <rect x="796" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="845" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集配置</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="220" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="220" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="244" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建战略报备★</text>
+      <text x="235" y="262" text-anchor="middle" fill="#DCFCE7" font-size="10">选经销商·填信息·保存提交</text>
+      <line x1="235" y1="274" x2="235" y2="284" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,284 305,324 235,364 165,324" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="328" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 一次报备通过？</text>
+      <line x1="305" y1="324" x2="430" y2="324" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="309" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="328" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="324" x2="430" y2="205" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="205" x2="235" y2="205" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="364" x2="235" y2="384" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="384" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="409" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">发起二次报备</text>
+      <line x1="235" y1="424" x2="235" y2="444" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,444 305,484 235,524 165,484" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="488" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 二次报备通过？</text>
+      <line x1="305" y1="484" x2="430" y2="484" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="469" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="488" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="484" x2="430" y2="205" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="205" x2="235" y2="205" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="524" x2="235" y2="544" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="544" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="569" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">写入项目档案</text>
+      <line x1="235" y1="584" x2="235" y2="604" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="604" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="629" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">项目生效</text>
+      <line x1="235" y1="644" x2="235" y2="684" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="684" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="709" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="724" x2="235" y2="744" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="744" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="766" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="65" y="782" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="135" y="805" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">单体项目报备</text>
+      <rect x="220" y="782" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="290" y="805" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程合同</text>
+      <rect x="375" y="782" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="445" y="805" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">折扣政策</text>
+      <rect x="530" y="782" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="805" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">战略报备变更</text>
+      <rect x="685" y="782" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="755" y="805" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目档案</text>
+      <rect x="840" y="782" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="910" y="805" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目授权</text>
+      <rect x="995" y="782" width="140" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="1065" y="805" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM推送</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
-</KbCard>
-
 </div>
 </div>
-</div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">

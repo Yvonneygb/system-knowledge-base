@@ -16,35 +16,60 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-战略项目报备（项目商机模块） → 战略经理变更申请（新建/编辑） → 保存校验 → 提交校验 → 审批流程启动 → 审批通过 → wfComplete回调 → 更新战略项目表项目经理 + 更新项目报备表项目经理
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 战略项目报备（EPM_PROJECT） | 数据依赖 | 战略经理变更的明细行需要引用战略项目信息（项目ID、编码、名称、当前项目经理） | 战略项目已存在且已生效 |
-| 用户信息（IAM_USER） | 数据依赖 | 根据变更后的项目经理工号查询用户真实姓名，用于回写项目经理名称 | 变更后的工号在用户表中存在 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 战略项目 | 战略项目表项目经理更新 | 审批通过后，将明细行中"修改为项目经理工号"对应的用户真实姓名写入战略项目表的项目经理字段，同时更新项目经理工号字段 |
-| 项目报备 | 项目报备表项目经理更新 | 审批通过后，同步更新该战略项目关联的所有报备记录的项目经理名称和工号 |
-
-</div>
-</KbCard>
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">战略经理变更 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建变更申请★ → ⚖审批通过？ → 更新战略/报备项目经理 → 结束（拒绝则修改重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+      <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+      <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+      <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+      <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="496.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="545.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">战略项目报备</text>
+      <rect x="605.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="654.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">用户信息</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="2" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="212" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="212" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="236" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建变更申请★</text>
+      <text x="235" y="254" text-anchor="middle" fill="#DCFCE7" font-size="10" font-weight="400">选战略项目·录入新项目经理工号</text>
+      <line x1="235" y1="266" x2="235" y2="284" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,284 305,324 235,364 165,324" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="328" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="305" y1="324" x2="445" y2="324" stroke="#EF4444" stroke-width="2"/>
+      <rect x="445" y="309" width="90" height="30" rx="4" fill="#FFFFFF" stroke="#EF4444" stroke-width="1"/>
+      <text x="490" y="328" text-anchor="middle" fill="#EF4444" font-size="11" font-weight="600">拒绝</text>
+      <line x1="550" y1="324" x2="550" y2="237" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="550" y1="237" x2="320" y2="237" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="364" x2="235" y2="382" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="382" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="407" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">更新项目经理+报备项目经理</text>
+      <line x1="235" y1="422" x2="235" y2="440" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="440" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="465" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="480" x2="235" y2="500" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)" stroke-dasharray="4,3"/>
+      <rect x="50" y="500" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="522" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="440.0" y="536" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="515.0" y="559" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">战略项目</text>
+      <rect x="610.0" y="536" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="685.0" y="559" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目报备</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

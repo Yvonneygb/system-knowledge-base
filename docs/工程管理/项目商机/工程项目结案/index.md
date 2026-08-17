@@ -16,49 +16,98 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```
-创建结案单 → 选择结案类型(项目结案/合同结案) → 提交工作流(CONTRACT_COMPLETED_MAIN) → 审批通过 → 执行结案逻辑 → 更新项目进度 → 推送CRM
-```
-
-</KbCard>
-
-<KbCard num="2" title="流程节点说明">
-
-| 节点 | 说明 | 操作人 |
-|------|------|--------|
-| 创建结案单 | 填写结案类型(正常/提前/逾期)、结案说明、备注 | 业务人员 |
-| 提交工作流 | 工作流编码: `CONTRACT_COMPLETED_MAIN`，进入审批流程 | 业务人员 |
-| 审批通过 | 工作流回调 `wfComplete`，审批结果为 `APPROVED`(code=5) 时触发 `doAudit` | 审批人 |
-| 执行结案逻辑 | 根据操作类型(actionType)分别执行合同结案或项目结案 | 系统自动 |
-| 更新项目进度 | 将项目进度阶段更新为"项目结案" | 系统自动 |
-| 推送CRM | 将报备失效状态(validStatus=0)推送到CRM系统 | 系统自动 |
-
-</KbCard>
-
-<KbCard num="3" title="结案类型">
-
-| 类型 | actionType | 说明 |
-|------|-----------|------|
-| 项目结案 | 1 | 将项目下所有已审批合同批量结案，同时将报备设为失效 |
-| 合同结案 | 2 | 将指定合同及关联增补合同结案 |
-
-</KbCard>
-
-<KbCard num="4" title="结案状态值集">
-
-| 值 | 含义 | 值集编码 |
-|----|------|---------|
-| 1 | 正常结案 | `AE.EPM.CONTRACT_COMPLETED_TYPE` |
-| 2 | 提前结案 | `AE.EPM.CONTRACT_COMPLETED_TYPE` |
-| 3 | 逾期结案 | `AE.EPM.CONTRACT_COMPLETED_TYPE` |
-
----
-
-</KbCard>
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程项目结案 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★创建结案单★ → ⚖结案类型？ → 提交工作流·⚖审批通过？ → 执行结案逻辑/更新进度/推送CRM → 结束（拒绝则修改重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 990" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="77" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="126" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工程合同</text>
+      <rect x="235" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="284" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目档案</text>
+      <rect x="393" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="442" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">阶段定义</text>
+      <rect x="551" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="709" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="758" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM系统</text>
+      <rect x="867" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="916" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">出库单</text>
+      <rect x="1025" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="1074" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">结案值集</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="540" y="150" width="120" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="470" y="230" width="260" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★创建结案单★</text>
+      <text x="600" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">选结案类型·填说明·保存</text>
+      <line x1="600" y1="284" x2="600" y2="320" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,320 670,350 600,380 530,350" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="354" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 结案类型？</text>
+      <line x1="530" y1="350" x2="450" y2="350" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="300" y="330" width="150" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="375" y="355" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">项目结案(1)</text>
+      <line x1="375" y1="370" x2="375" y2="450" stroke="#16A34A" stroke-width="1.5"/>
+      <line x1="375" y1="450" x2="600" y2="450" stroke="#16A34A" stroke-width="1.5" marker-end="url(#arr-green)"/>
+      <line x1="670" y1="350" x2="750" y2="350" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="750" y="330" width="150" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="825" y="355" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">合同结案(2)</text>
+      <line x1="825" y1="370" x2="825" y2="450" stroke="#16A34A" stroke-width="1.5"/>
+      <line x1="825" y1="450" x2="600" y2="450" stroke="#16A34A" stroke-width="1.5" marker-end="url(#arr-green)"/>
+      <rect x="505" y="410" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="435" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">提交工作流·CONTRACT_COMPLETED_MAIN</text>
+      <line x1="600" y1="450" x2="600" y2="480" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,480 670,510 600,540 530,510" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="514" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="670" y1="510" x2="700" y2="510" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="700" y="496" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="740" y="515" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="700" y1="510" x2="460" y2="510" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="460" y1="510" x2="460" y2="450" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="460" y1="450" x2="600" y2="450" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="600" y1="540" x2="600" y2="580" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="505" y="580" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="605" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">执行结案逻辑</text>
+      <line x1="600" y1="620" x2="600" y2="650" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="505" y="650" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="675" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">更新项目进度(项目结案)</text>
+      <line x1="600" y1="690" x2="600" y2="720" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="505" y="720" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="745" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">推送CRM·validStatus=0</text>
+      <line x1="600" y1="760" x2="600" y2="790" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="540" y="790" width="120" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="817" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="834" x2="600" y2="860" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="860" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="882" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="85" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="160" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程合同</text>
+      <rect x="305" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="380" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目档案</text>
+      <rect x="525" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM系统推送</text>
+      <rect x="745" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="820" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目透视</text>
+      <rect x="965" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="1040" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">结案状态查询</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

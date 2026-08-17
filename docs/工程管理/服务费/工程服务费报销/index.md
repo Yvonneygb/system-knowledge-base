@@ -16,56 +16,79 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-工程项目 + 经销商 + 出库单/退库单
-  │
-  ▼
-新建工程服务费报销单 → 选择项目/经销商 → 自动带出项目信息
-  │
-  ▼
-查询合同发货明细(出库单/退库单) → 选择明细行 → 自动计算逾期天数和扣分率
-  │
-  ▼
-填写报销金额/税率/发票信息 → OCR识别发票 → 保存
-  │
-  ▼
-提交 → 启动H0工作流(FIN_SVC_EXP_ACC) → 审批
-  │
-  ▼
-审批通过 → 推送财务共享(FSCC)
-  │
-  ├─ FSC&CC审批通过 → 更新状态为已核销
-  └─ F&CC审批拒绝 → 更新状态为拒绝
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 工程项目 | 数据依赖 | 报销单关联工程项目，带出项目信息 | 项目已创建 |
-| 经销商 | 数据依赖 | 报销单关联经销商 | 经销商已存在 |
-| 出库单/退库单 | 数据依赖 | 报销明细来源于合同发货明细(出库D/退库R) | 出库单/退库单已签收 |
-| H0工作流引擎 | 配置依赖 | 提交审批使用H0工作流(FIN_SVC_EXP_ACC) | 工作流已配置 |
-| 财务共享(FSCC) | 配置依赖 | 审批通过后推送FSCC进行共享审批 | FSCC接口已配置 |
-| OCR服务 | 配置依赖 | 发票OCR识别 | OCR服务可用 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 财务共享(FSCC) | 推送FSCC共享审批 | 审批通过后推送报销数据到FSCC，FSCC进行共享审批和账务处理 |
-| 服务费预提/冲销 | 核销金额影响预提冲销 | 报销单的核销金额会影响服务费的预提和冲销计算 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程服务费报销 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建报销单★ → 双轨审批(H0+FSCC) → 已核销/拒绝 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 771" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="278.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="327.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工程项目</text>
+      <rect x="387.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="436.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商</text>
+      <rect x="496.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="545.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">出库单/退库单</text>
+      <rect x="605.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="654.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">H0工作流</text>
+      <rect x="714.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="763.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">财务共享FSCC</text>
+      <rect x="823.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="872.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OCR服务</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="2" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="212" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="212" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="236" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建报销单★</text>
+      <text x="235" y="254" text-anchor="middle" fill="#DCFCE7" font-size="10" font-weight="400">选项目/经销商·带出签收明细</text>
+      <line x1="235" y1="266" x2="235" y2="284" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,284 305,324 235,364 165,324" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="328" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">H0审批通过？</text>
+      <line x1="305" y1="324" x2="445" y2="324" stroke="#EF4444" stroke-width="2"/>
+      <rect x="445" y="309" width="90" height="30" rx="4" fill="#FFFFFF" stroke="#EF4444" stroke-width="1"/>
+      <text x="490" y="328" text-anchor="middle" fill="#EF4444" font-size="11" font-weight="600">拒绝</text>
+      <line x1="550" y1="324" x2="550" y2="237" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="550" y1="237" x2="320" y2="237" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="364" x2="235" y2="382" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="382" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="407" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送财务共享(FSCC)</text>
+      <line x1="235" y1="422" x2="235" y2="440" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,440 305,480 235,520 165,480" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="484" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">FSCC审批通过？</text>
+      <line x1="305" y1="480" x2="445" y2="480" stroke="#EF4444" stroke-width="2"/>
+      <rect x="445" y="465" width="90" height="30" rx="4" fill="#FFFFFF" stroke="#EF4444" stroke-width="1"/>
+      <text x="490" y="484" text-anchor="middle" fill="#EF4444" font-size="11" font-weight="600">拒绝</text>
+      <line x1="550" y1="480" x2="550" y2="237" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="550" y1="237" x2="320" y2="237" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="520" x2="235" y2="538" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="538" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="563" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">更新状态·已核销</text>
+      <line x1="235" y1="578" x2="235" y2="596" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="596" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="621" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="636" x2="235" y2="656" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)" stroke-dasharray="4,3"/>
+      <rect x="50" y="656" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="678" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="440.0" y="692" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="515.0" y="715" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">财务共享FSCC</text>
+      <rect x="610.0" y="692" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="685.0" y="715" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">服务费预提/冲销</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

@@ -474,4 +474,85 @@
 
 </div>
 
+<div id="biz-flow" style="display:none;">
+<div class="tab-pad">
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">服务费报销兑现 — 全链路流程图</h4>
+  <p class="bf-main-sub">签订合同 → 申请折扣 → 创建要货 → 系统流转 → 签收 → 报销 → 付款 → 认领 → 兑现 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 1055" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+      <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+      <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+      <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+      <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="496.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="545.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="10" font-weight="600">工程合同(直签/引荐)</text>
+      <rect x="605.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="654.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商折扣单</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="2" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="212" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="212" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="236" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★签订合同★</text>
+      <text x="235" y="254" text-anchor="middle" fill="#DCFCE7" font-size="10" font-weight="400">直签/引荐·确定清单与单价</text>
+      <line x1="235" y1="266" x2="235" y2="284" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="284" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="309" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">申请经销商折扣</text>
+      <line x1="235" y1="324" x2="235" y2="342" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="342" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="367" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">创建要货订单</text>
+      <line x1="235" y1="382" x2="235" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="160" y="400" width="150" height="36" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="423" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">系统流转 CRM→ERP→WMS→出库→EPMS</text>
+      <line x1="235" y1="436" x2="235" y2="454" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="454" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="479" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">工程方签收</text>
+      <line x1="235" y1="494" x2="235" y2="512" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="512" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="537" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">服务商签收</text>
+      <line x1="235" y1="552" x2="235" y2="570" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="570" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="595" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">申请报销</text>
+      <line x1="235" y1="610" x2="235" y2="628" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="628" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="653" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">工程方付款</text>
+      <line x1="235" y1="668" x2="235" y2="686" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="686" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="711" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">货款认领</text>
+      <line x1="235" y1="726" x2="235" y2="744" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="744" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="769" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">提交兑现申请</text>
+      <line x1="235" y1="784" x2="235" y2="802" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="802" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="826" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★兑现完成★</text>
+      <line x1="235" y1="856" x2="235" y2="874" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="874" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="899" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="914" x2="235" y2="934" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)" stroke-dasharray="4,3"/>
+      <rect x="50" y="934" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="956" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="440.0" y="970" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="515.0" y="993" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">服务商服务费结算</text>
+      <rect x="610.0" y="970" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="685.0" y="993" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">财务付款打款</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
+</div>
+</div>
+</div>
+
+
+
 

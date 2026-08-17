@@ -16,50 +16,87 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-新建要货订单 → 选择客户/合同/项目/折扣单 → 录入产品明细 → 保存 → 提交审批
-  → 工作流审批通过 → 生成CRM订单 → 推送ERP发货
-  → 审批拒绝/驳回 → 修改后重新提交
-  
-特殊流程：
-  不扣订金申请 → OA审批 → 审批通过后标记无需扣订金
-  修改收货地址 → 校验地址变更限制 → 更新订单地址
-  产品明细导入 → 折扣政策类型导入 / 价目表类型导入
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 客户主档 | 数据依赖 | 选择经销商客户，带出客户编码、名称、地址等信息 | 客户已创建且有效 |
-| 工程合同 | 数据依赖 | 选择工程合同，带出合同编码、名称、签约方式、合作结束日期 | 合同状态为已生效 |
-| 项目信息 | 数据依赖 | 选择项目，带出项目编码、名称、进度、项目经理 | 项目已创建 |
-| 折扣单/折扣政策 | 数据依赖 | 选择折扣单或折扣政策，计算产品价格和折扣 | 折扣单/政策已生效 |
-| 编码规则 | 配置依赖 | 生成要货单号，编码规则AE.EPM_SA_OUT_BILL_HEAD | 编码规则已配置 |
-| 工作流引擎 | 配置依赖 | 提交审批，流程编码SAMPLE_ORDER_REQUEST_PROJECT | 工作流已部署 |
-| CRM系统 | 数据依赖 | 审批通过后创建CRM订单 | CRM接口可用 |
-| ERP系统 | 数据依赖 | 推送发货信息 | ERP接口可用 |
-| OA审批系统 | 配置依赖 | 不扣订金申请推送OA审批 | OA单据映射已配置 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| CRM系统 | 创建CRM订单 | 审批通过后调用CRM接口创建订单，CRM返回定金金额等信息 |
-| ERP系统 | 推送ERP发货 | 审批通过后推送ERP执行发货 |
-| 客户可发货余额 | 可发货余额扣减 | 订单提交后扣减客户可发货余额 |
-| 工程折扣单 | 折扣单可用量扣减 | 关联折扣单后，折扣单的可用数量/金额相应扣减 |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程要货订单 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建工程要货订单★ → ⚖审批通过？ → 生成CRM订单/推送ERP发货 → 结束（拒绝则修改重提；不扣订金走OA审批）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="105" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="154" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户主档</text>
+      <rect x="214" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="263" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工程合同</text>
+      <rect x="323" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="372" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目信息</text>
+      <rect x="432" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="481" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">折扣单/政策</text>
+      <rect x="541" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="590" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="650" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="699" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="759" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="808" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM系统</text>
+      <rect x="868" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="917" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">ERP系统</text>
+      <rect x="977" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="1026" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA审批</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="230" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建工程要货订单★</text>
+      <text x="235" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">选客户/合同/项目/折扣单·录入明细·保存</text>
+      <line x1="235" y1="284" x2="235" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,300 305,340 235,380 165,340" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="344" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="235" y1="380" x2="235" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="400" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="425" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">生成CRM订单</text>
+      <line x1="235" y1="440" x2="235" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="460" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="485" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送ERP发货</text>
+      <line x1="235" y1="500" x2="235" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="540" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="580" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <line x1="305" y1="340" x2="430" y2="340" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="325" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="344" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="340" x2="430" y2="257" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="257" x2="315" y2="257" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="315" y1="270" x2="540" y2="270" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="540" y="252" width="120" height="36" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="275" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">不扣订金申请</text>
+      <line x1="600" y1="288" x2="600" y2="320" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="550" y="320" width="100" height="34" rx="5" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="342" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">OA审批</text>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="260" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="335" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM系统·创建订单</text>
+      <rect x="430" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="505" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">ERP系统·推送发货</text>
+      <rect x="600" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="675" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">客户可发货余额</text>
+      <rect x="770" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="845" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程折扣单·可用量</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑/不扣订金OA</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

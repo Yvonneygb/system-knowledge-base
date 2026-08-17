@@ -16,70 +16,81 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-到款引入(EPM_PAYMENT_IMPORT) ──引入到款数据──> 项目到款认领(新建)
-                                                    │
-                                                    ├── 选择客户 → 查询可认领项目
-                                                    ├── 选择项目 → 查询可认领合同
-                                                    ├── 选择合同 → 查询可认领出库明细
-                                                    ├── 填写认领金额 → 保存(校验可认领金额)
-                                                    │
-                                                    ▼
-                                              提交审批(推送ERP核销-SUBMIT)
-                                                    │
-                                          ┌─────────┴─────────┐
-                                          ▼                   ▼
-                                    审批通过              审批驳回
-                                    (推送ERP核销-APPROVE)  (推送ERP取消核销-CANCEL)
-                                    状态→APPROVED          状态→INTERRUPT
-                                          │
-                                          ▼
-                                    ERP核销完成
-                                    (状态→TRANSFER/ACCOUNTED)
-
-                    ┌──────────────────────────────────────────────┐
-                    │          到款认领撤销流程                      │
-                    │  选择已认领明细 → 填写撤销原因 → 保存撤销单    │
-                    │       → 提交审批 → 审批通过                   │
-                    │       → 推送ERP撤销(负数金额)                 │
-                    │       → 回退到款单可认领金额                   │
-                    └──────────────────────────────────────────────┘
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 项目到款引入(EPM_PAYMENT_IMPORT) | 数据依赖 | 提供到款单基础数据（客户、金额、银行流水号等），认领基于到款引入数据 | 到款单状态为已审核，可认领金额>0 |
-| 项目合同(EPM_PROJECT_CONTRACT) | 数据依赖 | 提供可认领的合同信息，合同需审批通过 | 合同审批状态=APPROVED，合同类型=1 |
-| 出库确认/差异单 | 数据依赖 | 提供可认领的出库明细行（签收行），含工程方金额、经销商金额 | 差异单审批通过，已记账，推送成功 |
-| ERP核销接口(EPMS_AR_APPLY) | 配置依赖 | 认领提交/审批/撤销时推送ERP核销数据 | ERP接口可用 |
-| 编码规则(AE.EPM_PAYMENT_ALLOT) | 配依赖 | 生成认领单号 | 编码规则已配置 |
-| 工作流(EPM_PAYMENT_ALLOT_区域) | 配置依赖 | 按区域区分审批流程 | 工作流已部署 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 项目到款单 | 可认领金额回写 | 保存认领时扣减到款单可认领金额；删除认领时恢复可认领金额；撤销审批通过时回加可认领金额。当可认领金额=0时，到款单认领状态更新为已清(CLEAR) |
-| ERP系统 | 推送核销数据 | 提交时推送SUBMIT状态核销数据；审批通过推送APPROVE状态；驳回推送CANCEL状态；撤销推送负数金额核销数据。推送数据包含AR_APPLY(应收核销)、OM_CLAIM(出库认领)、OM_APPLY(出库核销)三类 |
-| 工程项目合同 | 合同已回款金额更新 | 认领审批通过后，合同的已回款金额增加，影响合同回款进度统计 |
-| 出库确认 | 出库明细撤销标记 | 撤销审批通过后，对应出库明细行的撤销标识更新为Y，该明细不可再次撤销 |
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">项目到款认领 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 到款引入数据 → ★新建到款认领单★ → 提交审批(推送ERP核销) → ⚖审批通过？ → ERP核销完成(APPROVED) / 驳回中断 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="105" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="154" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">到款引入</text>
+      <rect x="213" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="262" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目合同</text>
+      <rect x="321" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="370" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">出库确认</text>
+      <rect x="429" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="478" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">ERP核销</text>
+      <rect x="537" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="586" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="645" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="694" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="145" y="210" width="180" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="235" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">到款引入数据(EPM_PAYMENT_IMPORT)</text>
+      <line x1="235" y1="250" x2="235" y2="266" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="266" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="290" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建到款认领单★</text>
+      <text x="235" y="308" text-anchor="middle" fill="#DCFCE7" font-size="10">选客户/项目/合同/出库明细·填金额保存</text>
+      <line x1="235" y1="320" x2="235" y2="336" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="336" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="361" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">提交审批(推送ERP核销)</text>
+      <line x1="235" y1="376" x2="235" y2="392" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,392 305,432 235,472 165,432" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="436" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="235" y1="472" x2="235" y2="488" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="488" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="513" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">ERP核销完成(APPROVED)</text>
+      <line x1="235" y1="528" x2="235" y2="544" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="544" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="569" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="584" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <line x1="305" y1="432" x2="430" y2="432" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="380" y="417" width="100" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="430" y="436" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">驳回中断✗</text>
+      <line x1="430" y1="432" x2="430" y2="293" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="293" x2="315" y2="293" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="200" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="275" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">到款单·可认领回写</text>
+      <rect x="375" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="450" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">ERP系统·核销推送</text>
+      <rect x="550" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="625" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目合同·回款更新</text>
+      <rect x="725" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="800" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">出库确认·撤销标记</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批驳回/中断</span>
+  </div>
 </div>
-</KbCard>
 </div>
 </div>
-</div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">

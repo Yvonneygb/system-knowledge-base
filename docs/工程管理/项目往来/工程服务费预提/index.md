@@ -16,58 +16,74 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-出库单签收数据 ──定时任务/手工触发──> 预提数据生成(按交易公司+法人+年月汇总)
-                                          │
-                                          ├── 自动生成共享单号(GCYT编码规则)
-                                          ├── 自动生成预提单号(按事业部编码规则)
-                                          ├── 初始单据状态=保存(SAVE)
-                                          │
-                                          ▼
-                                    执行(推共享) ──推送共享接口──> 共享系统处理
-                                          │                              │
-                                          ▼                              ▼
-                                    状态→审批中(AUDITING)          共享返回成功/失败
-                                                                   │
-                                              ┌───────────────────┤
-                                              ▼                   ▼
-                                         共享处理成功         共享返回失败(报错)
-                                              │
-                                              ▼
-                                         作废(推共享) ──推送作废数据(负数金额)──> 共享系统
-                                              │
-                                              ▼
-                                         重新生成 ──按年月重新生成预提数据──> 新预提单
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 出库单签收数据(expense_withholding_view) | 数据依赖 | 定时任务基于出库单签收数据自动生成预提数据，预提金额=服务费×预提比例 | 出库单已签收，差异单审批通过 |
-| 事业部基础设置(DIVISION_BASE_SET) | 配置依赖 | 获取事业部编码，用于生成预提单号 | 事业部已配置 |
-| 编码规则(AE.SHARE_NO/AE.WITHHOLDING_NO) | 配置依赖 | 生成共享单号和预提单号 | 编码规则已配置 |
-| 共享接口(ArrowFsscSdk.inLimitBudPush) | 配置依赖 | 执行/作废时推送预提数据到共享系统 | 共享接口可用 |
-| LOV配置(AE.SIE.POSITION_LDAP_CODE) | 配置依赖 | 获取申请人职位编码 | LOV已配置 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 财务共享(FSCC) | 预算占用更新 | 执行时推送正数金额到共享系统，占用预算；作废时推送负数金额，释放预算 |
-| 服务费预提 | 预提单状态流转 | 执行/作废推送成功后，预提单状态更新为审批中(AUDITING) |
-| 服务费预提 | 重算预提数据 | 作废后可重新生成，生成新的共享单号和预提单号，原单据状态标记为作废(INVALID) |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程服务费预提 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → 生成预提数据(定时/手工) → ★新建服务费预提单★ → 执行推共享 → ⚖共享处理成功？ → 状态审批中 / 失败则作废重生成 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="120" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="175" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">出库签收数据</text>
+      <rect x="250" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="305" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部设置</text>
+      <rect x="380" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="435" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="510" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="565" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">共享接口</text>
+      <rect x="640" y="56" width="110" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="695" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">LOV配置</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="210" width="160" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="235" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">生成预提数据(定时/手工)</text>
+      <line x1="235" y1="250" x2="235" y2="266" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="266" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="290" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建服务费预提单★</text>
+      <text x="235" y="308" text-anchor="middle" fill="#DCFCE7" font-size="10">生成共享/预提单号·保存</text>
+      <line x1="235" y1="320" x2="235" y2="336" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="336" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="361" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">执行推共享(推送接口)</text>
+      <line x1="235" y1="376" x2="235" y2="392" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,392 305,432 235,472 165,432" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="436" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 共享处理成功？</text>
+      <line x1="235" y1="472" x2="235" y2="488" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="488" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="513" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">状态→审批中(AUDITING)</text>
+      <line x1="235" y1="528" x2="235" y2="544" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="544" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="569" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="584" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <line x1="305" y1="432" x2="430" y2="432" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="380" y="417" width="100" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="430" y="436" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">失败/重生成✗</text>
+      <line x1="430" y1="432" x2="430" y2="293" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="293" x2="315" y2="293" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="275" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="350" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">财务共享FSCC</text>
+      <rect x="500" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="575" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">预提单状态流转</text>
+      <rect x="725" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="800" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">重算预提数据</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 共享处理失败/重生成</span>
+  </div>
 </div>
 </div>
 </div>

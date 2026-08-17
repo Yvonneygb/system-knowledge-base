@@ -2,6 +2,83 @@
 ---
 
 <KbSectionTabs />
+<div id="biz-flow" style="display:none;">
+<div class="tab-pad">
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程折扣政策 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建工程折扣政策★ → ⚖审批通过？ → 政策生效(valid=2: 通用直接生效/专项CRM同步) / 拒绝 → 失效申请 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="105" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="154" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM系统</text>
+      <rect x="213" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="262" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">EBS系统</text>
+      <rect x="321" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="370" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户组织</text>
+      <rect x="429" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="478" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">销售区域</text>
+      <rect x="537" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="586" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">省份</text>
+      <rect x="645" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="694" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">价目表</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="210" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="135" y="210" width="200" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="234" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建工程折扣政策★</text>
+      <text x="235" y="252" text-anchor="middle" fill="#DCFCE7" font-size="10">填维度/产品行/坎级·保存提交</text>
+      <line x1="235" y1="264" x2="235" y2="280" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,280 305,320 235,360 165,320" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="324" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="235" y1="360" x2="235" y2="376" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="140" y="376" width="190" height="44" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="400" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">政策生效(valid=2)</text>
+      <text x="235" y="418" text-anchor="middle" fill="#166534" font-size="10">通用直接生效/专项CRM同步</text>
+      <line x1="235" y1="420" x2="235" y2="436" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="436" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="461" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">失效申请(Disabled)</text>
+      <line x1="235" y1="476" x2="235" y2="492" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="492" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="517" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="532" x2="235" y2="560" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <line x1="305" y1="320" x2="430" y2="320" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="380" y="305" width="100" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="430" y="324" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝✗</text>
+      <line x1="430" y1="320" x2="430" y2="237" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="237" x2="335" y2="237" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <rect x="50" y="560" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="582" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="120" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="195" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">要货订单</text>
+      <rect x="295" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="370" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">折扣申请单</text>
+      <rect x="470" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="545" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">折扣变更</text>
+      <rect x="645" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="720" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">OA审批系统</text>
+      <rect x="820" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="895" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM系统</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝</span>
+  </div>
+</div>
+</div>
+</div>
 
 <div id="logic">
 
@@ -14,23 +91,23 @@
 ```text
 EPM_DISCOUNT_POLICY (政策头)
   │
-  ├──< EPM_DISCOUNT_POLICY_ITEM (产品行)
+  ├── EPM_DISCOUNT_POLICY_ITEM (产品行)
   │       ├── preferentialType: 1=折扣, 2=特价
   │       ├── applicationType: 1=产品, 2=型号, 3=全产品
   │       │
-  │       ├──< EPM_DISCOUNT_POLICY_ITEM_LINE (坎级行-阶梯定价)
+  │       ├── EPM_DISCOUNT_POLICY_ITEM_LINE (坎级行-阶梯定价)
   │       │       ├── minimumQty: 起订量
   │       │       ├── cappingQty: 封顶量
   │       │       ├── discountRate / specialOffer: 折扣率或特价
-  │       │       └──< EPM_DPIL_EXT (坎级扩展-特价反算折扣/警戒线)
+  │       │       └── EPM_DPIL_EXT (坎级扩展-特价反算折扣/警戒线)
   │       │
   │       ├── 1:1 ── EPM_DISCOUNT_POLICY_ITEM_EXT (产品扩展-库龄/生命周期)
-  │       └──< EPM_DISCOUNT_POLICY_ITEM_CUSTOMER (产品客户封顶量)
+  │       └── EPM_DISCOUNT_POLICY_ITEM_CUSTOMER (产品客户封顶量)
   │
-  ├──< EPM_DISCOUNT_POLICY_CUSTOMER (政策客户列表)
+  ├── EPM_DISCOUNT_POLICY_CUSTOMER (政策客户列表)
   ├── 1:1 ── EPM_DISCOUNT_POLICY_GENERATE (CRM推送记录)
-  │             └──< EPM_DISCOUNT_GENERATE_ITEM (CRM推送明细)
-  └──< EPM_DISCOUNT_POLICY_DISABLED (失效记录)
+  │             └── EPM_DISCOUNT_GENERATE_ITEM (CRM推送明细)
+  └── EPM_DISCOUNT_POLICY_DISABLED (失效记录)
 ```
 
 #### 头表关键字段（EPM_DISCOUNT_POLICY）

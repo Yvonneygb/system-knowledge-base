@@ -16,54 +16,95 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="1.1 整体流程">
-
-```
-项目报备审核通过 → 写入/更新项目档案(EPM_PROJECT) → 项目生效
-    ↓
-项目进度更新 → 更新项目档案进度阶段
-    ↓
-项目有效期超期/进度超时 → 系统自动冻结项目档案
-    ↓
-项目解冻申请 → 审批通过 → 解冻项目档案
-    ↓
-项目失效申请 → 审批通过 → 项目失效
-    ↓
-项目恢复生效 → 审批通过 → 项目恢复
-    ↓
-项目合同签订确认 → 回写合同信息至项目档案
-```
-
-</KbCard>
-
-<KbCard num="2" title="1.2 核心流程节点">
-
-| 节点 | 触发方式 | 操作对象 | 说明 |
-|------|---------|---------|------|
-| 报备审核写入档案 | 报备审批通过 | EPM_PROJECT | 首次报备INSERT，二次报备UPDATE |
-| 进度更新写入档案 | 进度更新审批通过 | EPM_PROJECT | 更新STAGE_ID/STAGE_NAME/STAGE_DESC |
-| 解冻写入档案 | 解冻审批通过 | EPM_PROJECT | 更新PROJECT_VALID=2，FREEZE_TYPE=0 |
-| 失效写入档案 | 失效审批通过 | EPM_PROJECT | 更新PROJECT_VALID=3 |
-| 恢复生效写入档案 | 恢复审批通过 | EPM_PROJECT | 更新PROJECT_VALID=2 |
-| 合同回写档案 | 合同签订确认 | EPM_PROJECT | 回写CONTRACT_CODE/CONTRACT_AMOUNT等 |
-
-</KbCard>
-
-<KbCard num="3" title="1.3 项目有效状态流转">
-
-```
-1(未生效) → 2(已生效) → 4(已冻结) → 2(已生效,解冻)
-                      → 3(已失效) → 2(已生效,恢复)
-
-已冻结细分状态(前端展示):
-6=解冻草稿  7=解冻拒绝  8=解冻申请中
-9=已冻结(有效期内未签合同,freezeType=1)
-10=已冻结(进度更新超时,freezeType=2)
-12=已冻结(有效期内已签合同,freezeType=4)
-```
-
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">工程项目档案 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★报备审核写入项目档案★ → 进度更新/系统冻结/解冻·失效·恢复审批/合同回写更新档案 → 结束（拒绝则修改重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 990" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="77" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="126" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目报备</text>
+      <rect x="235" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="284" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">进度更新</text>
+      <rect x="393" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="442" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">解冻申请</text>
+      <rect x="551" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">失效申请</text>
+      <rect x="709" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="758" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">恢复生效</text>
+      <rect x="867" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="916" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">合同确认</text>
+      <rect x="1025" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="1074" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">系统参数</text>
+      <line x1="600" y1="115" x2="600" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="540" y="150" width="120" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="600" y1="194" x2="600" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="480" y="230" width="240" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="600" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★报备审核写入项目档案★</text>
+      <text x="600" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">INSERT/UPDATE EPM_PROJECT·授权与乙方同步</text>
+      <line x1="600" y1="284" x2="600" y2="320" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="505" y="320" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="345" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">进度更新写入档案</text>
+      <line x1="600" y1="360" x2="600" y2="395" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,395 670,425 600,455 530,425" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="429" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 有效期超期/超时？</text>
+      <line x1="670" y1="425" x2="720" y2="425" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="720" y="405" width="150" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="795" y="430" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">系统自动冻结(4)</text>
+      <line x1="795" y1="445" x2="795" y2="470" stroke="#16A34A" stroke-width="1.5"/>
+      <line x1="795" y1="470" x2="600" y2="470" stroke="#16A34A" stroke-width="1.5" marker-end="url(#arr-green)"/>
+      <rect x="505" y="470" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="495" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">解冻/失效/恢复申请</text>
+      <line x1="600" y1="510" x2="600" y2="545" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="600,545 670,575 600,605 530,575" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="579" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="670" y1="575" x2="740" y2="575" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="700" y="560" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="740" y="579" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="700" y1="574" x2="460" y2="574" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="460" y1="574" x2="460" y2="510" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="460" y1="510" x2="600" y2="510" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="600" y1="605" x2="600" y2="640" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="505" y="640" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="665" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">更新档案有效状态</text>
+      <line x1="600" y1="680" x2="600" y2="715" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="505" y="715" width="190" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="600" y="740" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">合同回写档案</text>
+      <line x1="600" y1="755" x2="600" y2="790" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="540" y="790" width="120" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="600" y="817" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="600" y1="834" x2="600" y2="860" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="860" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="882" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="50" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="125" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程合同</text>
+      <rect x="240" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="315" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程要货订单</text>
+      <rect x="430" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="505" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">折扣校验配置</text>
+      <rect x="620" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="695" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目透视</text>
+      <rect x="810" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="885" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目结案</text>
+      <rect x="1000" y="898" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="1075" y="921" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM系统推送</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 
 </div>
 </div>

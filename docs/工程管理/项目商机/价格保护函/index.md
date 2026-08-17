@@ -16,40 +16,73 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-项目报备(已审批通过) → 发起价格保护函 → 填写保护函内容(自动生成模板) → 保存(校验+生成编号) → 提交审批 → 审批流转 → 审批通过(计算过期时间+发布) → 价格保护函生效 → 过期自动失效
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 项目报备 | 数据依赖 | 价格保护函需关联已报备的项目，从中获取项目名称、地址、经销商、经办人等信息 | 项目已存在且审批通过 |
-| 系统参数配置(PriceProtectionReaders) | 配置依赖 | 价格函阅读者配置，保存时校验是否已配置 | 系统参数表中存在该配置项 |
-| 系统参数配置(PriceProtectionPeriod) | 配置依赖 | 价格保护函有效期时长（天数），审批通过时用于计算过期时间 | 系统参数表中存在该配置项 |
-| 编码规则(AE.PRICE_PROTECTION_LETTER_NO) | 配置依赖 | 价格保护函编号生成规则，保存时自动生成编号 | 编码规则已配置 |
-| 事业部基础设置 | 数据依赖 | 获取事业部名称、事业部编码（用于编号前缀和模板内容填充） | 事业部基础数据已维护 |
-| 工作流引擎 | 配置依赖 | 价格保护函提交审批依赖工作流引擎进行审批流转 | 工作流已配置 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 工程折扣 | 折扣政策校验 | 折扣政策行项校验时，会引用价格保护函Mapper判断项目是否存在生效的价格保护函 |
-| 项目报备 | 项目价格保护 | 审批通过后，该项目获得价格保护资格，其他经销商不得恶意报价，否则将受处罚 |
-| 发文通知 | 发文通知 | 审批通过后，价格保护函内容将作为发文通知推送（当前代码已注释，暂未启用） |
-
-</div>
-</KbCard>
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">价格保护函 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建价格保护函★ → ⚖审批通过？ → 计算过期·发布生效 → 结束</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+      <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+      <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+      <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+      <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="278.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="327.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目报备</text>
+      <rect x="387.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="436.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">系统参数(读者)</text>
+      <rect x="496.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="545.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">系统参数(期限)</text>
+      <rect x="605.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="654.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="714.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="763.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">事业部设置</text>
+      <rect x="823.5" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="872.5" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="2" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="212" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="212" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="236" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建价格保护函★</text>
+      <text x="235" y="254" text-anchor="middle" fill="#DCFCE7" font-size="10" font-weight="400">关联项目·自动生成模板与编号</text>
+      <line x1="235" y1="266" x2="235" y2="284" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,284 305,324 235,364 165,324" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="328" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="305" y1="324" x2="445" y2="324" stroke="#EF4444" stroke-width="2"/>
+      <rect x="445" y="309" width="90" height="30" rx="4" fill="#FFFFFF" stroke="#EF4444" stroke-width="1"/>
+      <text x="490" y="328" text-anchor="middle" fill="#EF4444" font-size="11" font-weight="600">拒绝</text>
+      <line x1="550" y1="324" x2="550" y2="237" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="550" y1="237" x2="320" y2="237" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="364" x2="235" y2="382" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="382" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="407" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">计算过期时间·发布生效</text>
+      <line x1="235" y1="422" x2="235" y2="440" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="160" y="440" width="150" height="36" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="463" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">过期自动失效</text>
+      <line x1="235" y1="476" x2="235" y2="494" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="494" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="519" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="534" x2="235" y2="554" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)" stroke-dasharray="4,3"/>
+      <rect x="50" y="554" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="576" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="355.0" y="590" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="430.0" y="613" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程折扣</text>
+      <rect x="525.0" y="590" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600.0" y="613" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目报备</text>
+      <rect x="695.0" y="590" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="770.0" y="613" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">发文通知</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

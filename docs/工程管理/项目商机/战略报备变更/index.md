@@ -16,65 +16,72 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-战略项目报备(已通过) ──→ 发起战略报备变更 ──→ 选择项目并填写变更原因
-                                                    │
-                                                    ├── 选择经销商调整(新增/失效/恢复生效)
-                                                    ├── 选择网点调整(新增/失效/恢复生效)
-                                                    └── 上传附件
-                                                    │
-                                                    ▼
-                                              保存/保存并提交
-                                                    │
-                                                    ▼
-                                           推送OA审批(战略报备变更)
-                                                    │
-                                            ┌───────┴───────┐
-                                            ▼               ▼
-                                        OA审批通过      OA审批拒绝
-                                            │               │
-                                            ▼               ▼
-                                    审批完成回调         审批拒绝回调
-                                    (更新经销商/网点)    (更新回调来源)
-                                            │
-                                            ▼
-                                    同步更新项目授权经销商
-                                    同步更新报备授权经销商
-                                    同步更新报备网点信息
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 战略项目报备 | 数据依赖 | 变更基于已通过的报备数据，获取当前经销商和网点列表 | 项目报备状态为"二次报备通过"或家装报备已审批通过 |
-| OA审批系统 | 配置依赖 | 推送审批单据到OA，需配置OA单据映射（战略报备变更/家装战略报备经销商变更/家装战略网点分配变更） | OA_BILL_REF表中存在对应单据名称配置 |
-| 经销商主数据 | 数据依赖 | 变更时需查询经销商信息（编码、名称、经办人、电话） | 经销商ID有效 |
-| 值集配置 | 配置依赖 | 调整类型值集(AE.EPM.AUTH_ECN_TYPE)、产品线、公司性质等 | 值集已配置且生效 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 项目授权/报备授权 | 项目授权经销商变更 | 审批通过后，新增的经销商写入项目授权表和报备授权表；失效的经销商标记禁用；恢复生效的经销商取消禁用 |
-| 报备网点 | 报备网点信息变更 | 审批通过后，新增的网点写入报备网点表；失效的网点标记禁用；恢复生效的网点取消禁用 |
-| 意向单 | 意向单校验 | 失效经销商时，若该经销商存在已审核的意向单，则阻断失效操作 |
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">战略报备变更 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★发起战略报备变更★ → ⚖OA审批通过？ → 同步更新项目/报备授权与网点 → 结束（拒绝则重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="270" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="345" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">战略项目报备</text>
+      <rect x="440" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="515" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">OA审批系统</text>
+      <rect x="610" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="685" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">经销商主数据</text>
+      <rect x="780" y="56" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="855" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">值集配置</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="230" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★发起战略报备变更★</text>
+      <text x="235" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">选项目·填变更原因·传附件</text>
+      <line x1="235" y1="284" x2="235" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,300 305,340 235,380 165,340" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="344" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ OA审批通过？</text>
+      <line x1="305" y1="340" x2="430" y2="340" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="325" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="344" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="340" x2="430" y2="257" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="257" x2="315" y2="257" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="380" x2="235" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="400" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="425" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">同步更新授权/网点</text>
+      <line x1="235" y1="440" x2="235" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="460" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="485" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">更新项目/报备授权</text>
+      <line x1="235" y1="500" x2="235" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="540" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="580" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="370" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="445" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目/报备授权变更</text>
+      <rect x="540" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="615" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">报备网点变更</text>
+      <rect x="710" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="785" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">意向单校验</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
-</KbCard>
-
 </div>
 </div>
-</div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">

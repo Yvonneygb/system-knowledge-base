@@ -16,65 +16,86 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-项目报备（已冻结）
-       │
-       ├──[新建解冻申请]──> 填写解冻申请单 ──> 提交审批 ──> 审批通过 ──> 项目解冻
-       │                                                    │
-       │                                                    ├── 更新项目有效状态为2（已生效）
-       │                                                    ├── 更新项目冻结类型为0、冻结时间清空
-       │                                                    ├── 更新项目解冻时间
-       │                                                    ├── 超有效期冻结(1/4)：重置有效起止日期
-       │                                                    ├── 更新项目进度（阶段+描述）
-       │                                                    ├── 记录审批人和审批时间
-       │                                                    ├── 更新解冻申请审核状态为"审核通过"
-       │                                                    ├── 家装单体(MONOMER_TYPE=2)：重置有效期
-       │                                                    └── 非家装单体：推送解冻信息到CRM
-       │
-       ├──[审批拒绝]──> 项目保持冻结 ──> 可重新提交解冻申请
-       │
-       └──[流程终止/撤回]──> 项目保持冻结
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 项目报备（EPM_REPORT） | 数据依赖 | 解冻申请必须基于已冻结的项目报备数据，审批通过后需查询报备信息推送CRM和操作ES | 项目报备数据存在且已冻结 |
-| 项目信息（EPM_PROJECT） | 数据依赖 | 审批通过后需更新项目有效状态、冻结类型、冻结时间、解冻时间、有效期、进度等字段 | 项目已创建且已冻结 |
-| 客户信息（CUSTOMER） | 数据依赖 | 推送CRM时需获取客户简称 | 报备关联的客户ID有效 |
-| 阶段定义（EPM_STAGE_DEF） | 数据依赖 | 审批通过后更新项目进度时需查询阶段定义信息 | 阶段ID有效 |
-| 系统参数（Proj_Effective_Cycle） | 配置依赖 | 审批通过后重置有效期时需获取报备有效周期天数 | 系统参数已配置 |
-| 系统配置（UnFreezeProjectConShow） | 配置依赖 | 提交时校验附件是否必填，根据事业部ID判断是否需要校验 | 系统配置已配置 |
-| Redis（content_confirm_count） | 配置依赖 | 提交时校验附件数量下限，从Redis获取最小附件数 | Redis键已配置 |
-| 工作流引擎 | 配置依赖 | 提交审批依赖工作流引擎驱动，流程编码ENGINEERING_REPORT_JDSQ_MAIN | 工作流定义已配置 |
-| CRM系统（EBS接口） | 数据依赖 | 审批通过后推送解冻报备信息到CRM | 非家装单体报备（MONOMER_TYPE≠2） |
-| ES搜索引擎 | 数据依赖 | 单体报备（REPORT_TYPE=1）提交/拒绝时需同步ES索引 | 报备类型为单体报备 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 项目报备 | 项目有效状态变更 | 审批通过后，项目的有效状态（PROJECT_VALID）被更新为2（已生效），冻结类型（FREEZE_TYPE）清零，冻结时间（FREEZE_TIME）清空 |
-| 项目报备 | 项目有效期重置 | 超有效期冻结（FREEZE_TYPE=1或4）审批通过后，有效起始日期设为当前时间，有效结束日期设为当前时间+有效周期天数+1天 |
-| 项目进度 | 项目进度更新 | 审批通过后，根据解冻申请单中的解冻后进度（STAGE_VALUE_AFTER）更新项目进度，并记录阶段历程 |
-| CRM系统 | CRM系统数据同步 | 审批通过后，非家装单体报备（MONOMER_TYPE≠2）通过EBS接口（INDIVIREPORT_ADD）将解冻信息推送到CRM，validStatus=1 |
-| ES搜索引擎 | ES索引数据变更 | 单体报备（REPORT_TYPE=1）：提交时推送ES文档，拒绝/终止时删除ES文档 |
-
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">报备解冻申请 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建解冻申请★ → ⚖审批通过？ → 项目解冻·状态更新 / 推送CRM·ES联动 → 结束（拒绝则保持冻结可重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="65" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="114" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目报备</text>
+      <rect x="173" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="222" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">项目信息</text>
+      <rect x="281" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="330" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户信息</text>
+      <rect x="389" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="438" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">阶段定义</text>
+      <rect x="497" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="546" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">系统参数</text>
+      <rect x="605" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="654" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">系统配置</text>
+      <rect x="713" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="762" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">Redis</text>
+      <rect x="821" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="870" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <rect x="929" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="978" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">CRM/ES</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="155" y="230" width="160" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建解冻申请★</text>
+      <text x="235" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">选冻结项目·填说明·传附件</text>
+      <line x1="235" y1="284" x2="235" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,300 305,340 235,380 165,340" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="344" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？</text>
+      <line x1="305" y1="340" x2="430" y2="340" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="325" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="344" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="340" x2="430" y2="257" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="257" x2="315" y2="257" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="380" x2="235" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="400" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="425" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">项目解冻·状态更新</text>
+      <line x1="235" y1="440" x2="235" y2="460" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="460" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="485" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">推送CRM·ES联动</text>
+      <line x1="235" y1="500" x2="235" y2="540" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="540" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="565" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="580" x2="235" y2="600" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="600" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="622" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="135" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="210" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目状态变更</text>
+      <rect x="325" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="400" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目有效期重置</text>
+      <rect x="515" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="590" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目进度更新</text>
+      <rect x="705" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="780" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">CRM系统同步</text>
+      <rect x="895" y="638" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="970" y="661" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">ES索引变更</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
-</KbCard>
 </div>
 </div>
-</div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">

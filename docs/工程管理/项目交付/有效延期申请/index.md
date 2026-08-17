@@ -16,61 +16,66 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-紧急要货订单(已审核通过)
-  │
-  ▼
-选择紧急要货单 → 查询可延期的行项(接口成功/未过期/未取消/有预留数量)
-  │
-  ▼
-填写延期日期(必须大于已延期最大有效期) + 备注
-  │
-  ▼
-保存 → 生成延期单号(AE.URGENT_EXTEND_BILLNO编码规则) → 状态=制单(1)
-  │
-  ▼
-提交 → 启动H0工作流(VALIDITY_POST_PONE) → 状态=已提交(-1)
-  │
-  ▼
-H0审批 → 审批通过
-  │
-  ├─ 延期日期 < 当前日期 → 全部行项标记为失效(cannotExtend=2)
-  │
-  ├─ 行项已过期/已取消/接口失败 → 标记为不满足延期条件(cannotExtend=2)
-  │
-  └─ 行项仍有效 → 调用EBS接口(EbsAction-ValidityPostpone)推送延期
-       │
-       ├─ EBS返回S → 更新紧急要货行有效期 + 记录接口成功
-       └─ EBS返回E → 记录接口失败信息
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 紧急要货订单 | 数据依赖 | 有效延期申请基于已审核通过的紧急要货单创建 | 紧急要货单审批状态=APPROVED，且存在可延期的行项 |
-| H0工作流引擎 | 配置依赖 | 提交审批使用H0工作流(VALIDITY_POST_PONE) | 工作流已配置且启用 |
-| EBS系统 | 数据依赖 | 审批通过后调用EBS接口执行有效期延期 | 行项仍有效且延期日期>=当前日期 |
-| 编码规则 | 配置依赖 | 生成延期单号使用编码规则AE.URGENT_EXTEND_BILLNO | 编码规则已配置 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 紧急要货订单行 | 有效期更新为延期日期 | 审批通过且EBS接口返回成功后，更新紧急要货订单行的有效期(VALID_DATE)为延期日期 |
-| EBS系统 | 库存预留有效期更新 | 审批通过后调用EBS接口(EbsAction-ValidityPostpone)，EBS侧更新库存预留的有效期 |
-| 延期申请行项 | 不满足延期条件行项失效 | 审批通过时，不满足延期条件的行项标记cannotExtend=2(不满足延期申请条件) |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">有效延期申请 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建有效延期申请★ → ⚖H0审批通过？ → 行项分情况处理(推送EBS/标记失效) → 结束（拒绝则修改重提）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 660" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="325" y="56" width="130" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="390" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">紧急要货订单</text>
+      <rect x="465" y="56" width="130" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="530" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">H0工作流引擎</text>
+      <rect x="605" y="56" width="130" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="670" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">EBS系统</text>
+      <rect x="745" y="56" width="130" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="810" y="78" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="230" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="230" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="254" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建有效延期申请★</text>
+      <text x="235" y="272" text-anchor="middle" fill="#DCFCE7" font-size="10">选紧急要货单·填延期日期·备注·保存</text>
+      <line x1="235" y1="284" x2="235" y2="300" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,300 305,340 235,380 165,340" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="344" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ H0审批通过？</text>
+      <line x1="305" y1="340" x2="430" y2="340" stroke="#EF4444" stroke-width="2" marker-end="url(#arr-red)"/>
+      <rect x="385" y="325" width="80" height="28" rx="4" fill="#FEF2F2" stroke="#EF4444" stroke-width="1"/>
+      <text x="425" y="344" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">拒绝 ✗</text>
+      <line x1="430" y1="340" x2="430" y2="257" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="430" y1="257" x2="320" y2="257" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="380" x2="235" y2="400" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="120" y="400" width="230" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="425" text-anchor="middle" fill="#166534" font-size="12" font-weight="600">行项分情况处理(推送EBS/标记失效)</text>
+      <line x1="235" y1="440" x2="235" y2="480" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="480" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="505" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="520" x2="235" y2="540" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-green)"/>
+      <rect x="50" y="540" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="562" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="355" y="578" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="430" y="601" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">订单行·有效期更新</text>
+      <rect x="525" y="578" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600" y="601" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">EBS·库存预留延期</text>
+      <rect x="695" y="578" width="150" height="36" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="770" y="601" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">延期行·不满足失效</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>

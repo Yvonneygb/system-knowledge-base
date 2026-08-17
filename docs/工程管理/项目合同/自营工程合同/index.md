@@ -16,50 +16,68 @@
 
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="业务流程图">
-
-```text
-项目报备(已生效) → 新建自营工程合同 → 选择项目/客户/交易公司(autotrophyFlag=999)
-  ↓
-填写合同基本信息(签约方式=直销) + 签收方式 + 操作模式 + 产品清单 + 付款计划 + 合同条款
-  ↓
-保存 → 生成合同编码，校验项目/客户/交易公司
-  ↓
-保存并提交 → 启动审批流程(按区域:东/西/南/北区，SUB_CONTRACT_ZYGCHT_{区域})
-  ↓
-审批通过 → 合同有效状态=2(已生效) → 可创建折扣单/签收单
-审批驳回 → 合同有效状态不变
-  ↓
-合同失效 → 参见"项目合同失效"菜单
-签收 → 参见"工程自营签收"菜单
-```
-
-</KbCard>
-
-<KbCard num="2" title="上游依赖">
-
-| 上游模块 | 依赖类型 | 依赖说明 | 依赖成立条件 |
-|---------|---------|---------|------------|
-| 工程项目报备 | 数据依赖 | 合同关联项目，获取项目信息、客户、地址等 | 项目已报备6且有效 |
-| 客户主数据 | 数据依赖 |D | 合同关联客户 | �&户已创建且有效 |
-| 交易公司 | 数据依赖 | 合同关联交易公司(自营范围，tradingScope=2) | 交易公司已配置 |
-| 编码规则配置 | 配置依赖 | 生成合同编码 | 编码规则已配置且生效 |
-| 工作流引擎 | 配置依赖 | 审批流程SUB_CONTRACT_ZYGCHT_{区域} | 流程已部署且可用 |
-
-</KbCard>
-
-<KbCard num="3" title="下游影响">
-<div class="ds-impact">
-
-| 下游系统/模块 | 影响内容 | 说明 |
-|---|---|---|
-| 工程折扣政策申请 | 基于合同创建折扣申请 | 合同生效后，可基于合同创建折扣政策申请 |
-| 工程自营签收 | 创建自营签收单 | 合同生效后，可创建自营签收单(签收方式决定签收流程) |
-| 项目合同失效 | 发起失效申请 | 合同可发起失效申请，失效后合同状态变为3(已失效) |
-
-</div>
-</KbCard>
+<div class="bf-truth-flow">
+  <h4 class="bf-main-title">自营工程合同 — 全链路流程图</h4>
+  <p class="bf-main-sub">开始 → ★新建自营合同★ → ⚖按区域审批 → 已生效 → 结束（失效/签收另见菜单）</p>
+  <div class="bf-fc-svg-wrap">
+    <svg class="bf-fc-svg" style="max-height:none;" viewBox="0 0 1200 615" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#16A34A"/></marker>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9CA3AF"/></marker>
+        <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3B82F6"/></marker>
+        <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/></marker>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/></filter>
+      </defs>
+      <rect x="50" y="20" width="1100" height="95" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="42" text-anchor="middle" fill="#1D4ED8" font-size="13" font-weight="600">上游支撑</text>
+      <rect x="333.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="382.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工程项目报备</text>
+      <rect x="442.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="491.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">客户主数据</text>
+      <rect x="551.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="600.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">交易公司</text>
+      <rect x="660.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="709.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">编码规则</text>
+      <rect x="769.0" y="56" width="98" height="34" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="818.0" y="79" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">工作流引擎</text>
+      <line x1="235" y1="115" x2="235" y2="150" stroke="#3B82F6" stroke-width="2" marker-end="url(#arr-blue)"/>
+      <rect x="195" y="150" width="80" height="44" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="177" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">开始</text>
+      <line x1="235" y1="194" x2="235" y2="212" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="212" width="170" height="54" rx="6" fill="#16A34A" stroke="#15803D" stroke-width="2" filter="url(#shadow)"/>
+      <text x="235" y="236" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">★新建自营合同★</text>
+      <text x="235" y="254" text-anchor="middle" fill="#DCFCE7" font-size="10" font-weight="400">选项目/客户/交易公司·填合同信息</text>
+      <line x1="235" y1="266" x2="235" y2="284" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <polygon points="235,284 305,324 235,364 165,324" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="328" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">⚖ 审批通过？(按区域)</text>
+      <line x1="305" y1="324" x2="445" y2="324" stroke="#EF4444" stroke-width="2"/>
+      <rect x="445" y="309" width="90" height="30" rx="4" fill="#FFFFFF" stroke="#EF4444" stroke-width="1"/>
+      <text x="490" y="328" text-anchor="middle" fill="#EF4444" font-size="11" font-weight="600">驳回</text>
+      <line x1="550" y1="324" x2="550" y2="237" stroke="#EF4444" stroke-width="1.5"/>
+      <line x1="550" y1="237" x2="320" y2="237" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arr-red)"/>
+      <line x1="235" y1="364" x2="235" y2="382" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="150" y="382" width="170" height="40" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+      <text x="235" y="407" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">合同生效(状态=2)</text>
+      <line x1="235" y1="422" x2="235" y2="440" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)"/>
+      <rect x="180" y="440" width="110" height="40" rx="6" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="235" y="465" text-anchor="middle" fill="#7C3AED" font-size="13" font-weight="600">结束</text>
+      <line x1="235" y1="480" x2="235" y2="500" stroke="#16A34A" stroke-width="2" marker-end="url(#arr-green)" stroke-dasharray="4,3"/>
+      <rect x="50" y="500" width="1100" height="95" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="600" y="522" text-anchor="middle" fill="#166534" font-size="13" font-weight="600">下游影响</text>
+      <rect x="355.0" y="536" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="430.0" y="559" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程折扣政策申请</text>
+      <rect x="525.0" y="536" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="600.0" y="559" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">工程自营签收</text>
+      <rect x="695.0" y="536" width="150" height="34" rx="5" fill="#FFFFFF" stroke="#16A34A" stroke-width="1.2"/>
+      <text x="770.0" y="559" text-anchor="middle" fill="#166534" font-size="11" font-weight="600">项目合同失效</text>
+    </svg>
+  </div>
+  <div class="bf-fc-legend">
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-green"></span> 主流程步骤</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-purple"></span> 开始/结束/判断</span>
+    <span class="bf-fc-legend-item"><span class="bf-fc-dot bf-fc-dot-blue"></span> 上游支撑</span>
+    <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批拒绝/驳回</span>
+  </div>
 </div>
 </div>
 </div>
