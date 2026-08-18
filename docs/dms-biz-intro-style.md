@@ -33,21 +33,25 @@
 | 3 | `<div class="kl-wrap">` | 卡片网格容器 |
 | 4 | `<div class="kl-card">` × N | 每个独立主题一个卡片 |
 
-> **🔴 强制标准**：业务介绍一律走 `biz-intro → tab-pad → kl-wrap → kl-card`，禁止把内容散落在 `biz-intro` 之外，禁止用裸 `KbCard`/`KbHero` 平铺代替。
+> **🔴 强制标准**：业务介绍一律走 `biz-intro → tab-pad → kl-wrap → kl-card`，禁止把内容散落在 `biz-intro` 之外，禁止用裸 `KbCard` 平铺代替，**不使用 `KbHero` / `biz-hero` 横幅头部**。
 
 ---
 
-## 二、页面头部（KbHero 或 biz-hero）
+## 二、页面头部（不使用 hero 横幅）
 
-页面顶部用 `KbHero` 给出菜单一句话定位，紧接着业务介绍区块上方通常再放一个 `kl-card` 作为总览：
+**不使用 `.biz-hero` / `<KbHero>` 模块**。业务介绍区顶部不再放置大横幅头部（`class="biz-hero"` 及 `<KbHero>` 组件均废弃），内容直接从 `kl-wrap` 下的 `kl-card` 开始：
 
 ```html
-<KbHero num="1" title="家装真实性核销" desc="家装管理-项目往来业务说明" />
+<div id="biz-intro" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+  <div class="kl-card"> ...第一个业务卡片，无需 hero 头部... </div>
+</div>
+</div>
+</div>
 ```
 
-> 说明：`KbHero` 是页面级头部（biz-intro 之外，属于 `biz-intro` 上方或内部顶部），给出「模块-子模块」定位。内容卡片内部如需强视觉头部，可用 `.biz-hero`（蓝色渐变横幅）。
-
----
+> 说明：`biz-hero` / `KbHero` 是页面级大横幅，本项目不再使用。菜单定位交由页面标题/Breadcrumb 承担，业务介绍一律以 `kl-card` 直接开场。
 
 ## 三、内容卡片（kl-card）与标题头（biz-kl-hdr）
 

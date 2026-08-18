@@ -3,8 +3,6 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="1" title="家装核销发票上传" desc="家装往来业务说明" />
-
 <!-- 一、业务是什么 & 为什么 -->
 <div class="kl-card">
   <div class="biz-kl-hdr">
