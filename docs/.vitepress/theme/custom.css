@@ -356,6 +356,28 @@ body { background: var(--kb-bg-white) !important; color: var(--kb-text) !importa
   letter-spacing: 0.02em;
 }
 
+/* 源MD管理入口按钮 */
+.kb-md-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #7C3AED;
+  background: #F5F3FF;
+  border: 1px solid #E9D5FF;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.kb-md-entry:hover {
+  background: #7C3AED;
+  color: #fff;
+  border-color: #7C3AED;
+}
+
 /* ===== 一级菜单栏 — 白底 ===== */
 .kb-primary-nav {
   position: fixed;

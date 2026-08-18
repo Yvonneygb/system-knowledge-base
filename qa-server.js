@@ -317,6 +317,288 @@ app.post('/api/qa/history', (req, res) => {
 app.delete('/api/qa/history', (req, res) => { saveHistory([]); res.json({ ok: true }) })
 app.get('/api/kb-list', (req, res) => { res.json(kbFiles.map(f => ({ path: f.path, size: f.content.length }))) })
 
+// ============================================================
+// 源MD管理：AI生成MD上传 → 区块级合并 → 写回GitHub → 自动发布
+// ============================================================
+
+// GitHub 写回配置（仅上传功能需要）
+const KB_REPO = process.env.KB_REPO || ''
+const KB_BRANCH = process.env.KB_BRANCH || 'master'
+const KB_GITHUB_TOKEN = process.env.KB_GITHUB_TOKEN || ''
+const KB_UPLOAD_SECRET = process.env.KB_UPLOAD_SECRET || ''
+const UPLOAD_LOG_FILE = path.resolve(__dirname, 'upload-log.json')
+const UPLOAD_BACKUP_DIR = path.resolve(__dirname, 'upload-backup')
+
+// 源码分析类区块（AI生成MD中会有，允许被替换）
+// 手工整理类区块 biz-intro / biz-flow 不在清单中，一律保留
+const SOURCE_SECTIONS = ['key-logic', 'detail-logic', 'permission', 'faq', 'faq-qa', 'changelog', 'history']
+
+// 上传鉴权中间件
+function requireUploadAuth(req, res, next) {
+  if (!KB_UPLOAD_SECRET) {
+    return res.status(503).json({ error: '服务未配置 KB_UPLOAD_SECRET，无法执行上传' })
+  }
+  const token = req.headers['x-upload-secret'] || req.headers['x-kb-upload-secret']
+  if (token !== KB_UPLOAD_SECRET) {
+    return res.status(401).json({ error: '未授权：上传密钥不正确' })
+  }
+  next()
+}
+
+function loadUploadLog() {
+  try {
+    if (fs.existsSync(UPLOAD_LOG_FILE)) {
+      return JSON.parse(fs.readFileSync(UPLOAD_LOG_FILE, 'utf-8'))
+    }
+  } catch (_) {}
+  return []
+}
+
+function saveUploadLog(log) {
+  fs.writeFileSync(UPLOAD_LOG_FILE, JSON.stringify(log, null, 2), 'utf-8')
+}
+
+// 提取顶层区块。以 `<div id="X"` 开标签到匹配的 `</div>` 为边界。
+// 返回 Map: id -> { openTag, openIdx, closeIdx(排他结束 </div> 位置), blockText }
+function extractSections(content) {
+  const sections = new Map()
+  const divOpenRe = /<div\b([^>]*id="([^"]+)"[^>]*)>/g
+  let m
+  while ((m = divOpenRe.exec(content)) !== null) {
+    const id = m[2]
+    if (id === 'biz-intro' || id === 'biz-flow' ||
+        SOURCE_SECTIONS.includes(id) || id.startsWith('kb-sections')) {
+      // 从当前开标签位置扫描匹配的 </div>（处理嵌套）
+      const absRe = /<div\b|<\/div>/g
+      absRe.lastIndex = divOpenRe.lastIndex
+      let dcount = 1
+      let closeIdx = -1
+      let r
+      while ((r = absRe.exec(content)) !== null) {
+        if (content.startsWith('<div', r.index)) dcount++
+        else { dcount--; if (dcount === 0) { closeIdx = r.index; break } }
+      }
+      if (closeIdx !== -1) {
+        sections.set(id, {
+          openTag: m[0],
+          openIdx: m.index,
+          closeIdx, // 指向上 </div> 的 '<'
+          blockText: content.slice(m.index, closeIdx + 6)
+        })
+      }
+    }
+  }
+  return sections
+}
+
+// 按区块合并：用 newContent 的源码分析区块替换 oldContent 对应区块，保留 oldContent 的 biz-intro/biz-flow
+function mergeBySections(oldContent, newContent) {
+  const oldSections = extractSections(oldContent)
+  const newSections = extractSections(newContent)
+
+  let result = oldContent
+  const changed = []
+
+  // 1) 替换既有源码区块：从后往前替换，避免前面替换导致后续位置错位
+  const replacements = []
+  for (const id of SOURCE_SECTIONS) {
+    const oldSec = oldSections.get(id)
+    const newSec = newSections.get(id)
+    if (!newSec) continue                 // 新MD不含此区块 → 保留旧区块
+    if (oldSec) {
+      replacements.push({ openIdx: oldSec.openIdx, closeIdx: oldSec.closeIdx, newText: newSec.blockText, id })
+    }
+  }
+  replacements.sort((a, b) => b.openIdx - a.openIdx)
+  for (const r of replacements) {
+    result = result.slice(0, r.openIdx) + r.newText + result.slice(r.closeIdx + 6)
+    changed.push(r.id)
+  }
+
+  // 2) 旧MD缺失但新MD有的源码区块 → 插入到 biz-flow 区块之后
+  //    获取当前 result 中 biz-flow 的结束位置，将新区块插在其后
+  const flowSec = extractSections(result).get('biz-flow')
+  for (const id of SOURCE_SECTIONS) {
+    const newSec = newSections.get(id)
+    if (!newSec) continue
+    if (oldSections.has(id)) continue     // 已在上面处理
+    if (flowSec) {
+      result = result.slice(0, flowSec.closeIdx + 6) + '\n' + newSec.blockText + result.slice(flowSec.closeIdx + 6)
+      changed.push(id + '(新增)')
+    } else {
+      result = result + '\n' + newSec.blockText
+      changed.push(id + '(新增)')
+    }
+  }
+  return { content: result, changed }
+}
+
+// 校验内容中所有 <div> 开闭是否平衡
+function checkDivBalance(content) {
+  const opens = (content.match(/<div\b/g) || []).length
+  const closes = (content.match(/<\/div>/g) || []).length
+  return opens === closes
+}
+
+// 写回 GitHub（Contents API）
+async function writeToGitHub(filePath, content, message) {
+  if (!KB_REPO || !KB_GITHUB_TOKEN) {
+    throw new Error('未配置 KB_REPO / KB_GITHUB_TOKEN，无法写回 GitHub')
+  }
+  const [owner, repo] = KB_REPO.replace(/^https?:\/\/github\.com\//, '').split('/')
+  const apiPath = encodeURIComponent(filePath).replace(/%2F/g, '/')
+  const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${apiPath}?ref=${KB_BRANCH}`
+
+  // 读取原文件 sha
+  let sha = null
+  try {
+    const getResp = await fetch(getUrl, {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json',
+        'Authorization': `Bearer ${KB_GITHUB_TOKEN}`,
+        'User-Agent': 'kb-source-md-manager'
+      }
+    })
+    if (getResp.ok) {
+      const meta = await getResp.json()
+      sha = meta.sha
+    } else if (getResp.status !== 404) {
+      const t = await getResp.text()
+      throw new Error(`读取原文件失败(${getResp.status}): ${t.substring(0, 200)}`)
+    }
+  } catch (e) {
+    if (String(e.message).includes('读取原文件失败')) throw e
+  }
+
+  const putBody = {
+    message,
+    content: Buffer.from(content, 'utf-8').toString('base64'),
+    branch: KB_BRANCH
+  }
+  if (sha) putBody.sha = sha
+
+  const putResp = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${apiPath}`, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/vnd.github.v3+json',
+      'Authorization': `Bearer ${KB_GITHUB_TOKEN}`,
+      'User-Agent': 'kb-source-md-manager',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(putBody)
+  })
+
+  if (!putResp.ok) {
+    const t = await putResp.text()
+    throw new Error(`写回 GitHub 失败(${putResp.status}): ${t.substring(0, 300)}`)
+  }
+  const data = await putResp.json()
+  return data.content?.sha || data.commit?.sha || 'ok'
+}
+
+// 上传MD接口
+app.post('/api/upload-md', requireUploadAuth, async (req, res) => {
+  try {
+    const { pagePath, content, note } = req.body
+    if (!pagePath || !content) {
+      return res.status(400).json({ error: '缺少 pagePath 或 content' })
+    }
+    if (typeof content !== 'string' || content.length < 10) {
+      return res.status(400).json({ error: 'content 内容过短或格式不正确' })
+    }
+
+    // 定位 MD 路径（支持已存在与新建）
+    let decoded = decodeURIComponent(pagePath).replace(/^\/+|\/+$/g, '')
+    const mdPath = path.join(KB_ROOT, decoded, 'index.md')
+
+    // 读取旧内容（本地文件优先，云端则尝试 GitHub）
+    let oldContent = ''
+    let oldFrom = 'none'
+    if (fs.existsSync(mdPath)) {
+      oldContent = fs.readFileSync(mdPath, 'utf-8')
+      oldFrom = 'local'
+    } else if (KB_REPO && KB_GITHUB_TOKEN) {
+      const [owner, repo] = KB_REPO.replace(/^https?:\/\/github\.com\//, '').split('/')
+      const rel = path.relative(KB_ROOT, mdPath).replace(/\\/g, '/')
+      const getResp = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(rel).replace(/%2F/g,'/')}?ref=${KB_BRANCH}`, {
+        headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': `Bearer ${KB_GITHUB_TOKEN}`, 'User-Agent': 'kb-source-md-manager' }
+      })
+      if (getResp.ok) {
+        const meta = await getResp.json()
+        oldContent = Buffer.from(meta.content, meta.encoding === 'base64' ? 'base64' : 'utf-8').toString('utf-8')
+        oldFrom = 'github'
+      }
+    }
+
+    // 区块级合并
+    let merged = content
+    let changed = []
+    if (oldContent && oldContent.includes('<div id="biz-intro"')) {
+      const r = mergeBySections(oldContent, content)
+      merged = r.content
+      changed = r.changed
+    } else if (oldContent) {
+      // 旧内容存在但不是标准结构（如非标准页），整页替换但保留 frontmatter
+      merged = content
+      changed = ['(整页替换-非标准页)']
+    } else {
+      changed = ['(新建页面)']
+    }
+
+    if (!checkDivBalance(merged)) {
+      return res.status(400).json({ error: '合并后 div 开闭不平衡，已中止。请检查上传内容' })
+    }
+
+    // 备份旧版到本地 upload-backup/
+    if (oldContent) {
+      try {
+        const ts = new Date().toISOString().replace(/[:T]/g, '-').slice(0, 19)
+        const bakDir = path.join(UPLOAD_BACKUP_DIR, `${ts}-${decoded.replace(/[\\\/]/g, '_')}`)
+        fs.mkdirSync(bakDir, { recursive: true })
+        fs.writeFileSync(path.join(bakDir, 'index.md'), oldContent, 'utf-8')
+      } catch (e) { console.error('备份失败:', e.message) }
+    }
+
+    // 写回 GitHub（触发自动发布）
+    let sha = null
+    if (KB_REPO && KB_GITHUB_TOKEN) {
+      const rel = path.relative(KB_ROOT, mdPath).replace(/\\/g, '/')
+      sha = await writeToGitHub(rel, merged, `[源MD管理] 更新 ${decoded}${note ? ' - ' + note : ''}`)
+    } else {
+      // 无 GitHub 配置：写本地文件（供本地预览）
+      fs.mkdirSync(path.dirname(mdPath), { recursive: true })
+      fs.writeFileSync(mdPath, merged, 'utf-8')
+      console.log(`已写入本地: ${mdPath}`)
+    }
+
+    // 记录上传日志
+    const log = loadUploadLog()
+    const record = {
+      time: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }),
+      pagePath,
+      file: decoded + '/index.md',
+      changedSections: changed,
+      note: note || '',
+      sha: sha || null,
+      status: 'success',
+      oldFrom
+    }
+    log.unshift(record)
+    if (log.length > 200) log.length = 200
+    saveUploadLog(log)
+
+    res.json({ ok: true, file: decoded + '/index.md', changedSections: changed, sha, log: record })
+  } catch (err) {
+    console.error('upload-md error:', err)
+    res.status(500).json({ error: `上传失败: ${err.message}` })
+  }
+})
+
+// 上传日志接口
+app.get('/api/upload-log', requireUploadAuth, (req, res) => {
+  res.json(loadUploadLog())
+})
+
 // 健康检查
 app.get('/health', (req, res) => res.json({ status: 'ok', kbFiles: kbFiles.length }))
 

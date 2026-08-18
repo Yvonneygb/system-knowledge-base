@@ -6,6 +6,7 @@ import KbSectionTabs from './KbSectionTabs.vue'
 import ValueSetTabs from './ValueSetTabs.vue'
 import ServiceFeeFlow from './ServiceFeeFlow.vue'
 import VitePressRedirect from './VitePressRedirect.vue'
+import SourceMdManager from './SourceMdManager.vue'
 import { kbUiPlugin } from './ui/index.js'
 import './custom.css'
 
@@ -18,6 +19,7 @@ export default {
     app.component('ValueSetTabs', ValueSetTabs)
     app.component('ServiceFeeFlow', ServiceFeeFlow)
     app.component('VitePressRedirect', VitePressRedirect)
+    app.component('SourceMdManager', SourceMdManager)
 
     // 注册通用 UI 设计系统组件库（Kb*）
     app.use(kbUiPlugin)
@@ -26,6 +28,8 @@ export default {
     if (inBrowser) {
       // 注入 AI 问答后端 API 地址（云端部署时由环境变量指定）
       window.KB_API_URL = (import.meta && import.meta.env && import.meta.env.VITE_QA_API_URL) || null
+      // 注入源MD管理上传后端 API 地址（缺省复用 KB_API_URL 同一后端）
+      window.KB_UPLOAD_URL = (import.meta && import.meta.env && import.meta.env.VITE_UPLOAD_API_URL) || null
 
       // Font Awesome CDN - 动态加载图标库
       if (!document.getElementById('font-awesome-css')) {
