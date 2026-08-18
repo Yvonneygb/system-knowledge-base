@@ -112,7 +112,7 @@
     </div>
   </div>
   <div class="kl-tip" style="margin-top:14px;">
-    <strong>家装/工程共用：</strong>家装与工程核销发票上传共用同一套后端代码，通过家装标识 isHome=2 区分；家装使用独立编码规则（AE.JZ_INVOICE_VERIFER_NO）与工作流（INVOICE_JZHXFPSC_AW），互不影响。
+    <strong>家装/工程独立运行：</strong>家装与工程共用同一套核销发票上传系统，但两套业务各自独立流程、互不影响——家装渠道的发票凭证按家装规则核销，工程渠道按工程规则核销。
   </div>
 </div>
 
