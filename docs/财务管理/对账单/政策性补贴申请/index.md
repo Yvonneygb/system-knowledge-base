@@ -3,13 +3,74 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="8" title="政策性补贴申请" desc="财务管理-对账单业务说明" />
 
-<KbCard title="业务介绍">
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 查什么</span>
+    <h2>政策性补贴兑现报销查询查什么</h2>
+    <p>查询政策性补贴兑现报销记录，掌握其处理状态</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="5" height="5" rx="1" stroke="white" stroke-width="1.5"/><path d="M3 6.5L4.5 8L7 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 5H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><rect x="2" y="10" width="5" height="3" rx="1" stroke="white" stroke-width="1.5"/><path d="M9 10H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">查询范围</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">检索政策性补贴的兑现报销记录，覆盖已申请补贴的兑现情况。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#16A34A,#4ADE80);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><path d="M8 5V8L10 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">状态来源</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">兑现报销状态由上游申请与工作流回调更新，查询页只读展示。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#F59E0B,#FBBF24);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12L6 8L10 10L14 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">业务用途</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">跟踪补贴兑现报销进展，支撑财务对账与补贴核算。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- 空白:待补充 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 怎么用</span>
+    <h2>如何使用政策性补贴兑现报销查询</h2>
+    <p>纯查询页面，无审批，状态由工作流回调驱动更新</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><path d="M8 5V8L10 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>选择条件</h5>
+      <small>筛选兑现报销<br>记录范围</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="2" stroke="white" stroke-width="1.5"/><path d="M4 5H12" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>执行查询</h5>
+      <small>检索兑现<br>报销记录</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#16A34A,#4ADE80);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6.5L4.5 8L7 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 5H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>查看列表</h5>
+      <small>查看兑现报销<br>状态与结果</small>
+    </div>
+  </div>
+  <div class="kl-tip" style="margin-top:14px;">
+    <strong>业务边界：</strong>本页为兑现报销查询，不发起新补贴申请；补贴申请与审批由上游流程处理，状态在此只读呈现。
+  </div>
+</div>
 
-</KbCard>
 </div>
 </div>
 </div>

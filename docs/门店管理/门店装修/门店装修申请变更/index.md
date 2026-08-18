@@ -3,22 +3,101 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="6" title="门店装修申请变更" desc="门店装修申请的变更管理，支持变更装修项目、金额、标准等级等字段" />
-
-<KbCard title="基本信息">
-
-| 项目 | 说明 |
-|------|------|
-| Controller | FinFeeApplyChangeHeaderController |
-| API路径 | /v1/{organizationId}/fin-fee-apply-change-headers |
-| Entity | FinFeeApplyChangeHeader |
-| 数据库表 | FIN_FEE_APPLY_CHANGE_HEADER |
-| 工作流编码 | SUB_STORE_DECORATION_CHANGE |
-| 前端页面 | finFeeApplyChange / finFeeApplyChangeClose |
-| ServiceImpl | FinFeeApplyChangeHeaderServiceImpl |
-| 所属模块 | storeCheck |
-
-</KbCard>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>门店装修申请变更是什么</h2>
+    <p>已审批的门店装修申请单如需调整装修面积、金额、标准等级等项目，通过发起变更单经审批后回写原申请单，保证前后信息一致</p>
+  </div>
+  <div class="biz-2col-inner">
+    <div class="kl-col-box">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="5" height="5" rx="1" stroke="white" stroke-width="1.5"/><path d="M3 6.5L4.5 8L7 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 5H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><rect x="2" y="10" width="5" height="3" rx="1" stroke="white" stroke-width="1.5"/><path d="M9 10H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M9 13H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">这张单解决什么</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">业务动机</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>修正申请</strong> — 装修方案调整时更正原申请的面积、金额、标准</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>受控变更</strong> — 变更须走审批，避免随意改动已核准的申请</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>回写原单</strong> — 审批通过后把变更后标准金额回写原申请单</div></div>
+      </div>
+    </div>
+    <div class="kl-col-box alt">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#16A34A,#15803D);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="2" stroke="white" stroke-width="1.5"/><path d="M5.5 6L7 7.5L10.5 4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">单据边界</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">适用范围</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>基于原单</strong> — 必须关联已审批的装修申请单，带入其原值</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>互斥状态</strong> — 原单发起变更后标记，避免重复变更与关闭冲突</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>可作废删</strong> — 仅新建状态可删除；可作废但保留原单关联痕迹</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 流程</span>
+    <h2>谁在用，怎么流转</h2>
+    <p>由门店业务人员发起变更，审批通过后回写原申请单并标记</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3V13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M4 6L8 3L12 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>新建变更</h5>
+      <small>带入原申请单<br>改面积/金额/项目</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#3B82F6,#2563EB);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="2" stroke="white" stroke-width="1.5"/><path d="M5.5 8L7 9.5L10.5 5.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>审批流转</h5>
+      <small>按工作流逐级<br>审核变更内容</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#16A34A,#15803D);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/><path d="M8 5.5V8L9.5 9.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>回写原单</h5>
+      <small>更新变更后<br>标准金额</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#F59E0B,#D97706);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M9 4L13 8L9 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>标记完成</h5>
+      <small>记录变更照片<br>与签呈标记</small>
+    </div>
+  </div>
+</div>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 规则</span>
+    <h2>关键业务规则</h2>
+    <p>变更需计算超期与扣减，并受公司参数约束</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M9 4L13 8L9 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">超期扣减</h5><p style="font-size:0.73rem;color:#555;margin:0;line-height:1.6;">审批通过时按公司参数计算装修间隔、提前允许期与扣减比例，得出超期扣减</p></div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#16A34A,#15803D);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M5 6.5L7 8.5L11 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">状态互斥</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">原单发起变更后标记，删除变更恢复标记，作废则标记变更作废</p></div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#DC2626,#B91C1C);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="2" stroke="white" stroke-width="1.5"/><path d="M6 6.5L10 10.5M10 6.5L6 10.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">删除限制</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">仅新建状态可删除，已提交或审批通过的变更单不可直接删除</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="kl-tip" style="margin-top:14px;">
+    <strong>核心约束：</strong>门店装修申请变更必须基于已审批的申请单，审批通过后计算超期扣减并回写原单，且与原单的变更/关闭状态保持互斥。
+  </div>
+</div>
 </div>
 </div>
 </div>

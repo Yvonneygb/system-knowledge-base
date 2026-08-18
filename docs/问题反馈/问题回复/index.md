@@ -3,13 +3,77 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P19" title="问题回复" desc="事业部端回复经销商反馈单" />
-
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>业务是什么</h2>
+    <p>事业部端回复经销商提交的反馈单，直至问题关闭并评价</p>
+  </div>
+  <div class="biz-2col-inner">
+    <div class="kl-col-box">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M3 2.5H13V13.5H3Z" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><path d="M5.5 5.5H10.5M5.5 8H10.5M5.5 10.5H8.5" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">回复机制</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">如何回复与推进</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>针对反馈</strong> — 逐条查看经销商反馈详情后进行回复</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>可多次回复</strong> — 已回复状态可追加回复，直至问题结束</div>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#16A34A,#4ADE80);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L12 5V11L8 14L4 11V5Z" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 7.5L7.5 9L10 6" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">结束与评价</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">问题如何关闭</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>结束反馈</strong> — 判断是否结束反馈，结束则进入评价环节</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>评价回写</strong> — 结束后的评价结果回写反馈单，供经销商端查看</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 流程</span>
+    <h2>回复流转流程</h2>
+    <p>从查看反馈到结束评价的全过程</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M3 4H13V11H3Z" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 2.5V5.5M10 2.5V5.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>查看详情</h5>
+      <small>查看经销商反馈内容<br>与历史回复</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5" fill="none" stroke="white" stroke-width="1.5"/><path d="M5.5 5.5H10.5M5.5 8H10.5" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>回复反馈</h5>
+      <small>填写回复内容<br>可多次追加</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L12 5V11L8 14L4 11V5Z" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 7.5L7.5 9L10 6" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>结束反馈</h5>
+      <small>判断是否结束<br>未结束继续回复</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#16A34A,#4ADE80);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" fill="none" stroke="white" stroke-width="1.5"/><path d="M6 7.5L7.5 9L10 6" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>评价关闭</h5>
+      <small>评价反馈并回写结果<br>问题关闭</small>
+    </div>
+  </div>
+</div>
 </div>
 </div>
 </div>

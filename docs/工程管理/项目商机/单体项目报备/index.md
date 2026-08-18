@@ -3,13 +3,74 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="4" title="单体项目报备" desc="工程管理-项目商机业务说明" />
-
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>单体项目报备是什么</h2>
+    <p>面向单一工程项目的报备登记，是工程商机从线索转化为可跟进项目的第一步</p>
+  </div>
+  <div class="biz-2col-inner">
+    <div class="kl-col-box">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="5" height="5" rx="1" stroke="white" stroke-width="1.5"/><path d="M3 6.5L4.5 8L7 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 5H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><rect x="2" y="10" width="5" height="3" rx="1" stroke="white" stroke-width="1.5"/><path d="M9 10H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M9 13H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">登记边界</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">覆盖项目核心信息</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>工程基本信息</strong> — 名称、地址、省区市、甲乙方、产品线等</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>经销商与交易</strong> — 归属经销商、交易公司、现场跟进人</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>商机预测</strong> — 预计收入、工程用量、意向产品、竞争对手</div></div>
+      </div>
+    </div>
+    <div class="kl-col-box alt">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#16a34a,#15803d);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><path d="M5.5 8L7 9.5L10.5 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">业务价值</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">为什么需要报备</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>防重复抢单</strong> — 同城相似项目查重拦截，避免撞单</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>建项目档案</strong> — 审批通过后生成正式项目，驱动后续合同折扣</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>联动客户</strong> — 同步推送客户与地址信息至 CRM 系统</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 流程</span>
+    <h2>单体报备怎么流转</h2>
+    <p>从新建登记到审批生效，最终同步为可跟进的正式项目</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2V14M2 8H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>新建报备</h5>
+      <small>录入工程信息<br>保存为草稿</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1" stroke="white" stroke-width="1.5"/><path d="M5 5H11M5 8H11M5 11H9" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>查重拦截</h5>
+      <small>同城相似度校验<br>冲突则申诉</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8L6 11L13 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/></svg></div>
+      <h5>OA审批</h5>
+      <small>推送 OA 审批<br>等待结果回调</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#16a34a,#15803d);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><path d="M5.5 8L7 9.5L10.5 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>生效同步</h5>
+      <small>写入项目档案<br>推送 CRM 与检索</small>
+    </div>
+  </div>
+  <div class="kl-tip" style="margin-top:14px;">
+    <strong>关键规则：</strong>报备审批通过后设定有效周期，超期未产生合同则项目冻结；同一项目支持二次报备，被查重拦截可走申诉重新提交，申诉受月度次数限制。
+  </div>
+</div>
 </div>
 </div>
 </div>

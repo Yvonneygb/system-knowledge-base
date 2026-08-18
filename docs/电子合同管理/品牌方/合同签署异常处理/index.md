@@ -3,13 +3,112 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18-20" title="合同签署异常处理" desc="品牌方电子合同签署异常的处理" />
 
-<KbCard title="业务介绍">
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);">业务是什么</span>
+    <h2>合同签署异常处理</h2>
+    <p>在电子合同签署过程中出现异常时，按类型恢复或终止，保障合同流程不卡死</p>
+  </div>
+  <div class="biz-2col-inner">
+    <div class="kl-col-box">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5V8L10 10"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">为何要处理异常</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">解决两个业务痛点</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>流程不卡死</strong> — 签署异常需有出口，否则合同长期挂起</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>状态可恢复</strong> — 可重试的异常应支持恢复，减少重签成本</div></div>
+      </div>
+    </div>
+    <div class="kl-col-box alt">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5"><path d="M3 4H13V12H3Z"/><path d="M6 7L8 9L10 6"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">异常分几类</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">四类常见异常</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>拒签/ OA驳回</strong> — 对方拒绝或内部审批未通过</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>用印异常/门户推送失败</strong> — 签章或推送环节出错</div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- 空白:待补充 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);">流程</span>
+    <h2>异常处理流程</h2>
+    <p>从异常发生到判断可恢复性，再走恢复或终止</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5V8L10 10"/></svg></div>
+      <h5>签署异常</h5>
+      <small>拒签/OA驳回<br>用印/门户异常</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5"><path d="M8 3L14 8L8 13L2 8Z"/><path d="M8 6V8"/></svg></div>
+      <h5>判断可恢复性</h5>
+      <small>区分可重试<br>与需终止</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5"><path d="M4 8L8 4L12 8"/><path d="M8 4V12"/></svg></div>
+      <h5>恢复流转</h5>
+      <small>重新提交/用印<br>推送门户</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5"><path d="M3 4H13V12H3Z"/><path d="M6 8H10"/></svg></div>
+      <h5>终止合同</h5>
+      <small>不可恢复时<br>终止收尾</small>
+    </div>
+  </div>
+  <div class="kl-tip" style="margin-top:14px;">
+    <strong>说明：</strong>异常处理由合同状态机驱动，无独立工作流；可恢复的异常提供重提交、重签、重推等恢复按钮。
+  </div>
+</div>
 
-</KbCard>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);">关键规则</span>
+    <h2>异常处理的关键规则</h2>
+    <p>异常分类处置，恢复与终止各有明确操作</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5"><path d="M8 3L14 8L8 13L2 8Z"/><path d="M8 6V8"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">异常分类处置</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">拒签、OA驳回、用印异常、门户推送失败分别匹配对应恢复动作。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5"><path d="M4 8L8 4L12 8"/><path d="M8 4V12"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">可恢复动作</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">重新提交OA、确认拒签、重新用印、重新推送门户等操作按需触发。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5"><path d="M3 4H13V12H3Z"/><path d="M6 8H10"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">可终止收尾</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">不可恢复的异常执行终止，合同状态收尾，不再占用签署流程。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 </div>
 </div>

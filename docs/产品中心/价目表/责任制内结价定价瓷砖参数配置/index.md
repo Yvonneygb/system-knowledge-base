@@ -3,13 +3,69 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P18" title="责任制内结价定价瓷砖参数配置" desc="" />
 
-<KbCard title="业务介绍">
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>瓷砖参数配置维护什么</h2>
+    <p>针对瓷砖品类的特殊内结价参数，采用头行结构管理</p>
+  </div>
+  <div class="biz-2col-inner">
+    <div class="kl-col-box">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M5 6h6M5 9h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">配置头</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">记录适用范围与品类</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>配置名称</strong> — 便于识别的命名</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>适用范围</strong> — 命中的组织/业务场景</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>瓷砖品类</strong> — 限定具体瓷砖品类编码</div></div>
+      </div>
+    </div>
+    <div class="kl-col-box alt">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2v3M8 11v3M2 8h3M11 8h3" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="8" r="1.5" stroke="white" stroke-width="1.5"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">配置行</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">一个头关联多行具体参数</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#EDE9FE;border-radius:8px;"><div style="font-size:.75rem;"><strong>参数项</strong> — 规格/等级/工艺等参数</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#EDE9FE;border-radius:8px;"><div style="font-size:.75rem;"><strong>系数值</strong> — 各行对应的定价系数</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#EDE9FE;border-radius:8px;"><div style="font-size:.75rem;"><strong>行序号</strong> — 控制参数行的顺序</div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- 空白:待补充 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 影响</span>
+    <h2>配置被谁引用</h2>
+    <p>瓷砖特殊参数服务于瓷砖内结价与跨事业部定价</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 8h12" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M8 2v12" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">瓷砖算价</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">供瓷砖内结价计算引用。</p></div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#16A34A,#15803D);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M5 6h6M5 9h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">跨部定价</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">支撑跨事业部销售申请定价。</p></div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">销售报价</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">作为报价与经营分析的输入。</p></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-</KbCard>
 </div>
 </div>
 </div>

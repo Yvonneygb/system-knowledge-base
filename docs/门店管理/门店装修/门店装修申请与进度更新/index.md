@@ -3,22 +3,101 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="8" title="门店装修申请与进度更新" desc="门店装修申请的创建与进度更新，涵盖新建申请、进度跟踪与状态流转" />
-
-<KbCard title="基本信息">
-
-| 项目 | 说明 |
-|------|------|
-| Controller | FinFeeApplyFinishedHeaderController |
-| API路径 | /v1/{organizationId}/fin-fee-apply-finished-headers |
-| Entity | FinFeeApplyFinishedHeader |
-| 数据库表 | FIN_FEE_APPLY_FINISHED_HEADER |
-| 工作流编码 | SUB_STORE_MDZXBZSQYJDG |
-| 前端页面 | finFeeApplyFinishedHeader |
-| ServiceImpl | FinFeeApplyFinishedHeaderServiceImpl |
-| 所属模块 | storeCheck |
-
-</KbCard>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>门店装修申请与进度更新是什么</h2>
+    <p>门店装修业务的起点，登记门店装修申请信息、按装修标准计算可申请金额，并跟踪审批进度与状态流转，审批通过后可发起验收报销</p>
+  </div>
+  <div class="biz-2col-inner">
+    <div class="kl-col-box">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="5" height="5" rx="1" stroke="white" stroke-width="1.5"/><path d="M3 6.5L4.5 8L7 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 5H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><rect x="2" y="10" width="5" height="3" rx="1" stroke="white" stroke-width="1.5"/><path d="M9 10H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M9 13H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">这张单解决什么</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">业务动机</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>立项登记</strong> — 登记门店、装修面积、等级、风格等基础装修信息</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>算标准额</strong> — 据装修标准政策自动计算额度内/外可申请的补贴标准</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;"><div style="font-size:.75rem;"><strong>承上启下</strong> — 是验收报销、兑现、变更、关闭等后续环节的统一来源</div></div>
+      </div>
+    </div>
+    <div class="kl-col-box alt">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#16A34A,#15803D);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="2" stroke="white" stroke-width="1.5"/><path d="M5.5 6L7 7.5L10.5 4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">单据边界</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">适用范围</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>门店主档</strong> — 必须选择具体门店，并明确交易公司与开票单位</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>状态流转</strong> — 支持新建、审批、作废、关闭、变更等全生命周期状态</div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;"><div style="font-size:.75rem;"><strong>一店一单</strong> — 同一门店在有效状态下通常仅允许存在一张申请单</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 流程</span>
+    <h2>谁在用，怎么流转</h2>
+    <p>由门店业务人员创建申请，经审批通过后成为后续装修业务的总入口</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3V13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M4 6L8 3L12 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>新建申请</h5>
+      <small>选门店填装修信息<br>算标准金额</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#3B82F6,#2563EB);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="2" stroke="white" stroke-width="1.5"/><path d="M5.5 8L7 9.5L10.5 5.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>审批流转</h5>
+      <small>按工作流逐级<br>审核装修申请</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#16A34A,#15803D);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/><path d="M8 5.5V8L9.5 9.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>审批通过</h5>
+      <small>生成申请单<br>标准金额生效</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#F59E0B,#D97706);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M9 4L13 8L9 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>发起下游</h5>
+      <small>可发起验收报销<br>变更/关闭</small>
+    </div>
+  </div>
+</div>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 规则</span>
+    <h2>关键业务规则</h2>
+    <p>申请受装修周期、预算年度与门店唯一性约束</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M9 4L13 8L9 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">周期约束</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">装修周期不得超过公司参数规定的最大周期，超出则不允许保存</p></div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#16A34A,#15803D);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M5 6.5L7 8.5L11 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">预算年度</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">预算年度根据上次装修完成时间自动推算，影响补贴计算口径</p></div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#DC2626,#B91C1C);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="2" stroke="white" stroke-width="1.5"/><path d="M6 6.5L10 10.5M10 6.5L6 10.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">状态限制</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">仅新建状态可删除；作废与重新生成受超期天数、扣减比例等条件约束</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="kl-tip" style="margin-top:14px;">
+    <strong>核心约束：</strong>门店装修申请是全部装修后续业务的源头，必须登记完整门店与交易信息，装修周期与预算年度受系统参数约束，审批通过后方可进入验收与兑现。
+  </div>
+</div>
 </div>
 </div>
 </div>

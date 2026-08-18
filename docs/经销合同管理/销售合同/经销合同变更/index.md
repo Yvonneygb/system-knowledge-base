@@ -3,13 +3,121 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P16-04" title="经销合同变更" desc="经销合同的变更申请、区域校验、审批管理" />
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+      <h2>经销合同变更是什么</h2>
+      <p>对已生效年度合同发起变更申请，审批通过后生成新合同并替换原合同</p>
+    </div>
+    <div class="biz-2col-inner">
+      <div class="kl-col-box">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 3L13 6L6 13H3V10L10 3Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">变更类型</h4>
+        </div>
+        <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">三类常见变更场景</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>合同增补</strong> — 在原合同基础上追加内容</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>信息变更</strong> — 调整区域、费用等合同条款</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>合同延期</strong> — 延长经销期限</div>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box alt">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#059669,#047857);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13L6 9L9 11L13 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">存在意义</h4>
+        </div>
+        <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">为什么走变更单而非直接改</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>留痕可溯</strong> — 变更编号关联原合同，记录变更次数</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>受控替换</strong> — 审批通过才生成新合同，避免随意改约</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<KbCard title="业务介绍">
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 流程</span>
+      <h2>变更怎么流转</h2>
+      <p>选原合同 → 校验 → 提交审批 → 生成新合同并推送</p>
+    </div>
+    <div class="biz-steps">
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10M8 3v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h5>选原合同</h5>
+        <small>校验是否可变更<br>带出原合同信息</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <h5>区域校验</h5>
+        <small>信息变更类校验<br>区域冲突提示</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10M8 3v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h5>提交审批</h5>
+        <small>保存并提交<br>启动工作流</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#059669,#047857);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13L6 9L9 11L13 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h5>生成新合同</h5>
+        <small>审批通过生效<br>推送 CRM 与 OA</small>
+      </div>
+    </div>
+  </div>
 
-<!-- 空白:待补充 -->
-
-</KbCard>
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 规则</span>
+      <h2>关键规则与边界</h2>
+      <p>哪些合同可发起变更、编号如何生成、状态约束</p>
+    </div>
+    <div class="biz-3col">
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">可变性前置</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">原合同须已生效、无在途归档且无未审完变更单，方可发起变更。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box alt" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 5L8 2L13 5V11L8 14L3 11V5Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">编号规则</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">变更编号=原合同编号+"_"+变更次数，清晰关联变更历史。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/><path d="M8 5.5V8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">状态边界</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">仅"新建"状态可编辑、提交或删除；审批通过后生成新合同不可再改。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="kl-tip" style="margin-top:14px;">
+      <strong>业务原则：</strong>变更必须基于已生效且无在途单据的原合同，编号与原合同关联可追溯；审批通过才以新合同替换原合同并同步 CRM、OA。
+    </div>
+  </div>
 </div>
 </div>
 </div>

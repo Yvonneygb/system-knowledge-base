@@ -3,13 +3,61 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="14" title="工程要货订单报表" desc="工程管理-项目交付业务说明" />
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>工程要货订单报表查什么</h2>
+    <p>面向工程要货订单的只读数据看板，汇总订单与紧急要货的执行情况，支撑运营与对账</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="3" rx="1" stroke="white" stroke-width="1.5"/><rect x="2" y="8" width="12" height="3" rx="1" stroke="white" stroke-width="1.5"/><rect x="2" y="13" width="8" height="2" rx="1" stroke="white" stroke-width="1.5"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">订单数据</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">工程要货订单的状态、金额、数量与审批进度</p></div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#16a34a,#15803d);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13h10M5 13V6M8 13V3M11 13V8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">紧急订单</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">关联紧急要货订单的执行与交付情况</p></div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#F97316,#EA580C);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 3h12v4H2z" stroke="white" stroke-width="1.5"/><path d="M2 9h12v4H2z" stroke="white" stroke-width="1.5"/></svg></div>
+        <div><h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">汇总口径</h5><p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">按客户、项目、合同、时间等维度汇总统计</p></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 使用</span>
+    <h2>怎么用这份报表</h2>
+    <p>纯只读查询，设置条件后查看并导出，无审批无下游写入</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 4h10v8H3z" stroke="white" stroke-width="1.5"/><path d="M5 7h6M5 10h4" stroke="white" stroke-width="1.5"/></svg></div>
+      <h5>设查询条件</h5>
+      <small>选择客户/项目<br>合同/时间范围</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2v12M4 6l4-4 4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>查询展示</h5>
+      <small>展示明细与<br>汇总结果</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#16a34a,#15803d);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h10v10H3z" stroke="white" stroke-width="1.5"/><path d="M6 3v10M3 6h7" stroke="white" stroke-width="1.5"/></svg></div>
+      <h5>导出 Excel</h5>
+      <small>导出明细<br>用于对账归档</small>
+    </div>
+  </div>
+  <div class="kl-tip" style="margin-top:14px;"><strong>使用提示：</strong>该报表为只读分析，不影响任何业务单据状态，下游无写入动作。</div>
+</div>
 </div>
 </div>
 </div>

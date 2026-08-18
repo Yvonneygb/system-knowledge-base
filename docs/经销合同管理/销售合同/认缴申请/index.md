@@ -3,13 +3,118 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P16-01" title="认缴申请" desc="经销合同认缴申请的创建、查询、审批管理" />
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+      <h2>认缴申请是什么</h2>
+      <p>将一笔到款认款按合同类型认缴为合同保证金，并走审批的单据</p>
+    </div>
+    <div class="biz-2col-inner">
+      <div class="kl-col-box">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M5.5 6L7 7.5L10.5 4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">单据结构</h4>
+        </div>
+        <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">头行两层，关联认款记录</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>申请头</strong> — 经销商、法人、认缴类型，关联一笔认款记录</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>申请行</strong> — 按合同类型填写认缴金额，受可用余额约束</div>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box alt">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#059669,#047857);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/><path d="M8 5.5V8L9.8 9.2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">存在意义</h4>
+        </div>
+        <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">认款如何变成保证金</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>抵扣来源</strong> — 基于 EBS 同步的到款认款发起认缴</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>缴清判定</strong> — 认缴生效后才更新合同与概况缴清状态</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<KbCard title="业务介绍">
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 流程</span>
+      <h2>认缴申请怎么流转</h2>
+      <p>关联认款 → 填认缴金额 → 提交审批 → 生效并推送</p>
+    </div>
+    <div class="biz-steps">
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10M8 3v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h5>新建申请</h5>
+        <small>选认款记录<br>带出可用金额</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10M8 3v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h5>保存并提交</h5>
+        <small>按合同类型填金额<br>启动审批</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <h5>审批判断</h5>
+        <small>通过则认缴生效<br>驳回回退未生效</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#059669,#047857);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13L6 9L9 11L13 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h5>生效同步</h5>
+        <small>生成认缴记录<br>更新缴清·推送CRM</small>
+      </div>
+    </div>
+  </div>
 
-<!-- 空白:待补充 -->
-
-</KbCard>
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 规则</span>
+      <h2>关键规则与边界</h2>
+      <p>认缴类型、金额上限与状态约束</p>
+    </div>
+    <div class="biz-3col">
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M2 6H14M5 2V4M11 2V4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">认缴类型</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">分普通认缴与封顶认缴，类型由关联认款记录带入，影响撤销处理逻辑。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box alt" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/><path d="M8 5.5V8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">金额上限</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">每行认缴金额须大于0且不超过该认款记录的可用余额（认款金额减已使用）。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">状态边界</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">仅"未生效"状态可编辑、提交或删除；审批中不可改动。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="kl-tip" style="margin-top:14px;">
+      <strong>业务原则：</strong>认缴须基于真实到款认款，金额不得超出可用余额，经审批生效后才更新缴清状态并推送 CRM；撤销认款会反向回退认缴状态。
+    </div>
+  </div>
 </div>
 </div>
 </div>

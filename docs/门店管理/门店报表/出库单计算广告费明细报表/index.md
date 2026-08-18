@@ -3,13 +3,70 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="2" title="出库单计算广告费明细报表" desc="出库单计算广告费明细报表，按出库单维度计算广告费用" />
-
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+<!-- 一、查什么 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>查什么</h2>
+    <p>出库单中每个产品的广告费计算明细</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12L6 8L10 10L14 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">数据口径</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">按出库单逐行展示产品广告费计算，关联签收信息，剔除特殊产品。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#F59E0B,#FBBF24);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><path d="M8 4V8L10.5 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">计算口径</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">展示是否计广告费、折后单价、开票金额、广告费计提比例与最终广告金额。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#10B981,#34D399);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="12" height="10" rx="1" stroke="white" stroke-width="1.5"/><path d="M2 8H14" stroke="white" stroke-width="1.5"/><path d="M8 5V8" stroke="white" stroke-width="1.5"/><path d="M5 3H11" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">用途</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">用于核对广告费计提与报销依据，为返利核算提供参考。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 二、怎么用 -->
+<div class="kl-card" style="margin-bottom:0;">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 使用</span>
+    <h2>怎么用</h2>
+    <p>三步完成广告费明细核对与归档</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 4H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M3 8H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M3 12H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="2.5" cy="4" r="1" fill="white"/><circle cx="2.5" cy="8" r="1" fill="white"/><circle cx="2.5" cy="12" r="1" fill="white"/></svg></div>
+      <h5>设定条件</h5>
+      <small>按经销商、出库单号、是否计广告费、<br>发货日期等条件筛选</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#10b981,#059669);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12L6 8L10 10L14 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 4H14V7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>查询核对</h5>
+      <small>逐行展示广告费计算明细<br>核对开票金额与广告金额</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5H12" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M4 8H12" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M4 11H8" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M11 11L13 9L14.5 10.5L12.5 12.5L11 11Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+      <h5>导出归档</h5>
+      <small>导出 Excel<br>供广告费计提核对与归档使用</small>
+    </div>
+  </div>
+</div>
 </div>
 </div>
 </div>

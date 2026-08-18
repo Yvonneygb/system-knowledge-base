@@ -3,13 +3,74 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="4" title="额度内市场推广服务费对账单" desc="财务管理-对账单业务说明" />
 
-<KbCard title="业务介绍">
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 对什么账</span>
+    <h2>额度内市场推广服务费对账单对什么账</h2>
+    <p>按额度内市场推广服务费账户生成与查询对账单</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><path d="M8 5V8L10 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">对账对象</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">针对额度内市场推广服务费账户，汇总生成对账单。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#16A34A,#4ADE80);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12L6 8L10 10L14 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">数据来源</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">以广告费余额与营销中台数据为支撑，生成额度内服务费对账。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#F59E0B,#FBBF24);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 5H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M4 3V7" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M12 3V7" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">下游动作</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">对账单支持推送外部系统及重生成，保持账单与账户一致。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- 空白:待补充 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 怎么用</span>
+    <h2>如何使用额度内市场推广服务费对账单</h2>
+    <p>查询后支持重生成对账单与更新推送状态</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><path d="M8 5V8L10 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>选择条件</h5>
+      <small>筛选账户范围<br>定位对账单</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="2" stroke="white" stroke-width="1.5"/><path d="M4 5H12" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>查询列表</h5>
+      <small>展示服务费<br>对账单列表</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#16A34A,#4ADE80);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L13 4V8C13 11 8 14 8 14C8 14 3 11 3 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+      <h5>重生成/推送</h5>
+      <small>重生成对账单<br>更新推送状态</small>
+    </div>
+  </div>
+  <div class="kl-tip" style="margin-top:14px;">
+    <strong>对账口径：</strong>对账单以额度内市场推广服务费账户余额为依据生成，重生成用于数据有误时重新出账，推送状态供外部对账跟踪。
+  </div>
+</div>
 
-</KbCard>
 </div>
 </div>
 </div>

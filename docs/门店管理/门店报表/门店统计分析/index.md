@@ -3,13 +3,68 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="1" title="门店统计分析" desc="门店综合统计分析报表，支持多维度统计门店数据" />
-
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>门店统计分析是什么</h2>
+    <p>按经销商维度汇总门店多维度统计口径，全面掌握经销商门店结构</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M2 12L6 8L10 10L14 4" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">统计口径</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">以经销商为维度汇总门店数量，仅展示有门店的经销商，避免空行干扰。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#16A34A,#4ADE80);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5" fill="none" stroke="white" stroke-width="1.5"/><path d="M5.5 8L7.5 10L11 5.5" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">多维筛选</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">支持按事业部、销售区域、运营中心、省份、城市、经销商编码筛选。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#F97316,#FB923C);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M3 5H13M3 8H13M3 11H9" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">多维统计</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">覆盖运营状态、经营属性、门店等级、门店类型、面积分段、装修风格、连锁属性、系统归属八类口径。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 使用</span>
+    <h2>怎么使用这张报表</h2>
+    <p>查询多维统计结果，支撑经销商结构与经营决策</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5" fill="none" stroke="white" stroke-width="1.5"/><path d="M2.5 6H13.5" fill="none" stroke="white" stroke-width="1.5"/></svg></div>
+      <h5>设置条件</h5>
+      <small>选择事业部、区域、城市等筛选条件</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L12 5V11L8 14L4 11V5Z" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 5V8L10 9.5" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>查询汇总</h5>
+      <small>按经销商维度多维汇总门店统计结果</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#16A34A,#4ADE80);"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M3 5H13M3 8H13M3 11H9" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M12 12L14 14" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>导出分析</h5>
+      <small>导出Excel，供经销商结构与经营决策使用</small>
+    </div>
+  </div>
+</div>
 </div>
 </div>
 </div>

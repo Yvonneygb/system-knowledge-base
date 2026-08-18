@@ -3,13 +3,125 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="2" title="广告费报销" desc="广告费报销流程，涵盖报销申请、OA审批推送、额度内外金额校验" />
-
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+<!-- 一、业务是什么 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>广告费报销是什么</h2>
+    <p>广告投放申请通过后，走报销申请与 OA 审批的中间环节</p>
+  </div>
+  <div class="biz-2col-inner">
+    <div class="kl-col-box">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 4H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M3 8H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M3 12H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="2.5" cy="4" r="1" fill="white"/><circle cx="2.5" cy="8" r="1" fill="white"/><circle cx="2.5" cy="12" r="1" fill="white"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">单据边界</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">申请到兑现的承上启下</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>前置条件</strong> — 广告投放申请必须已审批通过</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>审批通过后</strong> — 才可创建广告报销发票兑现单</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>分额内/额外</strong> — 额度内与额度外金额校验不同</div>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#10b981,#059669);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="12" height="10" rx="1" stroke="white" stroke-width="1.5"/><path d="M2 8H14" stroke="white" stroke-width="1.5"/><path d="M8 5V8" stroke="white" stroke-width="1.5"/><path d="M5 3H11" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">报销信息</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">围绕"报多少、向谁报"</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;border:1px solid #D1FAE5;">
+          <div style="font-size:.75rem;"><strong>主体信息</strong> — 经销商、广告公司、交易与开票单位</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;border:1px solid #D1FAE5;">
+          <div style="font-size:.75rem;"><strong>金额信息</strong> — 报销金额、批准金额与使用占比</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#EDE9FE;border-radius:8px;border:1px solid #DBEAFE;">
+          <div style="font-size:.75rem;"><strong>支付信息</strong> — 支付方式、收款银行与账号（额度内）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 二、流程 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 流程</span>
+    <h2>广告费报销全流程</h2>
+    <p>从申请通过到发票兑现，四步闭环</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="1" stroke="white" stroke-width="1.5"/><path d="M8 2V14" stroke="white" stroke-width="1.5"/><path d="M2 8H14" stroke="white" stroke-width="1.5"/></svg></div>
+      <h5>申请已通过</h5>
+      <small>广告投放申请单<br>审批通过作为前提</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="1" stroke="white" stroke-width="1.5"/><path d="M8 5V11" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M5 8H11" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>新建报销单</h5>
+      <small>选申请单、报销类型<br>填报销金额与支付信息</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#10b981,#059669);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 8L7.5 9.5L10.5 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>提交推送 OA</h5>
+      <small>校验金额与在途唯一性<br>额度外推送后扣减超预算</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L10 5" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M8 5H11C12.1046 5 13 5.89543 13 7V8" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M10 11H7C5.89543 11 5 10.1046 5 9V8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>OA 审批结果</h5>
+      <small>通过 → 创建发票兑现单<br>驳回 → 修改后重新提交</small>
+    </div>
+  </div>
+</div>
+<!-- 三、关键规则 -->
+<div class="kl-card" style="margin-bottom:0;">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 关键规则</span>
+    <h2>报销与额度核心规则</h2>
+    <p>防重复、额度校验与预算同步约束</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 8L7.5 9.5L10.5 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">防重复报销</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">同一申请单下不允许同时存在多个在途报销单，防止对同一笔费用重复报销。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#F59E0B,#FBBF24);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="1" stroke="white" stroke-width="1.5"/><path d="M8 2V14" stroke="white" stroke-width="1.5"/><path d="M2 8H14" stroke="white" stroke-width="1.5"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">额度内校验</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">报销金额须大于 0、不超申请总额、不超可用资源额度，批准金额不超报销金额。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#10B981,#34D399);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><path d="M8 4V8L10.5 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">额度外预算</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">额度外报销审批通过扣减超预算额度，OA 驳回时自动恢复。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="kl-tip" style="margin-top:14px;">
+    <strong>业务约束：</strong>广告费报销是"申请通过后才可报销、报销通过后才可兑现"的中间单，且同一申请单不可在途重复报销。
+  </div>
+</div>
 </div>
 </div>
 </div>

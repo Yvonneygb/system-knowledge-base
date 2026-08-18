@@ -3,13 +3,118 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P16-02" title="保证金减免申请" desc="合同保证金的减免申请、审批管理" />
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+      <h2>保证金减免申请是什么</h2>
+      <p>对经销商应缴合同保证金，按合同类型申请部分减免并走审批的单据</p>
+    </div>
+    <div class="biz-2col-inner">
+      <div class="kl-col-box">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="5" height="5" rx="1" stroke="white" stroke-width="1.5"/><path d="M3 6.5L4.5 8L7 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 5H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><rect x="2" y="10" width="5" height="3" rx="1" stroke="white" stroke-width="1.5"/><path d="M9 10H14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M9 13H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">单据结构</h4>
+        </div>
+        <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">头行两层，按合同类型拆分减免</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>申请头</strong> — 记录减免单号、经销商、减免状态与备注</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>申请行</strong> — 按合同类型填写"标准金额"与"申请减免金额"</div>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box alt">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#059669,#047857);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/><path d="M8 5.5V8L9.8 9.2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">存在意义</h4>
+        </div>
+        <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">为什么需要减免机制</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>灵活性</strong> — 对特定合同类型给予保证金减免，支持差异化招商</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;">
+            <div style="font-size:.75rem;"><strong>受控</strong> — 减免须审批通过才生效，避免随意冲减保证金</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<KbCard title="业务介绍">
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 流程</span>
+      <h2>减免申请怎么流转</h2>
+      <p>新建登记 → 提交审批 → 审批通过后减免生效</p>
+    </div>
+    <div class="biz-steps">
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10M8 3v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h5>新建申请</h5>
+        <small>选经销商、按合同类型<br>填减免金额、保存</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10M8 3v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h5>保存并提交</h5>
+        <small>选审批流程<br>启动工作流审批</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <h5>审批判断</h5>
+        <small>通过则减免生效<br>驳回则回退未生效</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#059669,#047857);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8.5L6.5 12L13 4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h5>减免生效</h5>
+        <small>状态置为有效<br>减免开始执行</small>
+      </div>
+    </div>
+  </div>
 
-<!-- 空白:待补充 -->
-
-</KbCard>
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 规则</span>
+      <h2>关键规则与边界</h2>
+      <p>谁可操作、金额如何约束、哪些状态可发起减免</p>
+    </div>
+    <div class="biz-3col">
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M5.5 6L7 7.5L10.5 4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">金额约束</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">行内申请减免金额须大于0且不超过该合同类型的保证金标准金额。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box alt" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/><path d="M8 5.5V8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">状态边界</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">仅"未生效"状态可编辑、提交或删除；审批中不可改动。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">提交前置</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">保存并提交前必须选择审批流程编码，否则无法启动审批。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="kl-tip" style="margin-top:14px;">
+      <strong>业务原则：</strong>减免金额须落在保证金标准之内，且必须经审批生效；审批驳回后回退为"未生效"，可重新提交。
+    </div>
+  </div>
 </div>
 </div>
 </div>

@@ -3,13 +3,70 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P15-04" title="门店装修额度外报表" desc="门店装修额度外兑现数据的统计查询报表" />
-
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+<!-- 一、查什么 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>查什么</h2>
+    <p>门店装修额度外兑现数据的汇总统计</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12L6 8L10 10L14 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">数据口径</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">汇总门店装修额度外兑现数据，覆盖兑现金额、兑现比例与发票税金等。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#F59E0B,#FBBF24);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><path d="M8 4V8L10.5 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">资金分布</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">掌握额度外兑现的整体情况与资金使用分布，便于超预算额度核对。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#10B981,#34D399);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="5" width="12" height="10" rx="1" stroke="white" stroke-width="1.5"/><path d="M2 8H14" stroke="white" stroke-width="1.5"/><path d="M8 5V8" stroke="white" stroke-width="1.5"/><path d="M5 3H11" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">只读查询</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">纯统计报表，仅支持查看与导出，不支持新增、修改、删除等写操作。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 二、怎么用 -->
+<div class="kl-card" style="margin-bottom:0;">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 使用</span>
+    <h2>怎么用</h2>
+    <p>三步完成额度外兑现情况查看与归档</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 4H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M3 8H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M3 12H13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="2.5" cy="4" r="1" fill="white"/><circle cx="2.5" cy="8" r="1" fill="white"/><circle cx="2.5" cy="12" r="1" fill="white"/></svg></div>
+      <h5>设定条件</h5>
+      <small>按门店、经销商、日期<br>等条件筛选额度外数据</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#10b981,#059669);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12L6 8L10 10L14 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 4H14V7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>查询展示</h5>
+      <small>额度外兑现汇总列表展示<br>核对兑现比例与发票税金</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5H12" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M4 8H12" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M4 11H8" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M11 11L13 9L14.5 10.5L12.5 12.5L11 11Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+      <h5>导出归档</h5>
+      <small>导出 Excel<br>供内部管理决策与归档使用</small>
+    </div>
+  </div>
+</div>
 </div>
 </div>
 </div>

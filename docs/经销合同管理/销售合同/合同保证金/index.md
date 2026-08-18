@@ -3,13 +3,72 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P16-03" title="合同保证金" desc="合同保证金的认款、撤销、封顶认款管理" />
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+      <h2>合同保证金查什么</h2>
+      <p>从 EBS 共享系统同步的到款认款记录视图，管理认款、撤销与认缴跳转</p>
+    </div>
+    <div class="biz-3col">
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/><path d="M8 5.5V8L9.8 9.2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">认款来源</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">记录来自 EBS 共享到款，含认款单号、金额与同步时间。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box alt" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M5.5 6L7 7.5L10.5 4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">认缴类型</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">区分普通认缴与封顶认缴，封顶类型影响撤销与缴清判定。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M2 6H14M5 2V4M11 2V4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">状态标识</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">认款状态分已认款与撤销认款，决定可执行的操作。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 使用</span>
+      <h2>怎么用它管理认款</h2>
+      <p>查询认款 → 撤销或发起认缴 → 同步更新缴清状态</p>
+    </div>
+    <div class="biz-steps">
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10M8 3v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h5>查询认款</h5>
+        <small>查看 EBS 同步<br>到款认款记录</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10M8 3v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <h5>撤销/认缴</h5>
+        <small>撤销认款<br>或跳转认缴申请</small>
+      </div>
+      <div class="biz-step-arrow">&rarr;</div>
+      <div class="biz-step-item">
+        <div class="biz-step-circle" style="background:linear-gradient(135deg,#059669,#047857);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13L6 9L9 11L13 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h5>更新状态</h5>
+        <small>更新合同缴清<br>推送 CRM</small>
+      </div>
+    </div>
+    <div class="kl-tip" style="margin-top:14px;">
+      <strong>使用原则：</strong>合同保证金页是认款数据的管理台，本身由 EBS 同步驱动；撤销认款会反向回退合同与认缴概况的缴清状态，封顶认缴与普通认缴处理逻辑不同。
+    </div>
+  </div>
 </div>
 </div>
 </div>

@@ -3,13 +3,125 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="1" title="广告报销发票兑现" desc="广告报销发票兑现流程，支持发票上传、金额校验、审批流转与兑现" />
-
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+<!-- 一、业务是什么 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+    <h2>广告报销发票兑现是什么</h2>
+    <p>广告费报销通过后，将报销金额兑现为实际资金的环节</p>
+  </div>
+  <div class="biz-2col-inner">
+    <div class="kl-col-box">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><circle cx="8" cy="8" r="3" stroke="white" stroke-width="1.5"/><circle cx="8" cy="8" r="1" fill="white"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">兑现边界</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">报销到兑现的桥接单</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>前置条件</strong> — 广告费报销必须已审批通过</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>支持分批</strong> — 可分多次按可兑现金额兑现</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F5F3FF;border-radius:8px;">
+          <div style="font-size:.75rem;"><strong>分额内/额外</strong> — 额度内与额度外兑现规则不同</div>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#10b981,#059669);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="4" width="14" height="10" rx="1" stroke="white" stroke-width="1.5"/><path d="M1 7H12" stroke="white" stroke-width="1.5"/><circle cx="12" cy="10.5" r="1.5" fill="white"/></svg></div>
+        <h4 style="font-size:1rem;font-weight:800;color:#1F2937;margin:0;">兑现去向</h4>
+      </div>
+      <p style="font-size:0.78rem;font-weight:600;color:#6B7280;margin:0 0 10px;">审批通过后进入资金流转</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;border:1px solid #D1FAE5;">
+          <div style="font-size:.75rem;"><strong>额度内</strong> — 同步到资金池并回写交易公司</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#F0FDF4;border-radius:8px;border:1px solid #D1FAE5;">
+          <div style="font-size:.75rem;"><strong>额度外</strong> — 同步额度外预算模块更新已使用</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:#EDE9FE;border-radius:8px;border:1px solid #DBEAFE;">
+          <div style="font-size:.75rem;"><strong>对外</strong> — 推送 ERP 资金池与 MBO 系统</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 二、流程 -->
+<div class="kl-card">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 流程</span>
+    <h2>广告报销发票兑现全流程</h2>
+    <p>从报销通过到资金推送，四步闭环</p>
+  </div>
+  <div class="biz-steps">
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="1" stroke="white" stroke-width="1.5"/><path d="M8 2V14" stroke="white" stroke-width="1.5"/><path d="M2 8H14" stroke="white" stroke-width="1.5"/></svg></div>
+      <h5>报销已通过</h5>
+      <small>广告费报销单<br>审批通过作为前提</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="1" stroke="white" stroke-width="1.5"/><path d="M8 5V11" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M5 8H11" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>新建兑现</h5>
+      <small>录入本次兑现金额<br>区分额度内/额度外</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#10b981,#059669);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 8L7.5 9.5L10.5 6.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h5>提交审批</h5>
+      <small>校验兑现金额不超可兑现总额<br>额度外需扣除已占用金额</small>
+    </div>
+    <div class="biz-step-arrow">&rarr;</div>
+    <div class="biz-step-item">
+      <div class="biz-step-circle" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L5 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M8 10H11C12.1046 10 13 9.10457 13 8V7" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M10 5H7C5.89543 5 5 5.89543 5 7V8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h5>资金推送</h5>
+      <small>通过后推送 ERP 资金池/MBO<br>额度外同步预算更新</small>
+    </div>
+  </div>
+</div>
+<!-- 三、关键规则 -->
+<div class="kl-card" style="margin-bottom:0;">
+  <div class="biz-kl-hdr">
+    <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 关键规则</span>
+    <h2>兑现与额度核心规则</h2>
+    <p>金额校验、预算同步与回写约束</p>
+  </div>
+  <div class="biz-3col">
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="1" stroke="white" stroke-width="1.5"/><path d="M8 2V14" stroke="white" stroke-width="1.5"/><path d="M2 8H14" stroke="white" stroke-width="1.5"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">金额不超兑</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">本次兑现金额叠加已兑现不得超出可兑现总额，防止超额兑现。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box alt" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#F59E0B,#FBBF24);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><path d="M8 4V8L10.5 10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">额度外同步</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">额度外兑现审批通过后，按比例同步额度外预算，更新已使用金额。</p>
+        </div>
+      </div>
+    </div>
+    <div class="kl-col-box" style="margin-bottom:0;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#10B981,#34D399);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 5L6 2L9 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 2V14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M12 8L9 11L6 8" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">额度内回写</h5>
+          <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">额度内兑现通过后，将交易公司回写到上游申请单、验收单与报销单。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="kl-tip" style="margin-top:14px;">
+    <strong>业务约束：</strong>发票兑现是广告费报销资金落地的最后一环，必须在报销审批通过后发起，并按额度内外差异化处理资金池同步与预算更新。
+  </div>
+</div>
 </div>
 </div>
 </div>

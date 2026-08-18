@@ -3,13 +3,82 @@
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbHero num="P16-10" title="年度营销政策" desc="年度营销政策的生效互斥、动态子表、全量替换逻辑" />
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 定义</span>
+      <h2>年度营销政策是什么</h2>
+      <p>按事业部+销售年度配置的营销规则，定义违约金、次年折扣与返点三类执行标准</p>
+    </div>
+    <div class="biz-3col">
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M2 6H14M5 2V4M11 2V4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">配置维度</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">按事业部与销售年度唯一配置，绑定有效起止日期。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box alt" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="white" stroke-width="1.5"/><path d="M5.5 6L7 7.5L10.5 4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">三类执行</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">违约金、次年折扣、返点，每类配置适用的合同类型与数值。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">动态子表</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">执行类型决定子表结构，折扣/返点含阶梯区间配置。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<KbCard title="业务介绍">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
+  <div class="kl-card">
+    <div class="biz-kl-hdr">
+      <span class="biz-tag" style="background:rgba(124,58,237,0.08);color:#7C3AED;border-color:rgba(124,58,237,0.18);"> 影响</span>
+      <h2>它如何影响下游合同</h2>
+      <p>政策生效后被经销合同自动关联，驱动返点、违约金与折扣计算</p>
+    </div>
+    <div class="biz-3col">
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#059669,#10B981);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L3 4V8C3 11 8 14 8 14C8 14 13 11 13 8V4L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">自动关联</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">保存合同时按事业部+合同类型+年度匹配政策，写入返点/违约金/折扣标识。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box alt" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#059669,#10B981);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8h10M8 3v10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">互斥唯一</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">同事业部+同年度仅一条生效，新政策生效自动使旧政策失效。</p>
+          </div>
+        </div>
+      </div>
+      <div class="kl-col-box" style="margin-bottom:0;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(135deg,#059669,#10B981);"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.5"/><path d="M8 5.5V8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div>
+            <h5 style="font-size:0.88rem;font-weight:800;color:#1F2937;margin:0 0 6px;">重算触发</h5>
+            <p style="font-size:0.73rem;color:#6B7280;margin:0;line-height:1.6;">政策调整后，关联合同可按新标准重新计算相关营销金额。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="kl-tip" style="margin-top:14px;">
+      <strong>配置原则：</strong>年度营销政策是合同营销计算的规则源头；生效采用互斥策略保证唯一性，修改按全量替换处理，未失效状态才允许修改或生效。
+    </div>
+  </div>
 </div>
 </div>
 </div>
