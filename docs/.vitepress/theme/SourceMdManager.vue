@@ -104,7 +104,7 @@
 
                   <!-- 行内更新说明（已上传时） -->
                   <input v-if="loadedFiles[leaf.path]" v-model="notes[leaf.path]" class="smm-note-input"
-                    placeholder="更新说明(可选)" @click.stop @keydown.stop />
+                    placeholder="更新说明(可选)" @click.stop @keydown.stop @input="saveToStorage" />
                 </div>
               </div>
             </div>
@@ -259,6 +259,38 @@ const loadedFiles = reactive({})   // path -> { fileName, content }
 const notes = reactive({})         // path -> 更新说明
 const singleLoading = reactive({}) // path -> bool（更新中）
 
+// ---------------- localStorage 持久化（上传后即保存，刷新不丢失） ----------------
+const STORAGE_KEY = 'smm_loaded_files_v1'
+
+function saveToStorage() {
+  try {
+    const payload = { files: loadedFiles, notes: notes }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
+  } catch (e) {
+    console.warn('本地保存失败（可能超过 localStorage 容量）：', e.message)
+  }
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return
+    const data = JSON.parse(raw)
+    if (data && data.files) {
+      for (const path of Object.keys(data.files)) {
+        loadedFiles[path] = data.files[path]
+      }
+    }
+    if (data && data.notes) {
+      for (const path of Object.keys(data.notes)) {
+        notes[path] = data.notes[path]
+      }
+    }
+  } catch (e) {
+    console.warn('本地数据恢复失败：', e.message)
+  }
+}
+
 function uploadFor(leaf) {
   // 动态创建一个隐藏 file input 并触发点击，弹出系统文件选择窗口
   const input = document.createElement('input')
@@ -272,6 +304,7 @@ function uploadFor(leaf) {
     const reader = new FileReader()
     reader.onload = () => {
       loadedFiles[leaf.path] = { fileName: file.name, content: reader.result }
+      saveToStorage() // 上传后即保存到本地
       input.remove()
     }
     reader.readAsText(file, 'utf-8')
@@ -301,6 +334,7 @@ function escapeHtml(s) {
 function removeLoaded(leaf) {
   delete loadedFiles[leaf.path]
   delete notes[leaf.path]
+  saveToStorage() // 移除后同步保存
 }
 
 // ---------------- 更新（提交） ----------------
@@ -458,7 +492,10 @@ async function loadLogs() {
   } catch (_) {}
 }
 
-onMounted(loadLogs)
+onMounted(() => {
+  loadFromStorage() // 恢复上次上传的文件（刷新后仍在）
+  loadLogs()
+})
 </script>
 
 <style scoped>
