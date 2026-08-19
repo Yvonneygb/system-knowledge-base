@@ -118,11 +118,14 @@
       </div>
 
       <div class="smm-detail-actions">
-        <button class="smm-btn" :disabled="singleLoading || !activeMd.trim() || !uploadSecret" @click="submitSingle">
+        <button class="smm-btn" :disabled="singleLoading" @click="submitSingle">
           {{ singleLoading ? '上传中…' : '🚀 上传并触发自动发布' }}
         </button>
         <button class="smm-btn smm-btn-ghost" :disabled="singleLoading" @click="togglePreview">👁 {{ showPreview ? '关闭预览' : '页面内预览' }}</button>
       </div>
+
+      <div v-if="!activeMd.trim() && !singleLoading" class="smm-hint">请先在①粘贴 MD 全文，或点击「选择 .md 文件」自动载入。</div>
+      <div v-else-if="!uploadSecret && !singleLoading" class="smm-hint">请在页面上方「🔑 上传密钥」处填写管理员提供的密钥后再上传。</div>
 
       <div v-if="singleError" class="smm-error">{{ singleError }}</div>
       <div v-if="singleSuccess" class="smm-success">{{ singleSuccess }}</div>
@@ -155,7 +158,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import MarkdownIt from 'markdown-it'
 
 // ---------------- 内置菜单清单 ----------------
@@ -310,6 +313,11 @@ function selectLeaf(leaf) {
   singleError.value = ''
   singleSuccess.value = ''
   showPreview.value = false
+  // 面板出现在树下方，点击后自动滚动到面板，让用户明确看到反馈
+  nextTick(() => {
+    const el = document.querySelector('.smm-detail')
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
 }
 
 function onSingleFile(e) {
@@ -321,13 +329,20 @@ function onSingleFile(e) {
   reader.readAsText(file, 'utf-8')
 }
 
-function togglePreview() { showPreview.value = !showPreview.value }
+function togglePreview() {
+  showPreview.value = !showPreview.value
+  if (showPreview.value && !activeMd.value.trim()) {
+    singleError.value = '暂无内容可预览。请先在①粘贴 MD 全文，或选择 .md 文件载入后再预览。'
+  }
+}
 
 async function submitSingle() {
   singleError.value = ''
   singleSuccess.value = ''
-  if (!apiBase) { singleError.value = '后端服务地址未配置，无法上传。' ; return }
   if (!activeLeaf.value) return
+  if (!activeMd.value.trim()) { singleError.value = '请先粘贴 MD 全文，或选择 .md 文件载入内容。' ; return }
+  if (!uploadSecret.value.trim()) { singleError.value = '请先在页面上方「🔑 上传密钥」处填写管理员提供的密钥。' ; return }
+  if (!apiBase) { singleError.value = '后端服务地址未配置，无法上传。请确认后端已部署并配置 VITE_UPLOAD_API_URL。' ; return }
   singleLoading.value = true
   try {
     const data = await uploadOne(activeLeaf.value.path, activeMd.value, activeNote.value)
@@ -551,6 +566,7 @@ onMounted(loadLogs)
 .smm-preview-body { padding: 16px 20px; max-height: 480px; overflow: auto; font-size: 0.85rem; line-height: 1.7; color: #1F2937; }
 
 .smm-error { margin-top: 12px; padding: 10px 14px; background: #FEF2F2; border: 1px solid #FECACA; color: #B91C1C; border-radius: 8px; font-size: 0.8rem; }
+.smm-hint { margin-top: 10px; padding: 8px 12px; background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; border-radius: 8px; font-size: 0.78rem; }
 .smm-success { margin-top: 12px; padding: 10px 14px; background: #ECFDF5; border: 1px solid #A7F3D0; color: #047857; border-radius: 8px; font-size: 0.8rem; line-height: 1.6; }
 .smm-log { margin-top: 24px; }
 .smm-log h3 { font-size: 1.05rem; color: #1E293B; margin: 0 0 10px; }
