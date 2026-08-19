@@ -3,7 +3,7 @@
     <!-- 头部说明 -->
     <div class="smm-header">
       <h2>📤 源MD管理</h2>
-      <p class="smm-desc">点击某菜单的<strong>「上传」</strong>直接弹出窗口选择 .md 文件，载入后在该菜单右侧显示文件名，点击可预览；确认无误后点<strong>「更新」</strong>才真正提交，自动更新对应菜单页的<strong>源码分析区块</strong>并保留手工整理的<strong>业务介绍/流程图</strong>。</p>
+      <p class="smm-desc">点击某菜单的<strong>「上传」</strong>直接弹出窗口选择 .md 文件，载入后在该菜单右侧显示文件名；点击文件名在<strong>新窗口预览</strong>，确认无误后点<strong>「更新」</strong>才真正提交，自动更新对应菜单页的<strong>源码分析区块</strong>并保留手工整理的<strong>业务介绍/流程图</strong>。</p>
     </div>
 
     <!-- 后端连接状态 -->
@@ -83,15 +83,15 @@
             </div>
             <div v-show="lv2.open" class="smm-children">
               <div v-for="leaf in lv2.children" :key="leaf.path" class="smm-lv3">
-                <div class="smm-row smm-lv3-row" @click="toggleLeaf(leaf)">
-                  <span class="smm-caret" :class="{ open: previewOpenFor(leaf) }">▶</span>
+                <div class="smm-row smm-lv3-row">
+                  <span class="smm-caret-placeholder"></span>
                   <span class="smm-file">📄</span>
                   <span class="smm-node-name smm-leaf-name">{{ leaf.name }}</span>
                   <span class="smm-leaf-path">{{ leaf.path }}</span>
 
-                  <!-- 已上传：显示文件名 + 更新 + 移除 -->
+                  <!-- 已上传：显示文件名（可点击预览）+ 更新 + 移除 -->
                   <template v-if="loadedFiles[leaf.path]">
-                    <span class="smm-filetag" @click.stop="toggleLeaf(leaf)">
+                    <span class="smm-filetag" title="点击在新窗口预览" @click.stop="openPreviewInNewWindow(leaf)">
                       <span class="smm-filetag-doc">📄</span>{{ loadedFiles[leaf.path].fileName }}
                     </span>
                     <button class="smm-btn-mini smm-btn-update-mini" :disabled="singleLoading===leaf.path" @click.stop="submitFor(leaf)">
@@ -105,10 +105,6 @@
                   <!-- 行内更新说明（已上传时） -->
                   <input v-if="loadedFiles[leaf.path]" v-model="notes[leaf.path]" class="smm-note-input"
                     placeholder="更新说明(可选)" @click.stop @keydown.stop />
-                </div>
-                <!-- 行内预览 -->
-                <div v-if="loadedFiles[leaf.path]" v-show="previewOpenFor(leaf)" class="smm-inline-preview" @click.stop>
-                  <div class="smm-preview-body kb-md-preview" v-html="renderMd(loadedFiles[leaf.path].content)"></div>
                 </div>
               </div>
             </div>
@@ -258,14 +254,13 @@ function walk(fn) {
   })(tree)
 }
 
-// ---------------- 每菜单的已载入文件 与 预览状态 ----------------
+// ---------------- 每菜单的已载入文件 与 预览 ----------------
 const loadedFiles = reactive({})   // path -> { fileName, content }
 const notes = reactive({})         // path -> 更新说明
-const previewOpen = reactive({})   // path -> bool
 const singleLoading = reactive({}) // path -> bool（更新中）
 
 function uploadFor(leaf) {
-  // 动态创建一个隐藏 file input 并触发点击
+  // 动态创建一个隐藏 file input 并触发点击，弹出系统文件选择窗口
   const input = document.createElement('input')
   input.type = 'file'
   input.accept = '.md,.markdown,text/markdown'
@@ -277,7 +272,6 @@ function uploadFor(leaf) {
     const reader = new FileReader()
     reader.onload = () => {
       loadedFiles[leaf.path] = { fileName: file.name, content: reader.result }
-      previewOpen[leaf.path] = true // 载入后自动展开预览
       input.remove()
     }
     reader.readAsText(file, 'utf-8')
@@ -285,16 +279,28 @@ function uploadFor(leaf) {
   input.click()
 }
 
-function toggleLeaf(leaf) {
-  if (!loadedFiles[leaf.path]) return
-  previewOpen[leaf.path] = !previewOpen[leaf.path]
+// 点击文件名 → 在新浏览器窗口打开 MD 预览
+function openPreviewInNewWindow(leaf) {
+  const item = loadedFiles[leaf.path]
+  if (!item) return
+  const html = md.render(item.content)
+  const w = window.open('', '_blank', 'width=960,height=720')
+  if (!w) { alert('浏览器阻止了弹出窗口，请允许本站弹出窗口后重试。'); return }
+  w.document.write('<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><title>预览 · ' +
+    escapeHtml(leaf.name) + '</title>' +
+    '<style>body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;max-width:820px;margin:32px auto;padding:0 24px;line-height:1.8;color:#1F2937;font-size:15px}h1,h2,h3,h4{margin-top:28px;line-height:1.4;color:#1E293B}code{background:#F3F4F6;padding:2px 6px;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:0.9em}pre{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px;overflow:auto}pre code{background:none;padding:0}blockquote{border-left:4px solid #C4B5FD;margin-left:0;padding-left:16px;color:#6D28D9}table{border-collapse:collapse;width:100%}th,td{border:1px solid #E2E8F0;padding:8px 12px;text-align:left}th{background:#F5F3FF}img{max-width:100%}a{color:#6D28D9}.top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #E2E8F0;padding-bottom:10px;margin-bottom:20px}.file-name{color:#64748B;font-size:13px}</style></head><body>' +
+    '<div class="top"><strong>📄 ' + escapeHtml(item.fileName) + '</strong><span class="file-name">' +
+    escapeHtml(leaf.path) + '</span></div>' + html + '</body></html>')
+  w.document.close()
 }
-function previewOpenFor(leaf) { return !!previewOpen[leaf.path] }
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+}
 
 function removeLoaded(leaf) {
   delete loadedFiles[leaf.path]
   delete notes[leaf.path]
-  delete previewOpen[leaf.path]
 }
 
 // ---------------- 更新（提交） ----------------
@@ -423,11 +429,8 @@ async function runBatch() {
   loadLogs()
 }
 
-// ---------------- markdown 渲染 ----------------
+// ---------------- markdown 渲染（用于新窗口预览） ----------------
 const md = new MarkdownIt({ html: true, linkify: true, breaks: true })
-function renderMd(src) {
-  try { return md.render(src) } catch (e) { return `<pre>渲染失败：${e.message}</pre>` }
-}
 
 // ---------------- 后端地址与日志 ----------------
 const uploadSecret = ref('')
@@ -545,13 +548,6 @@ onMounted(loadLogs)
 
 /* 行内更新说明 */
 .smm-note-input { width: 130px; padding: 3px 8px; font-size: 0.72rem; border-radius: 6px; margin-left: 6px; }
-
-/* 行内预览 */
-.smm-inline-preview {
-  margin: 2px 0 8px 40px; border: 1px solid #E2E8F0; border-radius: 10px;
-  background: #fff; overflow: hidden;
-}
-.smm-preview-body { padding: 16px 20px; max-height: 400px; overflow: auto; font-size: 0.85rem; line-height: 1.7; color: #1F2937; }
 
 /* 全局消息 */
 .smm-msg { margin-top: 16px; padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; line-height: 1.6; }
