@@ -22,6 +22,7 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "markdown-it": "^15.0.0",
     "prismjs": "^1.29.0"
   }
 }

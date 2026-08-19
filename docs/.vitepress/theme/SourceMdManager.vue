@@ -3,7 +3,7 @@
     <!-- 头部说明 -->
     <div class="smm-header">
       <h2>📤 源MD管理</h2>
-      <p class="smm-desc">上传由代码分析AI工具生成的最新 MD，自动更新对应菜单页的<strong>源码分析区块</strong>（重点逻辑/界面逻辑/字段/校验等），并保留手工整理的<strong>业务介绍</strong>与<strong>业务流程图</strong>。</p>
+      <p class="smm-desc">上传由代码分析AI工具生成的最新 MD，自动更新对应菜单页的<strong>源码分析区块</strong>（重点逻辑/界面逻辑/字段/校验等），并保留手工整理的<strong>业务介绍</strong>与<strong>业务流程图</strong>。支持按菜单树单页上传，或按 <code>一级-二级-三级.md</code> 命名批量上传。</p>
     </div>
 
     <!-- 后端连接状态 -->
@@ -12,62 +12,130 @@
       <span v-else>⚠️ 未检测到后端服务地址。请确认后端已部署并配置 <code>VITE_UPLOAD_API_URL</code>（本地开发则默认 <code>localhost:3456</code>）。</span>
     </div>
 
-    <!-- 上传表单 -->
-    <div class="smm-form">
-      <div class="smm-field">
-        <label class="smm-label">① 选择目标菜单页</label>
-        <select v-model="pagePath" class="smm-input">
-          <option value="" disabled>— 请选择要更新的页面 —</option>
-          <optgroup v-for="(group, gkey) in groupedPages" :key="gkey" :label="gkey">
-            <option v-for="p in group" :key="p" :value="p">{{ p }}</option>
-          </optgroup>
-        </select>
-      </div>
+    <!-- 全局上传密钥 -->
+    <div class="smm-field smm-secret">
+      <label class="smm-label">🔑 上传密钥（管理员提供，用于单页上传与批量上传）</label>
+      <input v-model="uploadSecret" type="password" class="smm-input" placeholder="KB_UPLOAD_SECRET" autocomplete="off" />
+    </div>
 
+    <!-- 区块说明 -->
+    <div class="smm-rule">
+      <div class="smm-rule-title">更新范围说明</div>
+      <div class="smm-rule-body">
+        <div><span class="dot red"></span><b>将被更新</b>：重点逻辑 key-logic、界面逻辑 detail-logic、权限、FAQ、更新记录、历史</div>
+        <div><span class="dot green"></span><b>将保留</b>：业务介绍 biz-intro、业务流程图 biz-flow（手工整理内容）</div>
+      </div>
+    </div>
+
+    <!-- 批量上传区 -->
+    <div class="smm-batch">
+      <div class="smm-batch-head">
+        <h3>📦 批量上传（多文件）</h3>
+        <span class="smm-batch-hint">按文件名 <code>一级-二级-三级.md</code> 自动匹配菜单，逐个提交更新。可一次选择多个文件。</span>
+      </div>
+      <input ref="batchInput" type="file" accept=".md,.markdown,text/markdown" multiple @change="onBatchChange" class="smm-file" />
+      <div v-if="batchFiles.length" class="smm-batch-list">
+        <div v-for="bf in batchFiles" :key="bf.name" class="smm-batch-item">
+          <span class="smm-batch-name">{{ bf.name }}</span>
+          <span v-if="bf.matched" class="smm-batch-target">→ {{ bf.pagePath }}</span>
+          <span v-else class="smm-batch-bad">⚠️ 无法匹配菜单</span>
+          <span v-if="bf.state === 'done'" class="smm-batch-done">✅ {{ bf.result }}</span>
+          <span v-if="bf.state === 'err'" class="smm-batch-err">❌ {{ bf.result }}</span>
+        </div>
+      </div>
+      <div class="smm-batch-actions" v-if="batchFiles.length">
+        <button class="smm-btn smm-btn-sub" :disabled="batchLoading" @click="runBatch">
+          {{ batchLoading ? `批量上传中 ${batchDone}/${batchTotal}…` : '🚀 开始批量上传' }}
+        </button>
+        <button class="smm-btn smm-btn-ghost" :disabled="batchLoading" @click="clearBatch">清空</button>
+      </div>
+    </div>
+
+    <!-- 菜单树 -->
+    <div class="smm-tree-head">
+      <h3>🌳 菜单树（按一级 → 二级 → 三级）</h3>
+      <div class="smm-tree-tools">
+        <button class="smm-link" @click="expandAll">全部展开</button>
+        <span class="smm-sep">·</span>
+        <button class="smm-link" @click="collapseAll">全部折叠</button>
+        <span class="smm-sep">·</span>
+        <span class="smm-count">共 {{ totalLeaves }} 个菜单</span>
+      </div>
+    </div>
+
+    <div class="smm-tree" v-if="tree">
+      <div v-for="lv1 in tree" :key="lv1.name" class="smm-lv1">
+        <div class="smm-row smm-lv1-row" @click="toggle(lv1)">
+          <span class="smm-caret" :class="{ open: lv1.open }">▶</span>
+          <span class="smm-folder">📁</span>
+          <span class="smm-node-name">{{ lv1.name }}</span>
+          <span class="smm-leaf-count">{{ lv1.leafCount }}</span>
+        </div>
+        <div v-show="lv1.open" class="smm-children">
+          <div v-for="lv2 in lv1.children" :key="lv2.name" class="smm-lv2">
+            <div class="smm-row smm-lv2-row" @click="toggle(lv2)">
+              <span class="smm-caret" :class="{ open: lv2.open }">▶</span>
+              <span class="smm-folder">📂</span>
+              <span class="smm-node-name">{{ lv2.name }}</span>
+              <span class="smm-leaf-count">{{ lv2.leafCount }}</span>
+            </div>
+            <div v-show="lv2.open" class="smm-children">
+              <div v-for="leaf in lv2.children" :key="leaf.path" class="smm-lv3">
+                <div class="smm-row smm-lv3-row">
+                  <span class="smm-caret-placeholder"></span>
+                  <span class="smm-file">📄</span>
+                  <span class="smm-node-name smm-leaf-name">{{ leaf.name }}</span>
+                  <span class="smm-leaf-path">{{ leaf.path }}</span>
+                  <button class="smm-btn smm-btn-mini" :class="{ active: activeLeaf === leaf }"
+                    @click.stop="selectLeaf(leaf)">{{ activeLeaf === leaf ? '已选中' : '上传' }}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 选中菜单的单页上传面板 -->
+    <div v-if="activeLeaf" class="smm-detail">
+      <div class="smm-detail-head">
+        <h3>📝 {{ activeLeaf.path }}</h3>
+        <button class="smm-link" @click="activeLeaf = null">关闭</button>
+      </div>
       <div class="smm-field">
-        <label class="smm-label">② 上传最新 MD 内容（AI 分析源码生成）</label>
+        <label class="smm-label">① 上传最新 MD 内容（可粘贴或选择文件）</label>
         <div class="smm-file-row">
-          <input type="file" accept=".md,.markdown,text/markdown" @change="onFileChange" class="smm-file" />
-          <span class="smm-file-hint">{{ fileName || '或直接在下方向下方粘贴 MD 全文' }}</span>
+          <input type="file" accept=".md,.markdown,text/markdown" @change="onSingleFile" class="smm-file" />
+          <span class="smm-file-hint">{{ singleFileName || '选择 .md 文件自动载入' }}</span>
         </div>
-        <textarea
-          v-model="mdContent"
-          class="smm-textarea"
-          rows="12"
-          placeholder="将 AI 生成的 MD 全文粘贴到这里，或选择上方 .md 文件自动载入…"
-        ></textarea>
+        <textarea v-model="activeMd" class="smm-textarea" rows="10"
+          placeholder="将 AI 生成的 MD 全文粘贴到这里，或选择上方 .md 文件自动载入…"></textarea>
       </div>
 
       <div class="smm-field">
-        <label class="smm-label">③ 更新说明（可选）</label>
-        <input v-model="note" type="text" class="smm-input" placeholder="如：核销列表页新增筛选项 / 修复字段说明" />
+        <label class="smm-label">② 更新说明（可选）</label>
+        <input v-model="activeNote" type="text" class="smm-input" placeholder="如：核销列表页新增筛选项 / 修复字段说明" />
       </div>
 
-      <div class="smm-field">
-        <label class="smm-label">④ 上传密钥（管理员提供）</label>
-        <input v-model="uploadSecret" type="password" class="smm-input" placeholder="KB_UPLOAD_SECRET" autocomplete="off" />
+      <div class="smm-detail-actions">
+        <button class="smm-btn" :disabled="singleLoading || !activeMd.trim() || !uploadSecret" @click="submitSingle">
+          {{ singleLoading ? '上传中…' : '🚀 上传并触发自动发布' }}
+        </button>
+        <button class="smm-btn smm-btn-ghost" :disabled="singleLoading" @click="togglePreview">👁 {{ showPreview ? '关闭预览' : '页面内预览' }}</button>
       </div>
 
-      <!-- 区块说明 -->
-      <div class="smm-rule">
-        <div class="smm-rule-title">更新范围说明</div>
-        <div class="smm-rule-body">
-          <div><span class="dot red"></span><b>将被更新</b>：重点逻辑 key-logic、界面逻辑 detail-logic、权限、FAQ、更新记录、历史</div>
-          <div><span class="dot green"></span><b>将保留</b>：业务介绍 biz-intro、业务流程图 biz-flow（手工整理内容）</div>
-        </div>
+      <div v-if="singleError" class="smm-error">{{ singleError }}</div>
+      <div v-if="singleSuccess" class="smm-success">{{ singleSuccess }}</div>
+
+      <div v-if="showPreview && activeMd.trim()" class="smm-preview">
+        <div class="smm-preview-label">👁 预览（与知识库渲染样式一致）</div>
+        <div class="smm-preview-body kb-md-preview" v-html="renderMd(activeMd)"></div>
       </div>
-
-      <button class="smm-btn" :disabled="isLoading || !pagePath || !mdContent.trim() || !uploadSecret" @click="submit">
-        {{ isLoading ? '上传中…' : '🚀 上传并触发自动发布' }}
-      </button>
-
-      <div v-if="errorMsg" class="smm-error">{{ errorMsg }}</div>
-      <div v-if="successMsg" class="smm-success">{{ successMsg }}</div>
     </div>
 
     <!-- 上传日志 -->
     <div class="smm-log" v-if="logs.length > 0">
-      <h3>📋 上传日志</h3>
+      <h3>📋 最近上传日志</h3>
       <table class="smm-table">
         <thead>
           <tr><th>时间</th><th>页面</th><th>更新区块</th><th>说明</th><th>状态</th></tr>
@@ -88,8 +156,9 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import MarkdownIt from 'markdown-it'
 
-// 内置标准菜单页面清单（与知识库导航一致）
+// ---------------- 内置菜单清单 ----------------
 const ALL_PAGES = [
   '产品中心/产品资料/产品SM状态变更申请','产品中心/产品资料/产品分类','产品中心/产品资料/产品列表',
   '产品中心/产品资料/产品变更列表','产品中心/产品资料/产品图册','产品中心/产品资料/产品图片上传',
@@ -150,28 +219,218 @@ const ALL_PAGES = [
   '问题反馈/问题反馈','问题反馈/问题回复'
 ]
 
-// 按一级目录分组，用于下拉分组展示
-const groupedPages = computed(() => {
-  const groups = {}
+// 支持批量匹配的命名分隔符（优先用“-”，兼容“_”）
+const SEP = '-'
+
+// ---------------- 树状结构 ----------------
+function buildTree() {
+  const root = []
+  const index = new Map() // path -> leaf node
+  const map = { name: 'ROOT', children: [] }
+
   for (const p of ALL_PAGES) {
-    const top = p.split('/')[0]
-    if (!groups[top]) groups[top] = []
-    groups[top].push(p)
+    const parts = p.split('/')
+    let level = map
+    let curPath = ''
+    for (let i = 0; i < parts.length; i++) {
+      curPath = curPath ? curPath + '/' + parts[i] : parts[i]
+      let child = level.children.find(c => c.name === parts[i])
+      if (!child) {
+        child = {
+          name: parts[i],
+          path: curPath,
+          children: [],
+          isLeaf: i === parts.length - 1,
+          open: true, // 默认全部展开
+          leafCount: 0
+        }
+        level.children.push(child)
+      }
+      if (child.isLeaf) index.set(curPath, child)
+      level = child
+    }
   }
-  return groups
+  // 统计每个节点下的叶子数
+  function count(n) {
+    if (n.isLeaf) { n.leafCount = 1; return 1 }
+    n.leafCount = n.children.reduce((s, c) => s + count(c), 0)
+    return n.leafCount
+  }
+  count(map)
+  root.push(...map.children)
+  return { root, index }
+}
+
+const { root, index } = buildTree()
+const tree = root
+const totalLeaves = ALL_PAGES.length
+
+function toggle(node) {
+  if (!node.isLeaf) node.open = !node.open
+}
+function expandAll() {
+  walk(n => { if (!n.isLeaf) n.open = true })
+}
+function collapseAll() {
+  walk(n => { if (!n.isLeaf) n.open = false })
+}
+function walk(fn) {
+  (function rec(list) {
+    for (const n of list) { fn(n); rec(n.children) }
+  })(tree)
+}
+
+// ---------------- markdown 渲染 ----------------
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  breaks: true
 })
+function renderMd(src) {
+  try { return md.render(src) } catch (e) { return `<pre>渲染失败：${e.message}</pre>` }
+}
 
-const pagePath = ref('')
-const mdContent = ref('')
-const note = ref('')
+// ---------------- 单页上传 ----------------
+const activeLeaf = ref(null)
+const activeMd = ref('')
+const activeNote = ref('')
+const singleFileName = ref('')
+const singleLoading = ref(false)
+const singleError = ref('')
+const singleSuccess = ref('')
+const showPreview = ref(false)
+
+function selectLeaf(leaf) {
+  // 若点击已选中，关闭
+  if (activeLeaf.value === leaf) { activeLeaf.value = null; return }
+  activeLeaf.value = leaf
+  activeMd.value = ''
+  activeNote.value = ''
+  singleFileName.value = ''
+  singleError.value = ''
+  singleSuccess.value = ''
+  showPreview.value = false
+}
+
+function onSingleFile(e) {
+  const file = e.target.files[0]
+  if (!file) return
+  singleFileName.value = file.name
+  const reader = new FileReader()
+  reader.onload = () => { activeMd.value = reader.result }
+  reader.readAsText(file, 'utf-8')
+}
+
+function togglePreview() { showPreview.value = !showPreview.value }
+
+async function submitSingle() {
+  singleError.value = ''
+  singleSuccess.value = ''
+  if (!apiBase) { singleError.value = '后端服务地址未配置，无法上传。' ; return }
+  if (!activeLeaf.value) return
+  singleLoading.value = true
+  try {
+    const data = await uploadOne(activeLeaf.value.path, activeMd.value, activeNote.value)
+    singleSuccess.value = `✅ 上传成功！已更新 ${data.file}，更新区块：${(data.changedSections||[]).join(', ')}。GitHub Actions 正在自动发布。`
+    loadLogs()
+    activeMd.value = ''
+    activeNote.value = ''
+    singleFileName.value = ''
+  } catch (err) {
+    singleError.value = `❌ 上传失败：${err.message}`
+  } finally {
+    singleLoading.value = false
+  }
+}
+
+// 底层单文件提交（单页与批量共用）
+async function uploadOne(pagePath, content, note) {
+  const resp = await fetch(`${apiBase}/api/upload-md`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Upload-Secret': uploadSecret.value
+    },
+    body: JSON.stringify({ pagePath: '/' + pagePath + '/', content, note: note || '' })
+  })
+  const data = await resp.json()
+  if (!resp.ok) throw new Error(data.error || `HTTP ${resp.status}`)
+  if (data.error) throw new Error(data.error)
+  return data
+}
+
+// ---------------- 批量上传 ----------------
+const batchInput = ref(null)
+const batchFiles = ref([])
+const batchLoading = ref(false)
+const batchDone = ref(0)
+const batchTotal = ref(0)
+
+function parsePathFromName(name) {
+  // 去掉扩展名
+  const base = name.replace(/\.(md|markdown)$/i, '').trim()
+  // 按分隔符切分，最多取 3 段（一级-二级-三级）
+  const parts = base.split(SEP).map(s => s.trim()).filter(Boolean)
+  if (parts.length !== 3) return null
+  return parts.join('/')
+}
+
+function onBatchChange(e) {
+  const files = Array.from(e.target.files || [])
+  const list = files.map(f => {
+    const p = parsePathFromName(f.name)
+    return {
+      file: f,
+      name: f.name,
+      pagePath: p && index.has(p) ? p : null,
+      matched: !!(p && index.has(p)),
+      state: 'ready', // ready | done | err
+      result: ''
+    }
+  })
+  batchFiles.value = batchFiles.value.concat(list)
+  e.target.value = ''
+}
+
+function clearBatch() {
+  batchFiles.value = []
+  batchDone.value = 0
+  batchTotal.value = 0
+}
+
+async function runBatch() {
+  if (!apiBase) { alert('后端服务地址未配置，无法批量上传。'); return }
+  const pending = batchFiles.value.filter(f => f.state === 'ready')
+  if (!pending.length) return
+  const okFiles = pending.filter(f => f.matched)
+  if (!okFiles.length) { alert('没有可匹配到菜单的文件。请按「一级-二级-三级.md」命名。'); return }
+  batchLoading.value = true
+  batchTotal.value = pending.length
+  batchDone.value = 0
+  for (const f of pending) {
+    if (!f.matched) {
+      f.state = 'err'
+      f.result = '文件名无法匹配菜单（需 一级-二级-三级.md）'
+      batchDone.value++
+      continue
+    }
+    const text = await f.file.text().catch(() => '')
+    try {
+      const data = await uploadOne(f.pagePath, text, `批量上传（${f.name}）`)
+      f.state = 'done'
+      f.result = `已更新 ${(data.changedSections||[]).join(', ')}`
+    } catch (err) {
+      f.state = 'err'
+      f.result = err.message
+    }
+    batchDone.value++
+  }
+  batchLoading.value = false
+  loadLogs()
+}
+
+// ---------------- 后端地址与日志 ----------------
 const uploadSecret = ref('')
-const fileName = ref('')
-const isLoading = ref(false)
-const errorMsg = ref('')
-const successMsg = ref('')
-const logs = ref([])
-
-// 后端地址：优先 window.KB_UPLOAD_URL，其次 window.KB_API_URL，本地 fallback
 const getApiBase = () => {
   if (typeof window === 'undefined') return null
   const injected = window.KB_UPLOAD_URL || window.KB_API_URL
@@ -182,48 +441,7 @@ const getApiBase = () => {
 const apiBase = getApiBase()
 const backendReady = computed(() => !!apiBase)
 
-function onFileChange(e) {
-  const file = e.target.files[0]
-  if (!file) return
-  fileName.value = file.name
-  const reader = new FileReader()
-  reader.onload = () => { mdContent.value = reader.result }
-  reader.readAsText(file, 'utf-8')
-}
-
-async function submit() {
-  errorMsg.value = ''
-  successMsg.value = ''
-  if (!apiBase) { errorMsg.value = '后端服务地址未配置，无法上传。' ; return }
-  isLoading.value = true
-  try {
-    const resp = await fetch(`${apiBase}/api/upload-md`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Upload-Secret': uploadSecret.value
-      },
-      body: JSON.stringify({
-        pagePath: '/' + pagePath.value + '/',
-        content: mdContent.value,
-        note: note.value
-      })
-    })
-    const data = await resp.json()
-    if (!resp.ok) throw new Error(data.error || `HTTP ${resp.status}`)
-    if (data.error) throw new Error(data.error)
-    successMsg.value = `✅ 上传成功！已更新 ${data.file}，更新区块：${(data.changedSections||[]).join(', ')}。GitHub Actions 正在自动发布，稍后刷新即可看到。`
-    // 刷新日志
-    loadLogs()
-    mdContent.value = ''
-    note.value = ''
-  } catch (err) {
-    errorMsg.value = `❌ 上传失败：${err.message}`
-  } finally {
-    isLoading.value = false
-  }
-}
-
+const logs = ref([])
 async function loadLogs() {
   if (!apiBase) return
   try {
@@ -241,21 +459,18 @@ onMounted(loadLogs)
 </script>
 
 <style scoped>
-.smm-container {
-  max-width: 880px;
-  margin: 0 auto;
-  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  color: #1F2937;
-}
+.smm-container { max-width: 960px; margin: 0 auto; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; color: #1F2937; }
 .smm-header { margin-bottom: 16px; }
 .smm-header h2 { margin: 0 0 6px; font-size: 1.5rem; color: #1E293B; }
 .smm-desc { margin: 0; font-size: 0.85rem; color: #64748B; line-height: 1.7; }
-.smm-alert { padding: 10px 14px; border-radius: 10px; font-size: 0.82rem; margin-bottom: 18px; }
+.smm-desc code, .smm-batch-hint code { background: rgba(124,58,237,0.1); color: #6D28D9; padding: 1px 5px; border-radius: 4px; font-size: 0.8em; }
+.smm-alert { padding: 10px 14px; border-radius: 10px; font-size: 0.82rem; margin-bottom: 14px; }
 .smm-alert.ok { background: #ECFDF5; border: 1px solid #A7F3D0; color: #047857; }
 .smm-alert.warn { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
 .smm-alert code { background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px; }
-.smm-form { border: 1px solid #E2E8F0; border-radius: 14px; padding: 20px; background: #fff; }
-.smm-field { margin-bottom: 16px; }
+.smm-secret { margin-bottom: 10px; }
+
+.smm-field { margin-bottom: 14px; }
 .smm-label { display: block; font-size: 0.83rem; font-weight: 700; color: #334155; margin-bottom: 6px; }
 .smm-input, .smm-textarea {
   width: 100%; box-sizing: border-box; border: 1px solid #CBD5E1; border-radius: 8px;
@@ -266,19 +481,75 @@ onMounted(loadLogs)
 .smm-file-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .smm-file { font-size: 0.8rem; }
 .smm-file-hint { font-size: 0.75rem; color: #94A3B8; }
-.smm-rule {
-  border: 1px solid #E9D5FF; background: #FAF5FF; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px;
-}
+
+.smm-rule { border: 1px solid #E9D5FF; background: #FAF5FF; border-radius: 10px; padding: 12px 14px; margin-bottom: 18px; }
 .smm-rule-title { font-size: 0.8rem; font-weight: 800; color: #7C3AED; margin-bottom: 8px; }
 .smm-rule-body { font-size: 0.78rem; color: #334155; line-height: 1.9; }
 .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; }
 .dot.red { background: #EF4444; }
 .dot.green { background: #10B981; }
+
+/* 批量上传 */
+.smm-batch { border: 1px solid #DBEAFE; background: #F0F9FF; border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; }
+.smm-batch-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.smm-batch-head h3 { margin: 0; font-size: 1rem; color: #0C4A6E; }
+.smm-batch-hint { font-size: 0.75rem; color: #64748B; }
+.smm-batch-list { margin: 10px 0; display: flex; flex-direction: column; gap: 6px; }
+.smm-batch-item { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 7px 10px; }
+.smm-batch-name { font-family: ui-monospace, Menlo, monospace; font-size: 0.75rem; color: #1E293B; }
+.smm-batch-target { color: #0D9488; font-size: 0.75rem; }
+.smm-batch-bad { color: #DC2626; font-size: 0.75rem; }
+.smm-batch-done { color: #059669; font-size: 0.75rem; }
+.smm-batch-err { color: #DC2626; font-size: 0.75rem; }
+.smm-batch-actions { display: flex; gap: 10px; margin-top: 6px; }
+
+/* 菜单树 */
+.smm-tree-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; margin-bottom: 10px; }
+.smm-tree-head h3 { margin: 0; font-size: 1.1rem; color: #1E293B; }
+.smm-tree-tools { font-size: 0.78rem; color: #64748B; }
+.smm-link { background: none; border: none; color: #6D28D9; cursor: pointer; font-size: 0.78rem; padding: 0; }
+.smm-link:hover { text-decoration: underline; }
+.smm-sep { margin: 0 4px; color: #CBD5E1; }
+.smm-count { color: #94A3B8; }
+
+.smm-tree { border: 1px solid #E2E8F0; border-radius: 12px; padding: 8px 10px; background: #FCFCFD; }
+.smm-row { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 8px; cursor: default; }
+.smm-lv1-row { font-weight: 800; font-size: 0.9rem; color: #312E81; cursor: pointer; }
+.smm-lv2-row { font-weight: 700; font-size: 0.84rem; color: #4338CA; cursor: pointer; margin-left: 14px; }
+.smm-lv3-row { font-size: 0.8rem; color: #334155; margin-left: 28px; }
+.smm-lv3-row:hover { background: #F5F3FF; }
+.smm-caret { font-size: 0.6rem; color: #94A3B8; transition: transform .15s; width: 12px; text-align: center; }
+.smm-caret.open { transform: rotate(90deg); }
+.smm-caret-placeholder { width: 12px; }
+.smm-folder, .smm-file { font-size: 0.8rem; }
+.smm-node-name { margin-right: 4px; }
+.smm-leaf-name { font-weight: 600; color: #1E293B; }
+.smm-leaf-path { color: #94A3B8; font-size: 0.68rem; font-family: ui-monospace, Menlo, monospace; flex: 1; }
+.smm-leaf-count { background: #EDE9FE; color: #6D28D9; font-size: 0.65rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; margin-left: 6px; }
+.smm-children { margin-left: 8px; }
+.smm-btn-mini { margin-left: 8px; padding: 3px 10px; font-size: 0.72rem; border: 1px solid #C4B5FD; background: #fff; color: #6D28D9; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.smm-btn-mini:hover { background: #F5F3FF; }
+.smm-btn-mini.active { background: #6D28D9; color: #fff; border-color: #6D28D9; }
+
+/* 单页详情 */
+.smm-detail { border: 1px solid #E9D5FF; background: #FAF5FF; border-radius: 14px; padding: 18px; margin-top: 22px; }
+.smm-detail-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.smm-detail-head h3 { margin: 0; font-size: 1.05rem; color: #5B21B6; word-break: break-all; }
+.smm-detail-actions { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+
 .smm-btn {
-  width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 800;
+  padding: 10px 16px; border: none; border-radius: 9px; font-size: 0.85rem; font-weight: 800;
   color: #fff; background: linear-gradient(135deg, #7C3AED, #6D28D9); cursor: pointer;
 }
 .smm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.smm-btn-sub { background: linear-gradient(135deg, #0D9488, #0F766E); }
+.smm-btn-ghost { background: #fff; color: #334155; border: 1px solid #CBD5E1; font-weight: 700; }
+
+/* 预览 */
+.smm-preview { margin-top: 14px; border: 1px solid #E2E8F0; border-radius: 10px; background: #fff; overflow: hidden; }
+.smm-preview-label { padding: 8px 14px; background: #F1F5F9; font-size: 0.75rem; font-weight: 700; color: #475569; }
+.smm-preview-body { padding: 16px 20px; max-height: 480px; overflow: auto; font-size: 0.85rem; line-height: 1.7; color: #1F2937; }
+
 .smm-error { margin-top: 12px; padding: 10px 14px; background: #FEF2F2; border: 1px solid #FECACA; color: #B91C1C; border-radius: 8px; font-size: 0.8rem; }
 .smm-success { margin-top: 12px; padding: 10px 14px; background: #ECFDF5; border: 1px solid #A7F3D0; color: #047857; border-radius: 8px; font-size: 0.8rem; line-height: 1.6; }
 .smm-log { margin-top: 24px; }
