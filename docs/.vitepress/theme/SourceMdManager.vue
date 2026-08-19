@@ -3,18 +3,18 @@
     <!-- 头部说明 -->
     <div class="smm-header">
       <h2>📤 源MD管理</h2>
-      <p class="smm-desc">上传由代码分析AI工具生成的最新 MD，自动更新对应菜单页的<strong>源码分析区块</strong>（重点逻辑/界面逻辑/字段/校验等），并保留手工整理的<strong>业务介绍</strong>与<strong>业务流程图</strong>。支持按菜单树单页上传，或按 <code>一级-二级-三级.md</code> 命名批量上传。</p>
+      <p class="smm-desc">上传由代码分析AI工具生成的最新 MD。点击某菜单的<strong>「上传」</strong>仅将 MD 载入本地暂存并预览，确认无误后点<strong>「更新」</strong>才真正提交，自动更新对应菜单页的<strong>源码分析区块</strong>并保留手工整理的<strong>业务介绍/流程图</strong>。支持按菜单树单页上传，或按 <code>一级-二级-三级.md</code> 命名批量上传。</p>
     </div>
 
     <!-- 后端连接状态 -->
     <div class="smm-alert" :class="backendReady ? 'ok' : 'warn'">
-      <span v-if="backendReady">✅ 后端服务已连接（{{ apiBase }}）</span>
-      <span v-else>⚠️ 未检测到后端服务地址。请确认后端已部署并配置 <code>VITE_UPLOAD_API_URL</code>（本地开发则默认 <code>localhost:3456</code>）。</span>
+      <span v-if="backendReady">✅ 后端服务已连接（{{ apiBase }}）。点「更新」才会真正提交。</span>
+      <span v-else>⚠️ 未检测到后端服务地址。当前只能「上传」载入预览，无法「更新」提交。请确认后端已部署并配置 <code>VITE_UPLOAD_API_URL</code>。</span>
     </div>
 
     <!-- 全局上传密钥 -->
     <div class="smm-field smm-secret">
-      <label class="smm-label">🔑 上传密钥（管理员提供，用于单页上传与批量上传）</label>
+      <label class="smm-label">🔑 更新密钥（管理员提供，仅「更新」提交时需要）</label>
       <input v-model="uploadSecret" type="password" class="smm-input" placeholder="KB_UPLOAD_SECRET" autocomplete="off" />
     </div>
 
@@ -31,7 +31,7 @@
     <div class="smm-batch">
       <div class="smm-batch-head">
         <h3>📦 批量上传（多文件）</h3>
-        <span class="smm-batch-hint">按文件名 <code>一级-二级-三级.md</code> 自动匹配菜单，逐个提交更新。可一次选择多个文件。</span>
+        <span class="smm-batch-hint">选择多个 .md 文件载入暂存，按文件名 <code>一级-二级-三级.md</code> 自动匹配菜单。确认后点「更新全部」才统一提交。</span>
       </div>
       <input ref="batchInput" type="file" accept=".md,.markdown,text/markdown" multiple @change="onBatchChange" class="smm-file" />
       <div v-if="batchFiles.length" class="smm-batch-list">
@@ -41,11 +41,13 @@
           <span v-else class="smm-batch-bad">⚠️ 无法匹配菜单</span>
           <span v-if="bf.state === 'done'" class="smm-batch-done">✅ {{ bf.result }}</span>
           <span v-if="bf.state === 'err'" class="smm-batch-err">❌ {{ bf.result }}</span>
+          <span v-if="bf.state === 'ready'" class="smm-batch-ready">已载入暂存，待更新</span>
+          <button v-if="bf.state === 'ready' && bf.matched" class="smm-btn-mini" :disabled="batchLoading" @click="updateBatchOne(bf)">更新</button>
         </div>
       </div>
       <div class="smm-batch-actions" v-if="batchFiles.length">
-        <button class="smm-btn smm-btn-sub" :disabled="batchLoading" @click="runBatch">
-          {{ batchLoading ? `批量上传中 ${batchDone}/${batchTotal}…` : '🚀 开始批量上传' }}
+        <button class="smm-btn smm-btn-sub" :disabled="batchLoading || !batchHasReadyMatched" @click="runBatch">
+          {{ batchLoading ? `更新中 ${batchDone}/${batchTotal}…` : '🔄 更新全部（提交）' }}
         </button>
         <button class="smm-btn smm-btn-ghost" :disabled="batchLoading" @click="clearBatch">清空</button>
       </div>
@@ -87,7 +89,7 @@
                   <span class="smm-node-name smm-leaf-name">{{ leaf.name }}</span>
                   <span class="smm-leaf-path">{{ leaf.path }}</span>
                   <button class="smm-btn smm-btn-mini" :class="{ active: activeLeaf === leaf }"
-                    @click.stop="selectLeaf(leaf)">{{ activeLeaf === leaf ? '已选中' : '上传' }}</button>
+                    @click.stop="uploadFor(leaf)">{{ activeLeaf === leaf ? '已选中' : '上传' }}</button>
                 </div>
               </div>
             </div>
@@ -96,49 +98,61 @@
       </div>
     </div>
 
-    <!-- 选中菜单的单页上传面板 -->
+    <!-- 选中菜单的单页详情面板 -->
     <div v-if="activeLeaf" class="smm-detail">
       <div class="smm-detail-head">
         <h3>📝 {{ activeLeaf.path }}</h3>
         <button class="smm-link" @click="activeLeaf = null">关闭</button>
       </div>
-      <div class="smm-field">
-        <label class="smm-label">① 上传最新 MD 内容（可粘贴或选择文件）</label>
-        <div class="smm-file-row">
-          <input type="file" accept=".md,.markdown,text/markdown" @change="onSingleFile" class="smm-file" />
-          <span class="smm-file-hint">{{ singleFileName || '选择 .md 文件自动载入' }}</span>
+
+      <!-- 已载入暂存状态 -->
+      <div v-if="activeMd.trim()" class="smm-loaded">
+        <div class="smm-loaded-icon">📥</div>
+        <div class="smm-loaded-info">
+          <div class="smm-loaded-file">{{ singleFileName || '手动输入的内容' }}</div>
+          <div class="smm-loaded-meta">{{ activeMd.length }} 字符 · 已载入本地暂存，尚未提交</div>
         </div>
-        <textarea v-model="activeMd" class="smm-textarea" rows="10"
-          placeholder="将 AI 生成的 MD 全文粘贴到这里，或选择上方 .md 文件自动载入…"></textarea>
+        <button class="smm-btn smm-btn-ghost smm-btn-small" @click="openSinglePicker">↻ 重新上传</button>
       </div>
 
-      <div class="smm-field">
+      <!-- 上传控件（仅当未载入内容时显示） -->
+      <div v-if="!activeMd.trim()" class="smm-field">
+        <label class="smm-label">① 上传 MD 文件（载入暂存，不会提交）</label>
+        <div class="smm-file-row">
+          <input ref="singlePicker" type="file" accept=".md,.markdown,text/markdown" @change="onSingleFile" class="smm-file" />
+          <span class="smm-file-hint">选择该菜单对应的 .md 文件，载入后即可预览</span>
+        </div>
+      </div>
+
+      <!-- 预览（始终显示已载入内容） -->
+      <div v-if="activeMd.trim()" class="smm-preview">
+        <div class="smm-preview-label">👁 预览（与知识库渲染样式一致）</div>
+        <div class="smm-preview-body kb-md-preview" v-html="renderMd(activeMd)"></div>
+      </div>
+
+      <!-- 更新说明 -->
+      <div class="smm-field" v-if="activeMd.trim()">
         <label class="smm-label">② 更新说明（可选）</label>
         <input v-model="activeNote" type="text" class="smm-input" placeholder="如：核销列表页新增筛选项 / 修复字段说明" />
       </div>
 
-      <div class="smm-detail-actions">
-        <button class="smm-btn" :disabled="singleLoading" @click="submitSingle">
-          {{ singleLoading ? '上传中…' : '🚀 上传并触发自动发布' }}
+      <!-- 更新按钮（真正提交） -->
+      <div v-if="activeMd.trim()" class="smm-detail-actions">
+        <button class="smm-btn smm-btn-update" :disabled="singleLoading" @click="submitSingle">
+          {{ singleLoading ? '更新中…' : '🔄 更新（提交）' }}
         </button>
-        <button class="smm-btn smm-btn-ghost" :disabled="singleLoading" @click="togglePreview">👁 {{ showPreview ? '关闭预览' : '页面内预览' }}</button>
       </div>
 
-      <div v-if="!activeMd.trim() && !singleLoading" class="smm-hint">请先在①粘贴 MD 全文，或点击「选择 .md 文件」自动载入。</div>
-      <div v-else-if="!uploadSecret && !singleLoading" class="smm-hint">请在页面上方「🔑 上传密钥」处填写管理员提供的密钥后再上传。</div>
+      <div v-if="!activeMd.trim()" class="smm-hint">请先点本菜单右侧「上传」并选择 .md 文件载入内容，载入后可预览，确认后再点「更新」提交。</div>
+      <div v-else-if="!uploadSecret && !singleLoading" class="smm-hint">点「更新」前请在页面上方「🔑 更新密钥」填写管理员提供的密钥。</div>
 
       <div v-if="singleError" class="smm-error">{{ singleError }}</div>
       <div v-if="singleSuccess" class="smm-success">{{ singleSuccess }}</div>
-
-      <div v-if="showPreview && activeMd.trim()" class="smm-preview">
-        <div class="smm-preview-label">👁 预览（与知识库渲染样式一致）</div>
-        <div class="smm-preview-body kb-md-preview" v-html="renderMd(activeMd)"></div>
-      </div>
     </div>
 
     <!-- 上传日志 -->
     <div class="smm-log" v-if="logs.length > 0">
-      <h3>📋 最近上传日志</h3>
+      <h3>📋 最近更新日志</h3>
       <table class="smm-table">
         <thead>
           <tr><th>时间</th><th>页面</th><th>更新区块</th><th>说明</th><th>状态</th></tr>
@@ -222,15 +236,14 @@ const ALL_PAGES = [
   '问题反馈/问题反馈','问题反馈/问题回复'
 ]
 
-// 支持批量匹配的命名分隔符（优先用“-”，兼容“_”）
+// 支持批量匹配的命名分隔符
 const SEP = '-'
 
 // ---------------- 树状结构 ----------------
 function buildTree() {
   const root = []
-  const index = new Map() // path -> leaf node
   const map = { name: 'ROOT', children: [] }
-
+  const index = new Map()
   for (const p of ALL_PAGES) {
     const parts = p.split('/')
     let level = map
@@ -244,7 +257,7 @@ function buildTree() {
           path: curPath,
           children: [],
           isLeaf: i === parts.length - 1,
-          open: true, // 默认全部展开
+          open: true,
           leafCount: 0
         }
         level.children.push(child)
@@ -253,7 +266,6 @@ function buildTree() {
       level = child
     }
   }
-  // 统计每个节点下的叶子数
   function count(n) {
     if (n.isLeaf) { n.leafCount = 1; return 1 }
     n.leafCount = n.children.reduce((s, c) => s + count(c), 0)
@@ -271,12 +283,8 @@ const totalLeaves = ALL_PAGES.length
 function toggle(node) {
   if (!node.isLeaf) node.open = !node.open
 }
-function expandAll() {
-  walk(n => { if (!n.isLeaf) n.open = true })
-}
-function collapseAll() {
-  walk(n => { if (!n.isLeaf) n.open = false })
-}
+function expandAll() { walk(n => { if (!n.isLeaf) n.open = true }) }
+function collapseAll() { walk(n => { if (!n.isLeaf) n.open = false }) }
 function walk(fn) {
   (function rec(list) {
     for (const n of list) { fn(n); rec(n.children) }
@@ -284,16 +292,12 @@ function walk(fn) {
 }
 
 // ---------------- markdown 渲染 ----------------
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  breaks: true
-})
+const md = new MarkdownIt({ html: true, linkify: true, breaks: true })
 function renderMd(src) {
   try { return md.render(src) } catch (e) { return `<pre>渲染失败：${e.message}</pre>` }
 }
 
-// ---------------- 单页上传 ----------------
+// ---------------- 单页：上传=载入暂存，更新=提交 ----------------
 const activeLeaf = ref(null)
 const activeMd = ref('')
 const activeNote = ref('')
@@ -301,58 +305,62 @@ const singleFileName = ref('')
 const singleLoading = ref(false)
 const singleError = ref('')
 const singleSuccess = ref('')
-const showPreview = ref(false)
+const singlePicker = ref(null)
 
-function selectLeaf(leaf) {
-  // 若点击已选中，关闭
-  if (activeLeaf.value === leaf) { activeLeaf.value = null; return }
+// 点击树中某菜单的「上传」：记录目标菜单，并直接打开文件选择器
+function uploadFor(leaf) {
   activeLeaf.value = leaf
   activeMd.value = ''
   activeNote.value = ''
   singleFileName.value = ''
   singleError.value = ''
   singleSuccess.value = ''
-  showPreview.value = false
-  // 面板出现在树下方，点击后自动滚动到面板，让用户明确看到反馈
   nextTick(() => {
-    const el = document.querySelector('.smm-detail')
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    openSinglePicker()
+    // 滚动到详情面板让用户看到
+    nextTick(() => {
+      const el = document.querySelector('.smm-detail')
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   })
 }
 
+function openSinglePicker() {
+  if (singlePicker.value) singlePicker.value.click()
+}
+
+// 文件载入暂存（不提交）
 function onSingleFile(e) {
   const file = e.target.files[0]
   if (!file) return
   singleFileName.value = file.name
   const reader = new FileReader()
-  reader.onload = () => { activeMd.value = reader.result }
+  reader.onload = () => {
+    activeMd.value = reader.result
+    singleError.value = ''
+    singleSuccess.value = ''
+  }
   reader.readAsText(file, 'utf-8')
 }
 
-function togglePreview() {
-  showPreview.value = !showPreview.value
-  if (showPreview.value && !activeMd.value.trim()) {
-    singleError.value = '暂无内容可预览。请先在①粘贴 MD 全文，或选择 .md 文件载入后再预览。'
-  }
-}
-
+// 真正提交
 async function submitSingle() {
   singleError.value = ''
   singleSuccess.value = ''
   if (!activeLeaf.value) return
-  if (!activeMd.value.trim()) { singleError.value = '请先粘贴 MD 全文，或选择 .md 文件载入内容。' ; return }
-  if (!uploadSecret.value.trim()) { singleError.value = '请先在页面上方「🔑 上传密钥」处填写管理员提供的密钥。' ; return }
-  if (!apiBase) { singleError.value = '后端服务地址未配置，无法上传。请确认后端已部署并配置 VITE_UPLOAD_API_URL。' ; return }
+  if (!activeMd.value.trim()) { singleError.value = '尚未载入 MD 内容。请先点「上传」选择 .md 文件。' ; return }
+  if (!uploadSecret.value.trim()) { singleError.value = '请先在页面上方「🔑 更新密钥」处填写管理员提供的密钥。' ; return }
+  if (!apiBase) { singleError.value = '后端服务地址未配置，无法提交。请确认后端已部署并配置 VITE_UPLOAD_API_URL。' ; return }
   singleLoading.value = true
   try {
     const data = await uploadOne(activeLeaf.value.path, activeMd.value, activeNote.value)
-    singleSuccess.value = `✅ 上传成功！已更新 ${data.file}，更新区块：${(data.changedSections||[]).join(', ')}。GitHub Actions 正在自动发布。`
+    singleSuccess.value = `✅ 更新成功！已更新 ${data.file}，更新区块：${(data.changedSections||[]).join(', ')}。GitHub Actions 正在自动发布。`
     loadLogs()
     activeMd.value = ''
     activeNote.value = ''
     singleFileName.value = ''
   } catch (err) {
-    singleError.value = `❌ 上传失败：${err.message}`
+    singleError.value = `❌ 更新失败：${err.message}`
   } finally {
     singleLoading.value = false
   }
@@ -374,7 +382,7 @@ async function uploadOne(pagePath, content, note) {
   return data
 }
 
-// ---------------- 批量上传 ----------------
+// ---------------- 批量：载入暂存，更新=提交 ----------------
 const batchInput = ref(null)
 const batchFiles = ref([])
 const batchLoading = ref(false)
@@ -382,14 +390,13 @@ const batchDone = ref(0)
 const batchTotal = ref(0)
 
 function parsePathFromName(name) {
-  // 去掉扩展名
   const base = name.replace(/\.(md|markdown)$/i, '').trim()
-  // 按分隔符切分，最多取 3 段（一级-二级-三级）
   const parts = base.split(SEP).map(s => s.trim()).filter(Boolean)
   if (parts.length !== 3) return null
   return parts.join('/')
 }
 
+// 批量载入（暂存，不提交）
 function onBatchChange(e) {
   const files = Array.from(e.target.files || [])
   const list = files.map(f => {
@@ -413,8 +420,29 @@ function clearBatch() {
   batchTotal.value = 0
 }
 
+// 更新单个（批量列表内的按钮）
+async function updateBatchOne(bf) {
+  if (!apiBase) { alert('后端服务地址未配置，无法提交。'); return }
+  if (!uploadSecret.value.trim()) { alert('请先在「🔑 更新密钥」填写管理员提供的密钥。'); return }
+  bf.state = 'loading'
+  const text = await bf.file.text().catch(() => '')
+  try {
+    const data = await uploadOne(bf.pagePath, text, `批量上传（${bf.name}）`)
+    bf.state = 'done'
+    bf.result = `已更新 ${(data.changedSections||[]).join(', ')}`
+  } catch (err) {
+    bf.state = 'err'
+    bf.result = err.message
+  }
+  loadLogs()
+}
+
+const batchHasReadyMatched = computed(() => batchFiles.value.some(f => f.state === 'ready' && f.matched))
+
+// 更新全部（提交）
 async function runBatch() {
-  if (!apiBase) { alert('后端服务地址未配置，无法批量上传。'); return }
+  if (!apiBase) { alert('后端服务地址未配置，无法提交。'); return }
+  if (!uploadSecret.value.trim()) { alert('请先在「🔑 更新密钥」填写管理员提供的密钥。'); return }
   const pending = batchFiles.value.filter(f => f.state === 'ready')
   if (!pending.length) return
   const okFiles = pending.filter(f => f.matched)
@@ -510,12 +538,13 @@ onMounted(loadLogs)
 .smm-batch-head h3 { margin: 0; font-size: 1rem; color: #0C4A6E; }
 .smm-batch-hint { font-size: 0.75rem; color: #64748B; }
 .smm-batch-list { margin: 10px 0; display: flex; flex-direction: column; gap: 6px; }
-.smm-batch-item { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 7px 10px; }
+.smm-batch-item { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 7px 10px; flex-wrap: wrap; }
 .smm-batch-name { font-family: ui-monospace, Menlo, monospace; font-size: 0.75rem; color: #1E293B; }
 .smm-batch-target { color: #0D9488; font-size: 0.75rem; }
 .smm-batch-bad { color: #DC2626; font-size: 0.75rem; }
 .smm-batch-done { color: #059669; font-size: 0.75rem; }
 .smm-batch-err { color: #DC2626; font-size: 0.75rem; }
+.smm-batch-ready { color: #B45309; font-size: 0.72rem; background: #FEF3C7; border-radius: 4px; padding: 1px 6px; }
 .smm-batch-actions { display: flex; gap: 10px; margin-top: 6px; }
 
 /* 菜单树 */
@@ -552,6 +581,13 @@ onMounted(loadLogs)
 .smm-detail-head h3 { margin: 0; font-size: 1.05rem; color: #5B21B6; word-break: break-all; }
 .smm-detail-actions { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
 
+/* 已载入状态条 */
+.smm-loaded { display: flex; align-items: center; gap: 12px; border: 1px solid #D1FAE5; background: #ECFDF5; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.smm-loaded-icon { font-size: 1.4rem; }
+.smm-loaded-info { flex: 1; }
+.smm-loaded-file { font-weight: 700; font-size: 0.85rem; color: #065F46; word-break: break-all; }
+.smm-loaded-meta { font-size: 0.72rem; color: #059669; margin-top: 2px; }
+
 .smm-btn {
   padding: 10px 16px; border: none; border-radius: 9px; font-size: 0.85rem; font-weight: 800;
   color: #fff; background: linear-gradient(135deg, #7C3AED, #6D28D9); cursor: pointer;
@@ -559,15 +595,17 @@ onMounted(loadLogs)
 .smm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .smm-btn-sub { background: linear-gradient(135deg, #0D9488, #0F766E); }
 .smm-btn-ghost { background: #fff; color: #334155; border: 1px solid #CBD5E1; font-weight: 700; }
+.smm-btn-small { padding: 5px 12px; font-size: 0.75rem; }
+.smm-btn-update { background: linear-gradient(135deg, #DC2626, #B91C1C); font-size: 0.9rem; }
 
 /* 预览 */
-.smm-preview { margin-top: 14px; border: 1px solid #E2E8F0; border-radius: 10px; background: #fff; overflow: hidden; }
+.smm-preview { margin-top: 8px; border: 1px solid #E2E8F0; border-radius: 10px; background: #fff; overflow: hidden; }
 .smm-preview-label { padding: 8px 14px; background: #F1F5F9; font-size: 0.75rem; font-weight: 700; color: #475569; }
 .smm-preview-body { padding: 16px 20px; max-height: 480px; overflow: auto; font-size: 0.85rem; line-height: 1.7; color: #1F2937; }
 
 .smm-error { margin-top: 12px; padding: 10px 14px; background: #FEF2F2; border: 1px solid #FECACA; color: #B91C1C; border-radius: 8px; font-size: 0.8rem; }
-.smm-hint { margin-top: 10px; padding: 8px 12px; background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; border-radius: 8px; font-size: 0.78rem; }
 .smm-success { margin-top: 12px; padding: 10px 14px; background: #ECFDF5; border: 1px solid #A7F3D0; color: #047857; border-radius: 8px; font-size: 0.8rem; line-height: 1.6; }
+.smm-hint { margin-top: 10px; padding: 8px 12px; background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; border-radius: 8px; font-size: 0.78rem; }
 .smm-log { margin-top: 24px; }
 .smm-log h3 { font-size: 1.05rem; color: #1E293B; margin: 0 0 10px; }
 .smm-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #E8ECF0; }
