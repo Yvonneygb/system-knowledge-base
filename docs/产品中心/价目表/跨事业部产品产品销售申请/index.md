@@ -176,14 +176,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="重点逻辑">
-**具体逻辑**：
-
-- 1、**跨事业部申请**：申请将产品销售给其他事业部，突破事业部销售限制
-- 2、**申请单管理**：支持新建、编辑、提交、撤回等操作
-- 3、**审批流程**：提交后需审批，审批通过后方可执行跨事业部销售
-</KbCard>
-
+<KbCard title="重点逻辑"><p>1. <strong>跨事业部申请</strong>：申请将产品销售给其他事业部，突破事业部销售限制 2. <strong>申请单管理</strong>：支持新建、编辑、提交、撤回等操作 3. <strong>审批流程</strong>：提交后需审批，审批通过后方可执行跨事业部销售</p></KbCard>
 </div>
 </div>
 </div>
@@ -201,60 +194,13 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 后端接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply</td>
-<td>POST</td>
-<td>新建申请</td>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply</td>
-<td>GET</td>
-<td>查询申请列表</td>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply/{id}</td>
-<td>GET</td>
-<td>查询申请详情</td>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply/{id}</td>
-<td>PUT</td>
-<td>更新申请</td>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply/{id}/submit</td>
-<td>POST</td>
-<td>提交审批</td>
-</tr>
-</tbody></table></div>
-
-&gt; 接口路径为推测，以实际代码为准
-
-</KbCard>
-
-<KbCard title="3.2 前端页面">
-
-- 前端包：`arrow-crm`
-
-</KbCard>
-
-<KbCard title="3.3 核心业务规则">
-
-1. 申请时需选择目标事业部和产品
-2. 销售价格根据责任制内结价定价参数自动计算
-3. 草稿状态可编辑，审批中不可修改
-4. 审批拒绝后可重新编辑提交
-
-</KbCard>
-
+<KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply</td><td>POST</td><td>新建申请</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply</td><td>GET</td><td>查询申请列表</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply/{id}</td><td>GET</td><td>查询申请详情</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply/{id}</td><td>PUT</td><td>更新申请</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-apply/{id}/submit</td><td>POST</td><td>提交审批</td></tr></tbody></table>
+<p class='kl-tip'>接口路径为推测，以实际代码为准</p></KbCard>
+<KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-crm</code></li></ul></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 申请时需选择目标事业部和产品 2. 销售价格根据责任制内结价定价参数自动计算 3. 草稿状态可编辑，审批中不可修改 4. 审批拒绝后可重新编辑提交</p>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 前端代码缺失（疑似hlod低代码页面），无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="数据库表详解"><p class='kl-tip'>具体表结构待确认，推测涉及跨事业部销售申请表，包含以下核心字段：</p>
+<table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>apply_id</td><td>申请ID（主键）</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>source_bu</td><td>源事业部</td></tr><tr><td>target_bu</td><td>目标事业部</td></tr><tr><td>product_code</td><td>产品编码</td></tr><tr><td>product_name</td><td>产品名称</td></tr><tr><td>apply_qty</td><td>申请数量</td></tr><tr><td>unit_price</td><td>单价</td></tr><tr><td>status</td><td>状态（草稿/审批中/通过/拒绝）</td></tr><tr><td>created_by</td><td>创建人</td></tr><tr><td>creation_date</td><td>创建时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -286,15 +232,20 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：跨事业部销售申请是否需要审批？</strong></p>
+<p>A1：是，提交后需走审批流程。</p>
+<p><strong>Q2：审批通过后如何执行销售？</strong></p>
+<p>A2：审批通过后在相关业务模块执行，具体流程视业务而定。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 内容 |
-|------|------|
-| 2026-08-03 | 初始创建 |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>内容</th></tr></thead><tbody><tr><td>2026-08-03</td><td>初始创建</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
