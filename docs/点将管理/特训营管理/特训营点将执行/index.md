@@ -177,6 +177,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard title="重点逻辑"><p>1. <strong>只读跟踪</strong>：本菜单为执行跟踪页面，仅提供查询和查看功能，不涉及数据修改操作 2. <strong>数据来源</strong>：复用TrainCampApply实体和mlt/trainCampApply/*接口，筛选已审批通过且进入执行阶段的申请 3. <strong>进度计算</strong>：根据CRM订单状态及子任务完成情况计算执行完成率 4. <strong>状态联动</strong>：执行状态与CRM订单状态联动，订单完成后自动更新执行状态为已完成</p></KbCard>
 </div>
 </div>
 </div>
@@ -194,112 +195,17 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 前端路由">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>路由</th>
-<th>用途</th>
-</tr>
-<tr>
-<td>`/general/specialTrainingCamp/campGeneralExecute/list`</td>
-<td>特训营点将执行列表页</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口路径</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/query`</td>
-<td>查询点将申请列表（筛选执行中/已完成状态）</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/detail`</td>
-<td>查询点将申请执行详情</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.3 核心实体">
-
-**TrainCampApply**（复用点将申请实体，筛选执行阶段数据）
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>apply_code</td>
-<td>申请编码（主键）</td>
-</tr>
-<tr>
-<td>camp_code</td>
-<td>特训营编码（FK）</td>
-</tr>
-<tr>
-<td>apply_status</td>
-<td>申请状态（执行中/已完成）</td>
-</tr>
-<tr>
-<td>crm_order_status</td>
-<td>CRM订单状态</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.4 列表筛选条件">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>筛选项</th>
-<th>说明</th>
-<th>默认值</th>
-</tr>
-<tr>
-<td>特训营编码</td>
-<td>按特训营筛选</td>
-<td>无</td>
-</tr>
-<tr>
-<td>申请编码</td>
-<td>按申请编码筛选</td>
-<td>无</td>
-</tr>
-<tr>
-<td>执行状态</td>
-<td>按执行状态筛选</td>
-<td>执行中</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="1" title="train_camp_apply（特训营点将申请主表，同点将管理）">
-
-| 字段名 | 类型 | 说明 | 约束 |
-|--------|------|------|------|
-| apply_code | VARCHAR2(32) | 申请编码 | PK |
-| camp_code | VARCHAR2(32) | 特训营编码 | FK → train_camp.camp_code |
-| apply_status | VARCHAR2(30) | 申请状态 | NOT NULL |
-| crm_order_status | VARCHAR2(30) | CRM订单状态 | |
-| execution_progress | NUMBER(5,2) | 执行完成率(%) | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | NUMBER | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-
-</KbCard>
-
+<KbCard title="3.1 前端路由"><table class="kl-table"><thead><tr><th>路由</th><th>用途</th></tr></thead><tbody><tr><td><code>/general/specialTrainingCamp/campGeneralExecute/list</code></td><td>特训营点将执行列表页</td></tr></tbody></table></KbCard>
+<KbCard title="3.2 API接口"><table class="kl-table"><thead><tr><th>接口路径</th><th>说明</th></tr></thead><tbody><tr><td><code>mlt/trainCampApply/query</code></td><td>查询点将申请列表（筛选执行中/已完成状态）</td></tr><tr><td><code>mlt/trainCampApply/detail</code></td><td>查询点将申请执行详情</td></tr></tbody></table></KbCard>
+<KbCard title="3.3 核心实体"><p><strong>TrainCampApply</strong>（复用点将申请实体，筛选执行阶段数据）</p>
+<table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>申请编码（主键）</td></tr><tr><td>camp_code</td><td>特训营编码（FK）</td></tr><tr><td>apply_status</td><td>申请状态（执行中/已完成）</td></tr><tr><td>crm_order_status</td><td>CRM订单状态</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 列表筛选条件"><table class="kl-table"><thead><tr><th>筛选项</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td>特训营编码</td><td>按特训营筛选</td><td>无</td></tr><tr><td>申请编码</td><td>按申请编码筛选</td><td>无</td></tr><tr><td>执行状态</td><td>按执行状态筛选</td><td>执行中</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><p class='kl-tip'>无选择弹窗。</p></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>查看申请</td><td>跳转特训营详情页</td></tr></tbody></table></KbCard>
+<KbCard title="保存校验"><p class='kl-tip'>无保存功能（纯查询执行页）。</p></KbCard>
+<KbCard title="提交校验"><p class='kl-tip'>无提交/审批功能。纯查询类页面。</p></KbCard>
+<KbCard title="train_camp_apply（特训营点将申请主表，同点将管理）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>约束</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2(32)</td><td>申请编码</td><td>PK</td></tr><tr><td>camp_code</td><td>VARCHAR2(32)</td><td>特训营编码</td><td>FK → train_camp.camp_code</td></tr><tr><td>apply_status</td><td>VARCHAR2(30)</td><td>申请状态</td><td>NOT NULL</td></tr><tr><td>crm_order_status</td><td>VARCHAR2(30)</td><td>CRM订单状态</td><td></td></tr><tr><td>execution_progress</td><td>NUMBER(5,2)</td><td>执行完成率(%)</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -313,15 +219,22 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：执行跟踪页面能否修改数据？</strong></p>
+<p>A：不能，本页面为只读跟踪页面，仅提供查询查看功能。</p>
+<p><strong>Q2：执行完成率如何计算？</strong></p>
+<p>A：根据CRM订单下的子任务完成数量占总任务数量的百分比计算。</p>
+<p><strong>Q3：执行列表与点将管理列表有什么区别？</strong></p>
+<p>A：点将管理列表展示所有状态的申请，执行列表仅展示已审批通过进入执行阶段的申请。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 作者 |
-|------|------|----------|------|
-| 2026-08-03 | v1.0 | 初始文档 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>作者</th></tr></thead><tbody><tr><td>2026-08-03</td><td>v1.0</td><td>初始文档</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
