@@ -126,74 +126,10 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 后端Controller">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>项目</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>Controller</td>
-<td>ManualClassificationController</td>
-</tr>
-<tr>
-<td>基础路径</td>
-<td>`/v1/{organizationId}/manual-classification/`</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="2" title="2.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/manual-classification/`</td>
-<td>GET</td>
-<td>查询分类列表/树</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/manual-classification/{id}`</td>
-<td>GET</td>
-<td>查询分类详情</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/manual-classification/`</td>
-<td>POST</td>
-<td>新增分类</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/manual-classification/{id}`</td>
-<td>PUT</td>
-<td>更新分类</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/manual-classification/{id}`</td>
-<td>DELETE</td>
-<td>删除分类</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="3" title="2.3 无工作流">
-
-本菜单无审批工作流，数据直接保存生效。
-
-</KbCard>
-
-<KbCard num="4" title="2.4 嵌入使用">
-
-本菜单作为嵌入式组件，嵌入在CRM产品详情页中使用，前端在arrow-crm包中调用AE微服务接口。
-
-</KbCard>
-
+<KbCard title="2.1 后端Controller"><table class="kl-table"><thead><tr><th>项目</th><th>说明</th></tr></thead><tbody><tr><td>Controller</td><td>ManualClassificationController</td></tr><tr><td>基础路径</td><td><code>/v1/{organizationId}/manual-classification/</code></td></tr></tbody></table></KbCard>
+<KbCard title="2.2 API接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td><code>/v1/{organizationId}/manual-classification/</code></td><td>GET</td><td>查询分类列表/树</td></tr><tr><td><code>/v1/{organizationId}/manual-classification/{id}</code></td><td>GET</td><td>查询分类详情</td></tr><tr><td><code>/v1/{organizationId}/manual-classification/</code></td><td>POST</td><td>新增分类</td></tr><tr><td><code>/v1/{organizationId}/manual-classification/{id}</code></td><td>PUT</td><td>更新分类</td></tr><tr><td><code>/v1/{organizationId}/manual-classification/{id}</code></td><td>DELETE</td><td>删除分类</td></tr></tbody></table></KbCard>
+<KbCard title="2.3 无工作流"><p>本菜单无审批工作流，数据直接保存生效。</p></KbCard>
+<KbCard title="2.4 嵌入使用"><p>本菜单作为嵌入式组件，嵌入在CRM产品详情页中使用，前端在arrow-crm包中调用AE微服务接口。</p></KbCard>
 </div>
 </div>
 </div>
@@ -211,68 +147,13 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 分类树结构">
-
-- 产品分类采用树形结构，支持多级分类
-- 顶级分类为根节点，下级分类为子节点
-- 每个分类节点包含：分类编码、分类名称、父分类ID、层级、排序号等
-- 分类树支持展开/折叠操作
-
-</KbCard>
-
-<KbCard title="3.2 分类数据结构">
-
-- **分类编码（class_code）**：分类的唯一编码
-- **分类名称（class_name）**：分类的显示名称
-- **父分类ID（parent_class_id）**：上级分类ID，顶级分类为空或0
-- **层级（level_number）**：分类在树中的层级，从1开始
-- **排序号（sequence_number）**：同级分类的排序顺序
-- **分类描述（description）**：分类的详细说明
-- **启用标志（enabled_flag）**：Y/N，控制分类是否可用
-
-</KbCard>
-
-<KbCard title="3.3 业务规则">
-
-- 分类编码在同一组织下唯一
-- 分类被产品引用后不可删除，只能禁用
-- 删除父分类时需先处理子分类（级联删除或移动子分类）
-- 分类层级深度有限制，一般不超过5级
-- 分类排序号影响同级分类的显示顺序
-
-</KbCard>
-
-<KbCard title="3.4 与产品关联">
-
-- 产品通过product_category字段关联到分类编码
-- 一个产品只能归属一个主分类
-- 分类变更不影响已关联产品的分类归属，需手动调整
-
-</KbCard>
-
-<KbCard num="1" title="4.1 产品分类表">
-
-> 表名：ITEM_CLASS（产品分类表）
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| id | NUMBER | 主键ID | PK |
-| class_code | VARCHAR2 | 分类编码 | 唯一 |
-| class_name | VARCHAR2 | 分类名称 | NOT NULL |
-| parent_class_id | NUMBER | 父分类ID | 顶级为空 |
-| level_number | NUMBER | 层级 | 从1开始 |
-| sequence_number | NUMBER | 排序号 | 同级排序 |
-| description | VARCHAR2 | 分类描述 | |
-| enabled_flag | VARCHAR2 | 启用标志 | Y/N |
-| organization_id | NUMBER | 组织ID | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | NUMBER | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-| object_version_number | NUMBER | 版本号 | 乐观锁 |
-
-</KbCard>
-
+<KbCard title="3.1 分类树结构"><ul><li>产品分类采用树形结构，支持多级分类</li><li>顶级分类为根节点，下级分类为子节点</li><li>每个分类节点包含：分类编码、分类名称、父分类ID、层级、排序号等</li><li>分类树支持展开/折叠操作</li></ul></KbCard>
+<KbCard title="3.2 分类数据结构"><ul><li><strong>分类编码（class_code）</strong>：分类的唯一编码</li><li><strong>分类名称（class_name）</strong>：分类的显示名称</li><li><strong>父分类ID（parent_class_id）</strong>：上级分类ID，顶级分类为空或0</li><li><strong>层级（level_number）</strong>：分类在树中的层级，从1开始</li><li><strong>排序号（sequence_number）</strong>：同级分类的排序顺序</li><li><strong>分类描述（description）</strong>：分类的详细说明</li><li><strong>启用标志（enabled_flag）</strong>：Y/N，控制分类是否可用</li></ul></KbCard>
+<KbCard title="3.3 业务规则"><ul><li>分类编码在同一组织下唯一</li><li>分类被产品引用后不可删除，只能禁用</li><li>删除父分类时需先处理子分类（级联删除或移动子分类）</li><li>分类层级深度有限制，一般不超过5级</li><li>分类排序号影响同级分类的显示顺序</li></ul></KbCard>
+<KbCard title="3.4 与产品关联"><ul><li>产品通过product_category字段关联到分类编码</li><li>一个产品只能归属一个主分类</li><li>分类变更不影响已关联产品的分类归属，需手动调整</li></ul>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。使用四级级联值集\\ CRM\\.PRODUCT_CLASS（SQL值集）选择产品分类。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 不支持导入功能。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 接口\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|------\\|------\\|\\r\\n\\|\\ 新增\\ \\|\\ POST\\ /save-item-class\\ \\|\\ 新增产品分类\\ \\|\\r\\n\\|\\ 删除\\ \\|\\ POST\\ /deleta-item-class\\ \\|\\ 删除产品分类\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 后端校验在ManualClassificationService\\.saveItemClass中。前端代码缺失，无法确认前端校验。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="4.1 产品分类表"><p class='kl-tip'>表名：ITEM_CLASS（产品分类表）</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>class_code</td><td>VARCHAR2</td><td>分类编码</td><td>唯一</td></tr><tr><td>class_name</td><td>VARCHAR2</td><td>分类名称</td><td>NOT NULL</td></tr><tr><td>parent_class_id</td><td>NUMBER</td><td>父分类ID</td><td>顶级为空</td></tr><tr><td>level_number</td><td>NUMBER</td><td>层级</td><td>从1开始</td></tr><tr><td>sequence_number</td><td>NUMBER</td><td>排序号</td><td>同级排序</td></tr><tr><td>description</td><td>VARCHAR2</td><td>分类描述</td><td></td></tr><tr><td>enabled_flag</td><td>VARCHAR2</td><td>启用标志</td><td>Y/N</td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -331,15 +212,17 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>分类层级最多支持几级？</td><td>一般不超过5级，具体以系统配置为准</td></tr><tr><td>删除有子分类的节点会怎样？</td><td>需先处理子分类（删除或移动），不可直接删除有子节点的分类</td></tr><tr><td>分类编码可以修改吗？</td><td>分类编码被产品引用后不建议修改，可能影响关联关系</td></tr><tr><td>本菜单在CRM前端如何使用？</td><td>作为嵌入式组件嵌入在CRM产品详情页中，通过AE微服务接口获取分类数据</td></tr><tr><td>手动分类和自动分类的区别？</td><td>手动分类由用户维护分类体系，自动分类由系统根据规则自动归类</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | V1.0 | 初始创建 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>V1.0</td><td>初始创建</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
