@@ -201,15 +201,15 @@
 <div class="kl-wrap">
 <KbCard title="3.1 API接口列表"><table class="kl-table"><thead><tr><th>方法</th><th>路径</th><th>说明</th></tr></thead><tbody><tr><td>DELETE</td><td>/do-delete</td><td>删除</td></tr><tr><td>POST</td><td>/do-save</td><td>保存</td></tr><tr><td>GET</td><td>/do-select</td><td>详情</td></tr><tr><td>GET</td><td>/do-select-print</td><td>打印详情</td></tr><tr><td>GET</td><td>/sum-cash-out</td><td>计算兑现数值</td></tr></tbody></table></KbCard>
 <KbCard title="3.2 工作流回调"><table class="kl-table"><thead><tr><th>方法</th><th>触发时机</th><th>逻辑说明</th></tr></thead><tbody><tr><td>wfProcSubmit</td><td>提交审批</td><td>启动工作流实例</td></tr><tr><td>wfComplete</td><td>审批完成</td><td>更新审核状态</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>LOV编码/接口</th><th>说明</th></tr></thead><tbody><tr><td>报销申请单</td><td><code>AE.CUSTDHCASHOUTHEADLIST.VIEW</code>，接口 <code>/cust-dh-reimburse-heads/get-cashout-lov</code></td><td>选择后联动带出经销商、交易公司、法人客户、预算年度、报销类型、支付方式、额度内/外金额等</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>保存</td><td>编辑模式</td><td>走保存接口</td></tr><tr><td>提交</td><td>!businessKey</td><td>启动工作流</td></tr><tr><td>打印</td><td>有applyCloseId</td><td>reportCode=<code>MTZBBXDX_PRINT</code></td></tr></tbody></table>
+<KbCard title="3.3 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>LOV编码/接口</th><th>说明</th></tr></thead><tbody><tr><td>报销申请单</td><td><code>AE.CUSTDHCASHOUTHEADLIST.VIEW</code>，接口 <code>/cust-dh-reimburse-heads/get-cashout-lov</code></td><td>选择后联动带出经销商、交易公司、法人客户、预算年度、报销类型、支付方式、额度内/外金额等</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.5 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>保存</td><td>编辑模式</td><td>走保存接口</td></tr><tr><td>提交</td><td>!businessKey</td><td>启动工作流</td></tr><tr><td>打印</td><td>有applyCloseId</td><td>reportCode=<code>MTZBBXDX_PRINT</code></td></tr></tbody></table>
 <p class='kl-tip'>列表页为hlod低代码页面。编辑条件：hzApproveStatus ∈ [NEW, WITHDRAW, INTERRUPT, REBUT]</p></KbCard>
-<KbCard title="保存校验"><p><strong>前端校验：</strong></p>
+<KbCard title="3.6 保存校验"><p><strong>前端校验：</strong></p>
 <table class="kl-table"><thead><tr><th>校验项</th><th>错误提示</th></tr></thead><tbody><tr><td>报销申请单必填</td><td>(C7N内置提示)</td></tr><tr><td>兑现预算年度必填</td><td>(C7N内置提示)</td></tr><tr><td>申请兑现比例(额度外)必填且≥0</td><td>申请兑现比例需≤X，请修改。X=1-已提报的申请兑现比例</td></tr><tr><td>门店信息列表不能为空</td><td>请至少添加一条门店信息</td></tr><tr><td>装修前/后照片必填</td><td>(C7N内置提示)</td></tr><tr><td>附件校验</td><td>validateUpload</td></tr><tr><td>兑现有效期(额度外)必填（销售会计审批节点）</td><td>(C7N内置提示)</td></tr></tbody></table>
 <p><strong>后端校验：</strong></p>
 <table class="kl-table"><thead><tr><th>校验项</th><th>错误提示</th></tr></thead><tbody><tr><td>数据存在性</td><td>门头兑现数据不存在</td></tr><tr><td>兑现比例范围</td><td>额度外兑现比例必须在0到1之间</td></tr><tr><td>报销单有效性</td><td>报销单号不存在或未完成审核</td></tr><tr><td>重复创建</td><td>该报销单存在未审批结束的兑现单X，请勿重复创建</td></tr><tr><td>额度外预算</td><td>额度外预算不足，有疑问请联系财务</td></tr><tr><td>额度外申请金额</td><td>额度外申请金额需≤剩余可报销限额</td></tr><tr><td>行表非空</td><td>行表不能为空</td></tr><tr><td>兑现金额</td><td>兑现金额为0，保存失败</td></tr></tbody></table></KbCard>
-<KbCard title="提交校验"><p><strong>工作流编码：</strong> <code>SUB_STORE_MTZBBXDX</code>（门头展板报销兑现）</p>
+<KbCard title="3.7 提交校验"><p><strong>工作流编码：</strong> <code>SUB_STORE_MTZBBXDX</code>（门头展板报销兑现）</p>
 <p><strong>提交前校验：</strong> 附件otherValidate('验收时间及定位水印照片')、otherValidate('报销申请审批表')；运营专员审批节点需otherValidate('兑现申请审批表')</p></KbCard>
 <KbCard title="表：CUST_DH_CASHOUT_HEAD"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>id</td><td>Long</td><td>主键</td></tr><tr><td>customer_legal_id</td><td>Long</td><td>交易公司法人中间表ID</td></tr><tr><td>reimburse_head_id</td><td>Long</td><td>门头报销单ID</td></tr><tr><td>bx_type</td><td>Long</td><td>报销类型</td></tr><tr><td>year</td><td>Long</td><td>预算年度</td></tr><tr><td>in_early_cashout_ratio</td><td>BigDecimal</td><td>额度内提前兑现比例</td></tr><tr><td>cashout_no</td><td>String</td><td>兑换单编码</td></tr><tr><td>out_cashout_ratio</td><td>BigDecimal</td><td>额度外兑现比例</td></tr><tr><td>remark</td><td>String</td><td>备注</td></tr><tr><td>created</td><td>Date</td><td>创建时间</td></tr><tr><td>last_upd</td><td>Date</td><td>最后更新时间</td></tr><tr><td>last_upd_by</td><td>String</td><td>最后更新人</td></tr><tr><td>entid</td><td>Long</td><td>事业部ID</td></tr><tr><td>division_id</td><td>Long</td><td>事业部词汇值</td></tr><tr><td>audit_stat</td><td>String</td><td>审核状态</td></tr><tr><td>stat</td><td>Long</td><td>状态</td></tr><tr><td>wfid</td><td>Long</td><td>流程ID</td></tr><tr><td>wfflag</td><td>Long</td><td>流程状态</td></tr><tr><td>in_cashout_apply_amt</td><td>BigDecimal</td><td>额度内申请兑现金额</td></tr><tr><td>out_cashout_apply_amt</td><td>BigDecimal</td><td>额度外申请兑现金额</td></tr><tr><td>in_valid_date</td><td>LocalDate</td><td>额度内兑现有效期</td></tr><tr><td>out_valid_date</td><td>LocalDate</td><td>额度外兑现有效期</td></tr><tr><td>fin_date</td><td>LocalDate</td><td>入账日期</td></tr><tr><td>status</td><td>String</td><td>生效状态</td></tr><tr><td>customer_id</td><td>Long</td><td>经销商ID</td></tr><tr><td>in_apply_amt</td><td>BigDecimal</td><td>额度内报销申请金额</td></tr><tr><td>in_biz_amt</td><td>BigDecimal</td><td>额度内业务批准金额</td></tr><tr><td>in_fin_amt</td><td>BigDecimal</td><td>额度内财务批准金额</td></tr><tr><td>out_apply_amt</td><td>BigDecimal</td><td>额度外报销申请金额</td></tr><tr><td>out_biz_amt</td><td>8BigDecimal</td><td>额度外业务批准金额</td></tr><tr><td>out_fin_amt</td><td>BigDecimal</td><td>额度外财务批准金额</td></tr><tr><td>bzs_des_method</td><td>String</td><td>保证书设计师验收方式(1视频/2现场)</td></tr><tr><td>bzs_des_name</td><td>String</td><td>保证书设计师保证人</td></tr><tr><td>bzs_des_time</td><td>LocalDateTime</td><td>保证书验收时间</td></tr><tr><td>bzs_biz_method</td><td>String</td><td>保证书区域经理验收方式</td></tr><tr><td>bzs_biz_name</td><td>String</td><td>保证书区域经理保证人</td></tr><tr><td>bzs_biz_time</td><td>LocalDateTime</td><td>保证书区域经理保证事件</td></tr><tr><td>pay_type</td><td>Long</td><td>支付方式</td></tr><tr><td>trading_company_code</td><td>String</td><td>交易公司编码</td></tr><tr><td>out_this_sur_cashout_amt</td><td>BigDecimal</td><td>额度外剩余未兑现金额</td></tr><tr><td>in_this_sur_cashout_amt</td><td>BigDecimal</td><td>额度内剩余未兑现金额</td></tr><tr><td>check_time</td><td>LocalDateTime</td><td>审核通过时间</td></tr><tr><td>fin_amt</td><td>BigDecimal</td><td>入账金额</td></tr><tr><td>cost_center_code</td><td>String</td><td>运营中心编码</td></tr><tr><td>cost_center_name</td><td>String</td><td>运营中心名称</td></tr><tr><td>ext_account_id</td><td>String</td><td>余额账户ID</td></tr><tr><td>hz_instance_id</td><td>Long</td><td>H0流程实例ID</td></tr><tr><td>hz_approve_status</td><td>String</td><td>H0流程审批状态(必填)</td></tr></tbody></table></KbCard>
 </div>
@@ -218,22 +218,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-
-| 问题 | 原因/解决方案 |
-|------|------|
-| 兑现比例超限 | 检查已兑现比例，确保本次兑现后总额不超过100% |
-| 删除报状态不允许 | 仅NEW和REBUT状态可删除 |
-| 保证书内容为空 | 确认关联的门头报销单行表数据完整 |
-
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>兑现比例超限</td><td>检查已兑现比例，确保本次兑现后总额不超过100%</td></tr><tr><td>删除报状态不允许</td><td>仅NEW和REBUT状态可删除</td></tr><tr><td>保证书内容为空</td><td>确认关联的门头报销单行表数据完整</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>兑现比例超限</td><td>检查已兑现比例，确保本次兑现后总额不超过100%</td></tr><tr><td>删除报状态不允许</td><td>仅NEW和REBUT状态可删除</td></tr><tr><td>保证书内容为空</td><td>确认关联的门头报销单行表数据完整</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
