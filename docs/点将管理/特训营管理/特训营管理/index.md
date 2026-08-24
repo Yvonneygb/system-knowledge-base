@@ -197,11 +197,11 @@
 <KbCard title="3.3 值集定义"><table class="kl-table"><thead><tr><th>值集编码</th><th>说明</th><th>典型值</th></tr></thead><tbody><tr><td>MBO.CAMP_TYPE</td><td>特训营类型</td><td>线上/线下/混合</td></tr><tr><td>MBO.CAMP_STATUS</td><td>特训营状态</td><td>草稿/进行中/已结束</td></tr></tbody></table></KbCard>
 <KbCard title="3.4 核心实体"><p><strong>TrainCamp</strong></p>
 <table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>camp_code</td><td>特训营编码（主键）</td></tr><tr><td>camp_name</td><td>特训营名称</td></tr><tr><td>camp_type</td><td>特训营类型（值集：MBO.CAMP_TYPE）</td></tr><tr><td>camp_status</td><td>特训营状态（值集：MBO.CAMP_STATUS）</td></tr><tr><td>start_date</td><td>开始日期</td></tr><tr><td>end_date</td><td>结束日期</td></tr><tr><td>location</td><td>地点</td></tr><tr><td>teacher_id</td><td>讲师ID</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>添加讲师弹窗</td><td>Table多选讲师列表，按负责事业部过滤</td></tr><tr><td>报名截止弹窗</td><td>DatePicker</td></tr><tr><td>查看日程弹窗</td><td>LecturerCalendar</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。有附件上传(讲师案例)。</p></KbCard>
-<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>新建/编辑/删除/生效/失效</td><td>列表页基本操作</td></tr><tr><td>保存/保存并生效</td><td>详情页操作</td></tr></tbody></table></KbCard>
-<KbCard title="保存校验"><p><strong>前端校验：</strong> aseFormDS.validate()基础信息必填项；alidateLectorerList()校验讲师列表非空，每个讲师开始/结束日期非空、开始≤结束、不超出特训营日期范围、讲师介绍非空。</p></KbCard>
-<KbCard title="提交校验"><p class='kl-tip'>无审批工作流。"保存并生效"直接调用saveAndValid生效。</p></KbCard>
+<KbCard title="3.5 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>添加讲师弹窗</td><td>Table多选讲师列表，按负责事业部过滤</td></tr><tr><td>报名截止弹窗</td><td>DatePicker</td></tr><tr><td>查看日程弹窗</td><td>LecturerCalendar</td></tr></tbody></table></KbCard>
+<KbCard title="3.6 导入"><p class='kl-tip'>不支持导入功能。有附件上传(讲师案例)。</p></KbCard>
+<KbCard title="3.7 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>新建/编辑/删除/生效/失效</td><td>列表页基本操作</td></tr><tr><td>保存/保存并生效</td><td>详情页操作</td></tr></tbody></table></KbCard>
+<KbCard title="3.8 保存校验"><p><strong>前端校验：</strong> aseFormDS.validate()基础信息必填项；alidateLectorerList()校验讲师列表非空，每个讲师开始/结束日期非空、开始≤结束、不超出特训营日期范围、讲师介绍非空。</p></KbCard>
+<KbCard title="3.9 提交校验"><p class='kl-tip'>无审批工作流。"保存并生效"直接调用saveAndValid生效。</p></KbCard>
 <KbCard title="train_camp（特训营主表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>约束</th></tr></thead><tbody><tr><td>camp_code</td><td>VARCHAR2(32)</td><td>特训营编码</td><td>PK</td></tr><tr><td>camp_name</td><td>VARCHAR2(200)</td><td>特训营名称</td><td>NOT NULL</td></tr><tr><td>camp_type</td><td>VARCHAR2(30)</td><td>特训营类型</td><td>NOT NULL</td></tr><tr><td>camp_status</td><td>VARCHAR2(30)</td><td>特训营状态</td><td>NOT NULL</td></tr><tr><td>start_date</td><td>DATE</td><td>开始日期</td><td></td></tr><tr><td>end_date</td><td>DATE</td><td>结束日期</td><td></td></tr><tr><td>location</td><td>VARCHAR2(500)</td><td>地点</td><td></td></tr><tr><td>teacher_id</td><td>NUMBER</td><td>讲师ID</td><td>FK → teacher.teacher_id</td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -219,7 +219,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：特训营启动后还能编辑吗？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：特训营启动后还能编辑吗？</strong></p>
 <p>A：启动后不可编辑基本信息，仅可查看。</p>
 <p><strong>Q2：特训营结束后能否重新启动？</strong></p>
 <p>A：不可重新启动，状态流转为单向不可逆。</p>
