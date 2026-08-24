@@ -148,8 +148,12 @@
 <div class="kl-wrap">
 <KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>CRM_BUSINESS/v1/{orgId}/lnkInventorys</td><td>GET</td><td>查询库存列表</td></tr></tbody></table></KbCard>
 <KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-crm</code></li><li>路由：<code>/inventory/list</code></li></ul></KbCard>
-<KbCard title="3.3 核心业务规则"><p>1. 查询条件支持多选（如多个仓库、多个产品） 2. 库存数据为只读，不可在此页面修改 3. 无工作流</p>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。值集：生命状态CRM\\.PRODUCT_Z_STATE_NAME、产品定位CRM\\.PROD_POSITIONING、渠道CRM\\.LH_PROD_CHANNELS、生产基地ARROW\\.CORPORATE_CLIENT、产品线CRM\\.LH_PROD_LINE、管理分类CRM\\.LH_ITEM_MANAGE_TYPE、物料类型CRM\\.LH_PROD_SIGN。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 不支持导入功能。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n&gt;\\ 无其他按钮（纯查询页面）。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 无保存校验（纯查询页面）。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 查询条件支持多选（如多个仓库、多个产品） 2. 库存数据为只读，不可在此页面修改 3. 无工作流</p></KbCard>
+<KbCard title="3.4 选择弹窗"><p class='kl-tip'>无LOV选择弹窗。值集：生命状态CRM.PRODUCT_Z_STATE_NAME、产品定位CRM.PROD_POSITIONING、渠道CRM.LH_PROD_CHANNELS、生产基地ARROW.CORPORATE_CLIENT、产品线CRM.LH_PROD_LINE、管理分类CRM.LH_ITEM_MANAGE_TYPE、物料类型CRM.LH_PROD_SIGN。</p></KbCard>
+<KbCard title="3.5 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.6 其他按钮"><p class='kl-tip'>无其他按钮（纯查询页面）。</p></KbCard>
+<KbCard title="3.7 保存校验"><p class='kl-tip'>无保存校验（纯查询页面）。</p></KbCard>
+<KbCard title="3.8 提交校验"><p class='kl-tip'>无提交/审批功能。</p></KbCard>
 <KbCard title="4.1 LNK_INVENTORYS（库存表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>inventory_id</td><td>库存ID（主键）</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>warehouse_code</td><td>仓库编码</td></tr><tr><td>warehouse_name</td><td>仓库名称</td></tr><tr><td>product_code</td><td>产品编码</td></tr><tr><td>product_name</td><td>产品名称</td></tr><tr><td>business_unit</td><td>事业部</td></tr><tr><td>available_qty</td><td>可用库存数量</td></tr><tr><td>total_qty</td><td>总库存数量</td></tr><tr><td>locked_qty</td><td>锁定数量</td></tr><tr><td>uom</td><td>单位</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -185,7 +189,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：库存数据是否实时？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：库存数据是否实时？</strong></p>
 <p>A1：是，直接从LNK_INVENTORYS表实时查询。</p>
 <p><strong>Q2：能否在此页面调整库存？</strong></p>
 <p>A2：不能，本页面仅查询展示，库存调整需通过其他业务单据。</p></KbCard>
