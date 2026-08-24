@@ -156,11 +156,11 @@
 <KbCard title="3.2 按设计师编码查询"><ul><li><strong>API</strong>：<code>mlt/maLecturerSaturation/getSaturationByCode</code></li><li><strong>参数</strong>：lecturerCode（设计师编码）</li><li><strong>返回</strong>：该设计师的饱和度详情，包含各时间段的排期明细</li></ul></KbCard>
 <KbCard title="3.3 按用户编码查询"><ul><li><strong>API</strong>：<code>mlt/maLecturerSaturation/getSaturationByUser</code></li><li><strong>参数</strong>：userCode（用户编码）</li><li><strong>返回</strong>：该用户关联设计师的饱和度详情</li></ul></KbCard>
 <KbCard title="3.4 值集说明"><table class="kl-table"><thead><tr><th>值集编码</th><th>值集名称</th><th>用途</th></tr></thead><tbody><tr><td>MBO.DESIGN_APPLY_TYPE</td><td>设定点将类型</td><td>区分不同类型的点将申请</td></tr><tr><td>MBO.DESIGN_STATE</td><td>设计状态</td><td>标识设计点将的当前状态</td></tr><tr><td>MBO.DESIGN_LECTURER_LEVEL</td><td>设计师级别</td><td>标识设计师的级别分类</td></tr><tr><td>MBO.APPLY_APPROVAL_STATE</td><td>审批状态</td><td>标识申请的审批状态</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><p class='kl-tip'>无选择弹窗。页面主体是SaturationForm饱和度查询表单+待作业申请列表Table。</p></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><p class='kl-tip'>无其他按钮（纯查询页）。</p></KbCard>
-<KbCard title="保存校验"><p class='kl-tip'>无保存功能。</p></KbCard>
-<KbCard title="提交校验"><p class='kl-tip'>无提交/审批功能。纯查询类页面。</p></KbCard>
+<KbCard title="3.5 选择弹窗"><p class='kl-tip'>无选择弹窗。页面主体是SaturationForm饱和度查询表单+待作业申请列表Table。</p></KbCard>
+<KbCard title="3.6 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.7 其他按钮"><p class='kl-tip'>无其他按钮（纯查询页）。</p></KbCard>
+<KbCard title="3.8 保存校验"><p class='kl-tip'>无保存功能。</p></KbCard>
+<KbCard title="3.9 提交校验"><p class='kl-tip'>无提交/审批功能。纯查询类页面。</p></KbCard>
 <KbCard title="ma_lecturer_saturation（讲师饱和度统计表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>saturation_id</td><td>NUMBER</td><td>饱和度ID（主键）</td></tr><tr><td>lecturer_code</td><td>VARCHAR2</td><td>设计师编码</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>设计师姓名</td></tr><tr><td>lecturer_level</td><td>VARCHAR2</td><td>设计师级别</td></tr><tr><td>user_code</td><td>VARCHAR2</td><td>用户编码</td></tr><tr><td>available_days</td><td>NUMBER</td><td>可排期天数</td></tr><tr><td>scheduled_days</td><td>NUMBER</td><td>已排期天数</td></tr><tr><td>saturation_rate</td><td>NUMBER</td><td>饱和度（百分比）</td></tr><tr><td>stat_period</td><td>VARCHAR2</td><td>统计周期</td></tr><tr><td>apply_type</td><td>VARCHAR2</td><td>点将类型</td></tr><tr><td>design_state</td><td>VARCHAR2</td><td>设计状态</td></tr><tr><td>approval_state</td><td>VARCHAR2</td><td>审批状态</td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -178,7 +178,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：饱和度超过100%是什么意思？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：饱和度超过100%是什么意思？</strong></p>
 <p>A：表示设计师已排期时间超过可排期时间，处于超负荷状态，需调整排期。</p>
 <p><strong>Q2：饱和度数据什么时候更新？</strong></p>
 <p>A：设计师点将执行完成时自动更新，也可手动触发重新计算。</p>
