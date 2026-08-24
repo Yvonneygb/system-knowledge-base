@@ -185,8 +185,12 @@
 <KbCard title="3.1 上传功能"><ul><li><strong>上传方式</strong>：点击上传按钮或拖拽上传</li><li><strong>文件格式限制</strong>：支持JPG、JPEG、PNG、GIF、BMP等常见图片格式</li><li><strong>文件大小限制</strong>：单张图片一般不超过5MB，具体以系统配置为准</li><li><strong>批量上传</strong>：支持一次选择多张图片上传</li><li><strong>上传进度</strong>：显示上传进度条，支持上传失败重试</li></ul></KbCard>
 <KbCard title="3.2 图片处理"><ul><li><strong>缩略图生成</strong>：上传后系统自动生成缩略图，用于列表展示</li><li><strong>图片压缩</strong>：大图自动压缩到合理尺寸，减少存储和加载开销</li><li><strong>水印</strong>：可根据配置自动添加产品水印</li><li><strong>主图设置</strong>：第一张上传的图片默认为主图，可手动调整</li></ul></KbCard>
 <KbCard title="3.3 图片管理"><ul><li><strong>图片列表</strong>：在产品详情页以缩略图网格展示</li><li><strong>图片预览</strong>：点击缩略图可查看大图，支持左右切换</li><li><strong>图片删除</strong>：支持删除单张图片，主图删除后自动将下一张设为主图</li><li><strong>图片排序</strong>：支持拖拽排序调整显示顺序</li><li><strong>主图标记</strong>：排序第一的图片自动标记为主图</li></ul></KbCard>
-<KbCard title="3.4 存储方式"><ul><li>图片文件存储在文件服务器或对象存储（如OSS/S3）</li><li>数据库中存储文件的相对路径和关联信息</li><li>图片URL通过文件服务获取，支持CDN加速</li></ul>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。疑似通过产品列表的"产品图册-导入"按钮触发。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入（通过产品列表菜单的"产品图册-导入"按钮，templateCode=CRM\\.PROD_PHOTO）。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能（前端代码缺失，无工作流相关代码）。</p></KbCard>
+<KbCard title="3.4 存储方式"><ul><li>图片文件存储在文件服务器或对象存储（如OSS/S3）</li><li>数据库中存储文件的相对路径和关联信息</li><li>图片URL通过文件服务获取，支持CDN加速</li></ul></KbCard>
+<KbCard title="3.5 选择弹窗"><p class='kl-tip'>前端代码缺失，无法确认。疑似通过产品列表的"产品图册-导入"按钮触发。</p></KbCard>
+<KbCard title="3.6 导入"><p>支持Excel导入（通过产品列表菜单的"产品图册-导入"按钮，templateCode=CRM.PROD_PHOTO）。</p></KbCard>
+<KbCard title="3.7 其他按钮"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.8 保存校验"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.9 提交校验"><p class='kl-tip'>无提交/审批功能（前端代码缺失，无工作流相关代码）。</p></KbCard>
 <KbCard title="4.1 产品图片表"><p class='kl-tip'>表名：PRODUCT_IMAGE（产品图片表）</p>
 <table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>product_id</td><td>NUMBER</td><td>产品ID</td><td>FK→PRODUCT</td></tr><tr><td>file_name</td><td>VARCHAR2</td><td>文件名</td><td></td></tr><tr><td>file_path</td><td>VARCHAR2</td><td>文件路径</td><td>相对路径</td></tr><tr><td>file_url</td><td>VARCHAR2</td><td>文件访问URL</td><td></td></tr><tr><td>file_size</td><td>NUMBER</td><td>文件大小（字节）</td><td></td></tr><tr><td>file_type</td><td>VARCHAR2</td><td>文件类型</td><td>JPG/PNG/GIF等</td></tr><tr><td>thumbnail_path</td><td>VARCHAR2</td><td>缩略图路径</td><td></td></tr><tr><td>thumbnail_url</td><td>VARCHAR2</td><td>缩略图URL</td><td></td></tr><tr><td>sequence_number</td><td>NUMBER</td><td>排序号</td><td>排序第一为主图</td></tr><tr><td>is_primary</td><td>VARCHAR2</td><td>是否主图</td><td>Y/N</td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
@@ -195,62 +199,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">支持哪些图片格式？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>支持JPG、JPEG、PNG、GIF、BMP等常见格式
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">单张图片大小限制是多少？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>一般不超过5MB，具体以系统配置为准
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">主图如何设置？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>排序第一的图片自动为主图，可通过拖拽排序调整
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">图片上传失败怎么办？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>检查文件格式和大小是否超限，网络是否正常，支持重新上传
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q5</span>
-      <span style="font-size:15px;">图片存储在哪里？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>文件服务器或对象存储（如OSS/S3），数据库存储路径信息
-    </div>
-  </div>
-</div>
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>支持哪些图片格式？</td><td>支持JPG、JPEG、PNG、GIF、BMP等常见格式</td></tr><tr><td>单张图片大小限制是多少？</td><td>一般不超过5MB，具体以系统配置为准</td></tr><tr><td>主图如何设置？</td><td>排序第一的图片自动为主图，可通过拖拽排序调整</td></tr><tr><td>图片上传失败怎么办？</td><td>检查文件格式和大小是否超限，网络是否正常，支持重新上传</td></tr><tr><td>图片存储在哪里？</td><td>文件服务器或对象存储（如OSS/S3），数据库存储路径信息</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>支持哪些图片格式？</td><td>支持JPG、JPEG、PNG、GIF、BMP等常见格式</td></tr><tr><td>单张图片大小限制是多少？</td><td>一般不超过5MB，具体以系统配置为准</td></tr><tr><td>主图如何设置？</td><td>排序第一的图片自动为主图，可通过拖拽排序调整</td></tr><tr><td>图片上传失败怎么办？</td><td>检查文件格式和大小是否超限，网络是否正常，支持重新上传</td></tr><tr><td>图片存储在哪里？</td><td>文件服务器或对象存储（如OSS/S3），数据库存储路径信息</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
