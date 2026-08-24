@@ -164,11 +164,11 @@
 <div class="kl-wrap">
 <KbCard title="3.1 列表页"><ul><li><strong>前端路由</strong>：<code>/general/distributorGeneral/distributorGeneralActivity/list</code></li><li><strong>API</strong>：<code>mlt/activityApply/dealer/page</code></li><li><strong>Entity</strong>：<code>ActivityApply</code></li><li><strong>查询条件</strong>：活动主题、活动时间范围、申请状态</li><li><strong>列表字段</strong>：申请单号、活动主题、活动时间、活动地点、策划师姓名、申请状态、创建时间</li><li><strong>数据过滤</strong>：后端自动按当前登录用户的经销商ID过滤</li></ul></KbCard>
 <KbCard title="3.2 详情页"><ul><li><strong>前端路由</strong>：<code>/general/distributorGeneral/distributorGeneralActivity/detail/:applyCode/:type</code></li><li><strong>API</strong>：<code>mlt/activityApply/dealer/detail</code></li><li><strong>参数说明</strong>：<ul><li><code>applyCode</code>：活动点将申请单号</li><li><code>type</code>：详情查看类型（如查看/审批等）</li></ul></li><li><strong>展示内容</strong>：活动基本信息、策划师信息、参与门店信息、时间安排等</li></ul></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>申请点将弹窗</td><td>Table选择讲师</td></tr><tr><td>取消点将弹窗</td><td>取消原因+ActivityApplyDetail</td></tr><tr><td>开始执行/确认结束弹窗</td><td>Form表单</td></tr><tr><td>查看日程弹窗</td><td>LecturerCalendar</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><p>列表页：结算确认、申请确认、确认结束、开始执行、取消点将、申请点将。行操作：查看详情、编辑、删除、流程摘要、查看讲师档案、查看日程。详情页：保存、保存并提交、查看结算确认、查看确认书、特殊取消、结束执行、取消。</p></KbCard>
-<KbCard title="保存校验"><p><strong>前端校验：</strong> generalFormDS.validate()和ctivityInfoFormDS.validate()（基本信息+活动信息必填项）。开始执行校验startExecuteFormDS。</p></KbCard>
-<KbCard title="提交校验"><p>取消点将校验需提前7天且pprovalState==='fdd_sign'、orderLectureState!=='end'，取消原因必填。结算/申请确认走FDD。无工作流编码。</p></KbCard>
+<KbCard title="3.3 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>申请点将弹窗</td><td>Table选择讲师</td></tr><tr><td>取消点将弹窗</td><td>取消原因+ActivityApplyDetail</td></tr><tr><td>开始执行/确认结束弹窗</td><td>Form表单</td></tr><tr><td>查看日程弹窗</td><td>LecturerCalendar</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.5 其他按钮"><p>列表页：结算确认、申请确认、确认结束、开始执行、取消点将、申请点将。行操作：查看详情、编辑、删除、流程摘要、查看讲师档案、查看日程。详情页：保存、保存并提交、查看结算确认、查看确认书、特殊取消、结束执行、取消。</p></KbCard>
+<KbCard title="3.6 保存校验"><p><strong>前端校验：</strong> generalFormDS.validate()和ctivityInfoFormDS.validate()（基本信息+活动信息必填项）。开始执行校验startExecuteFormDS。</p></KbCard>
+<KbCard title="3.7 提交校验"><p>取消点将校验需提前7天且pprovalState==='fdd_sign'、orderLectureState!=='end'，取消原因必填。结算/申请确认走FDD。无工作流编码。</p></KbCard>
 <KbCard title="activity_apply（活动点将申请表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2</td><td>申请单号（主键）</td></tr><tr><td>activity_theme</td><td>VARCHAR2</td><td>活动主题</td></tr><tr><td>activity_start_date</td><td>DATE</td><td>活动开始时间</td></tr><tr><td>activity_end_date</td><td>DATE</td><td>活动结束时间</td></tr><tr><td>activity_address</td><td>VARCHAR2</td><td>活动地点</td></tr><tr><td>planner_code</td><td>VARCHAR2</td><td>策划师编码</td></tr><tr><td>planner_name</td><td>VARCHAR2</td><td>策划师姓名</td></tr><tr><td>dealer_code</td><td>VARCHAR2</td><td>经销商编码</td></tr><tr><td>dealer_name</td><td>VARCHAR2</td><td>经销商名称</td></tr><tr><td>apply_status</td><td>VARCHAR2</td><td>申请状态</td></tr><tr><td>apply_type</td><td>VARCHAR2</td><td>申请类型</td></tr><tr><td>remark</td><td>VARCHAR2</td><td>备注</td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -186,7 +186,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：经销商看不到被点将的活动记录？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：经销商看不到被点将的活动记录？</strong></p>
 <p>A：检查该经销商是否被正确指定为参与方，确认<code>dealer_code</code>与当前登录用户关联的经销商一致。</p>
 <p><strong>Q2：详情页type参数有什么作用？</strong></p>
 <p>A：<code>type</code>参数用于区分详情页的展示模式，不同模式可能展示不同的操作按钮和字段。</p>
