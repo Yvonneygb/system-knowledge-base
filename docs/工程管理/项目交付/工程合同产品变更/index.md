@@ -150,6 +150,22 @@
     <span class="bf-fc-legend-item"><span style="display:inline-block;width:22px;height:2px;background:#EF4444;"></span> 审批驳回</span>
   </div>
 </div>
+  <h4>上游依赖</h4>
+  <table class="kl-table">
+    <thead><tr><th>上游模块</th><th>依赖类型</th><th>依赖说明</th><th>依赖成立条件</th></tr></thead>
+    <tbody>
+      <tr><td>工程折扣单</td><td>数据依赖</td><td>变更基于已有折扣单</td><td>折扣单审批状态=APPROVED</td></tr>
+      <tr><td>工程项目合同</td><td>数据依赖</td><td>折扣单关联合同</td><td>合同有效状态=2(已生效)</td></tr>
+      <tr><td>产品主数据</td><td>数据依赖</td><td>变更行引用产品信息</td><td>产品已上架</td></tr>
+    </tbody>
+  </table>
+  <h4>下游影响</h4>
+  <table class="kl-table">
+    <thead><tr><th>影响项</th><th>影响内容</th></tr></thead>
+    <tbody>
+      <tr><td>折扣单数据更新</td><td>审批通过后，同步更新原折扣单的产品行、价格、折扣率、金额等数据</td></tr>
+    </tbody>
+  </table>
 </div>
 </div>
 
