@@ -149,8 +149,13 @@
 <div class="kl-wrap">
 <KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmPorcCfgHead</td><td>POST</td><td>新建配置头</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmPorcCfgHead</td><td>GET</td><td>查询配置头列表</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmPorcCfgHead/{id}</td><td>GET</td><td>查询配置头详情</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmPorcCfgHead/{id}</td><td>PUT</td><td>更新配置头</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmPorcCfgHead/{id}</td><td>DELETE</td><td>删除配置头</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmPorcCfgLine</td><td>GET</td><td>查询配置行列表</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmPorcCfgLine</td><td>POST</td><td>新建配置行</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmPorcCfgLine/{id}</td><td>PUT</td><td>更新配置行</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmPorcCfgLine/{id}</td><td>DELETE</td><td>删除配置行</td></tr></tbody></table></KbCard>
 <KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-crm</code></li><li>路由：<ul><li><code>/rspStmPorcCfg/list</code> — 配置列表页</li><li><code>/rspStmPorcCfg/detail/:id?</code> — 配置详情/新建页（id为空时新建）</li></ul></li></ul></KbCard>
-<KbCard title="3.3 核心业务规则"><p>1. 头表记录瓷砖品类定价的适用范围和生效条件 2. 行表记录具体的定价参数（如规格系数、等级系数、工艺系数等） 3. 头行为一对多关系，一个头可关联多行参数 4. 配置保存后立即生效 5. 无工作流</p>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。使用值集Select：生产基地CRM\\.LNK_PRICE_APP_FORM_PROD_BASE、状态CRM\\.LNK_RSP_STM_CFG_STATUS、大类CRM\\.RSP_STM_PORC_CFG_TYPE、中类CRM\\.RSP_STM_PORC_CFG_TYPE_SUB（级联）。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。templateCode=CRM\\.RSP_STM_PORC_CFG。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|------\\|\\r\\n\\|\\ 新建\\ \\|\\ 列表页新建\\ \\|\\r\\n\\|\\ 导入\\ \\|\\ 导入数据\\ \\|\\r\\n\\|\\ 导出\\ \\|\\ 导出列表\\ \\|\\r\\n\\|\\ 保存\\ \\|\\ 详情页保存头部\\ \\|\\r\\n\\|\\ 编辑\\ \\|\\ 进入编辑\\ \\|\\r\\n\\|\\ 明细行新建/编辑\\ \\|\\ 弹窗编辑明细行\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*头部校验：\\*\\*\\ commonFn_formValid\\(formDs\\)，必填：规格、生产基地、瓷砖品类\\r\\n\\r\\n\\*\\*明细行校验：\\*\\*\\ commonFn_formValid\\(lineFormDs\\)，必填：大类、中类、定价（min=0、max=999999）\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 头表记录瓷砖品类定价的适用范围和生效条件 2. 行表记录具体的定价参数（如规格系数、等级系数、工艺系数等） 3. 头行为一对多关系，一个头可关联多行参数 4. 配置保存后立即生效 5. 无工作流</p></KbCard>
+<KbCard title="3.4 选择弹窗"><p class='kl-tip'>无LOV选择弹窗。使用值集Select：生产基地CRM.LNK_PRICE_APP_FORM_PROD_BASE、状态CRM.LNK_RSP_STM_CFG_STATUS、大类CRM.RSP_STM_PORC_CFG_TYPE、中类CRM.RSP_STM_PORC_CFG_TYPE_SUB（级联）。</p></KbCard>
+<KbCard title="3.5 导入"><p>支持Excel导入。templateCode=CRM.RSP_STM_PORC_CFG。</p></KbCard>
+<KbCard title="3.6 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>新建</td><td>列表页新建</td></tr><tr><td>导入</td><td>导入数据</td></tr><tr><td>导出</td><td>导出列表</td></tr><tr><td>保存</td><td>详情页保存头部</td></tr><tr><td>编辑</td><td>进入编辑</td></tr><tr><td>明细行新建/编辑</td><td>弹窗编辑明细行</td></tr></tbody></table></KbCard>
+<KbCard title="3.7 保存校验"><p><strong>头部校验：</strong> commonFn_formValid(formDs)，必填：规格、生产基地、瓷砖品类</p>
+<p><strong>明细行校验：</strong> commonFn_formValid(lineFormDs)，必填：大类、中类、定价（min=0、max=999999）</p></KbCard>
+<KbCard title="3.8 提交校验"><p class='kl-tip'>无提交/审批功能。</p></KbCard>
 <KbCard title="4.1 RSP_STM_PORC_CFG_HEAD（瓷砖参数配置头表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>head_id</td><td>头ID（主键）</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>cfg_name</td><td>配置名称</td></tr><tr><td>applicable_scope</td><td>适用范围</td></tr><tr><td>category_code</td><td>瓷砖品类编码</td></tr><tr><td>effective_date</td><td>生效日期</td></tr><tr><td>expiry_date</td><td>失效日期</td></tr><tr><td>enabled_flag</td><td>启用标识（Y/N）</td></tr><tr><td>created_by</td><td>创建人</td></tr><tr><td>creation_date</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 <KbCard title="4.2 RSP_STM_PORC_CFG_LINE（瓷砖参数配置行表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>line_id</td><td>行ID（主键）</td></tr><tr><td>head_id</td><td>头ID（外键）</td></tr><tr><td>param_code</td><td>参数编码</td></tr><tr><td>param_name</td><td>参数名称</td></tr><tr><td>param_value</td><td>参数值</td></tr><tr><td>coefficient</td><td>系数</td></tr><tr><td>sequence_num</td><td>行序号</td></tr><tr><td>description</td><td>描述</td></tr></tbody></table></KbCard>
 </div>
@@ -196,7 +201,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：瓷砖参数配置与基础参数配置的区别？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：瓷砖参数配置与基础参数配置的区别？</strong></p>
 <p>A1：基础参数配置为通用定价参数，瓷砖参数配置针对瓷砖品类特殊定价规则，采用头行结构。</p>
 <p><strong>Q2：头行关系如何维护？</strong></p>
 <p>A2：在详情页中同时维护头信息和行信息，行信息支持增删改。</p>
