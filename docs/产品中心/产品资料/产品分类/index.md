@@ -150,8 +150,12 @@
 <KbCard title="3.1 分类树结构"><ul><li>产品分类采用树形结构，支持多级分类</li><li>顶级分类为根节点，下级分类为子节点</li><li>每个分类节点包含：分类编码、分类名称、父分类ID、层级、排序号等</li><li>分类树支持展开/折叠操作</li></ul></KbCard>
 <KbCard title="3.2 分类数据结构"><ul><li><strong>分类编码（class_code）</strong>：分类的唯一编码</li><li><strong>分类名称（class_name）</strong>：分类的显示名称</li><li><strong>父分类ID（parent_class_id）</strong>：上级分类ID，顶级分类为空或0</li><li><strong>层级（level_number）</strong>：分类在树中的层级，从1开始</li><li><strong>排序号（sequence_number）</strong>：同级分类的排序顺序</li><li><strong>分类描述（description）</strong>：分类的详细说明</li><li><strong>启用标志（enabled_flag）</strong>：Y/N，控制分类是否可用</li></ul></KbCard>
 <KbCard title="3.3 业务规则"><ul><li>分类编码在同一组织下唯一</li><li>分类被产品引用后不可删除，只能禁用</li><li>删除父分类时需先处理子分类（级联删除或移动子分类）</li><li>分类层级深度有限制，一般不超过5级</li><li>分类排序号影响同级分类的显示顺序</li></ul></KbCard>
-<KbCard title="3.4 与产品关联"><ul><li>产品通过product_category字段关联到分类编码</li><li>一个产品只能归属一个主分类</li><li>分类变更不影响已关联产品的分类归属，需手动调整</li></ul>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。使用四级级联值集\\ CRM\\.PRODUCT_CLASS（SQL值集）选择产品分类。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 不支持导入功能。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 接口\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|------\\|------\\|\\r\\n\\|\\ 新增\\ \\|\\ POST\\ /save-item-class\\ \\|\\ 新增产品分类\\ \\|\\r\\n\\|\\ 删除\\ \\|\\ POST\\ /deleta-item-class\\ \\|\\ 删除产品分类\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 后端校验在ManualClassificationService\\.saveItemClass中。前端代码缺失，无法确认前端校验。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="3.4 与产品关联"><ul><li>产品通过product_category字段关联到分类编码</li><li>一个产品只能归属一个主分类</li><li>分类变更不影响已关联产品的分类归属，需手动调整</li></ul></KbCard>
+<KbCard title="3.5 选择弹窗"><p class='kl-tip'>无LOV选择弹窗。使用四级级联值集 CRM.PRODUCT_CLASS（SQL值集）选择产品分类。</p></KbCard>
+<KbCard title="3.6 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.7 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>接口</th><th>说明</th></tr></thead><tbody><tr><td>新增</td><td>POST /save-item-class</td><td>新增产品分类</td></tr><tr><td>删除</td><td>POST /deleta-item-class</td><td>删除产品分类</td></tr></tbody></table></KbCard>
+<KbCard title="3.8 保存校验"><p class='kl-tip'>后端校验在ManualClassificationService.saveItemClass中。前端代码缺失，无法确认前端校验。</p></KbCard>
+<KbCard title="3.9 提交校验"><p class='kl-tip'>无提交/审批功能。</p></KbCard>
 <KbCard title="4.1 产品分类表"><p class='kl-tip'>表名：ITEM_CLASS（产品分类表）</p>
 <table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>class_code</td><td>VARCHAR2</td><td>分类编码</td><td>唯一</td></tr><tr><td>class_name</td><td>VARCHAR2</td><td>分类名称</td><td>NOT NULL</td></tr><tr><td>parent_class_id</td><td>NUMBER</td><td>父分类ID</td><td>顶级为空</td></tr><tr><td>level_number</td><td>NUMBER</td><td>层级</td><td>从1开始</td></tr><tr><td>sequence_number</td><td>NUMBER</td><td>排序号</td><td>同级排序</td></tr><tr><td>description</td><td>VARCHAR2</td><td>分类描述</td><td></td></tr><tr><td>enabled_flag</td><td>VARCHAR2</td><td>启用标志</td><td>Y/N</td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
@@ -160,62 +164,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">分类层级最多支持几级？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>一般不超过5级，具体以系统配置为准
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">删除有子分类的节点会怎样？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>需先处理子分类（删除或移动），不可直接删除有子节点的分类
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">分类编码可以修改吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>分类编码被产品引用后不建议修改，可能影响关联关系
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">本菜单在CRM前端如何使用？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>作为嵌入式组件嵌入在CRM产品详情页中，通过AE微服务接口获取分类数据
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q5</span>
-      <span style="font-size:15px;">手动分类和自动分类的区别？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>手动分类由用户维护分类体系，自动分类由系统根据规则自动归类
-    </div>
-  </div>
-</div>
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>分类层级最多支持几级？</td><td>一般不超过5级，具体以系统配置为准</td></tr><tr><td>删除有子分类的节点会怎样？</td><td>需先处理子分类（删除或移动），不可直接删除有子节点的分类</td></tr><tr><td>分类编码可以修改吗？</td><td>分类编码被产品引用后不建议修改，可能影响关联关系</td></tr><tr><td>本菜单在CRM前端如何使用？</td><td>作为嵌入式组件嵌入在CRM产品详情页中，通过AE微服务接口获取分类数据</td></tr><tr><td>手动分类和自动分类的区别？</td><td>手动分类由用户维护分类体系，自动分类由系统根据规则自动归类</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>分类层级最多支持几级？</td><td>一般不超过5级，具体以系统配置为准</td></tr><tr><td>删除有子分类的节点会怎样？</td><td>需先处理子分类（删除或移动），不可直接删除有子节点的分类</td></tr><tr><td>分类编码可以修改吗？</td><td>分类编码被产品引用后不建议修改，可能影响关联关系</td></tr><tr><td>本菜单在CRM前端如何使用？</td><td>作为嵌入式组件嵌入在CRM产品详情页中，通过AE微服务接口获取分类数据</td></tr><tr><td>手动分类和自动分类的区别？</td><td>手动分类由用户维护分类体系，自动分类由系统根据规则自动归类</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
