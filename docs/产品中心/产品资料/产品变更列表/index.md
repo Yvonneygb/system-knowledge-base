@@ -139,8 +139,16 @@
 <div class="kl-wrap">
 <KbCard title="3.1 产品变更列表页"><ul><li><strong>查询条件</strong>：产品编码、产品名称、变更类型、变更时间范围、变更人等</li><li><strong>列表展示字段</strong>：变更单号、产品编码、产品名称、变更类型、变更前值、变更后值、变更人、变更时间等</li><li><strong>操作按钮</strong>：查看详情</li><li><strong>分页</strong>：支持前端分页参数传递，后端返回分页结果</li></ul></KbCard>
 <KbCard title="3.2 产品变更详情页"><ul><li><strong>变更基础信息</strong>：<ul><li>变更单号（change_no）：系统自动生成</li><li>产品编码（product_code）：关联产品</li><li>变更类型（change_type）：价格变更/状态变更/属性变更等</li><li>变更原因（change_reason）：变更原因描述</li><li>变更人（changed_by）：执行变更的人员</li><li>变更时间（change_date）：变更发生的时间</li></ul></li><li><strong>变更明细区域</strong>：<ul><li>变更字段（changed_field）：发生变更的具体字段</li><li>变更前值（before_value）：变更前的值</li><li>变更后值（after_value）：变更后的值</li></ul></li></ul></KbCard>
-<KbCard title="3.3 变更记录生成逻辑"><ul><li>产品价格变更时自动生成变更记录</li><li>产品状态变更时自动生成变更记录</li><li>产品属性（型号/规格/分类等）变更时自动生成变更记录</li><li>变更记录不可编辑和删除，仅作查询和追溯用途</li></ul>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n\\|\\ 弹窗名称\\ \\|\\ 接口\\ \\|\\ 说明\\ \\|\\r\\n\\|---------\\|------\\|------\\|\\r\\n\\|\\ 产品选择弹窗\\ \\|\\ /prod，参数selectType='all'\\ \\|\\ 单选，需输入产品编码/名称/型号之一才能查询\\ \\|\\r\\n\\|\\ 流程模板弹窗\\ \\|\\ /hmde/v1/0/executor/COMM_SCPOBJWFTEMP/list\\ \\|\\ objTypeId=8033\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。templateCode=CRM\\.PROD_CHANGE_FORM_ITEM，仅查看状态且canEditStatus时显示。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 显示条件\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|---------\\|------\\|\\r\\n\\|\\ 新增\\ \\|\\ 列表页\\ \\|\\ 跳详情页\\ \\|\\r\\n\\|\\ 保存\\ \\|\\ 编辑模式\\ \\|\\ 走保存接口\\ \\|\\r\\n\\|\\ 提交\\ \\|\\ 编辑模式\\ \\|\\ 走提交接口\\ \\|\\r\\n\\|\\ 编辑\\ \\|\\ canEditStatus\\(状态为NEW/REJECTED或空\\)\\ \\|\\ 进入编辑\\ \\|\\r\\n\\|\\ 取消\\ \\|\\ 编辑模式\\ \\|\\ 取消编辑\\ \\|\\r\\n\\r\\n&gt;\\ 明细行操作：新建、批量删除、移除、编辑、预览、下载。5个明细Tab：上下架变更、推广信息变更、关联产品变更、产品图册变更、产品附件变更。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*前端校验：\\*\\*\\ \\formDs\\.validate\\(\\)校验必填项，失败提示"请检查表单必填项!"\\r\\n\\r\\n\\*\\*明细行弹窗校验：\\*\\*\\ 必填字段：产品编码、变更内容/属性、变更要求、图片/附件类型；附件大小不超过100M\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n\\*\\*提交接口：\\*\\*\\ POST\\ /prodChangeForm/submit（参数id、confirmShelf）\\r\\n\\r\\n\\*\\*二次确认机制：\\*\\*\\ 后端返回code=CONFIRM_REQUIRED时弹确认框，确认后带confirmShelf=true重新提交\\r\\n\\r\\n\\*\\*工作流：\\*\\*\\ objTypeId=8033，hzInstanceId关联流程实例</p></KbCard>
+<KbCard title="3.3 变更记录生成逻辑"><ul><li>产品价格变更时自动生成变更记录</li><li>产品状态变更时自动生成变更记录</li><li>产品属性（型号/规格/分类等）变更时自动生成变更记录</li><li>变更记录不可编辑和删除，仅作查询和追溯用途</li></ul></KbCard>
+<KbCard title="3.4 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>接口</th><th>说明</th></tr></thead><tbody><tr><td>产品选择弹窗</td><td>/prod，参数selectType='all'</td><td>单选，需输入产品编码/名称/型号之一才能查询</td></tr><tr><td>流程模板弹窗</td><td>/hmde/v1/0/executor/COMM_SCPOBJWFTEMP/list</td><td>objTypeId=8033</td></tr></tbody></table></KbCard>
+<KbCard title="3.5 导入"><p>支持Excel导入。templateCode=CRM.PROD_CHANGE_FORM_ITEM，仅查看状态且canEditStatus时显示。</p></KbCard>
+<KbCard title="3.6 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>新增</td><td>列表页</td><td>跳详情页</td></tr><tr><td>保存</td><td>编辑模式</td><td>走保存接口</td></tr><tr><td>提交</td><td>编辑模式</td><td>走提交接口</td></tr><tr><td>编辑</td><td>canEditStatus(状态为NEW/REJECTED或空)</td><td>进入编辑</td></tr><tr><td>取消</td><td>编辑模式</td><td>取消编辑</td></tr></tbody></table>
+<p class='kl-tip'>明细行操作：新建、批量删除、移除、编辑、预览、下载。5个明细Tab：上下架变更、推广信息变更、关联产品变更、产品图册变更、产品附件变更。</p></KbCard>
+<KbCard title="3.7 保存校验"><p><strong>前端校验：</strong> formDs.validate()校验必填项，失败提示"请检查表单必填项!"</p>
+<p><strong>明细行弹窗校验：</strong> 必填字段：产品编码、变更内容/属性、变更要求、图片/附件类型；附件大小不超过100M</p></KbCard>
+<KbCard title="3.8 提交校验"><p><strong>提交接口：</strong> POST /prodChangeForm/submit（参数id、confirmShelf）</p>
+<p><strong>二次确认机制：</strong> 后端返回code=CONFIRM_REQUIRED时弹确认框，确认后带confirmShelf=true重新提交</p>
+<p><strong>工作流：</strong> objTypeId=8033，hzInstanceId关联流程实例</p></KbCard>
 <KbCard title="4.1 产品变更头表"><p class='kl-tip'>表名：PRODUCT_CHANGE_HEADER（产品变更头表）</p>
 <table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>change_no</td><td>VARCHAR2</td><td>变更单号</td><td>唯一，自动生成</td></tr><tr><td>product_id</td><td>NUMBER</td><td>产品ID</td><td>FK→PRODUCT</td></tr><tr><td>product_code</td><td>VARCHAR2</td><td>产品编码</td><td></td></tr><tr><td>product_name</td><td>VARCHAR2</td><td>产品名称</td><td></td></tr><tr><td>change_type</td><td>VARCHAR2</td><td>变更类型</td><td>PRICE/STATUS/ATTRIBUTE等</td></tr><tr><td>change_reason</td><td>VARCHAR2</td><td>变更原因</td><td></td></tr><tr><td>changed_by</td><td>NUMBER</td><td>变更人</td><td></td></tr><tr><td>change_date</td><td>DATE</td><td>变更时间</td><td></td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 <KbCard title="4.2 产品变更行表"><p class='kl-tip'>表名：PRODUCT_CHANGE_LINE（产品变更行表）</p>
@@ -151,53 +159,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">变更记录可以手动创建吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>变更记录由系统自动生成，不支持手动创建
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">变更记录可以删除吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>变更记录不可删除，作为审计追溯数据永久保留
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">变更类型有哪些？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>主要包括价格变更（PRICE）、状态变更（STATUS）、属性变更（ATTRIBUTE）等
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">变更详情页无id参数时是什么场景？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>无id时为新建变更记录的入口，但通常变更记录由系统自动生成
-    </div>
-  </div>
-</div>
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>变更记录可以手动创建吗？</td><td>变更记录由系统自动生成，不支持手动创建</td></tr><tr><td>变更记录可以删除吗？</td><td>变更记录不可删除，作为审计追溯数据永久保留</td></tr><tr><td>变更类型有哪些？</td><td>主要包括价格变更（PRICE）、状态变更（STATUS）、属性变更（ATTRIBUTE）等</td></tr><tr><td>变更详情页无id参数时是什么场景？</td><td>无id时为新建变更记录的入口，但通常变更记录由系统自动生成</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>变更记录可以手动创建吗？</td><td>变更记录由系统自动生成，不支持手动创建</td></tr><tr><td>变更记录可以删除吗？</td><td>变更记录不可删除，作为审计追溯数据永久保留</td></tr><tr><td>变更类型有哪些？</td><td>主要包括价格变更（PRICE）、状态变更（STATUS）、属性变更（ATTRIBUTE）等</td></tr><tr><td>变更详情页无id参数时是什么场景？</td><td>无id时为新建变更记录的入口，但通常变更记录由系统自动生成</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
