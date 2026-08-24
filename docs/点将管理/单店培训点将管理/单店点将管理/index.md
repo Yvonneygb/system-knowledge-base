@@ -227,11 +227,11 @@
 <KbCard title="3.3 提交审批"><ul><li><strong>API</strong>：<code>mlt/trainApply/submit</code></li><li><strong>内置审批</strong>：<code>trainApplyApproval</code></li><li><strong>审批回调</strong>：审批通过/驳回后自动更新申请状态</li></ul></KbCard>
 <KbCard title="3.4 取消申请"><ul><li><strong>API</strong>：<code>mlt/trainApply/cancel</code></li><li><strong>前置条件</strong>：申请已提交且审批未完成</li><li><strong>逻辑</strong>：取消后申请状态变为"已取消"</li></ul></KbCard>
 <KbCard title="3.5 内置审批说明"><table class="kl-table"><thead><tr><th>审批编码</th><th>审批名称</th><th>触发时机</th><th>说明</th></tr></thead><tbody><tr><td>trainApplyApproval</td><td>单店培训审批</td><td>提交申请后</td><td>业务审批，审批通过后点将生效</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>审批弹窗</td><td>审批意见Form+SingleStoreApplyDetail，含签署人Select</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><p>SelectBox切换"单店点将管理/单店点将审批"。按钮：查看申请、审批。</p></KbCard>
-<KbCard title="保存校验"><p class='kl-tip'>无保存功能（管理端只查看+审批，保存由经销商端完成）。</p></KbCard>
-<KbCard title="提交校验"><p>审批校验pplyApprovalFormDS.validate()（审批意见必填，通过时签署人必填），调用pplyApproval，无工作流编码。</p></KbCard>
+<KbCard title="3.6 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>审批弹窗</td><td>审批意见Form+SingleStoreApplyDetail，含签署人Select</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
+<KbCard title="3.7 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.8 其他按钮"><p>SelectBox切换"单店点将管理/单店点将审批"。按钮：查看申请、审批。</p></KbCard>
+<KbCard title="3.9 保存校验"><p class='kl-tip'>无保存功能（管理端只查看+审批，保存由经销商端完成）。</p></KbCard>
+<KbCard title="3.10 提交校验"><p>审批校验pplyApprovalFormDS.validate()（审批意见必填，通过时签署人必填），调用pplyApproval，无工作流编码。</p></KbCard>
 <KbCard title="train_apply（单店培训点将申请表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2</td><td>申请单号（主键）</td></tr><tr><td>train_theme</td><td>VARCHAR2</td><td>培训主题</td></tr><tr><td>train_start_date</td><td>DATE</td><td>培训开始时间</td></tr><tr><td>train_end_date</td><td>DATE</td><td>培训结束时间</td></tr><tr><td>lecturer_code</td><td>VARCHAR2</td><td>讲师编码</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>讲师姓名</td></tr><tr><td>dealer_code</td><td>VARCHAR2</td><td>经销商编码</td></tr><tr><td>dealer_name</td><td>VARCHAR2</td><td>经销商名称</td></tr><tr><td>terminal_code</td><td>VARCHAR2</td><td>门店编码</td></tr><tr><td>terminal_name</td><td>VARCHAR2</td><td>门店名称</td></tr><tr><td>apply_status</td><td>VARCHAR2</td><td>申请状态</td></tr><tr><td>approval_status</td><td>VARCHAR2</td><td>审批状态</td></tr><tr><td>remark</td><td>VARCHAR2</td><td>备注</td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -249,7 +249,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：提交审批后能否修改？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：提交审批后能否修改？</strong></p>
 <p>A：已提交审批的申请不可修改，需先取消后再编辑重新提交。</p>
 <p><strong>Q2：审批驳回后如何处理？</strong></p>
 <p>A：审批驳回后，申请状态变为"已驳回"，可修改后重新提交。</p>
