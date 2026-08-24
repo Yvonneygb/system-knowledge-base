@@ -146,6 +146,7 @@
 <KbCard title="3.2 配置数据结构"><ul><li><strong>关联推广等级（promote_grade_id）</strong>：关联PROD_PROMOTE_GRADES表，指定此条件属于哪个推广等级</li><li><strong>指标名称（indicator_name）</strong>：考核指标名称，如"销售额"、"销售量"、"毛利率"等</li><li><strong>指标类型（indicator_type）</strong>：指标的数据类型，如金额（AMOUNT）、数量（QUANTITY）、比率（RATE）等</li><li><strong>比较运算符（comparison_operator）</strong>：比较方式，如≥（大于等于）、&gt;（大于）、=（等于）等</li><li><strong>阈值（threshold_value）</strong>：达标的标准值，如销售额≥1000000中的1000000</li><li><strong>单位（unit）</strong>：阈值的计量单位，如元、件、%等</li><li><strong>启用状态（enabled_flag）</strong>：Y/N，控制此条件是否生效</li></ul></KbCard>
 <KbCard title="3.3 业务规则"><ul><li>同一推广等级可配置多个要求条件，需同时满足才能达到该等级</li><li>条件之间为"且"的关系，即所有条件都满足才算达标</li><li>指标类型为AMOUNT时，阈值以元为单位</li><li>指标类型为QUANTITY时，阈值以件/台等为单位</li><li>指标类型为RATE时，阈值为百分比数值（如30表示30%）</li><li>配置变更后，产品的推广等级需重新评估</li></ul></KbCard>
 <KbCard title="3.4 等级评估逻辑示例">
+
 ```
 A级要求：销售额≥100万 且 销售量≥1000件
 B级要求：销售额≥50万  且 销售量≥500件
@@ -155,7 +156,12 @@ D级要求：无特殊要求（默认等级）
 产品实际销售额80万，销售量600件 → 满足B级，不满足A级 → 推广等级为B
 ```
 
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。使用值集下拉Select：品牌事业部AE\\.ITEM_ORGANIZATION、等级CRM\\.PROD_PROMOTE_GRADE、物料类型CRM\\.LH_PROD_SIGN、必填字段类型CRM\\.PROD_REQ_COLUMN_TYPE、必填字段CRM\\.PROD_PROMOTE_REQ_COLUMN（级联）。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 不支持导入功能（导入代码已注释）。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 显示条件\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|---------\\|------\\|\\r\\n\\|\\ 新增\\ \\|\\ 始终显示\\ \\|\\ 弹窗编辑\\ \\|\\r\\n\\|\\ 批量失效\\ \\|\\ 始终显示\\ \\|\\ 红色按钮\\ \\|\\r\\n\\|\\ 行内失效\\ \\|\\ status='valid'\\ \\|\\ 置status='invalid'\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*前端校验：\\*\\*\\ commonFn_formValid\\(ds\\)，必填字段：品牌事业部、等级、物料类型、必填字段类型、必填字段；新增时默认status='valid'、grade='C'\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+</KbCard>
+<KbCard title="3.5 选择弹窗"><p class='kl-tip'>无LOV选择弹窗。使用值集下拉Select：品牌事业部AE.ITEM_ORGANIZATION、等级CRM.PROD_PROMOTE_GRADE、物料类型CRM.LH_PROD_SIGN、必填字段类型CRM.PROD_REQ_COLUMN_TYPE、必填字段CRM.PROD_PROMOTE_REQ_COLUMN（级联）。</p></KbCard>
+<KbCard title="3.6 导入"><p class='kl-tip'>不支持导入功能（导入代码已注释）。</p></KbCard>
+<KbCard title="3.7 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>新增</td><td>始终显示</td><td>弹窗编辑</td></tr><tr><td>批量失效</td><td>始终显示</td><td>红色按钮</td></tr><tr><td>行内失效</td><td>status='valid'</td><td>置status='invalid'</td></tr></tbody></table></KbCard>
+<KbCard title="3.8 保存校验"><p><strong>前端校验：</strong> commonFn_formValid(ds)，必填字段：品牌事业部、等级、物料类型、必填字段类型、必填字段；新增时默认status='valid'、grade='C'</p></KbCard>
+<KbCard title="3.9 提交校验"><p class='kl-tip'>无提交/审批功能。</p></KbCard>
 <KbCard title="4.1 产品推广等级要求配置表"><p class='kl-tip'>表名：PROD_PROMOTE_GRADES_CONTROLS（产品推广等级要求配置表）</p>
 <table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>promote_grade_id</td><td>NUMBER</td><td>推广等级ID</td><td>FK→PROD_PROMOTE_GRADES</td></tr><tr><td>indicator_name</td><td>VARCHAR2</td><td>指标名称</td><td>如销售额/销售量/毛利率</td></tr><tr><td>indicator_type</td><td>VARCHAR2</td><td>指标类型</td><td>AMOUNT/QUANTITY/RATE</td></tr><tr><td>comparison_operator</td><td>VARCHAR2</td><td>比较运算符</td><td>GTE/GT/EQ/LTE/LT</td></tr><tr><td>threshold_value</td><td>NUMBER</td><td>阈值</td><td>达标标准值</td></tr><tr><td>unit</td><td>VARCHAR2</td><td>单位</td><td>元/件/%等</td></tr><tr><td>enabled_flag</td><td>VARCHAR2</td><td>启用标志</td><td>Y/N</td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
@@ -164,53 +170,18 @@ D级要求：无特殊要求（默认等级）
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">同一等级可以配置多个条件吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>可以，多个条件之间为"且"的关系，需同时满足
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">修改配置后现有产品的等级会自动更新吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>修改配置后需触发产品推广等级重新评估流程
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">比较运算符有哪些？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>GTE（≥）、GT（&gt;）、EQ（=）、LTE（≤）、LT（&lt;）
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">指标类型RATE的阈值如何填写？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>直接填写数值，如30表示30%，不需要填0.3
-    </div>
-  </div>
-</div>
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>同一等级可以配置多个条件吗？</td><td>可以，多个条件之间为"且"的关系，需同时满足</td></tr><tr><td>修改配置后现有产品的等级会自动更新吗？</td><td>修改配置后需触发产品推广等级重新评估流程</td></tr><tr><td>比较运算符有哪些？</td><td>GTE（≥）、GT（&gt;）、EQ（=）、LTE（≤）、LT（&lt;）</td></tr><tr><td>指标类型RATE的阈值如何填写？</td><td>直接填写数值，如30表示30%，不需要填0.3</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>同一等级可以配置多个条件吗？</td><td>可以，多个条件之间为"且"的关系，需同时满足</td></tr><tr><td>修改配置后现有产品的等级会自动更新吗？</td><td>修改配置后需触发产品推广等级重新评估流程</td></tr><tr><td>比较运算符有哪些？</td><td>GTE（≥）、GT（&gt;）、EQ（=）、LTE（≤）、LT（&lt;）</td></tr><tr><td>指标类型RATE的阈值如何填写？</td><td>直接填写数值，如30表示30%，不需要填0.3</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
