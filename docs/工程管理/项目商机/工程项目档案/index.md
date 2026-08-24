@@ -174,59 +174,13 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="1 报备审核写入项目档案">
-
-- **首次报备**：报备审核通过后，将报备数据转换为项目档案数据INSERT到EPM_PROJECT，设置PROJECT_VALID=2(已生效)，计算有效期VALID_START_DATE=当前时间，VALID_END_DATE=VALID_START_DATE+项目有效周期天数
-- **二次报备**：报备审核通过后，根据PROJECT_ID查询已有项目档案并UPDATE，更新报备时间、阶段、交易公司、甲乙方、项目名称等字段
-- **字段校验**：写入前检查EPM_PROJECT表是否存在报备表缺少的字段，若缺失则抛错"项目档案表（epm_project）缺失以下字段：xxx"
-- **项目授权同步**：审核通过后，先删除该项目原有授权记录，再批量插入新的授权记录
-- **乙方信息同步**：审核通过后，先删除该项目原有乙方记录，再批量插入新的乙方记录
-
-</KbCard>
-
-<KbCard num="2" title="2 项目进度更新写入档案">
-
-- **阶段变更校验**：新阶段序号必须大于等于旧阶段序号，否则抛错"阶段更新，只能前进，不能后退"
-- **并发校验**：若单据中当前进度与项目档案中的进度不一致（即单据记录的旧进度 < 档案中实际进度），抛错"项目进度已变更，请驳回重审!"
-- **更新字段**：STAGE_DESC、STAGE_ID、STAGE_NAME、STAGE_NOTE
-- **阶段历程记录**：每次阶段变更同时INSERT一条EPM_PROJECT_STAGE记录
-
-</KbCard>
-
-<KbCard num="3" title="3 项目冻结机制">
-
-- **自动冻结**：系统定时任务检测项目有效期超期或进度更新超时，自动将PROJECT_VALID置为4(已冻结)，记录FREEZE_TYPE和FREEZE_TIME
-- **冻结类型**：1=超项目有效期(有效期内未签合同)；2=进度超时更新；4=有效期内已签合同但超期
-- **有效周期**：通过系统参数Proj_Effective_Cycle配置项目有效期限天数
-
-</KbCard>
-
-<KbCard num="4" title="4 项目解冻逻辑">
-
-- 解冻申请审批通过后，更新项目档案：PROJECT_VALID=2(已生效)，FREEZE_TYPE=0，记录UNFREEZE_TIME
-- 解冻时若进度阶段与档案不一致，同步更新档案进度
-
-</KbCard>
-
-<KbCard num="5" title="5 项目失效/恢复逻辑">
-
-- **失效**：失效申请审批通过后，PROJECT_VALID=3(已失效)，记录CHANGE_VALID_USER/CHANGE_VALID_TIME/CHANGE_VALID_REASON
-- **恢复生效**：恢复申请审批通过后，PROJECT_VALID=2(已生效)，重新计算有效期
-
-</KbCard>
-
-<KbCard num="6" title="6 合同信息回写">
-
-- 项目合同签订确认时，回写以下字段至项目档案：CONTRACT_CODE、CONTRACT_AMOUNT、PERFORMANCE_SECURITY、GUARANTEE_AMOUNT、GUARANTEE_PERIOD、CONTRACT_SIGNUP_DATE、PERIOD_START_DATE、PERIOD_END_DATE
-
-</KbCard>
-
-<KbCard num="7" title="7 折扣校验配置中的项目档案标识">
-
-- 折扣校验配置C1/C2规则中，PROJECT_ARCHIVE字段标识是否为本地项目档案(1=异地,2=本地)，影响折扣校验逻辑
-
-</KbCard>
-
+<KbCard title="2.1 报备审核写入项目档案"><ul><li><strong>首次报备</strong>：报备审核通过后，将报备数据转换为项目档案数据INSERT到EPM_PROJECT，设置PROJECT_VALID=2(已生效)，计算有效期VALID_START_DATE=当前时间，VALID_END_DATE=VALID_START_DATE+项目有效周期天数</li><li><strong>二次报备</strong>：报备审核通过后，根据PROJECT_ID查询已有项目档案并UPDATE，更新报备时间、阶段、交易公司、甲乙方、项目名称等字段</li><li><strong>字段校验</strong>：写入前检查EPM_PROJECT表是否存在报备表缺少的字段，若缺失则抛错"项目档案表（epm_project）缺失以下字段：xxx"</li><li><strong>项目授权同步</strong>：审核通过后，先删除该项目原有授权记录，再批量插入新的授权记录</li><li><strong>乙方信息同步</strong>：审核通过后，先删除该项目原有乙方记录，再批量插入新的乙方记录</li></ul></KbCard>
+<KbCard title="2.2 项目进度更新写入档案"><ul><li><strong>阶段变更校验</strong>：新阶段序号必须大于等于旧阶段序号，否则抛错"阶段更新，只能前进，不能后退"</li><li><strong>并发校验</strong>：若单据中当前进度与项目档案中的进度不一致（即单据记录的旧进度 &lt; 档案中实际进度），抛错"项目进度已变更，请驳回重审!"</li><li><strong>更新字段</strong>：STAGE_DESC、STAGE_ID、STAGE_NAME、STAGE_NOTE</li><li><strong>阶段历程记录</strong>：每次阶段变更同时INSERT一条EPM_PROJECT_STAGE记录</li></ul></KbCard>
+<KbCard title="2.3 项目冻结机制"><ul><li><strong>自动冻结</strong>：系统定时任务检测项目有效期超期或进度更新超时，自动将PROJECT_VALID置为4(已冻结)，记录FREEZE_TYPE和FREEZE_TIME</li><li><strong>冻结类型</strong>：1=超项目有效期(有效期内未签合同)；2=进度超时更新；4=有效期内已签合同但超期</li><li><strong>有效周期</strong>：通过系统参数Proj_Effective_Cycle配置项目有效期限天数</li></ul></KbCard>
+<KbCard title="2.4 项目解冻逻辑"><ul><li>解冻申请审批通过后，更新项目档案：PROJECT_VALID=2(已生效)，FREEZE_TYPE=0，记录UNFREEZE_TIME</li><li>解冻时若进度阶段与档案不一致，同步更新档案进度</li></ul></KbCard>
+<KbCard title="2.5 项目失效/恢复逻辑"><ul><li><strong>失效</strong>：失效申请审批通过后，PROJECT_VALID=3(已失效)，记录CHANGE_VALID_USER/CHANGE_VALID_TIME/CHANGE_VALID_REASON</li><li><strong>恢复生效</strong>：恢复申请审批通过后，PROJECT_VALID=2(已生效)，重新计算有效期</li></ul></KbCard>
+<KbCard title="2.6 合同信息回写"><ul><li>项目合同签订确认时，回写以下字段至项目档案：CONTRACT_CODE、CONTRACT_AMOUNT、PERFORMANCE_SECURITY、GUARANTEE_AMOUNT、GUARANTEE_PERIOD、CONTRACT_SIGNUP_DATE、PERIOD_START_DATE、PERIOD_END_DATE</li></ul></KbCard>
+<KbCard title="2.7 折扣校验配置中的项目档案标识"><ul><li>折扣校验配置C1/C2规则中，PROJECT_ARCHIVE字段标识是否为本地项目档案(1=异地,2=本地)，影响折扣校验逻辑</li></ul></KbCard>
 </div>
 </div>
 </div>
@@ -244,292 +198,42 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="3.1 报备审核写入档案 - 详细">
-
-**入口**：`EpmReportServiceImpl.doAudit()`
-
-**步骤**：
-1. 查询报备主记录 `epmReportRepository.selectByPrimaryKey(reportId)`
-2. 避免重复审核：若AUDITTIME不为空则直接返回
-3. 判断首次/二次报备：`isUpdateProj = epmReport.getReportTimes() > 1`
-4. 检查EPM_PROJECT表字段完整性：`epmReportRepository.selectMissingProjectFields()`
-5. 设置审核人和审核时间
-6. 首次报备：
-   - 将报备数据转换为EpmProject对象
-   - 设置HZ_APPROVE_STATUS=APPROVED
-   - 获取项目有效周期天数(系统参数Proj_Effective_Cycle)
-   - 设置VALID_START_DATE=当前时间，VALID_END_DATE=VALID_START_DATE+有效周期+1天
-   - 设置PROJECT_VALID=2(已生效)，FREEZE_TYPE=0
-   - INSERT到EPM_PROJECT
-   - 回写projectId到报备记录
-7. 二次报备：
-   - 根据projectId查询已有项目档案
-   - 逐字段更新：REPORT_TIME、STAGE_NAME、TRADING_COMPANY_ID/NAME、MANAGER、PDT_LINE、OPERATING_MODE、甲乙方信息、PROJECT_NAME、STRATEGIC_STAGE、PROJECT_TYPE、BACKGROUND、预测信息、INTENT_PRODUCT、COMPETITOR、REPORT_TIMES、REPORT_TYPE、STAGE_ID、STAGE_NOTE等
-   - UPDATE EPM_PROJECT
-8. 同步项目授权：先删除旧授权，再批量插入新授权
-9. 同步乙方信息：先删除旧乙方，再批量插入新乙方
-
-</KbCard>
-
-<KbCard num="2" title="3.2 进度更新写入档案 - 详细">
-
-**入口**：`EpmProjectStageServiceImpl.doUpdate()`
-
-**步骤**：
-1. 查询更新前项目档案：`epmProjectRepository.selectByPrimaryKey(projectId)`
-2. 判断阶段是否改变：`stageChanged = newStageId != oldStageId`
-3. 判断阶段描述是否改变：`stageDescChanged = newStageDesc != oldStageDesc`
-4. 若阶段或描述改变或强制更新：
-   - 并发校验：若stageValueBefore > 档案中stageId，抛错"项目进度已变更，请驳回重审!"
-   - 查询旧阶段定义和新阶段定义
-   - 阶段前进校验：新阶段序号 < 旧阶段序号时抛错"阶段更新，只能前进，不能后退"
-   - 更新项目档案：STAGE_DESC、STAGE_ID、STAGE_NAME、STAGE_NOTE
-   - 插入阶段历程记录EPM_PROJECT_STAGE
-
-</KbCard>
-
-<KbCard num="3" title="3.3 项目档案查询 - 详细">
-
-**API**：`GET /v1/{organizationId}/epm-projects/{projectId}/detail`
-
-**入口**：`EpmProjectController.detail()`
-
-**逻辑**：
-1. 根据projectId查询EPM_PROJECT主记录
-2. 通过EpmProjectConvert转换为EpmProjectVO返回
-
-</KbCard>
-
-<KbCard num="4" title="3.4 项目档案列表查询 - 详细">
-
-**前端页面**：`/epm-report/list`（单体项目报备页面，展示项目档案数据）
-
-**API**：`POST /v1/{organizationId}/report/getReportList`
-
-**查询条件**：项目编码、项目名称、客户编码、客户名称、修改时间范围、甲方名称、客户简称、申报日期范围、乙方名称、本地/异地、省、市、区、详细地址、审核状态、有效状态、流程状态、工程类型
-
-</KbCard>
-
-<KbCard num="5" title="3.5 工程项目透视 - 详细">
-
-**前端页面**：`/engineering-project-view`（工程项目透视页面）
-
-**功能**：
-- 分Tab展示单体项目(reportType=1)和战略项目(reportType=2)
-- 项目看板：展示客户信息、项目编码/名称、工程类型、地址、意向产品、合同数量/总额、签约日期、交付/签收/下单/回款进度
-- 统计图：支持按工程类型/业务类型/项目进度/有效状态/行政区域等维度统计
-
-</KbCard>
-
-<KbCard num="6" title="3.6 项目冻结定时任务 - 详细">
-
-**相关Mapper方法**：
-- `selectProjectFreeze`/`selectProjectFreeze1`/`selectProjectFreeze2`/`selectProjectFreeze3`：查询不同冻结条件的项目
-- `updateProjectFreeze`：更新项目冻结状态FREEZE_TYPE和FREEZE_TIME
-- `selectRecentValidHolidays`：查询最近的法定节假日（用于计算工作日）
-
-</KbCard>
-
-<KbCard num="7" title="3.7 项目关键词处理 - 详细">
-
-**入口**：`ProjectKeywordServiceImpl`
-
-**逻辑**：
-1. 查询未处理的项目：`epmProjectMapper.selectUnprocessedProjects()`
-2. 对每个项目的指定字段值进行关键词提取
-3. 将提取的关键词批量INSERT到EPM_KEY_VALUE表
-
-</KbCard>
-
-<KbCard num="1" title="4.1 EPM_PROJECT（项目信息表/项目档案表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| PROJECT_ID | BIGINT | 项目ID，主键，自增 |
-| ORGANIZATION_ID | BIGINT | 组织ID，必填 |
-| PROJECT_CODE | VARCHAR | 项目编码 |
-| PROJECT_NAME | VARCHAR | 项目名称 |
-| REPORT_ID | BIGINT | 报备ID |
-| REPORT_TIMES | BIGINT | 报备次数 |
-| PROJECT_CHARACTER | VARCHAR | 项目性质(联营/直营) |
-| PROJECT_DOCKET | VARCHAR | 项目概述 |
-| PROJECT_STATUS | VARCHAR | 项目状态(报备/已立项/已报名/投标中/已投标/中标/未中标/已签约/已开工/施工中/停工/验收中/已竣工/已结案/项目终止) |
-| BRAND | VARCHAR | 品牌 |
-| SQUARE | VARCHAR | 面积 |
-| HOLDER_TYPE | VARCHAR | 业主类型(政府/医院/企业) |
-| HOLDER | VARCHAR | 项目业主 |
-| HOLDER_LINKMAN | VARCHAR | 业主联系人 |
-| HOLDER_PHONE_NO | VARCHAR | 业主联系电话 |
-| HOLDER_ID | BIGINT | 项目业主ID |
-| PARTNER | VARCHAR | 项目合伙人 |
-| PARTNER_LINKMAN | VARCHAR | 合伙人联系人 |
-| PARTNER_PHONE_NO | VARCHAR | 合伙人联系电话 |
-| PARTNER_ID | BIGINT | 项目合伙人ID |
-| CUSTOMER_ID | BIGINT | 客户ID |
-| CUSTOMER_CODE | VARCHAR | 客户编码 |
-| CUSTOMER_NAME | VARCHAR | 客户名称 |
-| TRADING_COMPANY_ID | BIGINT | 交易公司ID |
-| TRADING_COMPANY_NAME | VARCHAR | 交易公司名称 |
-| PARTY_A_ID | BIGINT | 甲方客户ID |
-| PARTY_A_NAME | VARCHAR | 甲方名称 |
-| PARTY_A_LINK_PERSON | VARCHAR | 甲方联系人 |
-| PARTY_A_PHONE | VARCHAR | 甲方联系电话 |
-| PARTY_B_ID | BIGINT | 乙方客户ID |
-| PARTY_B_NAME | VARCHAR | 乙方名称 |
-| PARTY_B_LINK_PERSON | VARCHAR | 乙方联系人 |
-| PARTY_B_PHONE | VARCHAR | 乙方联系电话 |
-| PROVINCE_ID | BIGINT | 项目地址:省ID |
-| PROVINCE_NAME | VARCHAR | 项目地址:省名称 |
-| CITY_ID | BIGINT | 项目地址:地市ID |
-| CITY_NAME | VARCHAR | 项目地址:地市名称 |
-| AREA_ID | BIGINT | 项目地址:区县ID |
-| AREA_NAME | VARCHAR | 项目地址:区县名称 |
-| ADDRESS | VARCHAR | 项目地址:详细地址 |
-| DIVISION_ID | BIGINT | 所属事业部ID |
-| DIVISION_NAME | VARCHAR | 所属事业部 |
-| IS_LOCAL | BIGINT | 本地/异地(1:异地 2:本地) |
-| OPERATING_MODE | BIGINT | 管理类型(1:自营工程 2:经销商服务 3:自营+经销商服务) |
-| PROJECT_TYPE | VARCHAR | 项目类型/业主类型 |
-| PROJECT_SOURCE | VARCHAR | 项目来源(1:常规工程 2:战略工程) |
-| REPORT_TIME | DATETIME | 报备时间 |
-| REPORT_TYPE | BIGINT | 报备类型(1:单体报备 2:战略报备 3:家装战略 4:家装单体) |
-| STAGE_ID | BIGINT | 项目进度阶段ID |
-| STAGE_NAME | VARCHAR | 项目进度阶段名称 |
-| STAGE_DESC | VARCHAR | 项目进度描述 |
-| STAGE_NOTE | VARCHAR | 项目进度阶段备注 |
-| PROJECT_VALID | BIGINT | 项目有效状态(1:未生效 2:已生效 3:已失效 4:已冻结) |
-| VALID_START_DATE | DATETIME | 有效期开始时间 |
-| VALID_END_DATE | DATETIME | 有效期结束时间 |
-| FREEZE_TYPE | BIGINT | 冻结类型(0:未冻结 1:超项目有效期 2:进度超时更新 4:有效期内已签合同) |
-| FREEZE_TIME | DATETIME | 冻结时间 |
-| UNFREEZE_TIME | DATETIME | 解冻时间 |
-| CHANGE_VALID_USER | VARCHAR | 改变有效性的用户 |
-| CHANGE_VALID_TIME | DATETIME | 改变有效性的时间 |
-| CHANGE_VALID_REASON | VARCHAR | 改变有效性的原因 |
-| CONTRACT_CODE | VARCHAR | 项目合同号(合同签订确认时回写) |
-| CONTRACT_AMOUNT | BIGINT | 项目合同金额(合同签订确认时回写) |
-| PERFORMANCE_SECURITY | BIGINT | 履约保证金(合同签订确认时回写) |
-| GUARANTEE_AMOUNT | BIGINT | 质保金(合同签订确认时回写) |
-| GUARANTEE_PERIOD | VARCHAR | 质保期(合同签订确认时回写) |
-| CONTRACT_SIGNUP_DATE | DATETIME | 合同签约日期(合同签订确认时回写) |
-| PERIOD_START_DATE | VARCHAR | 工期开始日期(合同签订确认时回写) |
-| PERIOD_END_DATE | VARCHAR | 工期截止日期(合同签订确认时回写) |
-| PREDICT_SIGN_DATE | DATETIME | 预计签订日期 |
-| PREDICT_SALES_AMOUNT | VARCHAR | 预计销售收入(元) |
-| PREDICT_PROJ_QTY | VARCHAR | 预估单体项目数量 |
-| PREDICT_PDT_QTY | VARCHAR | 预估工产品用量 |
-| INTENT_PRODUCT | VARCHAR | 工程意向产品 |
-| COMPETITIVE_BRAND | VARCHAR | 竞争品牌 |
-| COMPETITOR | VARCHAR | 竞争对手 |
-| SITE_AREA | BIGINT | 工程建筑面积 |
-| CONSTRUCTION_STAGE | VARCHAR | 工程施工阶段 |
-| BACKGROUND | BIGINT | 背景关系 |
-| BELONG_TO | BIGINT | 工程操作性质，必填 |
-| NEED_DEPOSIT | BIGINT | 是否同意缴纳保证金(1:同意 2:不同意) |
-| DEPOSIT_AMOUNT | BIGINT | 保证金金额 |
-| DEPOSIT_NOTE | VARCHAR | 保证金备注 |
-| IS_FOREIGN | VARCHAR | 是否海外，必填 |
-| IS_NOT_BID | BIGINT | 是否免招标(1否 2是) |
-| IS_SYSTEM | BIGINT | 是否系统初始化(1否 2是) |
-| IS_INIT | BIGINT | 为2时表示初始化产生的数据，必填 |
-| REMOTE_SHARED | BIGINT | 2=启用异地划分，必填 |
-| TASK_SHARED_RATE | BIGINT | 任务划分比例 |
-| SERVICE_FEE_SHARED_RATE | BIGINT | 售后服务金划分比例 |
-| PROJECT_CATEGORY | VARCHAR | 项目分类(normal:标准项目 small:小型项目) |
-| LANDMARK_FLAG | VARCHAR | 是否地标建筑(默认N:否) |
-| HZ_INSTANCE_ID | BIGINT | H0流程实例id |
-| HZ_APPROVE_STATUS | VARCHAR | H0流程审批状态，必填 |
-| MANAGER | VARCHAR | 项目经理 |
-| STRATEGIC_STAGE | VARCHAR | 战略对接阶段 |
-| REL_PROJECT_ID | BIGINT | 关联战略项目ID |
-| REL_PROJECT_CODE | VARCHAR | 关联战略项目编码 |
-| REL_PROJECT_NAME | VARCHAR | 关联战略项目名称 |
-| AGENT | VARCHAR | 经办人 |
-| AGENT_PHONE | VARCHAR | 经办人电话 |
-| AGENT_OPINION | VARCHAR | 经办人意见 |
-| NEED_SAMPLE | VARCHAR | 产品送样(是否) |
-| NEED_QUOTE | VARCHAR | 产品报价(是否) |
-| CLOSE_PROJECT_TIME | DATETIME | 结案时间 |
-| PROJECT_STAGE_TYPE | BIGINT | 项目进度状态 |
-| EXTERNAL_ID | VARCHAR | 外部系统唯一标识 |
-| EXT_PROJECT_ID | VARCHAR | 外部系统对应的项目ID |
-| EXT_STATUS | VARCHAR | 外部系统项目状态 |
-| creation_date | DATETIME | 创建时间 |
-| created_by | BIGINT | 创建人 |
-| last_update_date | DATETIME | 最后更新时间 |
-| last_updated_by | BIGINT | 最后更新人 |
-| object_version_number | BIGINT | 乐观锁版本号 |
-
-</KbCard>
-
-<KbCard num="2" title="4.2 EPM_PROJECT_STAGE（项目进度历程表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| PROJECT_STAGE_ID | BIGINT | 主键，自增 |
-| PROJECT_ID | BIGINT | 项目ID |
-| STAGE_ID | BIGINT | 阶段ID |
-| STAGE_DESC | VARCHAR | 阶段描述 |
-| creation_date | DATETIME | 创建时间 |
-| created_by | BIGINT | 创建人 |
-
-</KbCard>
-
-<KbCard num="3" title="4.3 EPM_PROJECT_AUTH（项目授权表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| PK_ID | BIGINT | 主键 |
-| PROJECT_ID | BIGINT | 项目ID |
-
-</KbCard>
-
-<KbCard num="4" title="4.4 EPM_PROJECT_PARTYB（项目乙方信息表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| PK_ID | BIGINT | 主键 |
-| PROJECT_ID | BIGINT | 项目ID |
-
-</KbCard>
-
-<KbCard num="5" title="4.5 EPM_PROJECT_DISABLE（报备失效申请表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| PROJ_DISABLE_ID | BIGINT | 主键 |
-| PROJ_DISABLE_CODE | VARCHAR | 失效单号 |
-| PROJECT_ID | BIGINT | 项目ID |
-| TYPE | BIGINT | 类型(1:失效 2:恢复生效) |
-
-</KbCard>
-
-<KbCard num="6" title="4.6 EPM_PROJECT_UNFREEZE（项目解冻申请表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| PROJECT_UNFREEZE_ID | BIGINT | 主键 |
-| PROJECT_ID | BIGINT | 项目ID |
-
-</KbCard>
-
-<KbCard num="7" title="4.7 EPM_KEY_VALUE（项目关键词表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| KEY_VALUE_ID | BIGINT | 主键 |
-| PROJECT_ID | BIGINT | 项目ID |
-
-</KbCard>
-
-<KbCard num="8" title="4.8 DISCOUNT_CHECK_CONFIG_C（折扣校验配置C表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| PROJECT_ARCHIVE | INT | 项目档案标识(1:异地 2:本地) |
-
-</KbCard>
-
+<KbCard title="3.1 报备审核写入档案 - 详细"><p><strong>入口</strong>：<code>EpmReportServiceImpl.doAudit()</code></p>
+<p><strong>步骤</strong>： 1. 查询报备主记录 <code>epmReportRepository.selectByPrimaryKey(reportId)</code> 2. 避免重复审核：若AUDITTIME不为空则直接返回 3. 判断首次/二次报备：<code>isUpdateProj = epmReport.getReportTimes() &gt; 1</code> 4. 检查EPM_PROJECT表字段完整性：<code>epmReportRepository.selectMissingProjectFields()</code> 5. 设置审核人和审核时间 6. 首次报备：</p>
+<ul><li>将报备数据转换为EpmProject对象</li><li>设置HZ_APPROVE_STATUS=APPROVED</li><li>获取项目有效周期天数(系统参数Proj_Effective_Cycle)</li><li>设置VALID_START_DATE=当前时间，VALID_END_DATE=VALID_START_DATE+有效周期+1天</li><li>设置PROJECT_VALID=2(已生效)，FREEZE_TYPE=0</li><li>INSERT到EPM_PROJECT</li><li>回写projectId到报备记录</li></ul>
+<p>7. 二次报备：</p>
+<ul><li>根据projectId查询已有项目档案</li><li>逐字段更新：REPORT_TIME、STAGE_NAME、TRADING_COMPANY_ID/NAME、MANAGER、PDT_LINE、OPERATING_MODE、甲乙方信息、PROJECT_NAME、STRATEGIC_STAGE、PROJECT_TYPE、BACKGROUND、预测信息、INTENT_PRODUCT、COMPETITOR、REPORT_TIMES、REPORT_TYPE、STAGE_ID、STAGE_NOTE等</li><li>UPDATE EPM_PROJECT</li></ul>
+<p>8. 同步项目授权：先删除旧授权，再批量插入新授权 9. 同步乙方信息：先删除旧乙方，再批量插入新乙方</p></KbCard>
+<KbCard title="3.2 进度更新写入档案 - 详细"><p><strong>入口</strong>：<code>EpmProjectStageServiceImpl.doUpdate()</code></p>
+<p><strong>步骤</strong>： 1. 查询更新前项目档案：<code>epmProjectRepository.selectByPrimaryKey(projectId)</code> 2. 判断阶段是否改变：<code>stageChanged = newStageId != oldStageId</code> 3. 判断阶段描述是否改变：<code>stageDescChanged = newStageDesc != oldStageDesc</code> 4. 若阶段或描述改变或强制更新：</p>
+<ul><li>并发校验：若stageValueBefore &gt; 档案中stageId，抛错"项目进度已变更，请驳回重审!"</li><li>查询旧阶段定义和新阶段定义</li><li>阶段前进校验：新阶段序号 &lt; 旧阶段序号时抛错"阶段更新，只能前进，不能后退"</li><li>更新项目档案：STAGE_DESC、STAGE_ID、STAGE_NAME、STAGE_NOTE</li><li>插入阶段历程记录EPM_PROJECT_STAGE</li></ul></KbCard>
+<KbCard title="3.3 项目档案查询 - 详细"><p><strong>API</strong>：<code>GET /v1/{organizationId}/epm-projects/{projectId}/detail</code></p>
+<p><strong>入口</strong>：<code>EpmProjectController.detail()</code></p>
+<p><strong>逻辑</strong>： 1. 根据projectId查询EPM_PROJECT主记录 2. 通过EpmProjectConvert转换为EpmProjectVO返回</p></KbCard>
+<KbCard title="3.4 项目档案列表查询 - 详细"><p><strong>前端页面</strong>：<code>/epm-report/list</code>（单体项目报备页面，展示项目档案数据）</p>
+<p><strong>API</strong>：<code>POST /v1/{organizationId}/report/getReportList</code></p>
+<p><strong>查询条件</strong>：项目编码、项目名称、客户编码、客户名称、修改时间范围、甲方名称、客户简称、申报日期范围、乙方名称、本地/异地、省、市、区、详细地址、审核状态、有效状态、流程状态、工程类型</p></KbCard>
+<KbCard title="3.5 工程项目透视 - 详细"><p><strong>前端页面</strong>：<code>/engineering-project-view</code>（工程项目透视页面）</p>
+<p><strong>功能</strong>：</p>
+<ul><li>分Tab展示单体项目(reportType=1)和战略项目(reportType=2)</li><li>项目看板：展示客户信息、项目编码/名称、工程类型、地址、意向产品、合同数量/总额、签约日期、交付/签收/下单/回款进度</li><li>统计图：支持按工程类型/业务类型/项目进度/有效状态/行政区域等维度统计</li></ul></KbCard>
+<KbCard title="3.6 项目冻结定时任务 - 详细"><p><strong>相关Mapper方法</strong>：</p>
+<ul><li><code>selectProjectFreeze</code>/<code>selectProjectFreeze1</code>/<code>selectProjectFreeze2</code>/<code>selectProjectFreeze3</code>：查询不同冻结条件的项目</li><li><code>updateProjectFreeze</code>：更新项目冻结状态FREEZE_TYPE和FREEZE_TIME</li><li><code>selectRecentValidHolidays</code>：查询最近的法定节假日（用于计算工作日）</li></ul></KbCard>
+<KbCard title="3.7 项目关键词处理 - 详细"><p><strong>入口</strong>：<code>ProjectKeywordServiceImpl</code></p>
+<p><strong>逻辑</strong>： 1. 查询未处理的项目：<code>epmProjectMapper.selectUnprocessedProjects()</code> 2. 对每个项目的指定字段值进行关键词提取 3. 将提取的关键词批量INSERT到EPM_KEY_VALUE表</p></KbCard>
+<KbCard title="选择弹窗"><p class='kl-tip'>无弹窗选择功能。本菜单为hlod低代码只读视图，项目档案数据由上游模块（项目报备审批通过、战略经理变更、项目进度更新等）自动写入。</p></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。项目档案数据由系统自动维护，不支持Excel导入。</p></KbCard>
+<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>查询</td><td>列表页按条件查询项目档案</td></tr><tr><td>查看</td><td>跳转详情查看项目档案信息</td></tr></tbody></table>
+<p class='kl-tip'>无新建/编辑/删除/提交按钮（只读视图）。后端接口：<code>GET /v1/{organizationId}/epm-projects/{projectId}/detail</code></p></KbCard>
+<KbCard title="保存校验"><p class='kl-tip'>无保存校验。本菜单为只读视图，不可直接保存。项目档案数据由上游模块审批通过后自动写入EPM_PROJECT表。</p></KbCard>
+<KbCard title="提交校验"><p class='kl-tip'>无提交校验。本菜单为只读视图，无工作流。</p></KbCard>
+<KbCard title="4.1 EPM_PROJECT（项目信息表/项目档案表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID，主键，自增</td></tr><tr><td>ORGANIZATION_ID</td><td>BIGINT</td><td>组织ID，必填</td></tr><tr><td>PROJECT_CODE</td><td>VARCHAR</td><td>项目编码</td></tr><tr><td>PROJECT_NAME</td><td>VARCHAR</td><td>项目名称</td></tr><tr><td>REPORT_ID</td><td>BIGINT</td><td>报备ID</td></tr><tr><td>REPORT_TIMES</td><td>BIGINT</td><td>报备次数</td></tr><tr><td>PROJECT_CHARACTER</td><td>VARCHAR</td><td>项目性质(联营/直营)</td></tr><tr><td>PROJECT_DOCKET</td><td>VARCHAR</td><td>项目概述</td></tr><tr><td>PROJECT_STATUS</td><td>VARCHAR</td><td>项目状态(报备/已立项/已报名/投标中/已投标/中标/未中标/已签约/已开工/施工中/停工/验收中/已竣工/已结案/项目终止)</td></tr><tr><td>BRAND</td><td>VARCHAR</td><td>品牌</td></tr><tr><td>SQUARE</td><td>VARCHAR</td><td>面积</td></tr><tr><td>HOLDER_TYPE</td><td>VARCHAR</td><td>业主类型(政府/医院/企业)</td></tr><tr><td>HOLDER</td><td>VARCHAR</td><td>项目业主</td></tr><tr><td>HOLDER_LINKMAN</td><td>VARCHAR</td><td>业主联系人</td></tr><tr><td>HOLDER_PHONE_NO</td><td>VARCHAR</td><td>业主联系电话</td></tr><tr><td>HOLDER_ID</td><td>BIGINT</td><td>项目业主ID</td></tr><tr><td>PARTNER</td><td>VARCHAR</td><td>项目合伙人</td></tr><tr><td>PARTNER_LINKMAN</td><td>VARCHAR</td><td>合伙人联系人</td></tr><tr><td>PARTNER_PHONE_NO</td><td>VARCHAR</td><td>合伙人联系电话</td></tr><tr><td>PARTNER_ID</td><td>BIGINT</td><td>项目合伙人ID</td></tr><tr><td>CUSTOMER_ID</td><td>BIGINT</td><td>客户ID</td></tr><tr><td>CUSTOMER_CODE</td><td>VARCHAR</td><td>客户编码</td></tr><tr><td>CUSTOMER_NAME</td><td>VARCHAR</td><td>客户名称</td></tr><tr><td>TRADING_COMPANY_ID</td><td>BIGINT</td><td>交易公司ID</td></tr><tr><td>TRADING_COMPANY_NAME</td><td>VARCHAR</td><td>交易公司名称</td></tr><tr><td>PARTY_A_ID</td><td>BIGINT</td><td>甲方客户ID</td></tr><tr><td>PARTY_A_NAME</td><td>VARCHAR</td><td>甲方名称</td></tr><tr><td>PARTY_A_LINK_PERSON</td><td>VARCHAR</td><td>甲方联系人</td></tr><tr><td>PARTY_A_PHONE</td><td>VARCHAR</td><td>甲方联系电话</td></tr><tr><td>PARTY_B_ID</td><td>BIGINT</td><td>乙方客户ID</td></tr><tr><td>PARTY_B_NAME</td><td>VARCHAR</td><td>乙方名称</td></tr><tr><td>PARTY_B_LINK_PERSON</td><td>VARCHAR</td><td>乙方联系人</td></tr><tr><td>PARTY_B_PHONE</td><td>VARCHAR</td><td>乙方联系电话</td></tr><tr><td>PROVINCE_ID</td><td>BIGINT</td><td>项目地址:省ID</td></tr><tr><td>PROVINCE_NAME</td><td>VARCHAR</td><td>项目地址:省名称</td></tr><tr><td>CITY_ID</td><td>BIGINT</td><td>项目地址:地市ID</td></tr><tr><td>CITY_NAME</td><td>VARCHAR</td><td>项目地址:地市名称</td></tr><tr><td>AREA_ID</td><td>BIGINT</td><td>项目地址:区县ID</td></tr><tr><td>AREA_NAME</td><td>VARCHAR</td><td>项目地址:区县名称</td></tr><tr><td>ADDRESS</td><td>VARCHAR</td><td>项目地址:详细地址</td></tr><tr><td>DIVISION_ID</td><td>BIGINT</td><td>所属事业部ID</td></tr><tr><td>DIVISION_NAME</td><td>VARCHAR</td><td>所属事业部</td></tr><tr><td>IS_LOCAL</td><td>BIGINT</td><td>本地/异地(1:异地 2:本地)</td></tr><tr><td>OPERATING_MODE</td><td>BIGINT</td><td>管理类型(1:自营工程 2:经销商服务 3:自营+经销商服务)</td></tr><tr><td>PROJECT_TYPE</td><td>VARCHAR</td><td>项目类型/业主类型</td></tr><tr><td>PROJECT_SOURCE</td><td>VARCHAR</td><td>项目来源(1:常规工程 2:战略工程)</td></tr><tr><td>REPORT_TIME</td><td>DATETIME</td><td>报备时间</td></tr><tr><td>REPORT_TYPE</td><td>BIGINT</td><td>报备类型(1:单体报备 2:战略报备 3:家装战略 4:家装单体)</td></tr><tr><td>STAGE_ID</td><td>BIGINT</td><td>项目进度阶段ID</td></tr><tr><td>STAGE_NAME</td><td>VARCHAR</td><td>项目进度阶段名称</td></tr><tr><td>STAGE_DESC</td><td>VARCHAR</td><td>项目进度描述</td></tr><tr><td>STAGE_NOTE</td><td>VARCHAR</td><td>项目进度阶段备注</td></tr><tr><td>PROJECT_VALID</td><td>BIGINT</td><td>项目有效状态(1:未生效 2:已生效 3:已失效 4:已冻结)</td></tr><tr><td>VALID_START_DATE</td><td>DATETIME</td><td>有效期开始时间</td></tr><tr><td>VALID_END_DATE</td><td>DATETIME</td><td>有效期结束时间</td></tr><tr><td>FREEZE_TYPE</td><td>BIGINT</td><td>冻结类型(0:未冻结 1:超项目有效期 2:进度超时更新 4:有效期内已签合同)</td></tr><tr><td>FREEZE_TIME</td><td>DATETIME</td><td>冻结时间</td></tr><tr><td>UNFREEZE_TIME</td><td>DATETIME</td><td>解冻时间</td></tr><tr><td>CHANGE_VALID_USER</td><td>VARCHAR</td><td>改变有效性的用户</td></tr><tr><td>CHANGE_VALID_TIME</td><td>DATETIME</td><td>改变有效性的时间</td></tr><tr><td>CHANGE_VALID_REASON</td><td>VARCHAR</td><td>改变有效性的原因</td></tr><tr><td>CONTRACT_CODE</td><td>VARCHAR</td><td>项目合同号(合同签订确认时回写)</td></tr><tr><td>CONTRACT_AMOUNT</td><td>BIGINT</td><td>项目合同金额(合同签订确认时回写)</td></tr><tr><td>PERFORMANCE_SECURITY</td><td>BIGINT</td><td>履约保证金(合同签订确认时回写)</td></tr><tr><td>GUARANTEE_AMOUNT</td><td>BIGINT</td><td>质保金(合同签订确认时回写)</td></tr><tr><td>GUARANTEE_PERIOD</td><td>VARCHAR</td><td>质保期(合同签订确认时回写)</td></tr><tr><td>CONTRACT_SIGNUP_DATE</td><td>DATETIME</td><td>合同签约日期(合同签订确认时回写)</td></tr><tr><td>PERIOD_START_DATE</td><td>VARCHAR</td><td>工期开始日期(合同签订确认时回写)</td></tr><tr><td>PERIOD_END_DATE</td><td>VARCHAR</td><td>工期截止日期(合同签订确认时回写)</td></tr><tr><td>PREDICT_SIGN_DATE</td><td>DATETIME</td><td>预计签订日期</td></tr><tr><td>PREDICT_SALES_AMOUNT</td><td>VARCHAR</td><td>预计销售收入(元)</td></tr><tr><td>PREDICT_PROJ_QTY</td><td>VARCHAR</td><td>预估单体项目数量</td></tr><tr><td>PREDICT_PDT_QTY</td><td>VARCHAR</td><td>预估工产品用量</td></tr><tr><td>INTENT_PRODUCT</td><td>VARCHAR</td><td>工程意向产品</td></tr><tr><td>COMPETITIVE_BRAND</td><td>VARCHAR</td><td>竞争品牌</td></tr><tr><td>COMPETITOR</td><td>VARCHAR</td><td>竞争对手</td></tr><tr><td>SITE_AREA</td><td>BIGINT</td><td>工程建筑面积</td></tr><tr><td>CONSTRUCTION_STAGE</td><td>VARCHAR</td><td>工程施工阶段</td></tr><tr><td>BACKGROUND</td><td>BIGINT</td><td>背景关系</td></tr><tr><td>BELONG_TO</td><td>BIGINT</td><td>工程操作性质，必填</td></tr><tr><td>NEED_DEPOSIT</td><td>BIGINT</td><td>是否同意缴纳保证金(1:同意 2:不同意)</td></tr><tr><td>DEPOSIT_AMOUNT</td><td>BIGINT</td><td>保证金金额</td></tr><tr><td>DEPOSIT_NOTE</td><td>VARCHAR</td><td>保证金备注</td></tr><tr><td>IS_FOREIGN</td><td>VARCHAR</td><td>是否海外，必填</td></tr><tr><td>IS_NOT_BID</td><td>BIGINT</td><td>是否免招标(1否 2是)</td></tr><tr><td>IS_SYSTEM</td><td>BIGINT</td><td>是否系统初始化(1否 2是)</td></tr><tr><td>IS_INIT</td><td>BIGINT</td><td>为2时表示初始化产生的数据，必填</td></tr><tr><td>REMOTE_SHARED</td><td>BIGINT</td><td>2=启用异地划分，必填</td></tr><tr><td>TASK_SHARED_RATE</td><td>BIGINT</td><td>任务划分比例</td></tr><tr><td>SERVICE_FEE_SHARED_RATE</td><td>BIGINT</td><td>售后服务金划分比例</td></tr><tr><td>PROJECT_CATEGORY</td><td>VARCHAR</td><td>项目分类(normal:标准项目 small:小型项目)</td></tr><tr><td>LANDMARK_FLAG</td><td>VARCHAR</td><td>是否地标建筑(默认N:否)</td></tr><tr><td>HZ_INSTANCE_ID</td><td>BIGINT</td><td>H0流程实例id</td></tr><tr><td>HZ_APPROVE_STATUS</td><td>VARCHAR</td><td>H0流程审批状态，必填</td></tr><tr><td>MANAGER</td><td>VARCHAR</td><td>项目经理</td></tr><tr><td>STRATEGIC_STAGE</td><td>VARCHAR</td><td>战略对接阶段</td></tr><tr><td>REL_PROJECT_ID</td><td>BIGINT</td><td>关联战略项目ID</td></tr><tr><td>REL_PROJECT_CODE</td><td>VARCHAR</td><td>关联战略项目编码</td></tr><tr><td>REL_PROJECT_NAME</td><td>VARCHAR</td><td>关联战略项目名称</td></tr><tr><td>AGENT</td><td>VARCHAR</td><td>经办人</td></tr><tr><td>AGENT_PHONE</td><td>VARCHAR</td><td>经办人电话</td></tr><tr><td>AGENT_OPINION</td><td>VARCHAR</td><td>经办人意见</td></tr><tr><td>NEED_SAMPLE</td><td>VARCHAR</td><td>产品送样(是否)</td></tr><tr><td>NEED_QUOTE</td><td>VARCHAR</td><td>产品报价(是否)</td></tr><tr><td>CLOSE_PROJECT_TIME</td><td>DATETIME</td><td>结案时间</td></tr><tr><td>PROJECT_STAGE_TYPE</td><td>BIGINT</td><td>项目进度状态</td></tr><tr><td>EXTERNAL_ID</td><td>VARCHAR</td><td>外部系统唯一标识</td></tr><tr><td>EXT_PROJECT_ID</td><td>VARCHAR</td><td>外部系统对应的项目ID</td></tr><tr><td>EXT_STATUS</td><td>VARCHAR</td><td>外部系统项目状态</td></tr><tr><td>creation_date</td><td>DATETIME</td><td>创建时间</td></tr><tr><td>created_by</td><td>BIGINT</td><td>创建人</td></tr><tr><td>last_update_date</td><td>DATETIME</td><td>最后更新时间</td></tr><tr><td>last_updated_by</td><td>BIGINT</td><td>最后更新人</td></tr><tr><td>object_version_number</td><td>BIGINT</td><td>乐观锁版本号</td></tr></tbody></table></KbCard>
+<KbCard title="4.2 EPM_PROJECT_STAGE（项目进度历程表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PROJECT_STAGE_ID</td><td>BIGINT</td><td>主键，自增</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID</td></tr><tr><td>STAGE_ID</td><td>BIGINT</td><td>阶段ID</td></tr><tr><td>STAGE_DESC</td><td>VARCHAR</td><td>阶段描述</td></tr><tr><td>creation_date</td><td>DATETIME</td><td>创建时间</td></tr><tr><td>created_by</td><td>BIGINT</td><td>创建人</td></tr></tbody></table></KbCard>
+<KbCard title="4.3 EPM_PROJECT_AUTH（项目授权表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PK_ID</td><td>BIGINT</td><td>主键</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID</td></tr></tbody></table></KbCard>
+<KbCard title="4.4 EPM_PROJECT_PARTYB（项目乙方信息表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PK_ID</td><td>BIGINT</td><td>主键</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID</td></tr></tbody></table></KbCard>
+<KbCard title="4.5 EPM_PROJECT_DISABLE（报备失效申请表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PROJ_DISABLE_ID</td><td>BIGINT</td><td>主键</td></tr><tr><td>PROJ_DISABLE_CODE</td><td>VARCHAR</td><td>失效单号</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID</td></tr><tr><td>TYPE</td><td>BIGINT</td><td>类型(1:失效 2:恢复生效)</td></tr></tbody></table></KbCard>
+<KbCard title="4.6 EPM_PROJECT_UNFREEZE（项目解冻申请表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PROJECT_UNFREEZE_ID</td><td>BIGINT</td><td>主键</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID</td></tr></tbody></table></KbCard>
+<KbCard title="4.7 EPM_KEY_VALUE（项目关键词表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>KEY_VALUE_ID</td><td>BIGINT</td><td>主键</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID</td></tr></tbody></table></KbCard>
+<KbCard title="4.8 DISCOUNT_CHECK_CONFIG_C（折扣校验配置C表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PROJECT_ARCHIVE</td><td>INT</td><td>项目档案标识(1:异地 2:本地)</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -690,21 +394,117 @@ WHERE p.PROJECT_ID = :projectId;</code></pre>
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="Q1: 报备审核时报错"项目档案表（epm_project）缺失以下字段：xxx""><p><strong>原因</strong>：EPM_PROJECT表结构与EPM_REPORT表结构不一致，报备数据无法完整写入项目档案</p>
+<p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT column_name 
+FROM all_tab_columns 
+WHERE table_name = 'EPM_REPORT' 
+  AND column_name NOT IN (
+    SELECT column_name FROM all_tab_columns WHERE table_name = 'EPM_PROJECT'
+  );
+```
+</KbCard>
+<KbCard title="Q2: 项目进度更新报错"项目进度已变更，请驳回重审!""><p><strong>原因</strong>：并发场景下，其他单据已更新了项目档案的进度，当前单据记录的旧进度值与档案中实际进度不一致</p>
+<p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT p.PROJECT_ID, p.PROJECT_CODE, p.STAGE_ID, p.STAGE_NAME, p.STAGE_DESC
+FROM EPM_PROJECT p
+WHERE p.PROJECT_ID = :projectId;
+```
+</KbCard>
+<KbCard title="Q3: 项目进度更新报错"阶段更新，只能前进，不能后退""><p><strong>原因</strong>：新选择的阶段序号小于当前阶段序号，系统不允许阶段倒退</p>
+<p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT sd.STAGE_ID, sd.STAGE_NAME, sd.SEQ
+FROM EPM_STAGE_DEF sd
+ORDER BY sd.SEQ;
+```
+</KbCard>
+<KbCard title="Q4: 项目报备审核时报错"请配置{orgId}公司参数'Proj_Effective_Cycle'""><p><strong>原因</strong>：未配置项目有效周期天数系统参数</p>
+<p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT * FROM SYS_PARAM WHERE PARAM_CODE = 'Proj_Effective_Cycle' AND ORGANIZATION_ID = :orgId;
+```
+</KbCard>
+<KbCard title="Q5: 项目已冻结但无法提交解冻申请"><p><strong>原因</strong>：项目PROJECT_VALID必须为4(已冻结)才能提交解冻申请，且不能有正在审批中的解冻申请</p>
+<p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT p.PROJECT_ID, p.PROJECT_CODE, p.PROJECT_VALID, p.FREEZE_TYPE, p.FREEZE_TIME,
+       u.PROJECT_UNFREEZE_ID, u.HZ_APPROVE_STATUS AS UNFREEZE_STATUS
+FROM EPM_PROJECT p
+LEFT JOIN EPM_PROJECT_UNFREEZE u ON p.PROJECT_ID = u.PROJECT_ID
+WHERE p.PROJECT_ID = :projectId;
+```
+</KbCard>
+<KbCard title="Q6: 项目档案有效状态显示异常"><p><strong>原因</strong>：前端对PROJECT_VALID=4(已冻结)做了二次转换，结合解冻申请状态(EPU_STAT)和冻结类型(FREEZE_TYPE)展示不同状态</p>
+<p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT p.PROJECT_ID, p.PROJECT_CODE, p.PROJECT_VALID, p.FREEZE_TYPE,
+       u.HZ_APPROVE_STATUS AS EPU_STAT
+FROM EPM_PROJECT p
+LEFT JOIN EPM_PROJECT_UNFREEZE u ON p.PROJECT_ID = u.PROJECT_ID 
+  AND u.OBJECT_VERSION_NUMBER = (SELECT MAX(OBJECT_VERSION_NUMBER) FROM EPM_PROJECT_UNFREEZE WHERE PROJECT_ID = p.PROJECT_ID)
+WHERE p.PROJECT_ID = :projectId;
+```
+
+<p><strong>前端转换规则</strong>：</p>
+<ul><li>PROJECT_VALID=4 + EPU_STAT=新建/1 → 显示6(解冻草稿)</li><li>PROJECT_VALID=4 + EPU_STAT=已启动/3 → 显示8(解冻申请中)</li><li>PROJECT_VALID=4 + EPU_STAT=拒绝/驳回/退回 → 显示7(解冻拒绝)</li><li>PROJECT_VALID=4 + FREEZE_TYPE=1 → 显示9(已冻结-有效期内未签合同)</li><li>PROJECT_VALID=4 + FREEZE_TYPE=2 → 显示10(已冻结-进度更新超时)</li><li>PROJECT_VALID=4 + FREEZE_TYPE=4 → 显示12(已冻结-有效期内已签合同)</li></ul></KbCard>
+<KbCard title="Q7: 查询项目档案详情"><p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT * FROM EPM_PROJECT WHERE PROJECT_ID = :projectId;
+```
+</KbCard>
+<KbCard title="Q8: 查询项目进度历程"><p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT ps.*, sd.STAGE_NAME, sd.SEQ
+FROM EPM_PROJECT_STAGE ps
+LEFT JOIN EPM_STAGE_DEF sd ON ps.STAGE_ID = sd.STAGE_ID
+WHERE ps.PROJECT_ID = :projectId
+ORDER BY ps.creation_date;
+```
+</KbCard>
+<KbCard title="Q9: 查询项目授权信息"><p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT * FROM EPM_PROJECT_AUTH WHERE PROJECT_ID = :projectId;
+```
+</KbCard>
+<KbCard title="Q10: 查询项目乙方信息"><p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT * FROM EPM_PROJECT_PARTYB WHERE PROJECT_ID = :projectId;
+```
+</KbCard>
+<KbCard title="Q11: 折扣校验时项目档案标识(PROJECT_ARCHIVE)如何取值"><p><strong>原因</strong>：PROJECT_ARCHIVE取自EPM_PROJECT.IS_LOCAL字段，2=本地(项目档案)，1=异地</p>
+<p><strong>排查SQL</strong>：</p>
+
+```sql
+SELECT p.PROJECT_ID, p.PROJECT_CODE, p.IS_LOCAL,
+       c.PROJECT_ARCHIVE
+FROM EPM_PROJECT p
+LEFT JOIN DISCOUNT_CHECK_CONFIG_C c ON c.PROJECT_ARCHIVE = p.IS_LOCAL
+WHERE p.PROJECT_ID = :projectId;
+```
+</KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|---------|--------|
-| 2026-07-28 | V1.0 | 初始创建，梳理工程项目档案业务逻辑 | AI |
-| 2025-12-25 | - | EpmProjectController新增项目明细查询接口 | jiaqiang.fu01 |
-| 2025-11-21 | - | EpmProjectUnfreezeServiceImpl项目解冻逻辑实现 | jiaqiang.fu01 |
-| 2025-11-20 | - | EpmProjectDisableServiceImpl报备失效/恢复逻辑实现 | jiaqiang.fu01 |
-| 2025-11-17 | - | EpmProjectStageServiceImpl项目进度更新逻辑实现 | jiaqiang.fu01 |
-| 2025-10-29 | - | EpmReportController项目报备接口实现 | liuyk |
-| 2025-09-29 | - | EpmProject实体类及基础CRUD创建 | - |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-07-28</td><td>V1.0</td><td>初始创建，梳理工程项目档案业务逻辑</td><td>AI</td></tr><tr><td>2025-12-25</td><td>-</td><td>EpmProjectController新增项目明细查询接口</td><td>jiaqiang.fu01</td></tr><tr><td>2025-11-21</td><td>-</td><td>EpmProjectUnfreezeServiceImpl项目解冻逻辑实现</td><td>jiaqiang.fu01</td></tr><tr><td>2025-11-20</td><td>-</td><td>EpmProjectDisableServiceImpl报备失效/恢复逻辑实现</td><td>jiaqiang.fu01</td></tr><tr><td>2025-11-17</td><td>-</td><td>EpmProjectStageServiceImpl项目进度更新逻辑实现</td><td>jiaqiang.fu01</td></tr><tr><td>2025-10-29</td><td>-</td><td>EpmReportController项目报备接口实现</td><td>liuyk</td></tr><tr><td>2025-09-29</td><td>-</td><td>EpmProject实体类及基础CRUD创建</td><td>-</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
