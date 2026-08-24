@@ -1,5 +1,4 @@
 <BreadcrumbTabs />
-
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -85,7 +84,6 @@
 </div>
 </div>
 </div>
-
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
 <div class="bf-truth-flow">
@@ -143,14 +141,23 @@
 </div>
 </div>
 </div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
 </div>
 </div>
 </div>
+<div id="permission" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="权限控制">
 
+<!-- 空白:待补充 -->
+
+</KbCard>
+</div>
+</div>
+</div>
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -204,19 +211,6 @@
 </div>
 </div>
 </div>
-
-<div id="permission" style="display:none;">
-<div class="tab-pad">
-<div class="kl-wrap">
-<KbCard title="权限控制">
-
-<!-- 空白:待补充 -->
-
-</KbCard>
-</div>
-</div>
-</div>
-
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -227,7 +221,6 @@
 </div>
 </div>
 </div>
-
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -240,7 +233,6 @@
 </div>
 </div>
 </div>
-
 <div id="history" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
