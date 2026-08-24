@@ -200,11 +200,11 @@
 <KbCard title="3.3 核心实体"><p><strong>ActivityApply</strong>（复用活动点将申请实体，筛选执行阶段数据）</p>
 <table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>申请编码（主键）</td></tr><tr><td>activity_name</td><td>活动名称</td></tr><tr><td>apply_status</td><td>申请状态（执行中/已完成）</td></tr></tbody></table></KbCard>
 <KbCard title="3.4 列表筛选条件"><table class="kl-table"><thead><tr><th>筛选项</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td>活动名称</td><td>按活动名称模糊筛选</td><td>无</td></tr><tr><td>申请编码</td><td>按申请编码筛选</td><td>无</td></tr><tr><td>执行状态</td><td>按执行状态筛选</td><td>执行中</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>发起结算弹窗</td><td>PlanSettlementInfo+ActivityApplyDetail，含签署人Select</td></tr><tr><td>结束执行弹窗</td><td>Form表单</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>查看申请</td><td>跳转活动申请详情</td></tr><tr><td>发起结算</td><td>保存并下发，调用startSettle</td></tr><tr><td>结束执行</td><td>调用endExecute</td></tr></tbody></table></KbCard>
-<KbCard title="保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>发起结算</td><td>targetFormData、completeFormData、signerValid非空</td></tr><tr><td>结束执行</td><td>realStartDate、realEndDate、endExecuteRemark必填</td></tr></tbody></table></KbCard>
-<KbCard title="提交校验"><p class='kl-tip'>无审批按钮，结算即下发。无工作流编码。</p></KbCard>
+<KbCard title="3.5 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>发起结算弹窗</td><td>PlanSettlementInfo+ActivityApplyDetail，含签署人Select</td></tr><tr><td>结束执行弹窗</td><td>Form表单</td></tr></tbody></table></KbCard>
+<KbCard title="3.6 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.7 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>查看申请</td><td>跳转活动申请详情</td></tr><tr><td>发起结算</td><td>保存并下发，调用startSettle</td></tr><tr><td>结束执行</td><td>调用endExecute</td></tr></tbody></table></KbCard>
+<KbCard title="3.8 保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>发起结算</td><td>targetFormData、completeFormData、signerValid非空</td></tr><tr><td>结束执行</td><td>realStartDate、realEndDate、endExecuteRemark必填</td></tr></tbody></table></KbCard>
+<KbCard title="3.9 提交校验"><p class='kl-tip'>无审批按钮，结算即下发。无工作流编码。</p></KbCard>
 <KbCard title="activity_apply（活动点将申请主表，同活动点将管理）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>约束</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2(32)</td><td>申请编码</td><td>PK</td></tr><tr><td>activity_name</td><td>VARCHAR2(200)</td><td>活动名称</td><td>NOT NULL</td></tr><tr><td>activity_type</td><td>VARCHAR2(30)</td><td>活动类型</td><td></td></tr><tr><td>apply_status</td><td>VARCHAR2(30)</td><td>申请状态</td><td>NOT NULL</td></tr><tr><td>execution_progress</td><td>NUMBER(5,2)</td><td>执行完成率(%)</td><td></td></tr><tr><td>planner_id</td><td>NUMBER</td><td>策划师ID</td><td>NOT NULL</td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -222,7 +222,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：执行跟踪页面能否修改数据？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：执行跟踪页面能否修改数据？</strong></p>
 <p>A：不能，本页面为只读跟踪页面，仅提供查询查看功能。</p>
 <p><strong>Q2：执行完成率如何计算？</strong></p>
 <p>A：根据活动下的子任务完成数量占总任务数量的百分比计算。</p>
