@@ -128,14 +128,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="重点逻辑">
-**具体逻辑**：
-
-- 1、**跨事业部查询**：可查询不同事业部下的产品销售清单，突破事业部数据隔离
-- 2、**销售清单数据**：包含产品信息、销售价格、销售数量等关键字段
-- 3、**数据只读**：本页面仅查询展示
-</KbCard>
-
+<KbCard title="重点逻辑"><p>1. <strong>跨事业部查询</strong>：可查询不同事业部下的产品销售清单，突破事业部数据隔离 2. <strong>销售清单数据</strong>：包含产品信息、销售价格、销售数量等关键字段 3. <strong>数据只读</strong>：本页面仅查询展示</p></KbCard>
 </div>
 </div>
 </div>
@@ -153,39 +146,13 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 后端接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-list</td>
-<td>GET</td>
-<td>查询跨事业部产品销售清单</td>
-</tr>
-</tbody></table></div>
-
-&gt; 接口路径为推测，以实际代码为准
-
-</KbCard>
-
-<KbCard title="3.2 前端页面">
-
-- 前端包：`arrow-crm`
-
-</KbCard>
-
-<KbCard title="3.3 核心业务规则">
-
-1. 需要有跨事业部数据查看权限
-2. 支持按事业部、产品、时间范围筛选
-3. 无工作流
-
-</KbCard>
-
+<KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-list</td><td>GET</td><td>查询跨事业部产品销售清单</td></tr></tbody></table>
+<p class='kl-tip'>接口路径为推测，以实际代码为准</p></KbCard>
+<KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-crm</code></li></ul></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 需要有跨事业部数据查看权限 2. 支持按事业部、产品、时间范围筛选 3. 无工作流</p>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 前端代码缺失（疑似hlod低代码页面），无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="数据库表详解"><p class='kl-tip'>具体表结构待确认，推测涉及产品销售相关表，包含以下核心字段：</p>
+<table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>product_code</td><td>产品编码</td></tr><tr><td>product_name</td><td>产品名称</td></tr><tr><td>business_unit</td><td>事业部</td></tr><tr><td>sales_price</td><td>销售价格</td></tr><tr><td>sales_qty</td><td>销售数量</td></tr><tr><td>sales_amount</td><td>销售金额</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -217,15 +184,20 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：跨事业部查询需要特殊权限吗？</strong></p>
+<p>A1：是，需要分配跨事业部数据查看权限。</p>
+<p><strong>Q2：能否导出销售清单？</strong></p>
+<p>A2：视前端是否提供导出功能，以后端接口支持为准。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 内容 |
-|------|------|
-| 2026-08-03 | 初始创建 |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>内容</th></tr></thead><tbody><tr><td>2026-08-03</td><td>初始创建</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
