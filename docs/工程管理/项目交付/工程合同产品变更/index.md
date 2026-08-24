@@ -177,44 +177,56 @@
 <div class="kl-wrap">
 <KbCard num="1" title="重点逻辑1：与工程折扣延期共用后端代码 {共用代码}">
 <KbQuote>合同产品变更和折扣延期共用EPM_DISCOUNT_ECN表和Controller，通过ecnType区分</KbQuote>
-**具体逻辑**：
-- 1、合同产品变更ecnType=1，折扣延期ecnType=2
-- 2、共用EpmDiscountEcnController和ServiceImpl
+<p><strong>具体逻辑：</strong></p>
+<ul>
+<li>1、合同产品变更ecnType=1，折扣延期ecnType=2</li>
+<li>2、共用EpmDiscountEcnController和ServiceImpl</li>
+</ul>
 </KbCard>
 <KbCard num="2" title="重点逻辑2：变更前后对比 {数据对比}">
 <KbQuote>展示变更前后的产品行数据对比，便于审批人员判断</KbQuote>
-**具体逻辑**：
-- 1、前端使用LineBeforeDS(变更前)和LineDS(变更后)两个DataSet
-- 2、变更前行数据从原折扣单获取，变更后行数据可修改
+<p><strong>具体逻辑：</strong></p>
+<ul>
+<li>1、前端使用LineBeforeDS(变更前)和LineDS(变更后)两个DataSet</li>
+<li>2、变更前行数据从原折扣单获取，变更后行数据可修改</li>
+</ul>
 </KbCard>
 <KbCard num="3" title="重点逻辑3：实时获取产品价格 {价格计算}">
 <KbQuote>变更时实时获取最新产品价格，确保价格准确</KbQuote>
-**具体逻辑**：
-- 1、调用generateDiscountDatas接口，实时获取产品价格
-- 2、重新计算相关金额(calculationamount)
+<p><strong>具体逻辑：</strong></p>
+<ul>
+<li>1、调用generateDiscountDatas接口，实时获取产品价格</li>
+<li>2、重新计算相关金额(calculationamount)</li>
+</ul>
 </KbCard>
 <KbCard num="4" title="重点逻辑4：可选折扣单的筛选条件 {折扣单筛选}">
 <KbQuote>合同产品变更时，只能选择符合条件的折扣单进行变更，确保数据有效性和业务合规</KbQuote>
-**接口入口**：`POST /v1/{organizationId}/contracts-update/discount-apply-list`
-**Service层前置处理**（ContractUpdateServiceImpl 行104-112）：
-- 当 searchFlag=1（折扣单列表页）或 searchFlag=2（要货单下单时），自动设置 projectCategory='small'，SQL中用 `c.project_category != 'small'` 排除小型项目
-- 合同产品变更场景 searchFlag=3 不做此过滤
-**筛选条件清单**（searchFlag=3 合同产品变更场景）：
-- 1、合同ID匹配 — 折扣单必须关联当前合同
-- 2、折扣单已审批 — `stat = 5`
-- 3、合同有效 — `c.valid = 2`（关联合同未失效）
-- 4、在有效期内 — `sysdate &lt;= discount_valid_date`
-- 5、有可下单数量 — 折扣单行 `active_qty > 0`（searchType!=1时）
-- 6、事业部匹配 — `organization_id` 匹配
-- 7、合同未失效 — 不存在合同失效变更单(Ecn_Type=2且stat=5)
-- 8、项目未结案 — 项目状态不为结案(stat=5且stage_name='项目结案')
-**searchFlag各场景对比**：
-- searchFlag=1（折扣单列表页）：排除小型项目，不校验其他条件
-- searchFlag=2（要货单下单）：stat=5 + 排除小型项目 + 合同有效 + 有效期内 + 可下单数量
-- searchFlag=3（折扣变更）：stat=5 + 合同有效 + 有效期内 + 可下单数量
-- searchFlag=4（折扣延期）：stat=5 + 合同有效 + 排除已有延期单 + 提前天数校验
-- searchFlag=5（其他场景）：stat=5 + 合同有效 + 有效期内 + 可下单数量
-**完整SQL**（searchFlag=3场景核心查询）：
+<p><strong>接口入口：</strong><code>POST /v1/{organizationId}/contracts-update/discount-apply-list</code></p>
+<p><strong>Service层前置处理</strong>（ContractUpdateServiceImpl 行104-112）：</p>
+<ul>
+<li>当 searchFlag=1（折扣单列表页）或 searchFlag=2（要货单下单时），自动设置 projectCategory='small'，SQL中用 <code>c.project_category != 'small'</code> 排除小型项目</li>
+<li>合同产品变更场景 searchFlag=3 不做此过滤</li>
+</ul>
+<p><strong>筛选条件清单</strong>（searchFlag=3 合同产品变更场景）：</p>
+<ul>
+<li>1、合同ID匹配 — 折扣单必须关联当前合同</li>
+<li>2、折扣单已审批 — <code>stat = 5</code></li>
+<li>3、合同有效 — <code>c.valid = 2</code>（关联合同未失效）</li>
+<li>4、在有效期内 — <code>sysdate &lt;= discount_valid_date</code></li>
+<li>5、有可下单数量 — 折扣单行 <code>active_qty &gt; 0</code>（searchType!=1时）</li>
+<li>6、事业部匹配 — <code>organization_id</code> 匹配</li>
+<li>7、合同未失效 — 不存在合同失效变更单(Ecn_Type=2且stat=5)</li>
+<li>8、项目未结案 — 项目状态不为结案(stat=5且stage_name='项目结案')</li>
+</ul>
+<p><strong>searchFlag各场景对比：</strong></p>
+<ul>
+<li>searchFlag=1（折扣单列表页）：排除小型项目，不校验其他条件</li>
+<li>searchFlag=2（要货单下单）：stat=5 + 排除小型项目 + 合同有效 + 有效期内 + 可下单数量</li>
+<li>searchFlag=3（折扣变更）：stat=5 + 合同有效 + 有效期内 + 可下单数量</li>
+<li>searchFlag=4（折扣延期）：stat=5 + 合同有效 + 排除已有延期单 + 提前天数校验</li>
+<li>searchFlag=5（其他场景）：stat=5 + 合同有效 + 有效期内 + 可下单数量</li>
+</ul>
+<p><strong>完整SQL</strong>（searchFlag=3场景核心查询）：</p>
 
 ```sql
 SELECT a.*, ct.short_name, co.operat_center_org_name, c.valid AS contractValid,
@@ -244,13 +256,10 @@ WHERE a.contract_id = #{contractId}
 ORDER BY a.createtime DESC
 ```
 
-**源码位置**：Controller: `ContractUpdateController.java:70` | Service: `ContractUpdateServiceImpl.java:104` | SQL: `EpmProjectContractMapper.xml:1073`
+<p><strong>源码位置：</strong>Controller: <code>ContractUpdateController.java:70</code> | Service: <code>ContractUpdateServiceImpl.java:104</code> | SQL: <code>EpmProjectContractMapper.xml:1073</code></p>
 </KbCard>
-
 </div>
-
 </div>
-
 </div>
 
 <div id="detail-logic" style="display:none;">
