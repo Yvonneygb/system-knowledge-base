@@ -199,15 +199,15 @@
 <div class="kl-wrap">
 <KbCard title="3.1 API接口列表"><table class="kl-table"><thead><tr><th>方法</th><th>路径</th><th>说明</th></tr></thead><tbody><tr><td>GET</td><td>/</td><td>门店装修申请关闭列表（分页）</td></tr><tr><td>GET</td><td>/detail/{applyCloseId}</td><td>门店装修申请关闭明细</td></tr><tr><td>POST</td><td>/</td><td>创建或更新门店装修申请关闭</td></tr><tr><td>DELETE</td><td>/</td><td>删除门店装修申请关闭</td></tr><tr><td>GET</td><td>/do-cal-deduction-amt</td><td>计算扣除金额</td></tr></tbody></table></KbCard>
 <KbCard title="3.2 工作流回调方法"><table class="kl-table"><thead><tr><th>方法</th><th>触发时机</th><th>逻辑说明</th></tr></thead><tbody><tr><td>wfProcSubmit</td><td>提交审批</td><td>校验验收单，启动工作流实例</td></tr><tr><td>wfComplete</td><td>审批完成</td><td>通过→onWfComplete；驳回→onWfBreak</td></tr><tr><td>onWfComplete</td><td>审批通过</td><td>标记申请单已关闭，扣减额度</td></tr><tr><td>onWfBreak</td><td>审批驳回</td><td>更新状态为REJECTED</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>LOV编码</th><th>说明</th></tr></thead><tbody><tr><td>门店装修申请单号</td><td><code>AE.STORE_FINFEEAPPLYCLOSE_DATA_CHANGE_VIEW</code></td><td>选择后联动带出门店、经销商、装修等级等</td></tr><tr><td>门店编码</td><td><code>AE.STORE_FINFEEAPPLYCLOSE_DATA_VIEW</code></td><td>选择门店</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>保存</td><td>hzApproveStatus ∈ [NEW, REJECT, REBUT, INTERRUPT]</td><td>走保存接口</td></tr><tr><td>提交</td><td>hzApproveStatus ∈ [NEW, REJECT, REBUT, INTERRUPT]</td><td>启动工作流</td></tr></tbody></table>
+<KbCard title="3.3 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>LOV编码</th><th>说明</th></tr></thead><tbody><tr><td>门店装修申请单号</td><td><code>AE.STORE_FINFEEAPPLYCLOSE_DATA_CHANGE_VIEW</code></td><td>选择后联动带出门店、经销商、装修等级等</td></tr><tr><td>门店编码</td><td><code>AE.STORE_FINFEEAPPLYCLOSE_DATA_VIEW</code></td><td>选择门店</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.5 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>保存</td><td>hzApproveStatus ∈ [NEW, REJECT, REBUT, INTERRUPT]</td><td>走保存接口</td></tr><tr><td>提交</td><td>hzApproveStatus ∈ [NEW, REJECT, REBUT, INTERRUPT]</td><td>启动工作流</td></tr></tbody></table>
 <p class='kl-tip'>列表页为hlod低代码页面。无打印按钮。</p></KbCard>
-<KbCard title="保存校验"><p><strong>前端校验：</strong></p>
+<KbCard title="3.6 保存校验"><p><strong>前端校验：</strong></p>
 <table class="kl-table"><thead><tr><th>校验项</th><th>错误提示</th></tr></thead><tbody><tr><td>门店装修申请单号、门店编码、门店名称必填</td><td>(C7N内置提示)</td></tr><tr><td>关闭申请理由(applyCause)必填</td><td>(C7N内置提示)</td></tr><tr><td>经销商名称/简称、门店详细地址、门店类型、经营属性必填</td><td>(C7N内置提示)</td></tr><tr><td>装修风格、面积分配标准比、装修天数、预算年度、实际装修面积必填</td><td>(C7N内置提示)</td></tr><tr><td>法人客户编码/名称必填</td><td>(C7N内置提示)</td></tr></tbody></table>
 <p><strong>后端校验：</strong></p>
 <table class="kl-table"><thead><tr><th>校验项</th><th>错误提示</th></tr></thead><tbody><tr><td>删除状态</td><td>不能删除非制单状态的单据</td></tr><tr><td>数据存在性</td><td>申请关闭信息不存在 / 申请单信息不存在</td></tr><tr><td>验收流程</td><td>该门店申请单X已发起门店验收流程，不允许发起门店申请关闭</td></tr></tbody></table></KbCard>
-<KbCard title="提交校验"><p><strong>工作流编码：</strong> <code>FIN_FEE_APPLY_CLOSE</code>（门店装修申请关闭）</p></KbCard>
+<KbCard title="3.7 提交校验"><p><strong>工作流编码：</strong> <code>FIN_FEE_APPLY_CLOSE</code>（门店装修申请关闭）</p></KbCard>
 <KbCard title="表：FIN_FEE_APPLY_CLOSE"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>apply_close_id</td><td>Long</td><td>主键ID</td></tr><tr><td>apply_close_no</td><td>String</td><td>关闭单号</td></tr><tr><td>terminal_apply_id</td><td>Long</td><td>关联装修申请ID</td></tr><tr><td>terminal_apply_no</td><td>String</td><td>关联装修申请单号</td></tr><tr><td>terminal_id</td><td>Long</td><td>门店ID</td></tr><tr><td>terminal_code</td><td>String</td><td>门店编码</td></tr><tr><td>terminal_name</td><td>String</td><td>门店名称</td></tr><tr><td>cust_id</td><td>Long</td><td>经销商ID</td></tr><tr><td>cust_code</td><td>String</td><td>经销商编码</td></tr><tr><td>cust_name</td><td>String</td><td>经销商名称</td></tr><tr><td>short_name</td><td>String</td><td>经销商简称</td></tr><tr><td>cust_full_name</td><td>String</td><td>经销商拼接名称</td></tr><tr><td>customer_class</td><td>Long</td><td>经营属性(词汇值:customer_class)</td></tr><tr><td>d_cust_id</td><td>Long</td><td>分销商ID</td></tr><tr><td>d_cust_code</td><td>String</td><td>分销商编码</td></tr><tr><td>d_cust_name</td><td>String</td><td>分销商名称</td></tr><tr><td>d_cust_full_name</td><td>String</td><td>分销商拼接名称</td></tr><tr><td>province_areaid</td><td>Long</td><td>省ID</td></tr><tr><td>province_areaname</td><td>String</td><td>省名称</td></tr><tr><td>city_areaid</td><td>Long</td><td>市ID</td></tr><tr><td>city_areaname</td><td>String</td><td>市名称</td></tr><tr><td>county_areaid</td><td>Long</td><td>县/区ID</td></tr><tr><td>county_areaname</td><td>String</td><td>县/区名称</td></tr><tr><td>areaname</td><td>String</td><td>拼接省市区名称</td></tr><tr><td>addr</td><td>String</td><td>详细地址</td></tr><tr><td>terminal_type</td><td>Long</td><td>门店类型(词汇值:terminal_type)</td></tr><tr><td>store_location_type</td><td>Long</td><td>位置类型(词汇值:Store_Location_Type)</td></tr><tr><td>trading_company_id</td><td>Long</td><td>交易公司ID(必填)</td></tr><tr><td>trading_company_code</td><td>String</td><td>交易公司编码</td></tr><tr><td>trading_company_name</td><td>String</td><td>交易公司名称</td></tr><tr><td>billing_unit_id</td><td>Long</td><td>开票单位ID(必填)</td></tr><tr><td>billing_unit_code</td><td>String</td><td>开票单位编码</td></tr><tr><td>billing_unit_name</td><td>String</td><td>开票单位名称</td></tr><tr><td>is_close</td><td>Long</td><td>是否关闭申请单(词汇值:yesno)</td></tr><tr><td>closing_reasons</td><td>String</td><td>关闭原因</td></tr><tr><td>decoration_style</td><td>Long</td><td>装修风格(词汇值:decoration_style)</td></tr><tr><td>this_decoration_style</td><td>Long</td><td>本次装修风格</td></tr><tr><td>terminal_area</td><td>BigDecimal</td><td>门店面积</td></tr><tr><td>this_terminal_area</td><td>BigDecimal</td><td>本次装修面积</td></tr><tr><td>area_standard_rate</td><td>BigDecimal</td><td>面积分配标准比例</td></tr><tr><td>plan_open_date</td><td>LocalDate</td><td>计划开业日期</td></tr><tr><td>fixup_grade</td><td>Long</td><td>门店装修等级(词汇值:fixup_grade)</td></tr><tr><td>decoration_days</td><td>Long</td><td>装修周期</td></tr><tr><td>decoration_type</td><td>Long</td><td>装修性质(词汇值:decoration_type)</td></tr><tr><td>last_decoration_date</td><td>LocalDate</td><td>旧店上次装修时间</td></tr><tr><td>property_type</td><td>Long</td><td>产权归属(词汇值:property_type)</td></tr><tr><td>lease_expiration_date</td><td>LocalDate</td><td>租赁到期日</td></tr><tr><td>designer</td><td>String</td><td>委派设计师</td></tr><tr><td>designer_mob</td><td>String</td><td>设计师手机号</td></tr><tr><td>shopmanager_name</td><td>String</td><td>负责人</td></tr><tr><td>shopmanager_mob</td><td>String</td><td>负责人电话</td></tr><tr><td>decoration_finished_time</td><td>LocalDate</td><td>装修完成时间</td></tr><tr><td>plan_design_date</td><td>LocalDate</td><td>要求完成设计日期</td></tr><tr><td>reply_design_date</td><td>LocalDate</td><td>交付设计日期</td></tr><tr><td>decoration_interval_date</td><td>LocalDate</td><td>装修间隔期至</td></tr><tr><td>is_over_standard</td><td>Long</td><td>是否超标准(词汇值:yesno)</td></tr><tr><td>salezone_org_name</td><td>String</td><td>销售区域名称</td></tr><tr><td>operat_center_org_name</td><td>String</td><td>运营中心名称</td></tr><tr><td>stat</td><td>Long</td><td>单据状态</td></tr><tr><td>wfflag</td><td>Long</td><td>流程状态</td></tr><tr><td>wfid</td><td>Long</td><td>流程ID</td></tr><tr><td>audit_stat</td><td>String</td><td>审核状态</td></tr><tr><td>apply_cause</td><td>String</td><td>关闭原因</td></tr><tr><td>creator</td><td>String</td><td>申请人</td></tr><tr><td>create_time</td><td>Date</td><td>申请时间</td></tr><tr><td>updator</td><td>String</td><td>更新人</td></tr><tr><td>update_time</td><td>Date</td><td>更新时间</td></tr><tr><td>organization_id</td><td>Long</td><td>组织ID</td></tr><tr><td>hz_instance_id</td><td>Long</td><td>流程实例ID</td></tr><tr><td>hz_approve_status</td><td>String</td><td>流程实例状态</td></tr><tr><td>deduction_sum_amount</td><td>BigDecimal</td><td>扣减总额</td></tr><tr><td>deduction_adv_amount</td><td>BigDecimal</td><td>广告费扣减额度</td></tr><tr><td>deduction_capital_amount</td><td>BigDecimal</td><td>资金池扣减额度</td></tr><tr><td>thistime_terminal_area</td><td>BigDecimal</td><td>本次装修面积(计算用)</td></tr><tr><td>thistime_frontdoor_area</td><td>BigDecimal</td><td>本次门头面积(计算用)</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -215,22 +215,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-
-| 问题 | 原因/解决方案 |
-|------|------|
-| 提交时报"该门店申请单已发起门店验收流程" | 该申请单已存在非作废状态的验收报销单，需先作废验收单 |
-| 计算扣除金额时报"公司参数Close_Amount未找到" | 需在系统参数中配置Close_Amount(申请关闭扣减单价) |
-| 删除报"不能删除非制单状态的单据" | 仅NEW状态可删除，已提交审批的单据无法删除 |
-
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>提交时报"该门店申请单已发起门店验收流程"</td><td>该申请单已存在非作废状态的验收报销单，需先作废验收单</td></tr><tr><td>计算扣除金额时报"公司参数Close_Amount未找到"</td><td>需在系统参数中配置Close_Amount(申请关闭扣减单价)</td></tr><tr><td>删除报"不能删除非制单状态的单据"</td><td>仅NEW状态可删除，已提交审批的单据无法删除</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>提交时报"该门店申请单已发起门店验收流程"</td><td>该申请单已存在非作废状态的验收报销单，需先作废验收单</td></tr><tr><td>计算扣除金额时报"公司参数Close_Amount未找到"</td><td>需在系统参数中配置Close_Amount(申请关闭扣减单价)</td></tr><tr><td>删除报"不能删除非制单状态的单据"</td><td>仅NEW状态可删除，已提交审批的单据无法删除</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
