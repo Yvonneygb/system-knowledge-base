@@ -201,12 +201,12 @@
 <div class="kl-wrap">
 <KbCard title="3.1 API接口列表"><table class="kl-table"><thead><tr><th>方法</th><th>路径</th><th>说明</th></tr></thead><tbody><tr><td>GET</td><td>/do-select</td><td>兑现明细</td></tr><tr><td>POST</td><td>/</td><td>创建或更新兑现</td></tr><tr><td>DELETE</td><td>/</td><td>删除兑现</td></tr></tbody></table></KbCard>
 <KbCard title="3.2 工作流回调"><table class="kl-table"><thead><tr><th>方法</th><th>触发时机</th><th>逻辑说明</th></tr></thead><tbody><tr><td>wfProcSubmit</td><td>提交审批</td><td>启动工作流实例</td></tr><tr><td>wfComplete</td><td>审批完成</td><td>通过→onWfComplete；驳回→onWfBreak</td></tr><tr><td>onWfComplete</td><td>审批通过</td><td>更新兑现比例，更新报销单</td></tr><tr><td>onWfBreak</td><td>审批驳回</td><td>更新状态</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><p class='kl-tip'>无LOV选择弹窗。查询栏使用值集下拉：事业部（<code>AE.EPM_DIVISION</code>）、单据状态（<code>AE.SHARE_STAT</code>）。有执行冲销弹窗（Modal）：年月（必填）、交易公司编码（必填）。</p></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th><th>接口</th></tr></thead><tbody><tr><td>执行</td><td>打开冲销Modal弹窗</td><td><code>/writeoff-in-quota/exec-reversal-data</code></td></tr><tr><td>导出</td><td>导出列表数据</td><td><code>/writeoff-in-quota/export</code></td></tr></tbody></table>
+<KbCard title="3.3 选择弹窗"><p class='kl-tip'>无LOV选择弹窗。查询栏使用值集下拉：事业部（<code>AE.EPM_DIVISION</code>）、单据状态（<code>AE.SHARE_STAT</code>）。有执行冲销弹窗（Modal）：年月（必填）、交易公司编码（必填）。</p></KbCard>
+<KbCard title="3.4 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.5 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th><th>接口</th></tr></thead><tbody><tr><td>执行</td><td>打开冲销Modal弹窗</td><td><code>/writeoff-in-quota/exec-reversal-data</code></td></tr><tr><td>导出</td><td>导出列表数据</td><td><code>/writeoff-in-quota/export</code></td></tr></tbody></table>
 <p class='kl-tip'>纯列表操作页，无详情页。</p></KbCard>
-<KbCard title="保存校验"><p class='kl-tip'>无保存功能。执行冲销弹窗校验：年月、交易公司编码必填（modalDs.validate()）。</p></KbCard>
-<KbCard title="提交校验"><p class='kl-tip'>无提交/审批功能，无工作流。</p></KbCard>
+<KbCard title="3.6 保存校验"><p class='kl-tip'>无保存功能。执行冲销弹窗校验：年月、交易公司编码必填（modalDs.validate()）。</p></KbCard>
+<KbCard title="3.7 提交校验"><p class='kl-tip'>无提交/审批功能，无工作流。</p></KbCard>
 <KbCard title="表：FIN_FEE_TERMINAL_RE_CASHOUT"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>terminal_cashout_id</td><td>Long</td><td>主键ID(兑现ID)</td></tr><tr><td>terminal_cashout_code</td><td>String</td><td>兑现编码</td></tr><tr><td>check_bx_code</td><td>String</td><td>验收报销单号</td></tr><tr><td>check_bx_id</td><td>Long</td><td>验收报销ID</td></tr><tr><td>cust_id</td><td>Long</td><td>经销商ID</td></tr><tr><td>cust_code</td><td>String</td><td>经销商编码</td></tr><tr><td>short_name</td><td>String</td><td>经销商简称</td></tr><tr><td>cust_name</td><td>String</td><td>经销商名称</td></tr><tr><td>trading_company_id</td><td>Long</td><td>交易公司ID</td></tr><tr><td>trading_company_code</td><td>String</td><td>交易公司编码</td></tr><tr><td>trading_company_name</td><td>String</td><td>交易公司名称</td></tr><tr><td>billing_unit_id</td><td>Long</td><td>开票单位ID</td></tr><tr><td>billing_unit_code</td><td>String</td><td>法人编码</td></tr><tr><td>billing_unit_name</td><td>String</td><td>法人名称</td></tr><tr><td>finished_time</td><td>LocalDate</td><td>验收完成时间</td></tr><tr><td>out_cashout_end_time</td><td>LocalDate</td><td>额度外二次兑现失效日期</td></tr><tr><td>terminal_id</td><td>Long</td><td>门店ID</td></tr><tr><td>terminal_code</td><td>String</td><td>门店编码</td></tr><tr><td>terminal_name</td><td>String</td><td>门店名称</td></tr><tr><td>pay_type</td><td>Long</td><td>支付方式</td></tr><tr><td>vendor_id</td><td>Long</td><td>供应商ID</td></tr><tr><td>vendor_code</td><td>String</td><td>供应商编码</td></tr><tr><td>vendor_name</td><td>String</td><td>供应商名称</td></tr><tr><td>cost_center_id</td><td>Long</td><td>成本中心ID</td></tr><tr><td>cost_center_code</td><td>String</td><td>成本中心编码</td></tr><tr><td>cost_center_name</td><td>String</td><td>成本中心名称</td></tr><tr><td>note</td><td>String</td><td>备注</td></tr><tr><td>creator_name</td><td>String</td><td>申请人</td></tr><tr><td>create_time</td><td>Date</td><td>申请时间</td></tr><tr><td>organization_id</td><td>Long</td><td>组织ID</td></tr><tr><td>stat</td><td>Long</td><td>单据状态</td></tr><tr><td>wfid</td><td>Long</td><td>流程ID</td></tr><tr><td>wfflag</td><td>Long</td><td>流程状态</td></tr><tr><td>invoice_tax_rate</td><td>Long</td><td>发票税点</td></tr><tr><td>invoice_type</td><td>Long</td><td>发票类型</td></tr><tr><td>our_invoicing</td><td>Long</td><td>本方开票</td></tr><tr><td>this_sur_cashout_amt</td><td>BigDecimal</td><td>剩余未兑现金额(未扣税)</td></tr><tr><td>this_bx_proportion</td><td>BigDecimal</td><td>申请兑现比例(%)</td></tr><tr><td>this_apply_cashout_amt</td><td>BigDecimal</td><td>本次申请兑现金额</td></tr><tr><td>after_tax_cashout_amt</td><td>BigDecimal</td><td>扣税差后可兑现金额</td></tr><tr><td>fact_invoice_amt</td><td>BigDecimal</td><td>实际兑现含税金额</td></tr><tr><td>invoice_tax_amt</td><td>BigDecimal</td><td>发票税金</td></tr><tr><td>fact_invoice_notax_amt</td><td>BigDecimal</td><td>实际兑现不含税金额</td></tr><tr><td>receipt_status</td><td>String</td><td>转货款状态</td></tr><tr><td>invoice_paid_date</td><td>LocalDateTime</td><td>入账日期</td></tr><tr><td>invoice_paid_amount</td><td>BigDecimal</td><td>入账金额</td></tr><tr><td>reduce_amt</td><td>BigDecimal</td><td>核销金额</td></tr><tr><td>cashout_rate</td><td>Long</td><td>兑现率</td></tr><tr><td>can_not_tax_bx_amt</td><td>BigDecimal</td><td>可兑现金额-不含税</td></tr><tr><td>cashout_type</td><td>Long</td><td>兑现类型</td></tr><tr><td>creator</td><td>String</td><td>申请人</td></tr><tr><td>checker</td><td>String</td><td>审核人</td></tr><tr><td>check_time</td><td>LocalDate</td><td>审核日期</td></tr><tr><td>entid</td><td>Long</td><td>事业部ID</td></tr><tr><td>audit_stat</td><td>String</td><td>审核状态</td></tr><tr><td>salezone_org_id</td><td>Long</td><td>销售区域ID</td></tr><tr><td>salezone_org_name</td><td>String</td><td>销售区域</td></tr><tr><td>operat_center_org_id</td><td>Long</td><td>运营中心ID</td></tr><tr><td>operat_center_org_name</td><td>String</td><td>运营中心</td></tr><tr><td>close_cash</td><td>Long</td><td>是否关闭剩余未兑现</td></tr><tr><td>error_collection</td><td>String</td><td>错误收集器</td></tr><tr><td>ledger_date</td><td>LocalDate</td><td>总账日期</td></tr><tr><td>cash_count</td><td>String</td><td>兑现次数</td></tr><tr><td>ticket_status</td><td>String</td><td>税务接口状态</td></tr><tr><td>ticket_message</td><td>String</td><td>税务接口信息</td></tr><tr><td>withholding_time_year</td><td>String</td><td>计提年份</td></tr><tr><td>designer</td><td>String</td><td>委派设计师</td></tr><tr><td>userid</td><td>String</td><td>设计师ID</td></tr><tr><td>hz_instance_id</td><td>Long</td><td>流程实例ID</td></tr><tr><td>hz_approve_status</td><td>String</td><td>流程实例状态</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -214,22 +214,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-
-| 问题 | 原因/解决方案 |
-|------|------|
-| 推送共享报"接口推送失败" | 检查共享接口连通性和数据格式 |
-| 计提年份未自动带出 | 检查验收报销单号格式，截取逻辑依赖单号前缀 |
-| 兑现比例计算异常 | 确认验收报销单的sumOutCanNotaxBxAmt不为0 |
-
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>推送共享报"接口推送失败"</td><td>检查共享接口连通性和数据格式</td></tr><tr><td>计提年份未自动带出</td><td>检查验收报销单号格式，截取逻辑依赖单号前缀</td></tr><tr><td>兑现比例计算异常</td><td>确认验收报销单的sumOutCanNotaxBxAmt不为0</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>推送共享报"接口推送失败"</td><td>检查共享接口连通性和数据格式</td></tr><tr><td>计提年份未自动带出</td><td>检查验收报销单号格式，截取逻辑依赖单号前缀</td></tr><tr><td>兑现比例计算异常</td><td>确认验收报销单的sumOutCanNotaxBxAmt不为0</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
