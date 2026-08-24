@@ -122,64 +122,9 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 前端路由">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>路由</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`/product/promoteGradeFieldList`</td>
-<td>产品推广等级要求配置列表页</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="2" title="2.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls`</td>
-<td>GET</td>
-<td>查询等级要求配置列表</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls/{id}`</td>
-<td>GET</td>
-<td>查询配置详情</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls`</td>
-<td>POST</td>
-<td>新增配置</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls/{id}`</td>
-<td>PUT</td>
-<td>更新配置</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls/{id}`</td>
-<td>DELETE</td>
-<td>删除配置</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="3" title="2.3 无工作流">
-
-本菜单无审批工作流，数据直接保存生效。
-
-</KbCard>
-
+<KbCard title="2.1 前端路由"><table class="kl-table"><thead><tr><th>路由</th><th>说明</th></tr></thead><tbody><tr><td><code>/product/promoteGradeFieldList</code></td><td>产品推广等级要求配置列表页</td></tr></tbody></table></KbCard>
+<KbCard title="2.2 API接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls</code></td><td>GET</td><td>查询等级要求配置列表</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls/{id}</code></td><td>GET</td><td>查询配置详情</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls</code></td><td>POST</td><td>新增配置</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls/{id}</code></td><td>PUT</td><td>更新配置</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGradesControls/{id}</code></td><td>DELETE</td><td>删除配置</td></tr></tbody></table></KbCard>
+<KbCard title="2.3 无工作流"><p>本菜单无审批工作流，数据直接保存生效。</p></KbCard>
 </div>
 </div>
 </div>
@@ -197,40 +142,10 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 等级要求配置列表页">
-
-- **查询条件**：推广等级、指标名称、启用状态等
-- **列表展示字段**：推广等级、指标名称、指标类型、比较运算符、阈值、单位、启用状态等
-- **操作按钮**：新增、编辑、删除、启用/禁用
-- **分页**：支持前端分页参数传递，后端返回分页结果
-
-</KbCard>
-
-<KbCard title="3.2 配置数据结构">
-
-- **关联推广等级（promote_grade_id）**：关联PROD_PROMOTE_GRADES表，指定此条件属于哪个推广等级
-- **指标名称（indicator_name）**：考核指标名称，如"销售额"、"销售量"、"毛利率"等
-- **指标类型（indicator_type）**：指标的数据类型，如金额（AMOUNT）、数量（QUANTITY）、比率（RATE）等
-- **比较运算符（comparison_operator）**：比较方式，如≥（大于等于）、&gt;（大于）、=（等于）等
-- **阈值（threshold_value）**：达标的标准值，如销售额≥1000000中的1000000
-- **单位（unit）**：阈值的计量单位，如元、件、%等
-- **启用状态（enabled_flag）**：Y/N，控制此条件是否生效
-
-</KbCard>
-
-<KbCard title="3.3 业务规则">
-
-- 同一推广等级可配置多个要求条件，需同时满足才能达到该等级
-- 条件之间为"且"的关系，即所有条件都满足才算达标
-- 指标类型为AMOUNT时，阈值以元为单位
-- 指标类型为QUANTITY时，阈值以件/台等为单位
-- 指标类型为RATE时，阈值为百分比数值（如30表示30%）
-- 配置变更后，产品的推广等级需重新评估
-
-</KbCard>
-
+<KbCard title="3.1 等级要求配置列表页"><ul><li><strong>查询条件</strong>：推广等级、指标名称、启用状态等</li><li><strong>列表展示字段</strong>：推广等级、指标名称、指标类型、比较运算符、阈值、单位、启用状态等</li><li><strong>操作按钮</strong>：新增、编辑、删除、启用/禁用</li><li><strong>分页</strong>：支持前端分页参数传递，后端返回分页结果</li></ul></KbCard>
+<KbCard title="3.2 配置数据结构"><ul><li><strong>关联推广等级（promote_grade_id）</strong>：关联PROD_PROMOTE_GRADES表，指定此条件属于哪个推广等级</li><li><strong>指标名称（indicator_name）</strong>：考核指标名称，如"销售额"、"销售量"、"毛利率"等</li><li><strong>指标类型（indicator_type）</strong>：指标的数据类型，如金额（AMOUNT）、数量（QUANTITY）、比率（RATE）等</li><li><strong>比较运算符（comparison_operator）</strong>：比较方式，如≥（大于等于）、&gt;（大于）、=（等于）等</li><li><strong>阈值（threshold_value）</strong>：达标的标准值，如销售额≥1000000中的1000000</li><li><strong>单位（unit）</strong>：阈值的计量单位，如元、件、%等</li><li><strong>启用状态（enabled_flag）</strong>：Y/N，控制此条件是否生效</li></ul></KbCard>
+<KbCard title="3.3 业务规则"><ul><li>同一推广等级可配置多个要求条件，需同时满足才能达到该等级</li><li>条件之间为"且"的关系，即所有条件都满足才算达标</li><li>指标类型为AMOUNT时，阈值以元为单位</li><li>指标类型为QUANTITY时，阈值以件/台等为单位</li><li>指标类型为RATE时，阈值为百分比数值（如30表示30%）</li><li>配置变更后，产品的推广等级需重新评估</li></ul></KbCard>
 <KbCard title="3.4 等级评估逻辑示例">
-
 ```
 A级要求：销售额≥100万 且 销售量≥1000件
 B级要求：销售额≥50万  且 销售量≥500件
@@ -240,31 +155,9 @@ D级要求：无特殊要求（默认等级）
 产品实际销售额80万，销售量600件 → 满足B级，不满足A级 → 推广等级为B
 ```
 
-</KbCard>
-
-<KbCard num="1" title="4.1 产品推广等级要求配置表">
-
-> 表名：PROD_PROMOTE_GRADES_CONTROLS（产品推广等级要求配置表）
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| id | NUMBER | 主键ID | PK |
-| promote_grade_id | NUMBER | 推广等级ID | FK→PROD_PROMOTE_GRADES |
-| indicator_name | VARCHAR2 | 指标名称 | 如销售额/销售量/毛利率 |
-| indicator_type | VARCHAR2 | 指标类型 | AMOUNT/QUANTITY/RATE |
-| comparison_operator | VARCHAR2 | 比较运算符 | GTE/GT/EQ/LTE/LT |
-| threshold_value | NUMBER | 阈值 | 达标标准值 |
-| unit | VARCHAR2 | 单位 | 元/件/%等 |
-| enabled_flag | VARCHAR2 | 启用标志 | Y/N |
-| organization_id | NUMBER | 组织ID | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | NUMBER | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-| object_version_number | NUMBER | 版本号 | 乐观锁 |
-
-</KbCard>
-
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。使用值集下拉Select：品牌事业部AE\\.ITEM_ORGANIZATION、等级CRM\\.PROD_PROMOTE_GRADE、物料类型CRM\\.LH_PROD_SIGN、必填字段类型CRM\\.PROD_REQ_COLUMN_TYPE、必填字段CRM\\.PROD_PROMOTE_REQ_COLUMN（级联）。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 不支持导入功能（导入代码已注释）。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 显示条件\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|---------\\|------\\|\\r\\n\\|\\ 新增\\ \\|\\ 始终显示\\ \\|\\ 弹窗编辑\\ \\|\\r\\n\\|\\ 批量失效\\ \\|\\ 始终显示\\ \\|\\ 红色按钮\\ \\|\\r\\n\\|\\ 行内失效\\ \\|\\ status='valid'\\ \\|\\ 置status='invalid'\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*前端校验：\\*\\*\\ commonFn_formValid\\(ds\\)，必填字段：品牌事业部、等级、物料类型、必填字段类型、必填字段；新增时默认status='valid'、grade='C'\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="4.1 产品推广等级要求配置表"><p class='kl-tip'>表名：PROD_PROMOTE_GRADES_CONTROLS（产品推广等级要求配置表）</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>promote_grade_id</td><td>NUMBER</td><td>推广等级ID</td><td>FK→PROD_PROMOTE_GRADES</td></tr><tr><td>indicator_name</td><td>VARCHAR2</td><td>指标名称</td><td>如销售额/销售量/毛利率</td></tr><tr><td>indicator_type</td><td>VARCHAR2</td><td>指标类型</td><td>AMOUNT/QUANTITY/RATE</td></tr><tr><td>comparison_operator</td><td>VARCHAR2</td><td>比较运算符</td><td>GTE/GT/EQ/LTE/LT</td></tr><tr><td>threshold_value</td><td>NUMBER</td><td>阈值</td><td>达标标准值</td></tr><tr><td>unit</td><td>VARCHAR2</td><td>单位</td><td>元/件/%等</td></tr><tr><td>enabled_flag</td><td>VARCHAR2</td><td>启用标志</td><td>Y/N</td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -314,15 +207,17 @@ D级要求：无特殊要求（默认等级）
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>同一等级可以配置多个条件吗？</td><td>可以，多个条件之间为"且"的关系，需同时满足</td></tr><tr><td>修改配置后现有产品的等级会自动更新吗？</td><td>修改配置后需触发产品推广等级重新评估流程</td></tr><tr><td>比较运算符有哪些？</td><td>GTE（≥）、GT（&gt;）、EQ（=）、LTE（≤）、LT（&lt;）</td></tr><tr><td>指标类型RATE的阈值如何填写？</td><td>直接填写数值，如30表示30%，不需要填0.3</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | V1.0 | 初始创建 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>V1.0</td><td>初始创建</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
