@@ -220,12 +220,12 @@
 <ul><li><code>selectProjectFreeze</code>/<code>selectProjectFreeze1</code>/<code>selectProjectFreeze2</code>/<code>selectProjectFreeze3</code>：查询不同冻结条件的项目</li><li><code>updateProjectFreeze</code>：更新项目冻结状态FREEZE_TYPE和FREEZE_TIME</li><li><code>selectRecentValidHolidays</code>：查询最近的法定节假日（用于计算工作日）</li></ul></KbCard>
 <KbCard title="3.7 项目关键词处理 - 详细"><p><strong>入口</strong>：<code>ProjectKeywordServiceImpl</code></p>
 <p><strong>逻辑</strong>： 1. 查询未处理的项目：<code>epmProjectMapper.selectUnprocessedProjects()</code> 2. 对每个项目的指定字段值进行关键词提取 3. 将提取的关键词批量INSERT到EPM_KEY_VALUE表</p></KbCard>
-<KbCard title="选择弹窗"><p class='kl-tip'>无弹窗选择功能。本菜单为hlod低代码只读视图，项目档案数据由上游模块（项目报备审批通过、战略经理变更、项目进度更新等）自动写入。</p></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。项目档案数据由系统自动维护，不支持Excel导入。</p></KbCard>
-<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>查询</td><td>列表页按条件查询项目档案</td></tr><tr><td>查看</td><td>跳转详情查看项目档案信息</td></tr></tbody></table>
+<KbCard title="3.8 选择弹窗"><p class='kl-tip'>无弹窗选择功能。本菜单为hlod低代码只读视图，项目档案数据由上游模块（项目报备审批通过、战略经理变更、项目进度更新等）自动写入。</p></KbCard>
+<KbCard title="3.9 导入"><p class='kl-tip'>不支持导入功能。项目档案数据由系统自动维护，不支持Excel导入。</p></KbCard>
+<KbCard title="3.10 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>查询</td><td>列表页按条件查询项目档案</td></tr><tr><td>查看</td><td>跳转详情查看项目档案信息</td></tr></tbody></table>
 <p class='kl-tip'>无新建/编辑/删除/提交按钮（只读视图）。后端接口：<code>GET /v1/{organizationId}/epm-projects/{projectId}/detail</code></p></KbCard>
-<KbCard title="保存校验"><p class='kl-tip'>无保存校验。本菜单为只读视图，不可直接保存。项目档案数据由上游模块审批通过后自动写入EPM_PROJECT表。</p></KbCard>
-<KbCard title="提交校验"><p class='kl-tip'>无提交校验。本菜单为只读视图，无工作流。</p></KbCard>
+<KbCard title="3.11 保存校验"><p class='kl-tip'>无保存校验。本菜单为只读视图，不可直接保存。项目档案数据由上游模块审批通过后自动写入EPM_PROJECT表。</p></KbCard>
+<KbCard title="3.12 提交校验"><p class='kl-tip'>无提交校验。本菜单为只读视图，无工作流。</p></KbCard>
 <KbCard title="4.1 EPM_PROJECT（项目信息表/项目档案表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID，主键，自增</td></tr><tr><td>ORGANIZATION_ID</td><td>BIGINT</td><td>组织ID，必填</td></tr><tr><td>PROJECT_CODE</td><td>VARCHAR</td><td>项目编码</td></tr><tr><td>PROJECT_NAME</td><td>VARCHAR</td><td>项目名称</td></tr><tr><td>REPORT_ID</td><td>BIGINT</td><td>报备ID</td></tr><tr><td>REPORT_TIMES</td><td>BIGINT</td><td>报备次数</td></tr><tr><td>PROJECT_CHARACTER</td><td>VARCHAR</td><td>项目性质(联营/直营)</td></tr><tr><td>PROJECT_DOCKET</td><td>VARCHAR</td><td>项目概述</td></tr><tr><td>PROJECT_STATUS</td><td>VARCHAR</td><td>项目状态(报备/已立项/已报名/投标中/已投标/中标/未中标/已签约/已开工/施工中/停工/验收中/已竣工/已结案/项目终止)</td></tr><tr><td>BRAND</td><td>VARCHAR</td><td>品牌</td></tr><tr><td>SQUARE</td><td>VARCHAR</td><td>面积</td></tr><tr><td>HOLDER_TYPE</td><td>VARCHAR</td><td>业主类型(政府/医院/企业)</td></tr><tr><td>HOLDER</td><td>VARCHAR</td><td>项目业主</td></tr><tr><td>HOLDER_LINKMAN</td><td>VARCHAR</td><td>业主联系人</td></tr><tr><td>HOLDER_PHONE_NO</td><td>VARCHAR</td><td>业主联系电话</td></tr><tr><td>HOLDER_ID</td><td>BIGINT</td><td>项目业主ID</td></tr><tr><td>PARTNER</td><td>VARCHAR</td><td>项目合伙人</td></tr><tr><td>PARTNER_LINKMAN</td><td>VARCHAR</td><td>合伙人联系人</td></tr><tr><td>PARTNER_PHONE_NO</td><td>VARCHAR</td><td>合伙人联系电话</td></tr><tr><td>PARTNER_ID</td><td>BIGINT</td><td>项目合伙人ID</td></tr><tr><td>CUSTOMER_ID</td><td>BIGINT</td><td>客户ID</td></tr><tr><td>CUSTOMER_CODE</td><td>VARCHAR</td><td>客户编码</td></tr><tr><td>CUSTOMER_NAME</td><td>VARCHAR</td><td>客户名称</td></tr><tr><td>TRADING_COMPANY_ID</td><td>BIGINT</td><td>交易公司ID</td></tr><tr><td>TRADING_COMPANY_NAME</td><td>VARCHAR</td><td>交易公司名称</td></tr><tr><td>PARTY_A_ID</td><td>BIGINT</td><td>甲方客户ID</td></tr><tr><td>PARTY_A_NAME</td><td>VARCHAR</td><td>甲方名称</td></tr><tr><td>PARTY_A_LINK_PERSON</td><td>VARCHAR</td><td>甲方联系人</td></tr><tr><td>PARTY_A_PHONE</td><td>VARCHAR</td><td>甲方联系电话</td></tr><tr><td>PARTY_B_ID</td><td>BIGINT</td><td>乙方客户ID</td></tr><tr><td>PARTY_B_NAME</td><td>VARCHAR</td><td>乙方名称</td></tr><tr><td>PARTY_B_LINK_PERSON</td><td>VARCHAR</td><td>乙方联系人</td></tr><tr><td>PARTY_B_PHONE</td><td>VARCHAR</td><td>乙方联系电话</td></tr><tr><td>PROVINCE_ID</td><td>BIGINT</td><td>项目地址:省ID</td></tr><tr><td>PROVINCE_NAME</td><td>VARCHAR</td><td>项目地址:省名称</td></tr><tr><td>CITY_ID</td><td>BIGINT</td><td>项目地址:地市ID</td></tr><tr><td>CITY_NAME</td><td>VARCHAR</td><td>项目地址:地市名称</td></tr><tr><td>AREA_ID</td><td>BIGINT</td><td>项目地址:区县ID</td></tr><tr><td>AREA_NAME</td><td>VARCHAR</td><td>项目地址:区县名称</td></tr><tr><td>ADDRESS</td><td>VARCHAR</td><td>项目地址:详细地址</td></tr><tr><td>DIVISION_ID</td><td>BIGINT</td><td>所属事业部ID</td></tr><tr><td>DIVISION_NAME</td><td>VARCHAR</td><td>所属事业部</td></tr><tr><td>IS_LOCAL</td><td>BIGINT</td><td>本地/异地(1:异地 2:本地)</td></tr><tr><td>OPERATING_MODE</td><td>BIGINT</td><td>管理类型(1:自营工程 2:经销商服务 3:自营+经销商服务)</td></tr><tr><td>PROJECT_TYPE</td><td>VARCHAR</td><td>项目类型/业主类型</td></tr><tr><td>PROJECT_SOURCE</td><td>VARCHAR</td><td>项目来源(1:常规工程 2:战略工程)</td></tr><tr><td>REPORT_TIME</td><td>DATETIME</td><td>报备时间</td></tr><tr><td>REPORT_TYPE</td><td>BIGINT</td><td>报备类型(1:单体报备 2:战略报备 3:家装战略 4:家装单体)</td></tr><tr><td>STAGE_ID</td><td>BIGINT</td><td>项目进度阶段ID</td></tr><tr><td>STAGE_NAME</td><td>VARCHAR</td><td>项目进度阶段名称</td></tr><tr><td>STAGE_DESC</td><td>VARCHAR</td><td>项目进度描述</td></tr><tr><td>STAGE_NOTE</td><td>VARCHAR</td><td>项目进度阶段备注</td></tr><tr><td>PROJECT_VALID</td><td>BIGINT</td><td>项目有效状态(1:未生效 2:已生效 3:已失效 4:已冻结)</td></tr><tr><td>VALID_START_DATE</td><td>DATETIME</td><td>有效期开始时间</td></tr><tr><td>VALID_END_DATE</td><td>DATETIME</td><td>有效期结束时间</td></tr><tr><td>FREEZE_TYPE</td><td>BIGINT</td><td>冻结类型(0:未冻结 1:超项目有效期 2:进度超时更新 4:有效期内已签合同)</td></tr><tr><td>FREEZE_TIME</td><td>DATETIME</td><td>冻结时间</td></tr><tr><td>UNFREEZE_TIME</td><td>DATETIME</td><td>解冻时间</td></tr><tr><td>CHANGE_VALID_USER</td><td>VARCHAR</td><td>改变有效性的用户</td></tr><tr><td>CHANGE_VALID_TIME</td><td>DATETIME</td><td>改变有效性的时间</td></tr><tr><td>CHANGE_VALID_REASON</td><td>VARCHAR</td><td>改变有效性的原因</td></tr><tr><td>CONTRACT_CODE</td><td>VARCHAR</td><td>项目合同号(合同签订确认时回写)</td></tr><tr><td>CONTRACT_AMOUNT</td><td>BIGINT</td><td>项目合同金额(合同签订确认时回写)</td></tr><tr><td>PERFORMANCE_SECURITY</td><td>BIGINT</td><td>履约保证金(合同签订确认时回写)</td></tr><tr><td>GUARANTEE_AMOUNT</td><td>BIGINT</td><td>质保金(合同签订确认时回写)</td></tr><tr><td>GUARANTEE_PERIOD</td><td>VARCHAR</td><td>质保期(合同签订确认时回写)</td></tr><tr><td>CONTRACT_SIGNUP_DATE</td><td>DATETIME</td><td>合同签约日期(合同签订确认时回写)</td></tr><tr><td>PERIOD_START_DATE</td><td>VARCHAR</td><td>工期开始日期(合同签订确认时回写)</td></tr><tr><td>PERIOD_END_DATE</td><td>VARCHAR</td><td>工期截止日期(合同签订确认时回写)</td></tr><tr><td>PREDICT_SIGN_DATE</td><td>DATETIME</td><td>预计签订日期</td></tr><tr><td>PREDICT_SALES_AMOUNT</td><td>VARCHAR</td><td>预计销售收入(元)</td></tr><tr><td>PREDICT_PROJ_QTY</td><td>VARCHAR</td><td>预估单体项目数量</td></tr><tr><td>PREDICT_PDT_QTY</td><td>VARCHAR</td><td>预估工产品用量</td></tr><tr><td>INTENT_PRODUCT</td><td>VARCHAR</td><td>工程意向产品</td></tr><tr><td>COMPETITIVE_BRAND</td><td>VARCHAR</td><td>竞争品牌</td></tr><tr><td>COMPETITOR</td><td>VARCHAR</td><td>竞争对手</td></tr><tr><td>SITE_AREA</td><td>BIGINT</td><td>工程建筑面积</td></tr><tr><td>CONSTRUCTION_STAGE</td><td>VARCHAR</td><td>工程施工阶段</td></tr><tr><td>BACKGROUND</td><td>BIGINT</td><td>背景关系</td></tr><tr><td>BELONG_TO</td><td>BIGINT</td><td>工程操作性质，必填</td></tr><tr><td>NEED_DEPOSIT</td><td>BIGINT</td><td>是否同意缴纳保证金(1:同意 2:不同意)</td></tr><tr><td>DEPOSIT_AMOUNT</td><td>BIGINT</td><td>保证金金额</td></tr><tr><td>DEPOSIT_NOTE</td><td>VARCHAR</td><td>保证金备注</td></tr><tr><td>IS_FOREIGN</td><td>VARCHAR</td><td>是否海外，必填</td></tr><tr><td>IS_NOT_BID</td><td>BIGINT</td><td>是否免招标(1否 2是)</td></tr><tr><td>IS_SYSTEM</td><td>BIGINT</td><td>是否系统初始化(1否 2是)</td></tr><tr><td>IS_INIT</td><td>BIGINT</td><td>为2时表示初始化产生的数据，必填</td></tr><tr><td>REMOTE_SHARED</td><td>BIGINT</td><td>2=启用异地划分，必填</td></tr><tr><td>TASK_SHARED_RATE</td><td>BIGINT</td><td>任务划分比例</td></tr><tr><td>SERVICE_FEE_SHARED_RATE</td><td>BIGINT</td><td>售后服务金划分比例</td></tr><tr><td>PROJECT_CATEGORY</td><td>VARCHAR</td><td>项目分类(normal:标准项目 small:小型项目)</td></tr><tr><td>LANDMARK_FLAG</td><td>VARCHAR</td><td>是否地标建筑(默认N:否)</td></tr><tr><td>HZ_INSTANCE_ID</td><td>BIGINT</td><td>H0流程实例id</td></tr><tr><td>HZ_APPROVE_STATUS</td><td>VARCHAR</td><td>H0流程审批状态，必填</td></tr><tr><td>MANAGER</td><td>VARCHAR</td><td>项目经理</td></tr><tr><td>STRATEGIC_STAGE</td><td>VARCHAR</td><td>战略对接阶段</td></tr><tr><td>REL_PROJECT_ID</td><td>BIGINT</td><td>关联战略项目ID</td></tr><tr><td>REL_PROJECT_CODE</td><td>VARCHAR</td><td>关联战略项目编码</td></tr><tr><td>REL_PROJECT_NAME</td><td>VARCHAR</td><td>关联战略项目名称</td></tr><tr><td>AGENT</td><td>VARCHAR</td><td>经办人</td></tr><tr><td>AGENT_PHONE</td><td>VARCHAR</td><td>经办人电话</td></tr><tr><td>AGENT_OPINION</td><td>VARCHAR</td><td>经办人意见</td></tr><tr><td>NEED_SAMPLE</td><td>VARCHAR</td><td>产品送样(是否)</td></tr><tr><td>NEED_QUOTE</td><td>VARCHAR</td><td>产品报价(是否)</td></tr><tr><td>CLOSE_PROJECT_TIME</td><td>DATETIME</td><td>结案时间</td></tr><tr><td>PROJECT_STAGE_TYPE</td><td>BIGINT</td><td>项目进度状态</td></tr><tr><td>EXTERNAL_ID</td><td>VARCHAR</td><td>外部系统唯一标识</td></tr><tr><td>EXT_PROJECT_ID</td><td>VARCHAR</td><td>外部系统对应的项目ID</td></tr><tr><td>EXT_STATUS</td><td>VARCHAR</td><td>外部系统项目状态</td></tr><tr><td>creation_date</td><td>DATETIME</td><td>创建时间</td></tr><tr><td>created_by</td><td>BIGINT</td><td>创建人</td></tr><tr><td>last_update_date</td><td>DATETIME</td><td>最后更新时间</td></tr><tr><td>last_updated_by</td><td>BIGINT</td><td>最后更新人</td></tr><tr><td>object_version_number</td><td>BIGINT</td><td>乐观锁版本号</td></tr></tbody></table></KbCard>
 <KbCard title="4.2 EPM_PROJECT_STAGE（项目进度历程表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PROJECT_STAGE_ID</td><td>BIGINT</td><td>主键，自增</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID</td></tr><tr><td>STAGE_ID</td><td>BIGINT</td><td>阶段ID</td></tr><tr><td>STAGE_DESC</td><td>VARCHAR</td><td>阶段描述</td></tr><tr><td>creation_date</td><td>DATETIME</td><td>创建时间</td></tr><tr><td>created_by</td><td>BIGINT</td><td>创建人</td></tr></tbody></table></KbCard>
 <KbCard title="4.3 EPM_PROJECT_AUTH（项目授权表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PK_ID</td><td>BIGINT</td><td>主键</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID</td></tr></tbody></table></KbCard>
@@ -408,6 +408,7 @@ WHERE table_name = 'EPM_REPORT'
     SELECT column_name FROM all_tab_columns WHERE table_name = 'EPM_PROJECT'
   );
 ```
+
 </KbCard>
 <KbCard title="Q2: 项目进度更新报错"项目进度已变更，请驳回重审!""><p><strong>原因</strong>：并发场景下，其他单据已更新了项目档案的进度，当前单据记录的旧进度值与档案中实际进度不一致</p>
 <p><strong>排查SQL</strong>：</p>
@@ -417,6 +418,7 @@ SELECT p.PROJECT_ID, p.PROJECT_CODE, p.STAGE_ID, p.STAGE_NAME, p.STAGE_DESC
 FROM EPM_PROJECT p
 WHERE p.PROJECT_ID = :projectId;
 ```
+
 </KbCard>
 <KbCard title="Q3: 项目进度更新报错"阶段更新，只能前进，不能后退""><p><strong>原因</strong>：新选择的阶段序号小于当前阶段序号，系统不允许阶段倒退</p>
 <p><strong>排查SQL</strong>：</p>
@@ -426,6 +428,7 @@ SELECT sd.STAGE_ID, sd.STAGE_NAME, sd.SEQ
 FROM EPM_STAGE_DEF sd
 ORDER BY sd.SEQ;
 ```
+
 </KbCard>
 <KbCard title="Q4: 项目报备审核时报错"请配置{orgId}公司参数'Proj_Effective_Cycle'""><p><strong>原因</strong>：未配置项目有效周期天数系统参数</p>
 <p><strong>排查SQL</strong>：</p>
@@ -433,6 +436,7 @@ ORDER BY sd.SEQ;
 ```sql
 SELECT * FROM SYS_PARAM WHERE PARAM_CODE = 'Proj_Effective_Cycle' AND ORGANIZATION_ID = :orgId;
 ```
+
 </KbCard>
 <KbCard title="Q5: 项目已冻结但无法提交解冻申请"><p><strong>原因</strong>：项目PROJECT_VALID必须为4(已冻结)才能提交解冻申请，且不能有正在审批中的解冻申请</p>
 <p><strong>排查SQL</strong>：</p>
@@ -444,6 +448,7 @@ FROM EPM_PROJECT p
 LEFT JOIN EPM_PROJECT_UNFREEZE u ON p.PROJECT_ID = u.PROJECT_ID
 WHERE p.PROJECT_ID = :projectId;
 ```
+
 </KbCard>
 <KbCard title="Q6: 项目档案有效状态显示异常"><p><strong>原因</strong>：前端对PROJECT_VALID=4(已冻结)做了二次转换，结合解冻申请状态(EPU_STAT)和冻结类型(FREEZE_TYPE)展示不同状态</p>
 <p><strong>排查SQL</strong>：</p>
@@ -464,6 +469,7 @@ WHERE p.PROJECT_ID = :projectId;
 ```sql
 SELECT * FROM EPM_PROJECT WHERE PROJECT_ID = :projectId;
 ```
+
 </KbCard>
 <KbCard title="Q8: 查询项目进度历程"><p><strong>排查SQL</strong>：</p>
 
@@ -474,18 +480,21 @@ LEFT JOIN EPM_STAGE_DEF sd ON ps.STAGE_ID = sd.STAGE_ID
 WHERE ps.PROJECT_ID = :projectId
 ORDER BY ps.creation_date;
 ```
+
 </KbCard>
 <KbCard title="Q9: 查询项目授权信息"><p><strong>排查SQL</strong>：</p>
 
 ```sql
 SELECT * FROM EPM_PROJECT_AUTH WHERE PROJECT_ID = :projectId;
 ```
+
 </KbCard>
 <KbCard title="Q10: 查询项目乙方信息"><p><strong>排查SQL</strong>：</p>
 
 ```sql
 SELECT * FROM EPM_PROJECT_PARTYB WHERE PROJECT_ID = :projectId;
 ```
+
 </KbCard>
 <KbCard title="Q11: 折扣校验时项目档案标识(PROJECT_ARCHIVE)如何取值"><p><strong>原因</strong>：PROJECT_ARCHIVE取自EPM_PROJECT.IS_LOCAL字段，2=本地(项目档案)，1=异地</p>
 <p><strong>排查SQL</strong>：</p>
@@ -497,6 +506,7 @@ FROM EPM_PROJECT p
 LEFT JOIN DISCOUNT_CHECK_CONFIG_C c ON c.PROJECT_ARCHIVE = p.IS_LOCAL
 WHERE p.PROJECT_ID = :projectId;
 ```
+
 </KbCard>
 </div>
 </div>
