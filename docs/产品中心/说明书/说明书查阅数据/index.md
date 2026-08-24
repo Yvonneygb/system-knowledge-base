@@ -163,35 +163,9 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">查阅数据多久更新一次？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>实时更新，每次查阅说明书时自动写入日志。
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">列表模式和汇总模式的区别？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>列表模式展示每条查阅明细记录，汇总模式按说明书维度汇总统计查阅次数。
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">能否导出查阅数据？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>视前端是否提供导出按钮，具体以后端接口支持为准。
-    </div>
-  </div>
-</div>
+
+<!-- 空白:待补充 -->
+
 </KbCard>
 </div>
 </div>
