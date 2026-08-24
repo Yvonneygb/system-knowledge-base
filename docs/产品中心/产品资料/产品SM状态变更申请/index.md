@@ -200,8 +200,15 @@
 <KbCard title="3.2 变更申请行（PRODUCT_OVER_LINE）"><ul><li>每行对应一个产品的SM状态变更</li><li><strong>产品ID（product_id）</strong>：关联产品</li><li><strong>产品编码（product_code）</strong>：产品编码</li><li><strong>产品名称（product_name）</strong>：产品名称</li><li><strong>当前SM状态（current_sm_status）</strong>：变更前的SM状态</li><li><strong>目标SM状态（target_sm_status）</strong>：变更后的SM状态</li><li><strong>行备注（line_remark）</strong>：行级备注说明</li></ul></KbCard>
 <KbCard title="3.3 SM状态说明"><ul><li>SM（Sales Management）状态用于控制产品在销售管理中的可用性</li><li>常见SM状态：正常销售/限制销售/停止销售/淘汰等</li><li>SM状态变更需审批，防止随意变更影响业务</li></ul></KbCard>
 <KbCard title="3.4 审批通过后处理"><ul><li>审批通过后，系统自动将行中产品的SM状态更新为目标SM状态</li><li>更新操作在事务中执行，确保头和行数据一致性</li><li>状态更新后触发相关业务通知</li></ul></KbCard>
-<KbCard title="3.5 数据校验"><ul><li>申请单号唯一性校验</li><li>目标SM状态不可与当前SM状态相同</li><li>产品必须存在且有效</li><li>草稿状态才可编辑和删除</li></ul>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n\\|\\ 弹窗名称\\ \\|\\ 接口\\ \\|\\ 说明\\ \\|\\r\\n\\|---------\\|------\\|------\\|\\r\\n\\|\\ 产品弹窗\\ \\|\\ GET\\ /get-product-pop-up\\ \\|\\ 选择需变更SM状态的产品\\ \\|\\r\\n\\|\\ SM状态值集\\ \\|\\ GET\\ /get-change-status-lov\\ \\|\\ 参数isEliminate、smState\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。后端接口\\ POST\\ /data-upload（异步导入临时表，参数templateCode、excel）。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 接口\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|------\\|------\\|\\r\\n\\|\\ 查询\\ \\|\\ GET\\ /list\\ \\|\\ 列表查询\\ \\|\\r\\n\\|\\ 导出\\ \\|\\ GET\\ /export\\ \\|\\ 导出，注解@ExcelExport\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*后端校验（saveVerify方法）：\\*\\*\\r\\n\\r\\n\\|\\ 校验项\\ \\|\\ 错误提示\\ \\|\\r\\n\\|--------\\|----------\\|\\r\\n\\|\\ 产品编码重复\\ \\|\\ 以下产品编码重复，请检查！\\+重复编码\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n\\*\\*后端校验（submitVerify方法）：\\*\\*\\r\\n\\r\\n\\|\\ 校验项\\ \\|\\ 错误提示\\ \\|\\r\\n\\|--------\\|----------\\|\\r\\n\\|\\ 明细行存在\\ \\|\\ 产品SM状态变更申请明细行不存在！\\ \\|\\r\\n\\|\\ 在途申请校验\\ \\|\\ 以下产品已有在途申请，无法重复提交\\.\\.\\.申请单号xxx正在处理产品xxx\\ \\|\\r\\n\\r\\n\\*\\*工作流：\\*\\*\\ 实现WorkflowBaseService接口，有wfComplete、doProcessOA方法</p></KbCard>
+<KbCard title="3.5 数据校验"><ul><li>申请单号唯一性校验</li><li>目标SM状态不可与当前SM状态相同</li><li>产品必须存在且有效</li><li>草稿状态才可编辑和删除</li></ul></KbCard>
+<KbCard title="3.6 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>接口</th><th>说明</th></tr></thead><tbody><tr><td>产品弹窗</td><td>GET /get-product-pop-up</td><td>选择需变更SM状态的产品</td></tr><tr><td>SM状态值集</td><td>GET /get-change-status-lov</td><td>参数isEliminate、smState</td></tr></tbody></table></KbCard>
+<KbCard title="3.7 导入"><p>支持Excel导入。后端接口 POST /data-upload（异步导入临时表，参数templateCode、excel）。</p></KbCard>
+<KbCard title="3.8 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>接口</th><th>说明</th></tr></thead><tbody><tr><td>查询</td><td>GET /list</td><td>列表查询</td></tr><tr><td>导出</td><td>GET /export</td><td>导出，注解@ExcelExport</td></tr></tbody></table></KbCard>
+<KbCard title="3.9 保存校验"><p><strong>后端校验（saveVerify方法）：</strong></p>
+<table class="kl-table"><thead><tr><th>校验项</th><th>错误提示</th></tr></thead><tbody><tr><td>产品编码重复</td><td>以下产品编码重复，请检查！+重复编码</td></tr></tbody></table></KbCard>
+<KbCard title="3.10 提交校验"><p><strong>后端校验（submitVerify方法）：</strong></p>
+<table class="kl-table"><thead><tr><th>校验项</th><th>错误提示</th></tr></thead><tbody><tr><td>明细行存在</td><td>产品SM状态变更申请明细行不存在！</td></tr><tr><td>在途申请校验</td><td>以下产品已有在途申请，无法重复提交...申请单号xxx正在处理产品xxx</td></tr></tbody></table>
+<p><strong>工作流：</strong> 实现WorkflowBaseService接口，有wfComplete、doProcessOA方法</p></KbCard>
 <KbCard title="4.1 产品SM#状态变更头表"><p class='kl-tip'>表名：PRODUCT_OVER_HEADER（产品SM状态变更头表）</p>
 <table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>apply_no</td><td>VARCHAR2</td><td>申请单号@</td><td>D</td><td>唯一，自动生成</td></tr><tr><td>applicant</td><td>NUMBER</td><td>申请人</td><td></td></tr><tr><td>apply_date</td><td>DATE</td><td>申请日期</td><td></td></tr><tr><td>change_reason</td><td>VARCHAR2</td><td>变更原因</td><td>NOT NULL</td></tr><tr><td>apply_status</td><td>VARCHAR2</td><td>申请状态</td><td>DRAFT/SUBMITTED/APPROVING/APPROVED/REJECTED/WITHDRAWN</td></tr><tr><td>approval_comment</td><td>VARCHAR2</td><td>审批意见</td><td></td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 <KbCard title="4.2 产品SM状态变更行表"><p class='kl-tip'>表名：PRODUCT_OVER_LINE（产品SM状态变更行表）</p>
@@ -212,71 +219,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">SM状态有哪些值？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>常见有正常销售、限制销售、停止销售、淘汰等，具体以LOV配置为准
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">为什么SM状态变更需要审批？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>SM状态直接影响产品销售可用性，随意变更可能影响业务，故需审批管控
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">一个申请可以变更多个产品吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>可以，每个产品对应一行记录
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">审批驳回后可以重新提交吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>可以，修改后重新提交审批
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q5</span>
-      <span style="font-size:15px;">草稿状态的申请可以删除吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>可以，仅草稿状态允许删除
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q6</span>
-      <span style="font-size:15px;">审批通过后产品SM状态何时生效？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>审批通过后立即生效，系统自动更新产品SM状态
-    </div>
-  </div>
-</div>
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>SM状态有哪些值？</td><td>常见有正常销售、限制销售、停止销售、淘汰等，具体以LOV配置为准</td></tr><tr><td>为什么SM状态变更需要审批？</td><td>SM状态直接影响产品销售可用性，随意变更可能影响业务，故需审批管控</td></tr><tr><td>一个申请可以变更多个产品吗？</td><td>可以，每个产品对应一行记录</td></tr><tr><td>审批驳回后可以重新提交吗？</td><td>可以，修改后重新提交审批</td></tr><tr><td>草稿状态的申请可以删除吗？</td><td>可以，仅草稿状态允许删除</td></tr><tr><td>审批通过后产品SM状态何时生效？</td><td>审批通过后立即生效，系统自动更新产品SM状态</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>SM状态有哪些值？</td><td>常见有正常销售、限制销售、停止销售、淘汰等，具体以LOV配置为准</td></tr><tr><td>为什么SM状态变更需要审批？</td><td>SM状态直接影响产品销售可用性，随意变更可能影响业务，故需审批管控</td></tr><tr><td>一个申请可以变更多个产品吗？</td><td>可以，每个产品对应一行记录</td></tr><tr><td>审批驳回后可以重新提交吗？</td><td>可以，修改后重新提交审批</td></tr><tr><td>草稿状态的申请可以删除吗？</td><td>可以，仅草稿状态允许删除</td></tr><tr><td>审批通过后产品SM状态何时生效？</td><td>审批通过后立即生效，系统自动更新产品SM状态</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
