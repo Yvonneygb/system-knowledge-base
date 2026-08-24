@@ -175,6 +175,7 @@
 <KbCard title="3.4 新建/编辑页逻辑"><ul><li>路由参数 <code>type=new</code> 为新建，<code>type=edit</code> 为编辑</li><li>必填字段：反馈类型、反馈内容、联系人、电话</li><li>保存按钮调用 <code>feedback/save</code>，提交按钮调用 <code>feedback/submit</code></li><li>提交前校验必填项，校验通过后状态变更为"已提交"</li></ul></KbCard>
 <KbCard title="3.5 详情页逻辑"><ul><li>路由参数 <code>type=view</code>，表单只读</li><li>展示反馈单基本信息</li><li>调用 <code>feedback/comment</code> 获取品牌方回复记录，以对话形式展示</li><li>调用 <code>feedback/evaluate</code> 获取品牌方评价信息</li></ul></KbCard>
 <KbCard title="3.6 前端文件结构">
+
 ```
 arrow-mbo/src/pages/afterSales/feedback/dealer/
 ├── index.tsx              # 列表页
@@ -182,22 +183,23 @@ arrow-mbo/src/pages/afterSales/feedback/dealer/
 ├── Form.tsx               # 新建/编辑表单页
 └── components/            # 经销商端私有组件
 ```
+
 </KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>触发方式</th><th>说明</th></tr></thead><tbody><tr><td>评价弹窗</td><td>列表页行操作"评价"按钮（state=6已完结时显示）</td><td>Modal弹窗，含评分（Rate 1-5星）+评价内容（TextArea maxLength=500），接口 <code>feedback/evaluate</code></td></tr></tbody></table>
+<KbCard title="3.7 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>触发方式</th><th>说明</th></tr></thead><tbody><tr><td>评价弹窗</td><td>列表页行操作"评价"按钮（state=6已完结时显示）</td><td>Modal弹窗，含评分（Rate 1-5星）+评价内容（TextArea maxLength=500），接口 <code>feedback/evaluate</code></td></tr></tbody></table>
 <p class='kl-tip'>表单中的值集下拉（非弹窗LOV）：反馈类型 <code>MBO.FEEDBACK_TYPE_CODE</code>、反馈子类型 <code>MBO.FEEDBACK_TYPE_SUB_CODE</code>（依赖反馈类型）、产品细分 <code>MBO.FEEDBACK_TYPE_DETAIL_CODE</code>（依赖反馈子类型）、状态 <code>MBO.FEEDBACK_STATE</code></p></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。支持导出：列表页"导出"按钮，接口 <code>feedback/distributor/export</code>。</p></KbCard>
-<KbCard title="其他按钮"><p><strong>列表页按钮：</strong></p>
+<KbCard title="3.8 导入"><p class='kl-tip'>不支持导入功能。支持导出：列表页"导出"按钮，接口 <code>feedback/distributor/export</code>。</p></KbCard>
+<KbCard title="3.9 其他按钮"><p><strong>列表页按钮：</strong></p>
 <table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>接口</th></tr></thead><tbody><tr><td>新增反馈单</td><td>始终显示</td><td>跳转新建页 <code>/afterSales/dealer/feedback/add</code></td></tr><tr><td>导出</td><td>始终显示</td><td><code>feedback/distributor/export</code></td></tr><tr><td>编辑</td><td>state=1（草稿）</td><td>跳转编辑页</td></tr><tr><td>删除</td><td>state=1（草稿）</td><td><code>feedback/delete/{id}</code>（DELETE）</td></tr><tr><td>评价</td><td>state=6（已完结）</td><td>打开评价弹窗</td></tr><tr><td>取消</td><td>state ∉ [6,7,8]</td><td><code>feedback/cancel/{id}</code>（POST）</td></tr></tbody></table>
 <p><strong>详情页按钮：</strong></p>
 <table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>接口</th></tr></thead><tbody><tr><td>暂存</td><td>(新增或编辑) && state≠2</td><td><code>feedback/save</code>（POST）</td></tr><tr><td>提交</td><td>(新增或编辑) && (!state或state=1)</td><td><code>feedback/submit</code>（POST）</td></tr><tr><td>取消</td><td>(编辑或详情) && state∈[1,3,4,5]</td><td><code>feedback/cancel/{id}</code>（POST）</td></tr><tr><td>再反馈</td><td>详情 && state∈[4,5]</td><td><code>feedback/comment</code>（POST）</td></tr></tbody></table></KbCard>
-<KbCard title="保存校验"><p><strong>前端表单校验（baseDS）：</strong></p>
+<KbCard title="3.10 保存校验"><p><strong>前端表单校验（baseDS）：</strong></p>
 <table class="kl-table"><thead><tr><th>字段</th><th>标签</th><th>校验规则</th><th>错误提示</th></tr></thead><tbody><tr><td>contactsName</td><td>联系人</td><td>必填</td><td>必填提示</td></tr><tr><td>phone</td><td>联系电话</td><td>必填 + 正则校验</td><td>必填 + 格式校验（支持座机和手机）</td></tr><tr><td>address</td><td>联系地址</td><td>必填</td><td>必填提示</td></tr><tr><td>typeCode</td><td>反馈类型</td><td>必填</td><td>必填提示</td></tr><tr><td>typeSupCode</td><td>反馈子类型</td><td>typeCode存在且≠'10'时必填</td><td>必填提示</td></tr><tr><td>typeDetailCode</td><td>产品细分</td><td>typeCode='1'且typeSupCode存在且≠'1-7'时必填</td><td>必填提示</td></tr><tr><td>content</td><td>反馈内容</td><td>新增/编辑时必填，maxLength=2000</td><td>必填+长度限制</td></tr><tr><td>commentContent</td><td>再反馈内容</td><td>详情且state∈[4,5]时必填，maxLength=2000</td><td>必填+长度限制</td></tr></tbody></table>
 <p><strong>联系电话正则</strong>：<code>/^(?:(?:\d{3}-)?\d{8}|^(?:\d{4}-)?\d{7,8})(?:-\d+)?$|^(?:(?:\+|00)86)?1[3-9]\d{9}$/</code></p>
 <p><strong>评价弹窗校验：</strong></p>
 <table class="kl-table"><thead><tr><th>字段</th><th>校验规则</th></tr></thead><tbody><tr><td>grade（评分）</td><td>必填</td></tr><tr><td>evaluateContent（评价内容）</td><td>评分&lt;3星时必填</td></tr></tbody></table>
 <p><strong>附件校验：</strong> 单文件≤30MB，最多20个文件</p>
 <p class='kl-tip'>后端校验：后端代码在MBO微服务中，不在当前代码库，无法分析。</p></KbCard>
-<KbCard title="提交校验"><p><strong>提交流程：</strong> 详情页"提交"按钮 → <code>baseFormDS.validate()</code> 前端校验 → <code>feedback/submit</code>（POST）</p>
+<KbCard title="3.11 提交校验"><p><strong>提交流程：</strong> 详情页"提交"按钮 → <code>baseFormDS.validate()</code> 前端校验 → <code>feedback/submit</code>（POST）</p>
 <p><strong>再反馈流程：</strong> 详情页"再反馈"按钮 → <code>baseFormDS.validate()</code> 前端校验 → <code>feedback/comment</code>（POST）</p>
 <p><strong>评价流程：</strong> 评价弹窗"确定" → <code>evaluateFormDs.validate()</code> 前端校验 → <code>feedback/evaluate</code>（POST）</p>
 <p class='kl-tip'>无工作流引擎，状态变更通过API直接更新。后端校验在MBO微服务中，不在当前代码库。</p></KbCard>
@@ -255,7 +257,7 @@ arrow-mbo/src/pages/afterSales/feedback/dealer/
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：已提交的反馈单能否编辑？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：已提交的反馈单能否编辑？</strong></p>
 <p>A：不能。已提交状态仅支持取消操作，取消后也不可再编辑。如需修改，需取消后重新新建。</p>
 <p><strong>Q2：删除反馈单是物理删除还是逻辑删除？</strong></p>
 <p>A：仅草稿状态可删除，具体删除方式取决于后端实现，一般为逻辑删除（状态标记为已删除）。</p>
