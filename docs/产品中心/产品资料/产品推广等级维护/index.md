@@ -146,8 +146,13 @@
 <div class="kl-wrap">
 <KbCard title="3.1 推广等级列表页"><ul><li><strong>查询条件</strong>：等级编码、等级名称、启用状态等</li><li><strong>列表展示字段</strong>：等级编码、等级名称、等级描述、排序号、启用状态、创建时间等</li><li><strong>操作按钮</strong>：新增、编辑、删除、启用/禁用</li><li><strong>分页</strong>：支持前端分页参数传递，后端返回分页结果</li></ul></KbCard>
 <KbCard title="3.2 推广等级数据结构"><ul><li><strong>等级编码（grade_code）</strong>：推广等级的唯一编码，如A、B、C、D等</li><li><strong>等级名称（grade_name）</strong>：推广等级的显示名称，如"重点推广"、"一般推广"、"限制推广"等</li><li><strong>等级描述（grade_description）</strong>：推广等级的详细说明</li><li><strong>排序号（sequence_number）</strong>：等级的排序顺序，数值越小优先级越高</li><li><strong>启用状态（enabled_flag）</strong>：Y/N，控制等级是否可用</li></ul></KbCard>
-<KbCard title="3.3 业务规则"><ul><li>推广等级编码在同一组织下唯一</li><li>推广等级被产品引用后不可删除，只能禁用</li><li>推广等级控制产品在不同渠道的推广力度，等级越高推广力度越大</li><li>推广等级与推广等级要求配置（prodPromoteGradesControls）配合使用，等级要求配置定义达到某等级需要满足的条件</li></ul>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n\\|\\ 弹窗名称\\ \\|\\ 说明\\ \\|\\r\\n\\|---------\\|------\\|\\r\\n\\|\\ 产品选择弹窗\\ \\|\\ 新增/编辑弹窗中"产品编码"字段，使用productModalSelectConfigFn\\ \\|\\r\\n\\r\\n&gt;\\ 值集：等级CRM\\.PROD_PROMOTE_GRADE、生命状态CRM\\.PRODUCT_Z_STATE、状态CRM\\.COMMON_STATUS、品牌事业部AE\\.ITEM_ORGANIZATION\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。templateCode=CRM\\.PROD_PROMOTE_GRADE。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 显示条件\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|---------\\|------\\|\\r\\n\\|\\ 新增\\ \\|\\ 始终显示\\ \\|\\ 弹窗编辑\\ \\|\\r\\n\\|\\ 导出\\ \\|\\ 始终显示\\ \\|\\ 导出列表\\ \\|\\r\\n\\|\\ 批量失效\\ \\|\\ 始终显示\\ \\|\\ 红色按钮，批量置status='invalid'\\ \\|\\r\\n\\|\\ 行内失效\\ \\|\\ status='valid'\\ \\|\\ 确认弹窗"是否失效数据\\?"\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*前端校验：\\*\\*\\ commonFn_formValid\\(ds\\)，必填字段：产品编码、等级；新增时默认status='valid'、grade='C'\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="3.3 业务规则"><ul><li>推广等级编码在同一组织下唯一</li><li>推广等级被产品引用后不可删除，只能禁用</li><li>推广等级控制产品在不同渠道的推广力度，等级越高推广力度越大</li><li>推广等级与推广等级要求配置（prodPromoteGradesControls）配合使用，等级要求配置定义达到某等级需要满足的条件</li></ul></KbCard>
+<KbCard title="3.4 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>产品选择弹窗</td><td>新增/编辑弹窗中"产品编码"字段，使用productModalSelectConfigFn</td></tr></tbody></table>
+<p class='kl-tip'>值集：等级CRM.PROD_PROMOTE_GRADE、生命状态CRM.PRODUCT_Z_STATE、状态CRM.COMMON_STATUS、品牌事业部AE.ITEM_ORGANIZATION</p></KbCard>
+<KbCard title="3.5 导入"><p>支持Excel导入。templateCode=CRM.PROD_PROMOTE_GRADE。</p></KbCard>
+<KbCard title="3.6 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>新增</td><td>始终显示</td><td>弹窗编辑</td></tr><tr><td>导出</td><td>始终显示</td><td>导出列表</td></tr><tr><td>批量失效</td><td>始终显示</td><td>红色按钮，批量置status='invalid'</td></tr><tr><td>行内失效</td><td>status='valid'</td><td>确认弹窗"是否失效数据?"</td></tr></tbody></table></KbCard>
+<KbCard title="3.7 保存校验"><p><strong>前端校验：</strong> commonFn_formValid(ds)，必填字段：产品编码、等级；新增时默认status='valid'、grade='C'</p></KbCard>
+<KbCard title="3.8 提交校验"><p class='kl-tip'>无提交/审批功能。</p></KbCard>
 <KbCard title="4.1 产品推广等级表"><p class='kl-tip'>表名：PROD_PROMOTE_GRADES（产品推广等级表）</p>
 <table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>grade_code</td><td>VARCHAR2</td><td>等级编码</td><td>唯一，如A/B/C/D</td></tr><tr><td>grade_name</td><td>VARCHAR2</td><td>等级名称</td><td>NOT NULL</td></tr><tr><td>grade_description</td><td>VARCHAR2</td><td>等级描述</td><td></td></tr><tr><td>sequence_number</td><td>NUMBER</td><td>排序号</td><td>数值越小优先级越高</td></tr><tr><td>enabled_flag</td><td>VARCHAR2</td><td>启用标志</td><td>Y/N</td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
@@ -156,53 +161,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">推广等级编码有哪些约定？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>通常使用A/B/C/D等字母编码，A为最高等级，D为最低等级
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">推广等级被产品引用后能否删除？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>不能删除，只能通过启用标志设为N来禁用
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">推广等级和推广等级要求配置的关系？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>推广等级定义等级本身（A/B/C），要求配置定义达到某等级需满足的指标条件（如销售额≥100万为A级）
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">推广等级如何影响业务？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>推广等级控制产品在不同渠道的推广力度，等级越高产品在各渠道的曝光和推广资源越多
-    </div>
-  </div>
-</div>
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>推广等级编码有哪些约定？</td><td>通常使用A/B/C/D等字母编码，A为最高等级，D为最低等级</td></tr><tr><td>推广等级被产品引用后能否删除？</td><td>不能删除，只能通过启用标志设为N来禁用</td></tr><tr><td>推广等级和推广等级要求配置的关系？</td><td>推广等级定义等级本身（A/B/C），要求配置定义达到某等级需满足的指标条件（如销售额≥100万为A级）</td></tr><tr><td>推广等级如何影响业务？</td><td>推广等级控制产品在不同渠道的推广力度，等级越高产品在各渠道的曝光和推广资源越多</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>推广等级编码有哪些约定？</td><td>通常使用A/B/C/D等字母编码，A为最高等级，D为最低等级</td></tr><tr><td>推广等级被产品引用后能否删除？</td><td>不能删除，只能通过启用标志设为N来禁用</td></tr><tr><td>推广等级和推广等级要求配置的关系？</td><td>推广等级定义等级本身（A/B/C），要求配置定义达到某等级需满足的指标条件（如销售额≥100万为A级）</td></tr><tr><td>推广等级如何影响业务？</td><td>推广等级控制产品在不同渠道的推广力度，等级越高产品在各渠道的曝光和推广资源越多</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
