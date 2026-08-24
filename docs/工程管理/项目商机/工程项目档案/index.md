@@ -397,7 +397,7 @@ WHERE p.PROJECT_ID = :projectId;</code></pre>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="Q1: 报备审核时报错"项目档案表（epm_project）缺失以下字段：xxx""><p><strong>原因</strong>：EPM_PROJECT表结构与EPM_REPORT表结构不一致，报备数据无法完整写入项目档案</p>
+<KbCard title="Q1: 报备审核时报错&quot;项目档案表（epm_project）缺失以下字段：xxx&quot;"><p><strong>原因</strong>：EPM_PROJECT表结构与EPM_REPORT表结构不一致，报备数据无法完整写入项目档案</p>
 <p><strong>排查SQL</strong>：</p>
 
 ```sql
@@ -410,7 +410,7 @@ WHERE table_name = 'EPM_REPORT'
 ```
 
 </KbCard>
-<KbCard title="Q2: 项目进度更新报错"项目进度已变更，请驳回重审!""><p><strong>原因</strong>：并发场景下，其他单据已更新了项目档案的进度，当前单据记录的旧进度值与档案中实际进度不一致</p>
+<KbCard title="Q2: 项目进度更新报错&quot;项目进度已变更，请驳回重审!&quot;"><p><strong>原因</strong>：并发场景下，其他单据已更新了项目档案的进度，当前单据记录的旧进度值与档案中实际进度不一致</p>
 <p><strong>排查SQL</strong>：</p>
 
 ```sql
@@ -420,7 +420,7 @@ WHERE p.PROJECT_ID = :projectId;
 ```
 
 </KbCard>
-<KbCard title="Q3: 项目进度更新报错"阶段更新，只能前进，不能后退""><p><strong>原因</strong>：新选择的阶段序号小于当前阶段序号，系统不允许阶段倒退</p>
+<KbCard title="Q3: 项目进度更新报错&quot;阶段更新，只能前进，不能后退&quot;"><p><strong>原因</strong>：新选择的阶段序号小于当前阶段序号，系统不允许阶段倒退</p>
 <p><strong>排查SQL</strong>：</p>
 
 ```sql
@@ -430,7 +430,7 @@ ORDER BY sd.SEQ;
 ```
 
 </KbCard>
-<KbCard title="Q4: 项目报备审核时报错"请配置{orgId}公司参数'Proj_Effective_Cycle'""><p><strong>原因</strong>：未配置项目有效周期天数系统参数</p>
+<KbCard title="Q4: 项目报备审核时报错&quot;请配置{orgId}公司参数&#39;Proj_Effective_Cycle&#39;&quot;"><p><strong>原因</strong>：未配置项目有效周期天数系统参数</p>
 <p><strong>排查SQL</strong>：</p>
 
 ```sql
