@@ -395,21 +395,125 @@ WHERE EPC.CONTRACT_ID = 合同ID;</code></pre>
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="Q1: 结案审批通过后合同状态没有更新为失效？"><p><strong>排查SQL:</strong></p>
+
+```sql
+-- 1. 查询结案单审批状态
+SELECT ECC.CONTRACT_COMPLETED_ID, ECC.COMPLETED_CODE, ECC.ACTION_TYPE, ECC.HZ_APPROVE_STATUS, ECC.COMPLETED_TYPE
+FROM EPM_CONTRACT_COMPLETED ECC
+WHERE ECC.COMPLETED_CODE = '结案单号';
+
+-- 2. 查询合同当前有效状态和结案信息
+SELECT EPC.CONTRACT_ID, EPC.CONTRACT_CODE, EPC.VALID, EPC.COMPLETED_DATE, EPC.COMPLETED_TYPE, EPC.HZ_APPROVE_STATUS
+FROM EPM_PROJECT_CONTRACT EPC
+WHERE EPC.CONTRACT_ID = 合同ID;
+
+-- 3. 检查工作流实例状态
+SELECT ECC.HZ_INSTANCE_ID, ECC.HZ_APPROVE_STATUS
+FROM EPM_CONTRACT_COMPLETED ECC
+WHERE ECC.CONTRACT_COMPLETED_ID = 结案ID;
+```
+
+<p><strong>可能原因:</strong> 工作流审批状态未更新为APPROVED(5)，或回调接口未正确触发。</p></KbCard>
+<KbCard title="Q2: 项目结案后报备状态未失效？"><p><strong>排查SQL:</strong></p>
+
+```sql
+-- 1. 查询项目当前状态
+SELECT EP.PROJECT_ID, EP.PROJECT_CODE, EP.PROJECT_VALID, EP.PROJECT_STAGE_TYPE, EP.CLOSE_PROJECT_TIME
+FROM EPM_PROJECT EP
+WHERE EP.PROJECT_ID = 项目ID;
+
+-- 2. 查询报备状态
+SELECT ER.REPORT_ID, ER.PROJECT_ID, ER.HZ_APPROVE_STATUS, ER.CUSTOMER_CODE, ER.CUSTOMER_NAME
+FROM EPM_REPORT ER
+WHERE ER.PROJECT_ID = 项目ID;
+```
+
+<p><strong>可能原因:</strong> 项目结案(actionType=1)审批未通过，或doAudit执行异常。</p></KbCard>
+<KbCard title="Q3: 合同结案后增补合同未结案？"><p><strong>排查SQL:</strong></p>
+
+```sql
+-- 1. 查询主合同下的增补合同
+SELECT EPC.CONTRACT_ID, EPC.CONTRACT_CODE, EPC.MAIN_CONTRACT_ID, EPC.COMPLETED_DATE, EPC.COMPLETED_TYPE, EPC.VALID
+FROM EPM_PROJECT_CONTRACT EPC
+WHERE EPC.MAIN_CONTRACT_ID = 主合同ID;
+
+-- 2. 对比主合同结案信息
+SELECT EPC.CONTRACT_ID, EPC.CONTRACT_CODE, EPC.COMPLETED_DATE, EPC.COMPLETED_TYPE
+FROM EPM_PROJECT_CONTRACT EPC
+WHERE EPC.CONTRACT_ID = 主合同ID;
+```
+
+<p><strong>说明:</strong> 合同结案时增补合同仅更新结案日期和结案类型，不更新有效状态(VALID)，这是设计行为。</p></KbCard>
+<KbCard title="Q4: 结案后CRM推送失败？"><p><strong>排查SQL:</strong></p>
+
+```sql
+-- 1. 查询报备关联客户信息
+SELECT ER.REPORT_ID, ER.PROJECT_ID, ER.CUSTOMER_ID, ER.CUSTOMER_CODE, ER.CUSTOMER_NAME, ER.DIVISION_NAME
+FROM EPM_REPORT ER
+WHERE ER.PROJECT_ID = 项目ID;
+
+-- 2. 查询客户详细信息
+SELECT C.CUSTOMER_ID, C.CUSTOMER_CODE, C.CUSTOMER_NAME, C.SHORT_NAME
+FROM CUSTOMER C
+WHERE C.CUSTOMER_ID = 客户ID;
+```
+
+<p><strong>说明:</strong> CRM推送失败不影响结案主流程，系统仅记录错误日志。检查日志搜索关键字: <code>将报备状态推送到CRM推送失败</code>。</p></KbCard>
+<KbCard title="Q5: 结案后项目进度未更新？"><p><strong>排查SQL:</strong></p>
+
+```sql
+-- 1. 查询"项目结案"阶段定义
+SELECT ESD.STAGE_ID, ESD.STAGE_NAME, ESD.ORGANIZATION_ID
+FROM EPM_STAGE_DEF ESD
+WHERE ESD.STAGE_NAME = '项目结案'
+  AND ESD.ORGANIZATION_ID = 组织ID;
+```
+
+<p><strong>可能原因:</strong> 阶段定义表中缺少STAGE_NAME='项目结案'的记录，导致查询报空指针。</p></KbCard>
+<KbCard title="Q6: 如何查询结案单关联的出库未发货明细？"><p><strong>排查SQL:</strong></p>
+
+```sql
+SELECT l.SA_OUT_BILL_LINE_ID, l.ITEM_ID, i.ITEM_CODE, i.ITEM_NAME,
+       l.QTY_BILL, l.CONFIRM_OUT_QTY, l.CANCEL_QTY,
+       (l.QTY_BILL - l.CONFIRM_OUT_QTY - l.CANCEL_QTY) AS UNDELIVERED_QTY,
+       h.SA_SALEBILLNO, h.CONTRACT_CODE, h.CONTRACT_NAME
+FROM SA_OUT_BILL_LINE l
+LEFT JOIN SA_OUT_BILL_HEAD h ON h.SA_OUT_BILL_HEAD_ID = l.SA_OUT_BILL_HEAD_ID
+LEFT JOIN ITEM i ON i.ITEM_ID = l.ITEM_ID
+WHERE h.ORDER_STAT = 3
+  AND (l.QTY_BILL - l.CONFIRM_OUT_QTY - l.CANCEL_QTY) > 0
+  AND h.CONTRACT_ID = 合同ID;
+```
+</KbCard>
+<KbCard title="Q7: 结案日期和状态前端显示为空？"><p><strong>排查SQL:</strong></p>
+
+```sql
+SELECT EPC.CONTRACT_ID, EPC.COMPLETED_DATE, EPC.COMPLETED_TYPE
+FROM EPM_PROJECT_CONTRACT EPC
+WHERE EPC.CONTRACT_ID = 合同ID;
+```
+
+<p><strong>说明:</strong> COMPLETED_TYPE值为0时，前端会转换为null不展示。结案审批通过后系统自动回写结案日期和类型，若为空说明结案审批未通过。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-07-28</td><td>v1.0</td><td>初始创建，梳理工程项目结案完整业务逻辑</td><td>AI</td></tr></tbody></table>
-<p>### 选择弹窗</p>
-<table class="kl-table"><thead><tr><th>选择项</th><th>说明</th></tr></thead><tbody><tr><td>操作类型选择（actionType）</td><td>1=项目结案（选择项目PROJECT_ID），2=合同结案（选择合同CONTRACT_ID）</td></tr><tr><td>结案类型选择</td><td>LOV编码 <code>AE.EPM.CONTRACT_COMPLETED_TYPE</code>，值：1=正常结案、2=提前结案、3=逾期结案</td></tr></tbody></table>
-<p class='kl-tip'>本菜单为hlod低代码页面，选择行为通过低代码表单配置实现。</p>
-<p>### 导入</p>
-<p class='kl-tip'>不支持导入功能。结案单是单条创建并走审批流程，不支持Excel批量导入。</p>
-<p>### 其他按钮</p>
-<table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>新建</td><td>始终显示</td><td>跳转低代码详情页创建结案单</td></tr><tr><td>查看</td><td>始终显示</td><td>跳转详情查看结案信息</td></tr><tr><td>编辑</td><td>新建/拒绝状态</td><td>修改结案单</td></tr><tr><td>提交</td><td>新建/拒绝状态</td><td>启动工作流审批（CONTRACT_COMPLETED_MAIN）</td></tr></tbody></table>
-<p>### 保存校验</p>
-<table class="kl-table"><thead><tr><th>序号</th><th>校验项</th><th>校验位置</th><th>说明</th></tr></thead><tbody><tr><td>1</td><td>actionType=2时contractId必填</td><td>后端detail接口</td><td>contractId为空时返回空VO，阻断查询</td></tr><tr><td>2</td><td>actionType=1时projectId必填</td><td>后端detail接口</td><td>projectId为空时返回空VO，阻断查询</td></tr><tr><td>3</td><td>结案类型completedType必填</td><td>前端低代码表单</td><td>LOV选择</td></tr></tbody></table>
-<p class='kl-tip'>前端为hlod低代码页面，校验由低代码平台配置承载。后端Controller仅暴露detail查询接口，保存通过低代码通用接口完成。</p>
-<p>### 提交校验 <strong>工作流编码：</strong> <code>CONTRACT_COMPLETED_MAIN</code>（工程项目结案） <strong>后端校验：</strong> <code>EpmContractCompletedServiceImpl</code>继承<code>WorkflowBaseService</code>，但<code>wfProcSubmit</code>、<code>volidate</code>、<code>eventExecute</code>方法均返回null，无特殊提交前校验。 <strong>审批通过后处理（wfComplete → doAudit）：</strong></p>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-07-28</td><td>v1.0</td><td>初始创建，梳理工程项目结案完整业务逻辑</td><td>AI</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>选择项</th><th>说明</th></tr></thead><tbody><tr><td>操作类型选择（actionType）</td><td>1=项目结案（选择项目PROJECT_ID），2=合同结案（选择合同CONTRACT_ID）</td></tr><tr><td>结案类型选择</td><td>LOV编码 <code>AE.EPM.CONTRACT_COMPLETED_TYPE</code>，值：1=正常结案、2=提前结案、3=逾期结案</td></tr></tbody></table>
+<p class='kl-tip'>本菜单为hlod低代码页面，选择行为通过低代码表单配置实现。</p></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。结案单是单条创建并走审批流程，不支持Excel批量导入。</p></KbCard>
+<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>新建</td><td>始终显示</td><td>跳转低代码详情页创建结案单</td></tr><tr><td>查看</td><td>始终显示</td><td>跳转详情查看结案信息</td></tr><tr><td>编辑</td><td>新建/拒绝状态</td><td>修改结案单</td></tr><tr><td>提交</td><td>新建/拒绝状态</td><td>启动工作流审批（CONTRACT_COMPLETED_MAIN）</td></tr></tbody></table></KbCard>
+<KbCard title="保存校验"><table class="kl-table"><thead><tr><th>序号</th><th>校验项</th><th>校验位置</th><th>说明</th></tr></thead><tbody><tr><td>1</td><td>actionType=2时contractId必填</td><td>后端detail接口</td><td>contractId为空时返回空VO，阻断查询</td></tr><tr><td>2</td><td>actionType=1时projectId必填</td><td>后端detail接口</td><td>projectId为空时返回空VO，阻断查询</td></tr><tr><td>3</td><td>结案类型completedType必填</td><td>前端低代码表单</td><td>LOV选择</td></tr></tbody></table>
+<p class='kl-tip'>前端为hlod低代码页面，校验由低代码平台配置承载。后端Controller仅暴露detail查询接口，保存通过低代码通用接口完成。</p></KbCard>
+<KbCard title="提交校验"><p><strong>工作流编码：</strong> <code>CONTRACT_COMPLETED_MAIN</code>（工程项目结案）</p>
+<p><strong>后端校验：</strong> <code>EpmContractCompletedServiceImpl</code>继承<code>WorkflowBaseService</code>，但<code>wfProcSubmit</code>、<code>volidate</code>、<code>eventExecute</code>方法均返回null，无特殊提交前校验。</p>
+<p><strong>审批通过后处理（wfComplete → doAudit）：</strong></p>
 <table class="kl-table"><thead><tr><th>操作类型</th><th>处理逻辑</th></tr></thead><tbody><tr><td>合同结案(actionType=2)</td><td>更新主合同valid=3、completedDate、completedType；更新子合同(MAIN_CONTRACT_ID关联)的completedDate、completedType</td></tr><tr><td>项目结案(actionType=1)</td><td>查询项目下所有HZ_APPROVE_STATUS=APPROVED的合同，批量更新valid=3、completedDate、completedType；更新报备projectValid=3、projectStageType=2、closeProjectTime</td></tr><tr><td>自动更新项目阶段</td><td>从EPM_STAGE_DEF查询stageName="项目结案"的阶段定义，自动更新项目阶段</td></tr><tr><td>推送CRM</td><td>推送报备失效状态(validStatus=0)到CRM，异常仅记录日志不影响主流程</td></tr></tbody></table></KbCard>
 </div>
 </div>
