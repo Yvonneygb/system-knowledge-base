@@ -181,7 +181,7 @@
 - 1、合同ID匹配 — 折扣单必须关联当前合同
 - 2、折扣单已审批 — `stat = 5`
 - 3、合同有效 — `c.valid = 2`（关联合同未失效）
-- 4、在有效期内 — `sysdate <= discount_valid_date`
+- 4、在有效期内 — `sysdate &lt;= discount_valid_date`
 - 5、有可下单数量 — 折扣单行 `active_qty > 0`（searchType!=1时）
 - 6、事业部匹配 — `organization_id` 匹配
 - 7、合同未失效 — 不存在合同失效变更单(Ecn_Type=2且stat=5)
@@ -664,7 +664,7 @@ ORDER BY a.createtime DESC
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard title="权限控制">
-<!-- 空白:待补充 -->
+&lt;!-- 空白:待补充 -->
 </KbCard>
 </div>
 </div>
@@ -716,8 +716,8 @@ ORDER BY a.createtime DESC
     <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151;">
       <strong style="color:#7C3AED;">原因：</strong>可能存在以下情况：<br>
       1、折扣单未审批（stat != 5）<br>
-      2、折扣单已过有效期（discount_valid_date < sysdate）<br>
-      3、折扣单行没有可下单数量（active_qty <= 0）<br>
+      2、折扣单已过有效期（discount_valid_date &lt; sysdate）<br>
+      3、折扣单行没有可下单数量（active_qty &lt;= 0）<br>
       4、关联合同已失效（valid != 2）<br>
       5、项目已结案（stat=5 且 stage_name='项目结案'）<br>
       <strong style="color:#7C3AED;">排查SQL：</strong>`SELECT a.discount_apply_code, a.stat, a.discount_valid_date, c.valid, p.stat, p.stage_name FROM epm_discount_apply a LEFT JOIN epm_project_contract c ON a.contract_id=c.contract_id LEFT JOIN epm_project p ON a.project_id=p.project_id WHERE a.discount_apply_code = '折扣单号'`
@@ -765,7 +765,7 @@ ORDER BY a.createtime DESC
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard title="历史排查记录">
-<!-- 空白:待补充 -->
+&lt;!-- 空白:待补充 -->
 </KbCard>
 </div>
 </div>
