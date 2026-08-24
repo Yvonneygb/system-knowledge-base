@@ -204,11 +204,11 @@
 <p>6. 刷新列表</p></KbCard>
 <KbCard title="3.4 排期冲突校验"><ul><li>添加排期时，系统自动校验该讲师在目标时间段内是否已有排期</li><li>冲突规则：新排期时间段与已有排期时间段存在交集即为冲突</li><li>冲突时提示用户"该讲师在指定时间段已有排期，请重新选择"</li></ul></KbCard>
 <KbCard title="3.5 API清单"><table class="kl-table"><thead><tr><th>API路径</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>mlt/maLecturerSchedule/scheduleList</td><td>GET</td><td>查询排期列表</td></tr><tr><td>mlt/maLecturerSchedule/addSchedule</td><td>POST</td><td>添加排期</td></tr><tr><td>mlt/maLecturerSchedule/cancelSchedule</td><td>POST</td><td>取消排期</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><p class='kl-tip'>无选择弹窗。页面主体是LecturerCalendar日历组件展示排期。</p></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>新建排期</td><td>Modal.open表单，调用ddSchedule</td></tr><tr><td>取消排期</td><td>Modal.open表单，调用cancelSchedule</td></tr></tbody></table></KbCard>
-<KbCard title="保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>新建排期</td><td>dateType(日期类型)必填、date(日期范围)必填、reason(原因)</td></tr><tr><td>取消排期</td><td>date(日期范围)必填</td></tr></tbody></table></KbCard>
-<KbCard title="提交校验"><p class='kl-tip'>无审批/工作流，直接保存生效。</p></KbCard>
+<KbCard title="3.6 选择弹窗"><p class='kl-tip'>无选择弹窗。页面主体是LecturerCalendar日历组件展示排期。</p></KbCard>
+<KbCard title="3.7 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.8 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>新建排期</td><td>Modal.open表单，调用ddSchedule</td></tr><tr><td>取消排期</td><td>Modal.open表单，调用cancelSchedule</td></tr></tbody></table></KbCard>
+<KbCard title="3.9 保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>新建排期</td><td>dateType(日期类型)必填、date(日期范围)必填、reason(原因)</td></tr><tr><td>取消排期</td><td>date(日期范围)必填</td></tr></tbody></table></KbCard>
+<KbCard title="3.10 提交校验"><p class='kl-tip'>无审批/工作流，直接保存生效。</p></KbCard>
 <KbCard title="4.1 主表：ma_lecturer_schedule（讲师排期表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>lecturer_schedule_id</td><td>VARCHAR2</td><td>主键ID</td><td>主键</td></tr><tr><td>lecturer_schedule_code</td><td>VARCHAR2</td><td>排期编码</td><td>业务唯一键</td></tr><tr><td>lecturer_archives_code</td><td>VARCHAR2</td><td>关联讲师档案编码</td><td>外键关联ma_lecturer_archive</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>讲师姓名</td><td>冗余存储便于查询</td></tr><tr><td>schedule_date</td><td>DATE</td><td>排期日期</td><td></td></tr><tr><td>start_time</td><td>VARCHAR2</td><td>开始时间</td><td>格式HH:mm</td></tr><tr><td>end_time</td><td>VARCHAR2</td><td>结束时间</td><td>格式HH:mm</td></tr><tr><td>schedule_status</td><td>VARCHAR2</td><td>排期状态</td><td>有效/已取消</td></tr><tr><td>related_order_code</td><td>VARCHAR2</td><td>关联点将单号</td><td>点将业务创建时回写</td></tr><tr><td>schedule_remark</td><td>VARCHAR2</td><td>排期备注</td><td></td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>乐观锁版本号</td><td></td></tr></tbody></table></KbCard>
 <KbCard title="4.2 关键索引"><table class="kl-table"><thead><tr><th>索引名</th><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>idx_schedule_lecturer</td><td>lecturer_archives_code, schedule_date</td><td>按讲师+日期查询排期，用于冲突校验</td></tr><tr><td>idx_schedule_status</td><td>schedule_status</td><td>按状态过滤有效排期</td></tr></tbody></table></KbCard>
 </div>
@@ -227,7 +227,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1: 添加排期时时间冲突如何处理？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1: 添加排期时时间冲突如何处理？</strong></p>
 <p>A: 系统自动校验排期冲突，如该讲师在目标时间段已有排期，会提示冲突信息，不允许保存。</p>
 <p><strong>Q2: 取消排期后能否恢复？</strong></p>
 <p>A: 取消排期为即时生效操作，取消后需重新添加排期。</p>
