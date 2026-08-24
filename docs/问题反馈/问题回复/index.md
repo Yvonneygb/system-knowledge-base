@@ -170,6 +170,7 @@
 <KbCard title="3.4 详情页逻辑"><ul><li>展示反馈单基本信息（只读）</li><li><strong>FeedbackChat.tsx</strong> 组件：以对话形式展示反馈回复记录<ul><li>调用 <code>feedback/comment</code> 获取历史回复</li><li>左侧显示经销商反馈，右侧显示事业部回复</li><li>支持时间线排序展示</li></ul></li><li>回复区域：文本输入框 + 提交按钮，调用 <code>feedback/answer</code></li><li>结束按钮：调用 <code>feedback/end/{id}</code>，结束前确认提示</li></ul></KbCard>
 <KbCard title="3.5 评价逻辑"><ul><li><strong>Evaluation.tsx</strong> 组件：评价表单</li><li>仅"已结束"状态可评价</li><li>调用 <code>feedback/evaluate</code> 提交评价</li><li>评价内容可能包含评分、评语等（具体字段由Evaluation组件定义）</li></ul></KbCard>
 <KbCard title="3.6 前端文件结构">
+
 ```
 arrow-mbo/src/pages/afterSales/feedback/brand/
 ├── index.tsx              # 列表页
@@ -181,19 +182,20 @@ arrow-mbo/src/pages/afterSales/feedback/
     ├── FeedbackChat.tsx   # [公共] 反馈回复记录对话组件
     └── Evaluation.tsx     # [公共] 评价组件
 ```
+
 </KbCard>
-<KbCard title="选择弹窗"><p class='kl-tip'>无LOV选择弹窗。表单中的值集下拉同经销商端（反馈类型、反馈子类型、产品细分、状态），但反馈子类型使用带查看权限过滤的LOV配置（<code>subTypeViewLookupConfig</code>）。</p></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。支持导出：列表页"导出"按钮，接口 <code>feedback/division/export</code>。</p></KbCard>
-<KbCard title="其他按钮"><p><strong>列表页按钮：</strong></p>
+<KbCard title="3.7 选择弹窗"><p class='kl-tip'>无LOV选择弹窗。表单中的值集下拉同经销商端（反馈类型、反馈子类型、产品细分、状态），但反馈子类型使用带查看权限过滤的LOV配置（<code>subTypeViewLookupConfig</code>）。</p></KbCard>
+<KbCard title="3.8 导入"><p class='kl-tip'>不支持导入功能。支持导出：列表页"导出"按钮，接口 <code>feedback/division/export</code>。</p></KbCard>
+<KbCard title="3.9 其他按钮"><p><strong>列表页按钮：</strong></p>
 <table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>接口</th></tr></thead><tbody><tr><td>导出</td><td>始终显示</td><td><code>feedback/division/export</code></td></tr><tr><td>回复</td><td><code>_hasEditPer</code> && state∈[4,5]</td><td>跳转详情页</td></tr><tr><td>完结</td><td><code>_hasEditPer</code> && state∈[4,5]</td><td><code>feedback/end/{id}</code>（POST）</td></tr><tr><td>取消</td><td><code>_hasEditPer</code> && state∉[6,7,8]</td><td><code>feedback/cancel/{id}</code>（POST）</td></tr></tbody></table>
 <p class='kl-tip'>事业部端无"新增"按钮，不能新建反馈单。所有操作按钮需 <code>_hasEditPer</code> 权限标志为true（基于反馈子类型的细粒度权限控制，权限前缀 <code>hzero.feedback.dealer.ps.sub_type</code>）。</p>
 <p><strong>详情页按钮：</strong></p>
 <table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>接口</th></tr></thead><tbody><tr><td>取消</td><td>详情 && state∉[6,7,8]</td><td><code>feedback/cancel/{id}</code>（POST）</td></tr><tr><td>完结</td><td>详情 && state∈[4,5]</td><td><code>feedback/end/{id}</code>（POST），前置Modal.confirm确认</td></tr><tr><td>回复</td><td>详情 && state∈[4,5]</td><td><code>feedback/answer</code>（POST）</td></tr></tbody></table></KbCard>
-<KbCard title="保存校验"><p><strong>前端表单校验：</strong> 与经销商端共用 <code>detailConfig.tsx</code> 的 baseDS，校验规则相同（联系人、联系电话、联系地址、反馈类型、反馈子类型、产品细分等必填校验，电话正则校验，内容长度限制）。</p>
+<KbCard title="3.10 保存校验"><p><strong>前端表单校验：</strong> 与经销商端共用 <code>detailConfig.tsx</code> 的 baseDS，校验规则相同（联系人、联系电话、联系地址、反馈类型、反馈子类型、产品细分等必填校验，电话正则校验，内容长度限制）。</p>
 <p><strong>回复内容校验：</strong> <code>commentContent</code> 字段，isDetail且state∈[4,5]时必填，maxLength=2000。</p>
 <p><strong>附件校验：</strong> 单文件≤30MB，最多20个文件。</p>
 <p class='kl-tip'>后端校验在MBO微服务中，不在当前代码库，无法分析。</p></KbCard>
-<KbCard title="提交校验"><p><strong>回复流程：</strong> 详情页"回复"按钮 → <code>baseFormDS.validate()</code> 前端校验 → <code>feedback/answer</code>（POST）</p>
+<KbCard title="3.11 提交校验"><p><strong>回复流程：</strong> 详情页"回复"按钮 → <code>baseFormDS.validate()</code> 前端校验 → <code>feedback/answer</code>（POST）</p>
 <p><strong>完结流程：</strong> 详情页"完结"按钮 → Modal.confirm确认"确认完结该反馈吗？" → <code>feedback/end/{id}</code>（POST）</p>
 <p><strong>取消流程：</strong> 详情页"取消"按钮 → Modal.confirm确认"确认取消该反馈吗？" → <code>feedback/cancel/{id}</code>（POST）</p>
 <p class='kl-tip'>无工作流引擎，状态变更通过API直接更新。后端校验在MBO微服务中，不在当前代码库。</p></KbCard>
@@ -261,7 +263,7 @@ arrow-mbo/src/pages/afterSales/feedback/
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：事业部能否取消经销商的反馈单？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：事业部能否取消经销商的反馈单？</strong></p>
 <p>A：可以。事业部端有 <code>feedback/cancel/{id}</code> 接口，可取消已提交的反馈单。</p>
 <p><strong>Q2：结束反馈后还能继续回复吗？</strong></p>
 <p>A：不能。"已结束"状态不可再回复，仅可进行评价操作。</p>
