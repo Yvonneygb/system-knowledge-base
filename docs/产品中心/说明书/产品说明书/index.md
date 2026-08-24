@@ -198,8 +198,14 @@
 <ul><li>Controller: <code>EsSpecController</code></li></ul></KbCard>
 <KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-ae</code></li><li>页面路径：<code>arrow-ae/productInfo/esSpecProp</code></li><li>路由：<ul><li><code>/es-spec-prop/list</code> — 说明书列表页</li><li><code>/es-spec-prop/detail/:specid</code> — 说明书详情页</li></ul></li></ul></KbCard>
 <KbCard title="3.3 工作流"><ul><li>工作流编码：<code>SUB_PRODUCT_SPECIFICATION_MAIN</code></li><li>工作流名称：产品说明书</li><li>触发时机：用户点击"提交审批"按钮</li></ul></KbCard>
-<KbCard title="3.4 核心业务规则"><p>1. 新建时必填说明书名称、说明书编码 2. 关联型号和分类支持多选 3. 草稿状态可编辑，审批中不可修改 4. 审批拒绝后可重新编辑提交</p>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n\\|\\ 弹窗名称\\ \\|\\ 说明\\ \\|\\r\\n\\|---------\\|------\\|\\r\\n\\|\\ 关联说明书弹窗\\ \\|\\ Modal\\.open，标题"选择关联说明书"，调用CRM接口获取产品数据\\ \\|\\r\\n\\r\\n&gt;\\ 值集：状态AE\\.ES_STAT、审批状态AE\\.APPROVE_STATUS\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 不支持导入功能（仅支持导出）。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 显示条件\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|---------\\|------\\|\\r\\n\\|\\ 新建\\ \\|\\ 列表页\\ \\|\\ 新建说明书\\ \\|\\r\\n\\|\\ 导出\\ \\|\\ 列表页\\ \\|\\ GET\\ /es-specs/export，watermarkCode="WATER_MARK"\\ \\|\\r\\n\\|\\ 保存\\ \\|\\ editFlag\\ \\|\\ 保存说明书\\ \\|\\r\\n\\|\\ 编辑\\ \\|\\ backEditFlag\\ \\|\\ 进入编辑\\ \\|\\r\\n\\|\\ 删除\\ \\|\\ editFlag\\ \\|\\ 删除说明书\\ \\|\\r\\n\\|\\ 版本升级\\ \\|\\ approveStatus='APPROVED'且history≠2\\ \\|\\ ver\\+1，不修改原版本\\ \\|\\r\\n\\|\\ 关联产品/取消关联\\ \\|\\ 关联产品型号Tab\\ \\|\\ 关联产品操作\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*前端校验：\\*\\*\\ 说明书名称\\(spectitle\\)非空，为空提示"说明书名称不能为空！"\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n\\*\\*工作流：\\*\\*\\ 后端EsSpecService实现WorkflowBaseService接口，有wfComplete方法；hzInstanceId关联流程实例\\r\\n\\r\\n\\*\\*审批状态：\\*\\*\\ NEW/RUN/APPROVED/SUSPEND/RETURN，版本升级后状态重置为NEW</p></KbCard>
+<KbCard title="3.4 核心业务规则"><p>1. 新建时必填说明书名称、说明书编码 2. 关联型号和分类支持多选 3. 草稿状态可编辑，审批中不可修改 4. 审批拒绝后可重新编辑提交</p></KbCard>
+<KbCard title="3.5 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>关联说明书弹窗</td><td>Modal.open，标题"选择关联说明书"，调用CRM接口获取产品数据</td></tr></tbody></table>
+<p class='kl-tip'>值集：状态AE.ES_STAT、审批状态AE.APPROVE_STATUS</p></KbCard>
+<KbCard title="3.6 导入"><p class='kl-tip'>不支持导入功能（仅支持导出）。</p></KbCard>
+<KbCard title="3.7 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>新建</td><td>列表页</td><td>新建说明书</td></tr><tr><td>导出</td><td>列表页</td><td>GET /es-specs/export，watermarkCode="WATER_MARK"</td></tr><tr><td>保存</td><td>editFlag</td><td>保存说明书</td></tr><tr><td>编辑</td><td>backEditFlag</td><td>进入编辑</td></tr><tr><td>删除</td><td>editFlag</td><td>删除说明书</td></tr><tr><td>版本升级</td><td>approveStatus='APPROVED'且history≠2</td><td>ver+1，不修改原版本</td></tr><tr><td>关联产品/取消关联</td><td>关联产品型号Tab</td><td>关联产品操作</td></tr></tbody></table></KbCard>
+<KbCard title="3.8 保存校验"><p><strong>前端校验：</strong> 说明书名称(spectitle)非空，为空提示"说明书名称不能为空！"</p></KbCard>
+<KbCard title="3.9 提交校验"><p><strong>工作流：</strong> 后端EsSpecService实现WorkflowBaseService接口，有wfComplete方法；hzInstanceId关联流程实例</p>
+<p><strong>审批状态：</strong> NEW/RUN/APPROVED/SUSPEND/RETURN，版本升级后状态重置为NEW</p></KbCard>
 <KbCard title="4.1 ES_SPEC（说明书表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>spec_id</td><td>说明书ID（主键）</td></tr><tr><td>spec_name</td><td>说明书名称</td></tr><tr><td>spec_code</td><td>说明书编码</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>status</td><td>状态（草稿/审批中/生效/失效）</td></tr><tr><td>created_by</td><td>创建人</td></tr><tr><td>creation_date</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 <KbCard title="4.2 ES_SPEC_MODEL（说明书关联型号表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>spec_model_id</td><td>关联ID（主键）</td></tr><tr><td>spec_id</td><td>说明书ID</td></tr><tr><td>model_id</td><td>产品型号ID</td></tr><tr><td>model_code</td><td>产品型号编码</td></tr></tbody></table></KbCard>
 <KbCard title="4.3 ES_SPECCLAS_REF（说明书与分类关联表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>specclas_ref_id</td><td>关联ID（主键）</td></tr><tr><td>spec_id</td><td>说明书ID</td></tr><tr><td>classification_id</td><td>产品分类ID</td></tr><tr><td>classification_code</td><td>产品分类编码</td></tr></tbody></table></KbCard>
@@ -247,7 +253,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：说明书提交审批后能否修改？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：说明书提交审批后能否修改？</strong></p>
 <p>A1：审批中和审批通过状态不可修改，审批拒绝后可重新编辑提交。</p>
 <p><strong>Q2：一份说明书可以关联多少个型号？</strong></p>
 <p>A2：无数量限制，支持多对多关联。</p>
