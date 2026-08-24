@@ -148,8 +148,13 @@
 <div class="kl-wrap">
 <KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>CRM_BUSINESS/v1/{orgId}/lnk-price-list-item/list</td><td>GET</td><td>查询价目表列表</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/lnk-price-list-item/export</td><td>GET/POST</td><td>导出价目表数据</td></tr></tbody></table></KbCard>
 <KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-crm</code></li><li>路由：<code>/price/list</code></li></ul></KbCard>
-<KbCard title="3.3 核心业务规则"><p>1. 支持按产品编码、名称、事业部、价格类型等条件筛选 2. 列表支持分页展示 3. 导出时按当前查询条件导出 4. 价目表数据为只读，修改需通过价目表维护功能 5. 无工作流</p>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。值集：币种CRM\\.CURRENCY、生命状态CRM\\.PRODUCT_Z_STATE_NAME。币种查询条件仅内部用户可见。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 不支持导入功能。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|------\\|\\r\\n\\|\\ 导出\\ \\|\\ GET\\ /lnk-price-list-item/export，异步导出\\ \\|\\r\\n\\r\\n&gt;\\ 支持多字段排序。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 无保存校验（纯查询页面）。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 支持按产品编码、名称、事业部、价格类型等条件筛选 2. 列表支持分页展示 3. 导出时按当前查询条件导出 4. 价目表数据为只读，修改需通过价目表维护功能 5. 无工作流</p></KbCard>
+<KbCard title="3.4 选择弹窗"><p class='kl-tip'>无LOV选择弹窗。值集：币种CRM.CURRENCY、生命状态CRM.PRODUCT_Z_STATE_NAME。币种查询条件仅内部用户可见。</p></KbCard>
+<KbCard title="3.5 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.6 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>导出</td><td>GET /lnk-price-list-item/export，异步导出</td></tr></tbody></table>
+<p class='kl-tip'>支持多字段排序。</p></KbCard>
+<KbCard title="3.7 保存校验"><p class='kl-tip'>无保存校验（纯查询页面）。</p></KbCard>
+<KbCard title="3.8 提交校验"><p class='kl-tip'>无提交/审批功能。</p></KbCard>
 <KbCard title="4.1 LNK_PRICE_LIST_ITEM（价目表明细表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>price_list_item_id$</td><td>价目表明细ID（主@键）</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>price_list_id</td><td>价目表头ID</td></tr><tr><td>product_code</td><td>产品编码</td></tr><tr><td>product_name</td><td>产品名称</td></tr><tr><td>product_category</td><td>产品分类</td></tr><tr><td>business_unit</td><td>事业部</td></tr><tr><td>list_price</td><td>标价</td></tr><tr><td>net_price</td><td>净价</td></tr><tr><td>currency_code</td><td>币种</td></tr><tr><td>uom</td><td>单位</td></tr><tr><td>effective_date</td><td>生效日期</td></tr><tr><td>expiry_date</td><td>失效日期</td></tr><tr><td>price_type</td><td>价格类型</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -194,7 +199,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：导出支持什么格式？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：导出支持什么格式？</strong></p>
 <p>A1：通常支持Excel格式导出。</p>
 <p><strong>Q2：能否在此页面修改价格？</strong></p>
 <p>A2：不能，本页面仅查询和导出，价格修改需通过价目表维护功能。</p>
