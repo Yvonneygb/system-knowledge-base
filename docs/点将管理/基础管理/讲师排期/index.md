@@ -173,31 +173,9 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 排期管理">
-**具体逻辑**：
-
-- 1、讲师排期用于管理讲师的时间可用性
-- 2、添加排期后，对应时间段讲师被标记为"已排期"
-- 3、取消排期后，对应时间段讲师恢复为"可用"
-- 4、排期信息是点将业务中查询讲师可用时间的基础数据
-</KbCard>
-
-<KbCard num="2" title="2.2 与点将业务的关联">
-**具体逻辑**：
-
-- 1、点将业务选择讲师时，需查询讲师排期判断可用性
-- 2、已排期时间段不可重复排期（防冲突）
-- 3、排期状态影响讲师在点将列表中的可用标识
-</KbCard>
-
-<KbCard num="3" title="2.3 无工作流">
-**具体逻辑**：
-
-- 1、讲师排期不涉及审批工作流
-- 2、添加排期和取消排期均为即时生效操作
-- 3、--
-</KbCard>
-
+<KbCard title="2.1 排期管理"><ul><li>讲师排期用于管理讲师的时间可用性</li><li>添加排期后，对应时间段讲师被标记为"已排期"</li><li>取消排期后，对应时间段讲师恢复为"可用"</li><li>排期信息是点将业务中查询讲师可用时间的基础数据</li></ul></KbCard>
+<KbCard title="2.2 与点将业务的关联"><ul><li>点将业务选择讲师时，需查询讲师排期判断可用性</li><li>已排期时间段不可重复排期（防冲突）</li><li>排期状态影响讲师在点将列表中的可用标识</li></ul></KbCard>
+<KbCard title="2.3 无工作流"><ul><li>讲师排期不涉及审批工作流</li><li>添加排期和取消排期均为即时生效操作</li></ul></KbCard>
 </div>
 </div>
 </div>
@@ -215,120 +193,24 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 列表页">
-
-- **路由**: `/general/base/lecturerSchedule`
-- **API**: `mlt/maLecturerSchedule/scheduleList`（分页查询）
-- **查询条件**: 讲师姓名、排期日期范围、排期状态等
-- **列表字段**: 讲师姓名、排期日期、开始时间、结束时间、排期状态、关联点将单号、创建时间等
-- **操作按钮**:
-  - 添加排期：打开排期弹窗，选择讲师和时间段
-  - 取消排期：确认后取消排期，释放讲师时间
-  - 查看详情：查看排期详细信息
-
-</KbCard>
-
-<KbCard title="3.2 添加排期逻辑（addSchedule）">
-
-1. 点击"添加排期"按钮，打开排期弹窗
-2. 选择讲师（支持搜索，关联讲师档案）
-3. 填写排期信息：
-   - 排期日期
-   - 开始时间
-   - 结束时间
-   - 排期备注
-4. 校验逻辑：
-   - 排期时间段不可与该讲师已有排期冲突
-   - 开始时间必须早于结束时间
-   - 排期日期不可为过去日期
-5. 校验通过后调用 `mlt/maLecturerSchedule/addSchedule` 保存
-6. 保存成功后刷新列表
-
-</KbCard>
-
-<KbCard title="3.3 取消排期逻辑（cancelSchedule）">
-
-1. 选择需要取消的排期记录
-2. 点击"取消排期"按钮
-3. 弹出确认提示
-4. 确认后调用 `mlt/maLecturerSchedule/cancelSchedule`
-5. 取消成功后：
-   - 排期状态更新为"已取消"
-   - 讲师对应时间段释放为可用
-6. 刷新列表
-
-</KbCard>
-
-<KbCard title="3.4 排期冲突校验">
-
-- 添加排期时，系统自动校验该讲师在目标时间段内是否已有排期
-- 冲突规则：新排期时间段与已有排期时间段存在交集即为冲突
-- 冲突时提示用户"该讲师在指定时间段已有排期，请重新选择"
-
-</KbCard>
-
-<KbCard title="3.5 API清单">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>API路径</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>mlt/maLecturerSchedule/scheduleList</td>
-<td>GET</td>
-<td>查询排期列表</td>
-</tr>
-<tr>
-<td>mlt/maLecturerSchedule/addSchedule</td>
-<td>POST</td>
-<td>添加排期</td>
-</tr>
-<tr>
-<td>mlt/maLecturerSchedule/cancelSchedule</td>
-<td>POST</td>
-<td>取消排期</td>
-</tr>
-</tbody></table></div>
-
----
-
-</KbCard>
-
-<KbCard num="1" title="4.1 主表：ma_lecturer_schedule（讲师排期表）">
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| lecturer_schedule_id | VARCHAR2 | 主键ID | 主键 |
-| lecturer_schedule_code | VARCHAR2 | 排期编码 | 业务唯一键 |
-| lecturer_archives_code | VARCHAR2 | 关联讲师档案编码 | 外键关联ma_lecturer_archive |
-| lecturer_name | VARCHAR2 | 讲师姓名 | 冗余存储便于查询 |
-| schedule_date | DATE | 排期日期 | |
-| start_time | VARCHAR2 | 开始时间 | 格式HH:mm |
-| end_time | VARCHAR2 | 结束时间 | 格式HH:mm |
-| schedule_status | VARCHAR2 | 排期状态 | 有效/已取消 |
-| related_order_code | VARCHAR2 | 关联点将单号 | 点将业务创建时回写 |
-| schedule_remark | VARCHAR2 | 排期备注 | |
-| created_by | VARCHAR2 | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | VARCHAR2 | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-| object_version_number | NUMBER | 乐观锁版本号 | |
-
-</KbCard>
-
-<KbCard num="2" title="4.2 关键索引">
-
-| 索引名 | 字段 | 说明 |
-|--------|------|------|
-| idx_schedule_lecturer | lecturer_archives_code, schedule_date | 按讲师+日期查询排期，用于冲突校验 |
-| idx_schedule_status | schedule_status | 按状态过滤有效排期 |
-
----
-
-</KbCard>
-
+<KbCard title="3.1 列表页"><ul><li><strong>路由</strong>: <code>/general/base/lecturerSchedule</code></li><li><strong>API</strong>: <code>mlt/maLecturerSchedule/scheduleList</code>（分页查询）</li><li><strong>查询条件</strong>: 讲师姓名、排期日期范围、排期状态等</li><li><strong>列表字段</strong>: 讲师姓名、排期日期、开始时间、结束时间、排期状态、关联点将单号、创建时间等</li><li><strong>操作按钮</strong>:<ul><li>添加排期：打开排期弹窗，选择讲师和时间段</li><li>取消排期：确认后取消排期，释放讲师时间</li><li>查看详情：查看排期详细信息</li></ul></li></ul></KbCard>
+<KbCard title="3.2 添加排期逻辑（addSchedule）"><p>1. 点击"添加排期"按钮，打开排期弹窗 2. 选择讲师（支持搜索，关联讲师档案） 3. 填写排期信息：</p>
+<ul><li>排期日期</li><li>开始时间</li><li>结束时间</li><li>排期备注</li></ul>
+<p>4. 校验逻辑：</p>
+<ul><li>排期时间段不可与该讲师已有排期冲突</li><li>开始时间必须早于结束时间</li><li>排期日期不可为过去日期</li></ul>
+<p>5. 校验通过后调用 <code>mlt/maLecturerSchedule/addSchedule</code> 保存 6. 保存成功后刷新列表</p></KbCard>
+<KbCard title="3.3 取消排期逻辑（cancelSchedule）"><p>1. 选择需要取消的排期记录 2. 点击"取消排期"按钮 3. 弹出确认提示 4. 确认后调用 <code>mlt/maLecturerSchedule/cancelSchedule</code> 5. 取消成功后：</p>
+<ul><li>排期状态更新为"已取消"</li><li>讲师对应时间段释放为可用</li></ul>
+<p>6. 刷新列表</p></KbCard>
+<KbCard title="3.4 排期冲突校验"><ul><li>添加排期时，系统自动校验该讲师在目标时间段内是否已有排期</li><li>冲突规则：新排期时间段与已有排期时间段存在交集即为冲突</li><li>冲突时提示用户"该讲师在指定时间段已有排期，请重新选择"</li></ul></KbCard>
+<KbCard title="3.5 API清单"><table class="kl-table"><thead><tr><th>API路径</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>mlt/maLecturerSchedule/scheduleList</td><td>GET</td><td>查询排期列表</td></tr><tr><td>mlt/maLecturerSchedule/addSchedule</td><td>POST</td><td>添加排期</td></tr><tr><td>mlt/maLecturerSchedule/cancelSchedule</td><td>POST</td><td>取消排期</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><p class='kl-tip'>无选择弹窗。页面主体是LecturerCalendar日历组件展示排期。</p></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>新建排期</td><td>Modal.open表单，调用ddSchedule</td></tr><tr><td>取消排期</td><td>Modal.open表单，调用cancelSchedule</td></tr></tbody></table></KbCard>
+<KbCard title="保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>新建排期</td><td>dateType(日期类型)必填、date(日期范围)必填、reason(原因)</td></tr><tr><td>取消排期</td><td>date(日期范围)必填</td></tr></tbody></table></KbCard>
+<KbCard title="提交校验"><p class='kl-tip'>无审批/工作流，直接保存生效。</p></KbCard>
+<KbCard title="4.1 主表：ma_lecturer_schedule（讲师排期表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>lecturer_schedule_id</td><td>VARCHAR2</td><td>主键ID</td><td>主键</td></tr><tr><td>lecturer_schedule_code</td><td>VARCHAR2</td><td>排期编码</td><td>业务唯一键</td></tr><tr><td>lecturer_archives_code</td><td>VARCHAR2</td><td>关联讲师档案编码</td><td>外键关联ma_lecturer_archive</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>讲师姓名</td><td>冗余存储便于查询</td></tr><tr><td>schedule_date</td><td>DATE</td><td>排期日期</td><td></td></tr><tr><td>start_time</td><td>VARCHAR2</td><td>开始时间</td><td>格式HH:mm</td></tr><tr><td>end_time</td><td>VARCHAR2</td><td>结束时间</td><td>格式HH:mm</td></tr><tr><td>schedule_status</td><td>VARCHAR2</td><td>排期状态</td><td>有效/已取消</td></tr><tr><td>related_order_code</td><td>VARCHAR2</td><td>关联点将单号</td><td>点将业务创建时回写</td></tr><tr><td>schedule_remark</td><td>VARCHAR2</td><td>排期备注</td><td></td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>乐观锁版本号</td><td></td></tr></tbody></table></KbCard>
+<KbCard title="4.2 关键索引"><table class="kl-table"><thead><tr><th>索引名</th><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>idx_schedule_lecturer</td><td>lecturer_archives_code, schedule_date</td><td>按讲师+日期查询排期，用于冲突校验</td></tr><tr><td>idx_schedule_status</td><td>schedule_status</td><td>按状态过滤有效排期</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -342,15 +224,28 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1: 添加排期时时间冲突如何处理？</strong></p>
+<p>A: 系统自动校验排期冲突，如该讲师在目标时间段已有排期，会提示冲突信息，不允许保存。</p>
+<p><strong>Q2: 取消排期后能否恢复？</strong></p>
+<p>A: 取消排期为即时生效操作，取消后需重新添加排期。</p>
+<p><strong>Q3: 排期是否需要审批？</strong></p>
+<p>A: 不需要。讲师排期无工作流，添加和取消均为即时生效。</p>
+<p><strong>Q4: 排期与点将业务如何关联？</strong></p>
+<p>A: 点将业务选择讲师时，通过查询讲师排期判断可用性。点将单创建成功后会回写关联单号（related_order_code）到排期记录。</p>
+<p><strong>Q5: 一个讲师一天可以有多少个排期？</strong></p>
+<p>A: 无数量限制，但同一讲师的排期时间段不可重叠（冲突校验）。</p>
+<p><strong>Q6: 排期时间格式是什么？</strong></p>
+<p>A: 开始时间和结束时间使用HH:mm格式存储，如09:00、17:30。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | v1.0 | 初始创建 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>v1.0</td><td>初始创建</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
