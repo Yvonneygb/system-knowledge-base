@@ -134,6 +134,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard title="重点逻辑"><ul><li><strong>饱和度计算</strong>：饱和度 = 已排期时间 / 可排期时间 × 100%，超过100%表示超负荷</li><li><strong>两种查询维度</strong>：<ul><li><code>getSaturationByCode</code>：按设计师编码查询</li><li><code>getSaturationByUser</code>：按用户编码查询</li></ul></li><li><strong>值集依赖</strong>：页面展示依赖4个值集<ul><li><code>MBO.DESIGN_APPLY_TYPE</code>：设计点将类型</li><li><code>MBO.DESIGN_STATE</code>：设计状态</li><li><code>MBO.DESIGN_LECTURER_LEVEL</code>：设计师级别</li><li><code>MBO.APPLY_APPROVAL_STATE</code>：审批状态</li></ul></li><li><strong>数据来源</strong>：饱和度数据由点将执行模块自动计算和更新</li></ul></KbCard>
 </div>
 </div>
 </div>
@@ -151,88 +152,16 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 列表页">
-
-- **前端路由**：`/general/designGeneral/designSaturation/list`
-- **API**：`mlt/maLecturerSaturation/page`
-- **Entity**：`MaLecturerSaturation`
-- **查询条件**：设计师姓名、设计师级别、饱和度范围、统计周期
-- **列表字段**：设计师编码、设计师姓名、设计师级别、可排期天数、已排期天数、饱和度、统计周期
-- **值集加载**：页面初始化时加载4个值集用于下拉选项和状态展示
-
-</KbCard>
-
-<KbCard title="3.2 按设计师编码查询">
-
-- **API**：`mlt/maLecturerSaturation/getSaturationByCode`
-- **参数**：lecturerCode（设计师编码）
-- **返回**：该设计师的饱和度详情，包含各时间段的排期明细
-
-</KbCard>
-
-<KbCard title="3.3 按用户编码查询">
-
-- **API**：`mlt/maLecturerSaturation/getSaturationByUser`
-- **参数**：userCode（用户编码）
-- **返回**：该用户关联设计师的饱和度详情
-
-</KbCard>
-
-<KbCard title="3.4 值集说明">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>值集编码</th>
-<th>值集名称</th>
-<th>用途</th>
-</tr>
-<tr>
-<td>MBO.DESIGN_APPLY_TYPE</td>
-<td>设定点将类型</td>
-<td>区分不同类型的点将申请</td>
-</tr>
-<tr>
-<td>MBO.DESIGN_STATE</td>
-<td>设计状态</td>
-<td>标识设计点将的当前状态</td>
-</tr>
-<tr>
-<td>MBO.DESIGN_LECTURER_LEVEL</td>
-<td>设计师级别</td>
-<td>标识设计师的级别分类</td>
-</tr>
-<tr>
-<td>MBO.APPLY_APPROVAL_STATE</td>
-<td>审批状态</td>
-<td>标识申请的审批状态</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="1" title="ma_lecturer_saturation（讲师饱和度统计表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| saturation_id | NUMBER | 饱和度ID（主键） |
-| lecturer_code | VARCHAR2 | 设计师编码 |
-| lecturer_name | VARCHAR2 | 设计师姓名 |
-| lecturer_level | VARCHAR2 | 设计师级别 |
-| user_code | VARCHAR2 | 用户编码 |
-| available_days | NUMBER | 可排期天数 |
-| scheduled_days | NUMBER | 已排期天数 |
-| saturation_rate | NUMBER | 饱和度（百分比） |
-| stat_period | VARCHAR2 | 统计周期 |
-| apply_type | VARCHAR2 | 点将类型 |
-| design_state | VARCHAR2 | 设计状态 |
-| approval_state | VARCHAR2 | 审批状态 |
-| created_by | VARCHAR2 | 创建人 |
-| creation_date | DATE | 创建时间 |
-| last_updated_by | VARCHAR2 | 最后更新人 |
-| last_update_date | DATE | 最后更新时间 |
-
-</KbCard>
-
+<KbCard title="3.1 列表页"><ul><li><strong>前端路由</strong>：<code>/general/designGeneral/designSaturation/list</code></li><li><strong>API</strong>：<code>mlt/maLecturerSaturation/page</code></li><li><strong>Entity</strong>：<code>MaLecturerSaturation</code></li><li><strong>查询条件</strong>：设计师姓名、设计师级别、饱和度范围、统计周期</li><li><strong>列表字段</strong>：设计师编码、设计师姓名、设计师级别、可排期天数、已排期天数、饱和度、统计周期</li><li><strong>值集加载</strong>：页面初始化时加载4个值集用于下拉选项和状态展示</li></ul></KbCard>
+<KbCard title="3.2 按设计师编码查询"><ul><li><strong>API</strong>：<code>mlt/maLecturerSaturation/getSaturationByCode</code></li><li><strong>参数</strong>：lecturerCode（设计师编码）</li><li><strong>返回</strong>：该设计师的饱和度详情，包含各时间段的排期明细</li></ul></KbCard>
+<KbCard title="3.3 按用户编码查询"><ul><li><strong>API</strong>：<code>mlt/maLecturerSaturation/getSaturationByUser</code></li><li><strong>参数</strong>：userCode（用户编码）</li><li><strong>返回</strong>：该用户关联设计师的饱和度详情</li></ul></KbCard>
+<KbCard title="3.4 值集说明"><table class="kl-table"><thead><tr><th>值集编码</th><th>值集名称</th><th>用途</th></tr></thead><tbody><tr><td>MBO.DESIGN_APPLY_TYPE</td><td>设定点将类型</td><td>区分不同类型的点将申请</td></tr><tr><td>MBO.DESIGN_STATE</td><td>设计状态</td><td>标识设计点将的当前状态</td></tr><tr><td>MBO.DESIGN_LECTURER_LEVEL</td><td>设计师级别</td><td>标识设计师的级别分类</td></tr><tr><td>MBO.APPLY_APPROVAL_STATE</td><td>审批状态</td><td>标识申请的审批状态</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><p class='kl-tip'>无选择弹窗。页面主体是SaturationForm饱和度查询表单+待作业申请列表Table。</p></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="其他按钮"><p class='kl-tip'>无其他按钮（纯查询页）。</p></KbCard>
+<KbCard title="保存校验"><p class='kl-tip'>无保存功能。</p></KbCard>
+<KbCard title="提交校验"><p class='kl-tip'>无提交/审批功能。纯查询类页面。</p></KbCard>
+<KbCard title="ma_lecturer_saturation（讲师饱和度统计表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>saturation_id</td><td>NUMBER</td><td>饱和度ID（主键）</td></tr><tr><td>lecturer_code</td><td>VARCHAR2</td><td>设计师编码</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>设计师姓名</td></tr><tr><td>lecturer_level</td><td>VARCHAR2</td><td>设计师级别</td></tr><tr><td>user_code</td><td>VARCHAR2</td><td>用户编码</td></tr><tr><td>available_days</td><td>NUMBER</td><td>可排期天数</td></tr><tr><td>scheduled_days</td><td>NUMBER</td><td>已排期天数</td></tr><tr><td>saturation_rate</td><td>NUMBER</td><td>饱和度（百分比）</td></tr><tr><td>stat_period</td><td>VARCHAR2</td><td>统计周期</td></tr><tr><td>apply_type</td><td>VARCHAR2</td><td>点将类型</td></tr><tr><td>design_state</td><td>VARCHAR2</td><td>设计状态</td></tr><tr><td>approval_state</td><td>VARCHAR2</td><td>审批状态</td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -246,15 +175,24 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：饱和度超过100%是什么意思？</strong></p>
+<p>A：表示设计师已排期时间超过可排期时间，处于超负荷状态，需调整排期。</p>
+<p><strong>Q2：饱和度数据什么时候更新？</strong></p>
+<p>A：设计师点将执行完成时自动更新，也可手动触发重新计算。</p>
+<p><strong>Q3：getSaturationByCode和getSaturationByUser的区别？</strong></p>
+<p>A：<code>getSaturationByCode</code>按设计师编码查询，适用于管理员查看任意设计师；<code>getSaturationByUser</code>按用户编码查询，适用于设计师查看自己的饱和度。</p>
+<p><strong>Q4：值集数据不显示？</strong></p>
+<p>A：检查值集<code>MBO.DESIGN_APPLY_TYPE</code>、<code>MBO.DESIGN_STATE</code>、<code>MBO.DESIGN_LECTURER_LEVEL</code>、<code>MBO.APPLY_APPROVAL_STATE</code>是否已配置。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | v1.0 | 初始创建 | AI生成 |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>v1.0</td><td>初始创建</td><td>AI生成</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
