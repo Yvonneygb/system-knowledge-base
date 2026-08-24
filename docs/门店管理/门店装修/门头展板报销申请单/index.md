@@ -175,63 +175,16 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 保存逻辑（doSave）">
-
-**具体逻辑**：
-
-- 1、新增(doInsert)：生成报销编码，插入主表和行表
-- 2、更新(doUpdate)：更新主表和行表
-</KbCard>
-
-<KbCard num="2" title="2.2 报销分析（1bxFx）">
-
-**具体逻辑**：
-
-- 1、查询已启动、已审批、已驳回状态的@状态的相关8的报销单据
-- 2、按装修项目(de9ecorateProject)分类汇总申请金额
-- 3、特殊处理灯具+灯具(五金专区)、软装+软装(整体)等合并统计
-</KbCard>
-
-<KbCard num="3" title="2.3 行表金额汇总（computeLineSum）">
-
-**具体逻辑**：
-
-- 1、汇总各门店行表的额度内/额度外申请金额、业务批准金额、财务批准金额
-</KbCard>
-
-<KbCard num="4" title="2.4 审批人获取">
-
-**具体逻辑**：
-
-- 1、**部门负责人**：getUnitManageLoginNameById?ById - 根据报销单ID获取部门负责人
-- 2、**省级负责人**：getProvincialManagerLoginNameById - 根据报销单ID获取省级负责人
-- 3、返回格式为ApproveUsersVO列表（工作流固定格式）
-</KbCard>
-
-<KbCard num="5" title="2.5 门头兑现查询">
-
-**具体逻辑**：
-
-- 1、getCashoutSearch：查询门头兑现关联数据
-- 2、getCashoutSearchLov：门头兑现LOV查询
-- 3、生成验收人员保证书HTML内容
-</KbCard>
-
-<KbCard num="6" title="2.6 删除逻辑（doDelete）">
-
-**具体逻辑**：
-
-- 1、删除主表数据
-</KbCard>
-
-<KbCard num="7" title="2.7 打印数据（doSelectForPrint）">
-
-**具体逻辑**：
-
-- 1、查询详情并转换词汇值含义
-- 2、根据事业部配置earlyEncashmentFlag判断是否允许提前兑现
-</KbCard>
-
+<KbCard title="2.1 保存逻辑（doSave）"><ul><li>新增(doInsert)：生成报销编码，插入主表和行表</li><li>更新(doUpdate)：更新主表和行表</li></ul></KbCard>
+<KbCard title="2.2 报销分析（1bxFx）"><ul><li>查询已启动、已审批、已驳回状态的@状态的相关8的报销单据</li><li>按装修项目(de9ecorateProject)分类汇总申请金额</li><li>特殊处理灯具+灯具(五金专区)、软装+软装(整体)等合并统计</li></ul></KbCard>
+<KbCard title="2.3 行表金额汇总（computeLineSum）"><ul><li>汇总各门店行表的额度内/额度外申请金额、业务批准金额、财务批准金额</li></ul>
+<p>E- 计算标准金额、申请总额、业务批准总额、财务批准总额</p></KbCard>
+<KbCard title="2.4 审批人获取"><ul><li><strong>部门负责人</strong>：getUnitManageLoginNameById?ById - 根据报销单ID获取部门负责人</li><li><strong>省级负责人</strong>：getProvincialManagerLoginNameById - 根据报销单ID获取省级负责人</li><li>返回格式为ApproveUsersVO列表（工作流固定格式）</li></ul></KbCard>
+<KbCard title="2.5 门头兑现查询"><ul><li>getCashoutSearch：查询门头兑现关联数据</li><li>getCashoutSearchLov：门头兑现LOV查询</li><li>生成验收人员保证书HTML内容</li></ul></KbCard>
+<KbCard title="2.6 删除逻辑（doDelete）"><ul><li>删除主表数据</li></ul></KbCard>
+<KbCard title="2.7 打印数据（doSelectForPrint）"><ul><li>查询详情并转换词汇值含义</li></ul>
+<p>##(2.8 提前兑现</p>
+<ul><li>根据事业部配置earlyEncashmentFlag判断是否允许提前兑现</li></ul></KbCard>
 </div>
 </div>
 </div>
@@ -249,73 +202,18 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 API接口列表">
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | /get-reimburse-head-list | 门头报销申请列表(分页) |
-| GET | /get-reimburse-head-detail | 门头报销申请详情 |
-| GET | /do-select | 门头报销申请详情(工作流) |
-| GET | /do-select-print | 打印详情 |
-| GET | /get-cashout-search | 门头兑现查询 |
-| GET | /get-cashout-lov | 门头兑现LOV |
-| POST | /insert-reimburse | 门头报销保存(旧) |
-| DELETE | /do-delete | 删除 |
-| POST | /do-save | 门头报销保存(新) |
-| POST | /get-unit-manage-users | 获取部门负责人 |
-| POST | /get-provincial-manage-users | 获取省级负责人 |
-
-</KbCard>
-
-<KbCard title="3.2 工作流回调">
-
-| 方法 | 触发时机 | 逻辑说明 |
-|------|------|------|
-| wfProcSubmit | 提交审批 | 启动工作流实例 |
-| wfComplete | 审批完成 | 更新审核状态 |
-
-</KbCard>
-
-<KbCard num="1" title="表：CUST_DH_REIMBURSE_HEAD">
-
-| 字段名 | 类型 | 说明 |
-|------|------|------|
-| id | Long | 主键 |
-| created | Date | 创建时间 |
-| last_upd | Date | 最后更新时间 |
-| last_upd_by | String | 最后更新人 |
-| entid | Long | 事业部ID |
-| division_id | Long | 事业部词汇值 |
-| audit_stat | String | 审核状态 |
-| )stat | Long | 状态 |
-| wfid | Long | 流程ID |
-| wfflag | Long | 流程状态 |
-| reimburse_code | String | 报销编码 |
-| customer_legal_id | Long | 交易公司法人中间表ID |
-| policy_standard_id | Long | 补贴政策ID |
-| year | Long | 年度 |
-| remark | String | 备注 |
-| pay_type | Long | 支付方式 |
-| status | String | 生效状态 |
-| customer_id | Long | 经销商ID |
-| bx_type | Long | 报销类型 |
-| cust_limit_amt | BigDecimal | 经销商限额 |
-| out_excess_amt | BigDecimal | 额度外超限金额 |
-| out_bx_amt | BigDecimal | 额度外实际报销金额 |
-| in_bx_amt | BigDecimal | 额度内实际报销金额 |
-| out_actual_apply_amt | BigDecimal | 额度外实际申请总额 |
-| in_actual_apply_amt | BigDecimal | 额度内实际申请金额 |
-| out_bx_used_amt | BigDecimal | 额度外已报销金额 |
-| trading_company_code | String | 交易公司编码 |
-| in_early_cashout_ratio | BigDecimal | 额度内提前兑现比例 |
-| signature_state | Long | 电子签章状态 |
-| signature_url | String | 电子签章地址 |
-| re_sign_flag | String | 需要重签标识(y/n) |
-| hz_instance_id | Long | H0流程实例ID0ID |
-| hz_approve_status | String | H0流程审批状态(必填) |
-
-</KbCard>
-
+<KbCard title="3.1 API接口列表"><table class="kl-table"><thead><tr><th>方法</th><th>路径</th><th>说明</th></tr></thead><tbody><tr><td>GET</td><td>/get-reimburse-head-list</td><td>门头报销申请列表(分页)</td></tr><tr><td>GET</td><td>/get-reimburse-head-detail</td><td>门头报销申请详情</td></tr><tr><td>GET</td><td>/do-select</td><td>门头报销申请详情(工作流)</td></tr><tr><td>GET</td><td>/do-select-print</td><td>打印详情</td></tr><tr><td>GET</td><td>/get-cashout-search</td><td>门头兑现查询</td></tr><tr><td>GET</td><td>/get-cashout-lov</td><td>门头兑现LOV</td></tr><tr><td>POST</td><td>/insert-reimburse</td><td>门头报销保存(旧)</td></tr><tr><td>DELETE</td><td>/do-delete</td><td>删除</td></tr><tr><td>POST</td><td>/do-save</td><td>门头报销保存(新)</td></tr><tr><td>POST</td><td>/get-unit-manage-users</td><td>获取部门负责人</td></tr><tr><td>POST</td><td>/get-provincial-manage-users</td><td>获取省级负责人</td></tr></tbody></table></KbCard>
+<KbCard title="3.2 工作流回调"><table class="kl-table"><thead><tr><th>方法</th><th>触发时机</th><th>逻辑说明</th></tr></thead><tbody><tr><td>wfProcSubmit</td><td>提交审批</td><td>启动工作流实例</td></tr><tr><td>wfComplete</td><td>审批完成</td><td>更新审核状态</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>LOV编码</th><th>依赖参数</th><th>说明</th></tr></thead><tbody><tr><td>经销商编码</td><td><code>BASIC_CUSTOM_ORG_LOV_2</code></td><td>-</td><td>选择经销商</td></tr><tr><td>交易公司</td><td><code>MBO.DISTRIBUTOR_COMPANY_VO</code></td><td>customerCode</td><td>选择交易公司</td></tr><tr><td>法人客户</td><td><code>MBO.DISTRIBUTOR_COMPANY_LEGAL_VO</code></td><td>customerCode, tradingCompanyId</td><td>选择法人客户</td></tr><tr><td>店面建设补贴政策</td><td><code>AE.POLICY_STANDARD_VALID_HEAD</code></td><td>entid</td><td>选择补贴政策</td></tr><tr><td>门店编码(行级)</td><td><code>AE.STORE_LIST_HEAD_VIEW</code></td><td>-</td><td>选择门店</td></tr><tr><td>补贴项目(行级)</td><td><code>AE.SUBSIDY_PROGRAM_VIEW</code></td><td>policyStandardId, terminalType</td><td>选择补贴项目</td></tr></tbody></table></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>保存</td><td>编辑模式</td><td>走保存接口</td></tr><tr><td>提交</td><td>!businessKey</td><td>启动工作流</td></tr><tr><td>打印</td><td>有单据ID</td><td>reportCode=<code>MTZBBXSQ_PRINT</code></td></tr></tbody></table>
+<p class='kl-tip'>列表页为hlod低代码页面。</p></KbCard>
+<KbCard title="保存校验"><p><strong>前端校验：</strong></p>
+<table class="kl-table"><thead><tr><th>校验项</th><th>错误提示</th></tr></thead><tbody><tr><td>经销商、交易公司、法人客户、补贴政策必填</td><td>(C7N内置提示)</td></tr><tr><td>报销类型、支付方式、预算年度必填</td><td>(C7N内置提示)</td></tr><tr><td>行级门店编码、补贴项目、数量、装修前/后照片必填</td><td>(C7N内置提示)</td></tr><tr><td>数量范围校验</td><td>装修项目数量限制范围为X-Y</td></tr><tr><td>额度内/外申请金额</td><td>输入的金额不能大于对应的额度(内/外)标准金额</td></tr><tr><td>业务审批金额(非超额报销)</td><td>不能大于标准金额</td></tr></tbody></table>
+<p><strong>后端校验：</strong></p>
+<table class="kl-table"><thead><tr><th>校验项</th><th>错误提示</th></tr></thead><tbody><tr><td>报销政策</td><td>报销政策不能为空 / 报销政策已失效 / 报销政策已过期</td></tr><tr><td>报销明细</td><td>报销明细不能为空 / 单独门店申请，只能报销一个门店</td></tr><tr><td>数量</td><td>申请数量必须大于0 / 报销申请数量必须在政策数量范围内</td></tr><tr><td>装修照片</td><td>请上传装修前文件 / 请上传装修后文件</td></tr><tr><td>额度外预算</td><td>X年的额度外预算不足，有疑问请联系财务</td></tr><tr><td>额度内标准</td><td>额度内标准为0，不允许修改 / 非超额报销，额度内金额不允许大于政策标准</td></tr></tbody></table></KbCard>
+<KbCard title="提交校验"><p><strong>工作流编码：</strong> <code>SUB_STORE_HEAD_PROCESS_DOOR</code>（门头报销申请流程）</p></KbCard>
+<KbCard title="表：CUST_DH_REIMBURSE_HEAD"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>id</td><td>Long</td><td>主键</td></tr><tr><td>created</td><td>Date</td><td>创建时间</td></tr><tr><td>last_upd</td><td>Date</td><td>最后更新时间</td></tr><tr><td>last_upd_by</td><td>String</td><td>最后更新人</td></tr><tr><td>entid</td><td>Long</td><td>事业部ID</td></tr><tr><td>division_id</td><td>Long</td><td>事业部词汇值</td></tr><tr><td>audit_stat</td><td>String</td><td>审核状态</td></tr><tr><td>)stat</td><td>Long</td><td>状态</td></tr><tr><td>wfid</td><td>Long</td><td>流程ID</td></tr><tr><td>wfflag</td><td>Long</td><td>流程状态</td></tr><tr><td>reimburse_code</td><td>String</td><td>报销编码</td></tr><tr><td>customer_legal_id</td><td>Long</td><td>交易公司法人中间表ID</td></tr><tr><td>policy_standard_id</td><td>Long</td><td>补贴政策ID</td></tr><tr><td>year</td><td>Long</td><td>年度</td></tr><tr><td>remark</td><td>String</td><td>备注</td></tr><tr><td>pay_type</td><td>Long</td><td>支付方式</td></tr><tr><td>status</td><td>String</td><td>生效状态</td></tr><tr><td>customer_id</td><td>Long</td><td>经销商ID</td></tr><tr><td>bx_type</td><td>Long</td><td>报销类型</td></tr><tr><td>cust_limit_amt</td><td>BigDecimal</td><td>经销商限额</td></tr><tr><td>out_excess_amt</td><td>BigDecimal</td><td>额度外超限金额</td></tr><tr><td>out_bx_amt</td><td>BigDecimal</td><td>额度外实际报销金额</td></tr><tr><td>in_bx_amt</td><td>BigDecimal</td><td>额度内实际报销金额</td></tr><tr><td>out_actual_apply_amt</td><td>BigDecimal</td><td>额度外实际申请总额</td></tr><tr><td>in_actual_apply_amt</td><td>BigDecimal</td><td>额度内实际申请金额</td></tr><tr><td>out_bx_used_amt</td><td>BigDecimal</td><td>额度外已报销金额</td></tr><tr><td>trading_company_code</td><td>String</td><td>交易公司编码</td></tr><tr><td>in_early_cashout_ratio</td><td>BigDecimal</td><td>额度内提前兑现比例</td></tr><tr><td>signature_state</td><td>Long</td><td>电子签章状态</td></tr><tr><td>signature_url</td><td>String</td><td>电子签章地址</td></tr><tr><td>re_sign_flag</td><td>String</td><td>需要重签标识(y/n)</td></tr><tr><td>hz_instance_id</td><td>Long</td><td>H0流程实例ID0ID</td></tr><tr><td>hz_approve_status</td><td>String</td><td>H0流程审批状态(必填)</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -333,15 +231,17 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>审批人获取为空</td><td>检查部门/省级负责人配置</td></tr><tr><td>报销分析数据不完整</td><td>确认关联的报销单据状态为已启动/已审批/已驳回</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 作者 | 说明 |
-|------|------|------|
-| 2025-09-29 | jiaqiang.fu01 | 初始创建 |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>作者</th><th>说明</th></tr></thead><tbody><tr><td>2025-09-29</td><td>jiaqiang.fu01</td><td>初始创建</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
