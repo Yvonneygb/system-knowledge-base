@@ -162,50 +162,9 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 嵌入位置">
-
-本功能嵌入在CRM产品详情页中使用，无独立路由页面。
-
-</KbCard>
-
-<KbCard num="2" title="2.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/product/{productId}/images`</td>
-<td>GET</td>
-<td>查询产品图片列表</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/product/{productId}/images`</td>
-<td>POST</td>
-<td>上传产品图片</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/product/{productId}/images/{id}`</td>
-<td>DELETE</td>
-<td>删除产品图片</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/product/{productId}/images/sort`</td>
-<td>PUT</td>
-<td>调整图片排序</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="3" title="2.3 无工作流">
-
-本功能无审批工作流，图片上传后直接生效。
-
-</KbCard>
-
+<KbCard title="2.1 嵌入位置"><p>本功能嵌入在CRM产品详情页中使用，无独立路由页面。</p></KbCard>
+<KbCard title="2.2 API接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td><code>CRM_BUSINESS/v1/{orgId}/product/{productId}/images</code></td><td>GET</td><td>查询产品图片列表</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/product/{productId}/images</code></td><td>POST</td><td>上传产品图片</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/product/{productId}/images/{id}</code></td><td>DELETE</td><td>删除产品图片</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/product/{productId}/images/sort</code></td><td>PUT</td><td>调整图片排序</td></tr></tbody></table></KbCard>
+<KbCard title="2.3 无工作流"><p>本功能无审批工作流，图片上传后直接生效。</p></KbCard>
 </div>
 </div>
 </div>
@@ -223,67 +182,13 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 上传功能">
-
-- **上传方式**：点击上传按钮或拖拽上传
-- **文件格式限制**：支持JPG、JPEG、PNG、GIF、BMP等常见图片格式
-- **文件大小限制**：单张图片一般不超过5MB，具体以系统配置为准
-- **批量上传**：支持一次选择多张图片上传
-- **上传进度**：显示上传进度条，支持上传失败重试
-
-</KbCard>
-
-<KbCard title="3.2 图片处理">
-
-- **缩略图生成**：上传后系统自动生成缩略图，用于列表展示
-- **图片压缩**：大图自动压缩到合理尺寸，减少存储和加载开销
-- **水印**：可根据配置自动添加产品水印
-- **主图设置**：第一张上传的图片默认为主图，可手动调整
-
-</KbCard>
-
-<KbCard title="3.3 图片管理">
-
-- **图片列表**：在产品详情页以缩略图网格展示
-- **图片预览**：点击缩略图可查看大图，支持左右切换
-- **图片删除**：支持删除单张图片，主图删除后自动将下一张设为主图
-- **图片排序**：支持拖拽排序调整显示顺序
-- **主图标记**：排序第一的图片自动标记为主图
-
-</KbCard>
-
-<KbCard title="3.4 存储方式">
-
-- 图片文件存储在文件服务器或对象存储（如OSS/S3）
-- 数据库中存储文件的相对路径和关联信息
-- 图片URL通过文件服务获取，支持CDN加速
-
-</KbCard>
-
-<KbCard num="1" title="4.1 产品图片表">
-
-> 表名：PRODUCT_IMAGE（产品图片表）
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| id | NUMBER | 主键ID | PK |
-| product_id | NUMBER | 产品ID | FK→PRODUCT |
-| file_name | VARCHAR2 | 文件名 | |
-| file_path | VARCHAR2 | 文件路径 | 相对路径 |
-| file_url | VARCHAR2 | 文件访问URL | |
-| file_size | NUMBER | 文件大小（字节） | |
-| file_type | VARCHAR2 | 文件类型 | JPG/PNG/GIF等 |
-| thumbnail_path | VARCHAR2 | 缩略图路径 | |
-| thumbnail_url | VARCHAR2 | 缩略图URL | |
-| sequence_number | NUMBER | 排序号 | 排序第一为主图 |
-| is_primary | VARCHAR2 | 是否主图 | Y/N |
-| organization_id | NUMBER | 组织ID | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| object_version_number | NUMBER | 版本号 | 乐观锁 |
-
-</KbCard>
-
+<KbCard title="3.1 上传功能"><ul><li><strong>上传方式</strong>：点击上传按钮或拖拽上传</li><li><strong>文件格式限制</strong>：支持JPG、JPEG、PNG、GIF、BMP等常见图片格式</li><li><strong>文件大小限制</strong>：单张图片一般不超过5MB，具体以系统配置为准</li><li><strong>批量上传</strong>：支持一次选择多张图片上传</li><li><strong>上传进度</strong>：显示上传进度条，支持上传失败重试</li></ul></KbCard>
+<KbCard title="3.2 图片处理"><ul><li><strong>缩略图生成</strong>：上传后系统自动生成缩略图，用于列表展示</li><li><strong>图片压缩</strong>：大图自动压缩到合理尺寸，减少存储和加载开销</li><li><strong>水印</strong>：可根据配置自动添加产品水印</li><li><strong>主图设置</strong>：第一张上传的图片默认为主图，可手动调整</li></ul></KbCard>
+<KbCard title="3.3 图片管理"><ul><li><strong>图片列表</strong>：在产品详情页以缩略图网格展示</li><li><strong>图片预览</strong>：点击缩略图可查看大图，支持左右切换</li><li><strong>图片删除</strong>：支持删除单张图片，主图删除后自动将下一张设为主图</li><li><strong>图片排序</strong>：支持拖拽排序调整显示顺序</li><li><strong>主图标记</strong>：排序第一的图片自动标记为主图</li></ul></KbCard>
+<KbCard title="3.4 存储方式"><ul><li>图片文件存储在文件服务器或对象存储（如OSS/S3）</li><li>数据库中存储文件的相对路径和关联信息</li><li>图片URL通过文件服务获取，支持CDN加速</li></ul>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。疑似通过产品列表的"产品图册-导入"按钮触发。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入（通过产品列表菜单的"产品图册-导入"按钮，templateCode=CRM\\.PROD_PHOTO）。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能（前端代码缺失，无工作流相关代码）。</p></KbCard>
+<KbCard title="4.1 产品图片表"><p class='kl-tip'>表名：PRODUCT_IMAGE（产品图片表）</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>product_id</td><td>NUMBER</td><td>产品ID</td><td>FK→PRODUCT</td></tr><tr><td>file_name</td><td>VARCHAR2</td><td>文件名</td><td></td></tr><tr><td>file_path</td><td>VARCHAR2</td><td>文件路径</td><td>相对路径</td></tr><tr><td>file_url</td><td>VARCHAR2</td><td>文件访问URL</td><td></td></tr><tr><td>file_size</td><td>NUMBER</td><td>文件大小（字节）</td><td></td></tr><tr><td>file_type</td><td>VARCHAR2</td><td>文件类型</td><td>JPG/PNG/GIF等</td></tr><tr><td>thumbnail_path</td><td>VARCHAR2</td><td>缩略图路径</td><td></td></tr><tr><td>thumbnail_url</td><td>VARCHAR2</td><td>缩略图URL</td><td></td></tr><tr><td>sequence_number</td><td>NUMBER</td><td>排序号</td><td>排序第一为主图</td></tr><tr><td>is_primary</td><td>VARCHAR2</td><td>是否主图</td><td>Y/N</td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -342,15 +247,17 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>支持哪些图片格式？</td><td>支持JPG、JPEG、PNG、GIF、BMP等常见格式</td></tr><tr><td>单张图片大小限制是多少？</td><td>一般不超过5MB，具体以系统配置为准</td></tr><tr><td>主图如何设置？</td><td>排序第一的图片自动为主图，可通过拖拽排序调整</td></tr><tr><td>图片上传失败怎么办？</td><td>检查文件格式和大小是否超限，网络是否正常，支持重新上传</td></tr><tr><td>图片存储在哪里？</td><td>文件服务器或对象存储（如OSS/S3），数据库存储路径信息</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | V1.0 | 初始创建 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>V1.0</td><td>初始创建</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
