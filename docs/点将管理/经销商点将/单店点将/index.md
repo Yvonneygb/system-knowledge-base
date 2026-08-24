@@ -164,11 +164,11 @@
 <div class="kl-wrap">
 <KbCard title="3.1 列表页"><ul><li><strong>前端路由</strong>：<code>/general/distributorGeneral/distributorGeneralSingleStore/list</code></li><li><strong>API</strong>：<code>mlt/trainApply/dealer/page</code></li><li><strong>Entity</strong>：<code>TrainApply</code></li><li><strong>查询条件</strong>：培训主题、培训时间范围、门店名称、申请状态</li><li><strong>列表字段</strong>：申请单号、培训主题、培训时间、门店名称、讲师姓名、申请状态、创建时间</li><li><strong>数据过滤</strong>：后端自动按当前登录用户的经销商ID过滤</li></ul></KbCard>
 <KbCard title="3.2 详情页"><ul><li><strong>前端路由</strong>：<code>/general/distributorGeneral/distributorGeneralSingleStore/detail/:applyCode/:type</code></li><li><strong>API</strong>：<code>mlt/trainApply/dealer/detail</code></li><li><strong>参数说明</strong>：<ul><li><code>applyCode</code>：单店培训点将申请单号</li><li><code>type</code>：详情查看类型</li></ul></li><li><strong>展示内容</strong>：培训基本信息、讲师信息、门店信息、时间安排、审批状态等</li></ul></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>申请点将弹窗</td><td>Table选择可点将讲师列表</td></tr><tr><td>取消点将弹窗</td><td>取消原因+SingleStoreApplyDetail</td></tr><tr><td>开始执行弹窗</td><td>Form表单</td></tr><tr><td>确认结束弹窗</td><td>Form表单</td></tr><tr><td>查看日程弹窗</td><td>LecturerCalendar</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><p>列表页：申请确认(FDD签署)、确认结束、开始执行、取消点将、申请点将。行操作：查看详情、编辑、删除、流程摘要、查看讲师档案、查看日程。详情页：保存、保存并提交、查看结算确认、查看确认书、结束执行、取消。</p></KbCard>
-<KbCard title="保存校验"><p><strong>前端校验：</strong> generalFormDS.validate()和singleStoreInfoFormDS.validate()（基本信息+门店信息必填项）。开始执行校验startExecuteFormDS（实际开始日期、备注必填）。</p></KbCard>
-<KbCard title="提交校验"><p>取消点将校验需提前7天且已生效，取消原因必填。确认结束调用confirmEndExecute。申请确认走FDD签署。无工作流编码。</p></KbCard>
+<KbCard title="3.3 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>申请点将弹窗</td><td>Table选择可点将讲师列表</td></tr><tr><td>取消点将弹窗</td><td>取消原因+SingleStoreApplyDetail</td></tr><tr><td>开始执行弹窗</td><td>Form表单</td></tr><tr><td>确认结束弹窗</td><td>Form表单</td></tr><tr><td>查看日程弹窗</td><td>LecturerCalendar</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.5 其他按钮"><p>列表页：申请确认(FDD签署)、确认结束、开始执行、取消点将、申请点将。行操作：查看详情、编辑、删除、流程摘要、查看讲师档案、查看日程。详情页：保存、保存并提交、查看结算确认、查看确认书、结束执行、取消。</p></KbCard>
+<KbCard title="3.6 保存校验"><p><strong>前端校验：</strong> generalFormDS.validate()和singleStoreInfoFormDS.validate()（基本信息+门店信息必填项）。开始执行校验startExecuteFormDS（实际开始日期、备注必填）。</p></KbCard>
+<KbCard title="3.7 提交校验"><p>取消点将校验需提前7天且已生效，取消原因必填。确认结束调用confirmEndExecute。申请确认走FDD签署。无工作流编码。</p></KbCard>
 <KbCard title="train_apply（单店培训点将申请表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2</td><td>申请单号（主键）</td></tr><tr><td>train_theme</td><td>VARCHAR2</td><td>培训主题</td></tr><tr><td>train_start_date</td><td>DATE</td><td>培训开始时间</td></tr><tr><td>train_end_date</td><td>DATE</td><td>培训结束时间</td></tr><tr><td>lecturer_code</td><td>VARCHAR2</td><td>讲师编码</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>讲师姓名</td></tr><tr><td>dealer_code</td><td>VARCHAR2</td><td>经销商编码</td></tr><tr><td>dealer_name</td><td>VARCHAR2</td><td>经销商名称</td></tr><tr><td>terminal_code</td><td>VARCHAR2</td><td>门店编码</td></tr><tr><td>terminal_name</td><td>VARCHAR2</td><td>门店名称</td></tr><tr><td>apply_status</td><td>VARCHAR2</td><td>申请状态</td></tr><tr><td>approval_status</td><td>VARCHAR2</td><td>审批状态</td></tr><tr><td>remark</td><td>VARCHAR2</td><td>备注</td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -186,7 +186,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：经销商看不到被点将的单店培训记录？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：经销商看不到被点将的单店培训记录？</strong></p>
 <p>A：检查该经销商是否被正确指定为参训方，确认<code>dealer_code</code>与当前登录用户关联的经销商一致。</p>
 <p><strong>Q2：单店点将和特训营点将的区别？</strong></p>
 <p>A：单店点将以门店为维度，一条记录关联一个门店；特训营点将以培训活动为维度，可能关联多个门店。</p>
