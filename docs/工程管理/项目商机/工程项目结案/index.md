@@ -206,6 +206,7 @@
 <p>#### 场景2: flag=9 且 actionType=1 (项目结案查询)</p>
 <p>1. 根据 <code>projectId</code> 查询项目下所有合同列表 2. 关联主合同信息(主合同编码、名称) 3. 查询合同关联的出库明细 4. 返回合同列表 + 出库明细</p></KbCard>
 <KbCard title="doAudit审核逻辑(工作流审批通过回调)">
+
 ```
 wfComplete(dto) → 判断审批结果 == APPROVED → doAudit(epmContractCompleted)
 ```
@@ -235,8 +236,10 @@ wfComplete(dto) → 判断审批结果 == APPROVED → doAudit(epmContractComple
 3. 查询项目报备 → 获取客户信息
 4. 推送CRM(indivireportAdd): validStatus=0
 ```
+
 </KbCard>
 <KbCard title="出库明细查询SQL逻辑">
+
 ```sql
 SELECT l.*, i.ITEM_CODE, i.ITEM_NAME, h.SA_SALEBILLNO, h.CONTRACT_CODE, h.CONTRACT_NAME
 FROM SA_OUT_BILL_LINE l
@@ -247,6 +250,7 @@ WHERE h.ORDER_STAT = 3
   AND h.CONTRACT_ID = #{contractId}   -- 合同结案时
   -- 或 h.CONTRACT_ID IN (#{contractIds}) -- 项目结案时
 ```
+
 </KbCard>
 <KbCard title="EPM_CONTRACT_COMPLETED (工程项目合同结案主表)"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>CONTRACT_COMPLETED_ID</td><td>BIGINT</td><td>主键，工程项目合同结案ID</td></tr><tr><td>ORGANIZATION_ID</td><td>BIGINT</td><td>组织ID</td></tr><tr><td>COMPLETED_CODE</td><td>VARCHAR</td><td>合同结案单号</td></tr><tr><td>CONTRACT_ID</td><td>BIGINT</td><td>工程项目合同ID(合同结案时使用)</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>工程项目ID(项目结案时使用)</td></tr><tr><td>COMPLETED_TYPE</td><td>VARCHAR</td><td>结案类型(1=正常结案,2=提前结案,3=逾期结案)</td></tr><tr><td>COMPLETED_DESC</td><td>VARCHAR</td><td>结案说明</td></tr><tr><td>REMARK</td><td>VARCHAR</td><td>备注</td></tr><tr><td>STAT</td><td>BIGINT</td><td>单据状态(已弃用，使用HZ_APPROVE_STATUS)</td></tr><tr><td>WFID</td><td>BIGINT</td><td>流程ID</td></tr><tr><td>WFFLAG</td><td>BIGINT</td><td>流程状态</td></tr><tr><td>ACTION_TYPE</td><td>BIGINT</td><td>操作类型(1=项目结案,2=合同结案)</td></tr><tr><td>SALE_REGION</td><td>VARCHAR</td><td>经销商销售区域</td></tr><tr><td>HZ_INSTANCE_ID</td><td>BIGINT</td><td>H0流程实例ID</td></tr><tr><td>HZ_APPROVE_STATUS</td><td>VARCHAR</td><td>H0流程审批状态</td></tr><tr><td>CALLBACK_SOURCE</td><td>VARCHAR</td><td>外部审批回调来源</td></tr><tr><td>CREATION_DATE</td><td>DATETIME</td><td>创建时间</td></tr><tr><td>CREATED_BY</td><td>BIGINT</td><td>创建人</td></tr><tr><td>LAST_UPDATE_DATE</td><td>DATETIME</td><td>最后更新时间</td></tr><tr><td>LAST_UPDATED_BY</td><td>BIGINT</td><td>最后更新人</td></tr><tr><td>OBJECT_VERSION_NUMBER</td><td>BIGINT</td><td>乐观锁版本号</td></tr></tbody></table></KbCard>
 <KbCard title="EPM_PROJECT_CONTRACT (工程项目合同表 - 结案相关字段)"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>CONTRACT_ID</td><td>BIGINT</td><td>主键，工程项目合同ID</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>工程项目ID</td></tr><tr><td>MAIN_CONTRACT_ID</td><td>BIGINT</td><td>主合同ID(&gt;0时为增补合同)</td></tr><tr><td>COMPLETED_DATE</td><td>DATETIME</td><td>结案日期，系统自动回写</td></tr><tr><td>COMPLETED_TYPE</td><td>BIGINT</td><td>结案类型，系统自动回写(1=正常,2=提前,3=逾期)</td></tr><tr><td>VALID</td><td>BIGINT</td><td>有效状态(1=未审核,2=有效,3=失效)</td></tr><tr><td>HZ_APPROVE_STATUS</td><td>VARCHAR</td><td>H0流程审批状态</td></tr><tr><td>CONTRACT_CODE</td><td>VARCHAR</td><td>合同编码</td></tr><tr><td>CONTRACT_NAME</td><td>VARCHAR</td><td>合同名称</td></tr></tbody></table></KbCard>
@@ -488,6 +492,7 @@ WHERE h.ORDER_STAT = 3
   AND (l.QTY_BILL - l.CONFIRM_OUT_QTY - l.CANCEL_QTY) > 0
   AND h.CONTRACT_ID = 合同ID;
 ```
+
 </KbCard>
 <KbCard title="Q7: 结案日期和状态前端显示为空？"><p><strong>排查SQL:</strong></p>
 
