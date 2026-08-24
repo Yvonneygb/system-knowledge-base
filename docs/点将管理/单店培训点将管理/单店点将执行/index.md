@@ -210,11 +210,11 @@
 <KbCard title="3.1 列表页"><ul><li><strong>前端路由</strong>：<code>/general/singleStoreGeneral/singleStoreGeneralExecute/list</code></li><li><strong>API</strong>：<code>mlt/trainApply/page</code>（查询条件增加执行状态过滤）</li><li><strong>Entity</strong>：<code>TrainApply</code></li><li><strong>查询条件</strong>：申请单号、讲师姓名、经销商名称、门店名称、执行状态、培训时间范围</li><li><strong>列表字段</strong>：申请单号、培训主题、讲师姓名、经销商名称、门店名称、培训时间、执行状态、完成时间、创建时间</li><li><strong>操作按钮</strong>：查看详情、更新进度、完成执行</li></ul></KbCard>
 <KbCard title="3.2 执行进度更新"><ul><li><strong>API</strong>：<code>mlt/trainApply/updateProgress</code></li><li><strong>更新内容</strong>：执行进度百分比、执行备注、附件上传</li><li><strong>校验逻辑</strong>：仅执行中状态可更新进度</li></ul></KbCard>
 <KbCard title="3.3 完成执行"><ul><li><strong>API</strong>：<code>mlt/trainApply/complete</code></li><li><strong>触发逻辑</strong>：<ul><li>更新执行状态为"已完成"</li><li>自动释放讲师排期</li><li>更新讲师饱和度数据</li><li>记录完成时间和操作人</li></ul></li></ul></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>结束执行弹窗</td><td>Form表单</td></tr><tr><td>特殊取消弹窗</td><td>取消原因+SingleStoreApplyDetail</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><p>列表页：查看申请、查看确认书、特殊取消、结束执行、同步OA、同步FDD、同步CRM。行操作：流程摘要。</p></KbCard>
-<KbCard title="保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>结束执行</td><td>realStartDate、realEndDate、endExecuteRemark必填</td></tr><tr><td>特殊取消</td><td>取消原因必填</td></tr></tbody></table></KbCard>
-<KbCard title="提交校验"><p class='kl-tip'>无审批按钮，通过同步OA/FDD/CRM推送外部系统。无工作流编码。</p></KbCard>
+<KbCard title="3.4 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>结束执行弹窗</td><td>Form表单</td></tr><tr><td>特殊取消弹窗</td><td>取消原因+SingleStoreApplyDetail</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
+<KbCard title="3.5 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.6 其他按钮"><p>列表页：查看申请、查看确认书、特殊取消、结束执行、同步OA、同步FDD、同步CRM。行操作：流程摘要。</p></KbCard>
+<KbCard title="3.7 保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>结束执行</td><td>realStartDate、realEndDate、endExecuteRemark必填</td></tr><tr><td>特殊取消</td><td>取消原因必填</td></tr></tbody></table></KbCard>
+<KbCard title="3.8 提交校验"><p class='kl-tip'>无审批按钮，通过同步OA/FDD/CRM推送外部系统。无工作流编码。</p></KbCard>
 <KbCard title="train_apply（单店培训点将申请表-执行相关字段）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2</td><td>申请单号（主键）</td></tr><tr><td>execute_status</td><td>VARCHAR2</td><td>执行状态（待执行/执行中/已完成）</td></tr><tr><td>execute_progress</td><td>NUMBER</td><td>执行进度百分比</td></tr><tr><td>execute_remark</td><td>VARCHAR2</td><td>执行备注</td></tr><tr><td>complete_date</td><td>DATE</td><td>完成时间</td></tr><tr><td>complete_by</td><td>VARCHAR2</td><td>完成人</td></tr><tr><td>train_theme</td><td>VARCHAR2</td><td>培训主题</td></tr><tr><td>train_start_date</td><td>DATE</td><td>培训开始时间</td></tr><tr><td>train_end_date</td><td>DATE</td><td>培训结束时间</td></tr><tr><td>lecturer_code</td><td>VARCHAR2</td><td>讲师编码</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>讲师姓名</td></tr><tr><td>dealer_code</td><td>VARCHAR2</td><td>经销商编码</td></tr><tr><td>dealer_name</td><td>VARCHAR2</td><td>经销商名称</td></tr><tr><td>terminal_code</td><td>VARCHAR2</td><td>门店编码</td></tr><tr><td>terminal_name</td><td>VARCHAR2</td><td>门店名称</td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -232,7 +232,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：执行状态如何变更？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：执行状态如何变更？</strong></p>
 <p>A：点将审批通过后自动变为"待执行"；培训开始后手动更新为"执行中"；培训完成后手动标记"已完成"。</p>
 <p><strong>Q2：完成执行后数据如何联动？</strong></p>
 <p>A：完成执行后自动释放讲师排期并更新讲师饱和度数据，讲师可排期时间相应增加。</p>
