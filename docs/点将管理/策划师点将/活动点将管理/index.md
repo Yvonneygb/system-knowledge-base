@@ -220,11 +220,11 @@
 <KbCard title="3.3 内置审批"><table class="kl-table"><thead><tr><th>审批流编码</th><th>说明</th><th>触发时机</th></tr></thead><tbody><tr><td>activityApplyApproval</td><td>活动点将申请审批</td><td>提交活动点将申请时触发</td></tr><tr><td>activityCancelApplyOrgApproval</td><td>活动取消申请组织级审批</td><td>发起取消申请时触发</td></tr></tbody></table></KbCard>
 <KbCard title="3.4 核心实体"><p><strong>ActivityApply</strong></p>
 <table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>申请编码（主键）</td></tr><tr><td>activity_name</td><td>活动名称</td></tr><tr><td>apply_status</td><td>申请状态</td></tr><tr><td>approval_state</td><td>审批状态</td></tr><tr><td>cancel_approval_state</td><td>取消审批状态</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>按计划结算弹窗</td><td>PlanSettlementInfo+ActivityApplyDetail</td></tr><tr><td>特殊取消弹窗</td><td>取消原因</td></tr><tr><td>审批弹窗</td><td>审批意见+签署人Select</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><p>SelectBox切换"点将活动管理/活动点将审批/活动点将取消审批"。按钮：按计划结算、查看申请、同步CRM、特殊取消、审批、同步OA、同步FDD。</p></KbCard>
-<KbCard title="保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>按计划结算</td><td>targetFormData、completeFormData、signerValid非空</td></tr><tr><td>特殊取消</td><td>取消原因必填</td></tr></tbody></table></KbCard>
-<KbCard title="提交校验"><p>审批校验pplyApprovalFormDS.validate()（审批意见必填，通过时签署人必填），调用pplyApproval/cancelApplyApproval，无工作流编码。</p></KbCard>
+<KbCard title="3.5 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>按计划结算弹窗</td><td>PlanSettlementInfo+ActivityApplyDetail</td></tr><tr><td>特殊取消弹窗</td><td>取消原因</td></tr><tr><td>审批弹窗</td><td>审批意见+签署人Select</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
+<KbCard title="3.6 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.7 其他按钮"><p>SelectBox切换"点将活动管理/活动点将审批/活动点将取消审批"。按钮：按计划结算、查看申请、同步CRM、特殊取消、审批、同步OA、同步FDD。</p></KbCard>
+<KbCard title="3.8 保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>按计划结算</td><td>targetFormData、completeFormData、signerValid非空</td></tr><tr><td>特殊取消</td><td>取消原因必填</td></tr></tbody></table></KbCard>
+<KbCard title="3.9 提交校验"><p>审批校验pplyApprovalFormDS.validate()（审批意见必填，通过时签署人必填），调用pplyApproval/cancelApplyApproval，无工作流编码。</p></KbCard>
 <KbCard title="activity_apply（活动点将申请主表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>约束</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2(32)</td><td>申请编码</td><td>PK</td></tr><tr><td>activity_name</td><td>VARCHAR2(200)</td><td>活动名称</td><td>NOT NULL</td></tr><tr><td>activity_type</td><td>VARCHAR2(30)</td><td>活动类型</td><td></td></tr><tr><td>apply_status</td><td>VARCHAR2(30)</td><td>申请状态</td><td>NOT NULL</td></tr><tr><td>approval_state</td><td>VARCHAR2(30)</td><td>审批状态</td><td></td></tr><tr><td>cancel_approval_state</td><td>VARCHAR2(30)</td><td>取消审批状态</td><td></td></tr><tr><td>planner_id</td><td>NUMBER</td><td>策划师ID</td><td>NOT NULL</td></tr><tr><td>apply_date</td><td>DATE</td><td>申请日期</td><td></td></tr><tr><td>cancel_apply_date</td><td>DATE</td><td>取消申请日期</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -242,7 +242,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：活动点将与特训营点将有什么区别？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：活动点将与特训营点将有什么区别？</strong></p>
 <p>A：活动点将由策划师发起，审批流为activityApplyApproval；特训营点将由经销商/业务员发起，审批流为campApplyApproval。</p>
 <p><strong>Q2：取消审批为什么是组织级审批？</strong></p>
 <p>A：活动取消影响范围较大，需组织级管理层审批确认，因此取消审批流为activityCancelApplyOrgApproval。</p>
