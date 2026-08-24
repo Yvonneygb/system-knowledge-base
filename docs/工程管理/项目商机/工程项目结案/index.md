@@ -1,5 +1,4 @@
 <BreadcrumbTabs />
-
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -77,7 +76,6 @@
 </div>
 </div>
 </div>
-
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
 <div class="bf-truth-flow">
@@ -175,264 +173,18 @@
 </div>
 </div>
 </div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="合同结案(actionType=2)核心逻辑">
-
-- 将目标合同的结案日期设为当前时间，结案类型设为提交时选择的值，有效状态设为失效(3)
-- 查询该合同下所有增补合同(主合同ID=当前合同ID)，批量更新增补合同的结案日期和结案类型
-- **增补合同不会更新有效状态**，仅更新结案日期和结案类型
-
-</KbCard>
-
-<KbCard num="2" title="项目结案(actionType=1)核心逻辑">
-
-- 查询项目下所有审批状态为"审批通过"的合同，批量更新有效状态为失效(3)、结案日期为当前时间、结案类型为提交时选择的值
-- 将项目报备的有效状态设为失效(3)，项目进度状态设为2，记录结案时间
-
-</KbCard>
-
-<KbCard num="3" title="项目进度更新">
-
-- 查询阶段定义表中阶段名称为"项目结案"的记录，获取阶段ID
-- 调用项目阶段服务更新进度，内容格式为: `{日期}项目结案`
-
-</KbCard>
-
-<KbCard num="4" title="CRM推送">
-
-- 查询项目关联的报备记录，获取客户信息
-- 推送数据包含: 客户编码、客户名称、客户简称、组织编码、报备编号、项目名称、有效状态(0=失效)
-- 推送失败仅记录日志，不影响结案主流程
-
-</KbCard>
-
-<KbCard num="5" title="增补合同结案字段重置">
-
-- 新增增补合同时，结案日期和结案状态会被重置为空
-
-</KbCard>
-
-<KbCard num="6" title="前端展示逻辑">
-
-- 结案日期和结案状态字段均为只读(disabled=true)，由后端结案审批通过后自动回写
-- 列表页支持按结案状态筛选查询
-- 结案状态值为0时，前端转换为null不展示
-
----
-
-</KbCard>
-
+<KbCard title="1. 合同结案(actionType=2)核心逻辑"><ul><li>将目标合同的结案日期设为当前时间，结案类型设为提交时选择的值，有效状态设为失效(3)</li><li>查询该合同下所有增补合同(主合同ID=当前合同ID)，批量更新增补合同的结案日期和结案类型</li><li><strong>增补合同不会更新有效状态</strong>，仅更新结案日期和结案类型</li></ul></KbCard>
+<KbCard title="2. 项目结案(actionType=1)核心逻辑"><ul><li>查询项目下所有审批状态为"审批通过"的合同，批量更新有效状态为失效(3)、结案日期为当前时间、结案类型为提交时选择的值</li><li>将项目报备的有效状态设为失效(3)，项目进度状态设为2，记录结案时间</li></ul></KbCard>
+<KbCard title="3. 项目进度更新"><ul><li>查询阶段定义表中阶段名称为"项目结案"的记录，获取阶段ID</li><li>调用项目阶段服务更新进度，内容格式为: <code>{日期}项目结案</code></li></ul></KbCard>
+<KbCard title="4. CRM推送"><ul><li>查询项目关联的报备记录，获取客户信息</li><li>推送数据包含: 客户编码、客户名称、客户简称、组织编码、报备编号、项目名称、有效状态(0=失效)</li><li>推送失败仅记录日志，不影响结案主流程</li></ul></KbCard>
+<KbCard title="5. 增补合同结案字段重置"><ul><li>新增增补合同时，结案日期和结案状态会被重置为空</li></ul></KbCard>
+<KbCard title="6. 前端展示逻辑"><ul><li>结案日期和结案状态字段均为只读(disabled=true)，由后端结案审批通过后自动回写</li><li>列表页支持按结案状态筛选查询</li><li>结案状态值为0时，前端转换为null不展示</li></ul></KbCard>
 </div>
 </div>
 </div>
-
-<div id="detail-logic" style="display:none;">
-<div class="tab-pad">
-<div class="kl-wrap">
-<KbCard num="1" title="API接口">
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/v1/{organizationId}/epm-contract-completeds/detail` | 查询结案详情(关联合同列表+出库明细) |
-
-</KbCard>
-
-<KbCard num="2" title="detail接口逻辑">
-
-**入参:** `EpmContractCompletedDTO`，关键字段: `flag`、`actionType`、`contractId`、`projectId`
-
-<KbSubTitle>场景1: flag=9 且 actionType=2 (合同结案查询)</KbSubTitle>
-
-
-1. 根据 `contractId` 查询主合同下所有增补合同列表
-2. 查询合同关联的出库明细(已审核且未发货数量>0)
-3. 返回合同列表 + 出库明细
-
-<KbSubTitle>场景2: flag=9 且 actionType=1 (项目结案查询)</KbSubTitle>
-
-
-1. 根据 `projectId` 查询项目下所有合同列表
-2. 关联主合同信息(主合同编码、名称)
-3. 查询合同关联的出库明细
-4. 返回合同列表 + 出库明细
-
-</KbCard>
-
-<KbCard num="3" title="doAudit审核逻辑(工作流审批通过回调)">
-
-```
-wfComplete(dto) → 判断审批结果 == APPROVED → doAudit(epmContractCompleted)
-```
-
-<KbSubTitle>合同结案(actionType=2)</KbSubTitle>
-
-
-```
-1. 查询目标合同 → 设置 completedDate=now, completedType=提交值, valid=3
-2. 更新合同(COMPLETED_DATE, COMPLETED_TYPE, VALID)
-3. 查询增补合同(MAIN_CONTRACT_ID=当前合同ID)
-4. 批量更新增补合同(COMPLETED_DATE=now, COMPLETED_TYPE=提交值)
-```
-
-<KbSubTitle>项目结案(actionType=1)</KbSubTitle>
-
-
-```
-1. 查询项目下所有已审批通过的合同(HZ_APPROVE_STATUS=APPROVED)
-2. 批量更新合同(VALID=3, COMPLETED_DATE=now, COMPLETED_TYPE=提交值)
-3. 更新项目报备(PROJECT_VALID=3, PROJECT_STAGE_TYPE=2, CLOSE_PROJECT_TIME=now)
-```
-
-<KbSubTitle>公共逻辑</KbSubTitle>
-
-
-```
-1. 查询阶段定义(STAGE_NAME='项目结案') → 获取STAGE_ID
-2. 更新项目进度(内容: "{日期}项目结案")
-3. 查询项目报备 → 获取客户信息
-4. 推送CRM(indivireportAdd): validStatus=0
-```
-
-</KbCard>
-
-<KbCard num="4" title="出库明细查询SQL逻辑">
-
-```sql
-SELECT l.*, i.ITEM_CODE, i.ITEM_NAME, h.SA_SALEBILLNO, h.CONTRACT_CODE, h.CONTRACT_NAME
-FROM SA_OUT_BILL_LINE l
-LEFT JOIN SA_OUT_BILL_HEAD h ON h.SA_OUT_BILL_HEAD_ID = l.SA_OUT_BILL_HEAD_ID
-LEFT JOIN ITEM i ON i.ITEM_ID = l.ITEM_ID
-WHERE h.ORDER_STAT = 3
-  AND (l.QTY_BILL - l.CONFIRM_OUT_QTY - l.CANCEL_QTY) > 0
-  AND h.CONTRACT_ID = #{contractId}   -- 合同结案时
-  -- 或 h.CONTRACT_ID IN (#{contractIds}) -- 项目结案时
-```
-
----
-
-</KbCard>
-
-<KbCard num="1" title="EPM_CONTRACT_COMPLETED (工程项目合同结案主表)">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| CONTRACT_COMPLETED_ID | BIGINT | 主键，工程项目合同结案ID |
-| ORGANIZATION_ID | BIGINT | 组织ID |
-| COMPLETED_CODE | VARCHAR | 合同结案单号 |
-| CONTRACT_ID | BIGINT | 工程项目合同ID(合同结案时使用) |
-| PROJECT_ID | BIGINT | 工程项目ID(项目结案时使用) |
-| COMPLETED_TYPE | VARCHAR | 结案类型(1=正常结案,2=提前结案,3=逾期结案) |
-| COMPLETED_DESC | VARCHAR | 结案说明 |
-| REMARK | VARCHAR | 备注 |
-| STAT | BIGINT | 单据状态(已弃用，使用HZ_APPROVE_STATUS) |
-| WFID | BIGINT | 流程ID |
-| WFFLAG | BIGINT | 流程状态 |
-| ACTION_TYPE | BIGINT | 操作类型(1=项目结案,2=合同结案) |
-| SALE_REGION | VARCHAR | 经销商销售区域 |
-| HZ_INSTANCE_ID | BIGINT | H0流程实例ID |
-| HZ_APPROVE_STATUS | VARCHAR | H0流程审批状态 |
-| CALLBACK_SOURCE | VARCHAR | 外部审批回调来源 |
-| CREATION_DATE | DATETIME | 创建时间 |
-| CREATED_BY | BIGINT | 创建人 |
-| LAST_UPDATE_DATE | DATETIME | 最后更新时间 |
-| LAST_UPDATED_BY | BIGINT | 最后更新人 |
-| OBJECT_VERSION_NUMBER | BIGINT | 乐观锁版本号 |
-
-</KbCard>
-
-<KbCard num="2" title="EPM_PROJECT_CONTRACT (工程项目合同表 - 结案相关字段)">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| CONTRACT_ID | BIGINT | 主键，工程项目合同ID |
-| PROJECT_ID | BIGINT | 工程项目ID |
-| MAIN_CONTRACT_ID | BIGINT | 主合同ID(>0时为增补合同) |
-| COMPLETED_DATE | DATETIME | 结案日期，系统自动回写 |
-| COMPLETED_TYPE | BIGINT | 结案类型，系统自动回写(1=正常,2=提前,3=逾期) |
-| VALID | BIGINT | 有效状态(1=未审核,2=有效,3=失效) |
-| HZ_APPROVE_STATUS | VARCHAR | H0流程审批状态 |
-| CONTRACT_CODE | VARCHAR | 合同编码 |
-| CONTRACT_NAME | VARCHAR | 合同名称 |
-
-</KbCard>
-
-<KbCard num="3" title="EPM_PROJECT (项目信息表 - 结案相关字段)">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| PROJECT_ID | BIGINT | 主键，项目ID |
-| PROJECT_VALID | BIGINT | 项目有效状态(1=未生效,2=已生效,3=已失效,4=已冻结) |
-| PROJECT_STAGE_TYPE | BIGINT | 项目进度状态 |
-| CLOSE_PROJECT_TIME | DATETIME | 结案时间 |
-| PROJECT_CODE | VARCHAR | 项目编码 |
-| PROJECT_NAME | VARCHAR | 项目名称 |
-
-</KbCard>
-
-<KbCard num="4" title="EPM_STAGE_DEF (项目阶段定义表)">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| STAGE_ID | BIGINT | 主键，阶段ID |
-| ORGANIZATION_ID | BIGINT | 组织ID |
-| STAGE_NAME | VARCHAR | 阶段名称(结案时查询STAGE_NAME='项目结案') |
-| SEQ | BIGINT | 序号 |
-| UPDATE_MODE | BIGINT | 更新方式(1=手动,2=自动) |
-
-</KbCard>
-
-<KbCard num="5" title="EPM_REPORT (项目报备表 - CRM推送相关字段)">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| REPORT_ID | BIGINT | 主键，报备ID |
-| PROJECT_ID | BIGINT | 项目ID |
-| CUSTOMER_ID | BIGINT | 客户ID |
-| CUSTOMER_CODE | VARCHAR | 客户编码 |
-| CUSTOMER_NAME | VARCHAR | 客户名称 |
-| PROJECT_CODE | VARCHAR | 项目编码 |
-| PROJECT_NAME | VARCHAR | 项目名称 |
-| DIVISION_NAME | VARCHAR | 组织名称 |
-
-</KbCard>
-
-<KbCard num="6" title="SA_OUT_BILL_HEAD (出库单头表 - 结案查询关联)">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| SA_OUT_BILL_HEAD_ID | BIGINT | 主键，出库单头ID |
-| CONTRACT_ID | BIGINT | 合同ID |
-| ORDER_STAT | BIGINT | 单据状态(3=已审核) |
-| SA_SALEBILLNO | VARCHAR | 要货单号 |
-| CONTRACT_CODE | VARCHAR | 合同编码 |
-| CONTRACT_NAME | VARCHAR | 合同名称 |
-
-</KbCard>
-
-<KbCard num="7" title="SA_OUT_BILL_LINE (出库单行表 - 结案查询关联)">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| SA_OUT_BILL_LINE_ID | BIGINT | 主键，出库单行ID |
-| SA_OUT_BILL_HEAD_ID | BIGINT | 出库单头ID |
-| ITEM_ID | BIGINT | 物料ID |
-| QTY_BILL | BIGINT | 开单数量 |
-| CONFIRM_OUT_QTY | BIGINT | 出库确认数量 |
-| CANCEL_QTY | BIGINT | 取消数量 |
-| ITEM_CODE | VARCHAR | 物料编码(关联ITEM表) |
-| ITEM_NAME | VARCHAR | 物料名称(关联ITEM表) |
-
----
-
-</KbCard>
-
-</div>
-</div>
-</div>
-
 <div id="permission" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -444,7 +196,68 @@ WHERE h.ORDER_STAT = 3
 </div>
 </div>
 </div>
+<div id="detail-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="API接口"><table class="kl-table"><thead><tr><th>方法</th><th>路径</th><th>说明</th></tr></thead><tbody><tr><td>GET</td><td><code>/v1/{organizationId}/epm-contract-completeds/detail</code></td><td>查询结案详情(关联合同列表+出库明细)</td></tr></tbody></table></KbCard>
+<KbCard title="detail接口逻辑"><p><strong>入参:</strong> <code>EpmContractCompletedDTO</code>，关键字段: <code>flag</code>、<code>actionType</code>、<code>contractId</code>、<code>projectId</code></p>
+<p>#### 场景1: flag=9 且 actionType=2 (合同结案查询)</p>
+<p>1. 根据 <code>contractId</code> 查询主合同下所有增补合同列表 2. 查询合同关联的出库明细(已审核且未发货数量&gt;0) 3. 返回合同列表 + 出库明细</p>
+<p>#### 场景2: flag=9 且 actionType=1 (项目结案查询)</p>
+<p>1. 根据 <code>projectId</code> 查询项目下所有合同列表 2. 关联主合同信息(主合同编码、名称) 3. 查询合同关联的出库明细 4. 返回合同列表 + 出库明细</p></KbCard>
+<KbCard title="doAudit审核逻辑(工作流审批通过回调)">
+```
+wfComplete(dto) → 判断审批结果 == APPROVED → doAudit(epmContractCompleted)
+```
 
+<p>#### 合同结案(actionType=2)</p>
+
+```
+1. 查询目标合同 → 设置 completedDate=now, completedType=提交值, valid=3
+2. 更新合同(COMPLETED_DATE, COMPLETED_TYPE, VALID)
+3. 查询增补合同(MAIN_CONTRACT_ID=当前合同ID)
+4. 批量更新增补合同(COMPLETED_DATE=now, COMPLETED_TYPE=提交值)
+```
+
+<p>#### 项目结案(actionType=1)</p>
+
+```
+1. 查询项目下所有已审批通过的合同(HZ_APPROVE_STATUS=APPROVED)
+2. 批量更新合同(VALID=3, COMPLETED_DATE=now, COMPLETED_TYPE=提交值)
+3. 更新项目报备(PROJECT_VALID=3, PROJECT_STAGE_TYPE=2, CLOSE_PROJECT_TIME=now)
+```
+
+<p>#### 公共逻辑</p>
+
+```
+1. 查询阶段定义(STAGE_NAME='项目结案') → 获取STAGE_ID
+2. 更新项目进度(内容: "{日期}项目结案")
+3. 查询项目报备 → 获取客户信息
+4. 推送CRM(indivireportAdd): validStatus=0
+```
+</KbCard>
+<KbCard title="出库明细查询SQL逻辑">
+```sql
+SELECT l.*, i.ITEM_CODE, i.ITEM_NAME, h.SA_SALEBILLNO, h.CONTRACT_CODE, h.CONTRACT_NAME
+FROM SA_OUT_BILL_LINE l
+LEFT JOIN SA_OUT_BILL_HEAD h ON h.SA_OUT_BILL_HEAD_ID = l.SA_OUT_BILL_HEAD_ID
+LEFT JOIN ITEM i ON i.ITEM_ID = l.ITEM_ID
+WHERE h.ORDER_STAT = 3
+  AND (l.QTY_BILL - l.CONFIRM_OUT_QTY - l.CANCEL_QTY) > 0
+  AND h.CONTRACT_ID = #{contractId}   -- 合同结案时
+  -- 或 h.CONTRACT_ID IN (#{contractIds}) -- 项目结案时
+```
+</KbCard>
+<KbCard title="EPM_CONTRACT_COMPLETED (工程项目合同结案主表)"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>CONTRACT_COMPLETED_ID</td><td>BIGINT</td><td>主键，工程项目合同结案ID</td></tr><tr><td>ORGANIZATION_ID</td><td>BIGINT</td><td>组织ID</td></tr><tr><td>COMPLETED_CODE</td><td>VARCHAR</td><td>合同结案单号</td></tr><tr><td>CONTRACT_ID</td><td>BIGINT</td><td>工程项目合同ID(合同结案时使用)</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>工程项目ID(项目结案时使用)</td></tr><tr><td>COMPLETED_TYPE</td><td>VARCHAR</td><td>结案类型(1=正常结案,2=提前结案,3=逾期结案)</td></tr><tr><td>COMPLETED_DESC</td><td>VARCHAR</td><td>结案说明</td></tr><tr><td>REMARK</td><td>VARCHAR</td><td>备注</td></tr><tr><td>STAT</td><td>BIGINT</td><td>单据状态(已弃用，使用HZ_APPROVE_STATUS)</td></tr><tr><td>WFID</td><td>BIGINT</td><td>流程ID</td></tr><tr><td>WFFLAG</td><td>BIGINT</td><td>流程状态</td></tr><tr><td>ACTION_TYPE</td><td>BIGINT</td><td>操作类型(1=项目结案,2=合同结案)</td></tr><tr><td>SALE_REGION</td><td>VARCHAR</td><td>经销商销售区域</td></tr><tr><td>HZ_INSTANCE_ID</td><td>BIGINT</td><td>H0流程实例ID</td></tr><tr><td>HZ_APPROVE_STATUS</td><td>VARCHAR</td><td>H0流程审批状态</td></tr><tr><td>CALLBACK_SOURCE</td><td>VARCHAR</td><td>外部审批回调来源</td></tr><tr><td>CREATION_DATE</td><td>DATETIME</td><td>创建时间</td></tr><tr><td>CREATED_BY</td><td>BIGINT</td><td>创建人</td></tr><tr><td>LAST_UPDATE_DATE</td><td>DATETIME</td><td>最后更新时间</td></tr><tr><td>LAST_UPDATED_BY</td><td>BIGINT</td><td>最后更新人</td></tr><tr><td>OBJECT_VERSION_NUMBER</td><td>BIGINT</td><td>乐观锁版本号</td></tr></tbody></table></KbCard>
+<KbCard title="EPM_PROJECT_CONTRACT (工程项目合同表 - 结案相关字段)"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>CONTRACT_ID</td><td>BIGINT</td><td>主键，工程项目合同ID</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>工程项目ID</td></tr><tr><td>MAIN_CONTRACT_ID</td><td>BIGINT</td><td>主合同ID(&gt;0时为增补合同)</td></tr><tr><td>COMPLETED_DATE</td><td>DATETIME</td><td>结案日期，系统自动回写</td></tr><tr><td>COMPLETED_TYPE</td><td>BIGINT</td><td>结案类型，系统自动回写(1=正常,2=提前,3=逾期)</td></tr><tr><td>VALID</td><td>BIGINT</td><td>有效状态(1=未审核,2=有效,3=失效)</td></tr><tr><td>HZ_APPROVE_STATUS</td><td>VARCHAR</td><td>H0流程审批状态</td></tr><tr><td>CONTRACT_CODE</td><td>VARCHAR</td><td>合同编码</td></tr><tr><td>CONTRACT_NAME</td><td>VARCHAR</td><td>合同名称</td></tr></tbody></table></KbCard>
+<KbCard title="EPM_PROJECT (项目信息表 - 结案相关字段)"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>PROJECT_ID</td><td>BIGINT</td><td>主键，项目ID</td></tr><tr><td>PROJECT_VALID</td><td>BIGINT</td><td>项目有效状态(1=未生效,2=已生效,3=已失效,4=已冻结)</td></tr><tr><td>PROJECT_STAGE_TYPE</td><td>BIGINT</td><td>项目进度状态</td></tr><tr><td>CLOSE_PROJECT_TIME</td><td>DATETIME</td><td>结案时间</td></tr><tr><td>PROJECT_CODE</td><td>VARCHAR</td><td>项目编码</td></tr><tr><td>PROJECT_NAME</td><td>VARCHAR</td><td>项目名称</td></tr></tbody></table></KbCard>
+<KbCard title="EPM_STAGE_DEF (项目阶段定义表)"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>STAGE_ID</td><td>BIGINT</td><td>主键，阶段ID</td></tr><tr><td>ORGANIZATION_ID</td><td>BIGINT</td><td>组织ID</td></tr><tr><td>STAGE_NAME</td><td>VARCHAR</td><td>阶段名称(结案时查询STAGE_NAME='项目结案')</td></tr><tr><td>SEQ</td><td>BIGINT</td><td>序号</td></tr><tr><td>UPDATE_MODE</td><td>BIGINT</td><td>更新方式(1=手动,2=自动)</td></tr></tbody></table></KbCard>
+<KbCard title="EPM_REPORT (项目报备表 - CRM推送相关字段)"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>REPORT_ID</td><td>BIGINT</td><td>主键，报备ID</td></tr><tr><td>PROJECT_ID</td><td>BIGINT</td><td>项目ID</td></tr><tr><td>CUSTOMER_ID</td><td>BIGINT</td><td>客户ID</td></tr><tr><td>CUSTOMER_CODE</td><td>VARCHAR</td><td>客户编码</td></tr><tr><td>CUSTOMER_NAME</td><td>VARCHAR</td><td>客户名称</td></tr><tr><td>PROJECT_CODE</td><td>VARCHAR</td><td>项目编码</td></tr><tr><td>PROJECT_NAME</td><td>VARCHAR</td><td>项目名称</td></tr><tr><td>DIVISION_NAME</td><td>VARCHAR</td><td>组织名称</td></tr></tbody></table></KbCard>
+<KbCard title="SA_OUT_BILL_HEAD (出库单头表 - 结案查询关联)"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>SA_OUT_BILL_HEAD_ID</td><td>BIGINT</td><td>主键，出库单头ID</td></tr><tr><td>CONTRACT_ID</td><td>BIGINT</td><td>合同ID</td></tr><tr><td>ORDER_STAT</td><td>BIGINT</td><td>单据状态(3=已审核)</td></tr><tr><td>SA_SALEBILLNO</td><td>VARCHAR</td><td>要货单号</td></tr><tr><td>CONTRACT_CODE</td><td>VARCHAR</td><td>合同编码</td></tr><tr><td>CONTRACT_NAME</td><td>VARCHAR</td><td>合同名称</td></tr></tbody></table></KbCard>
+<KbCard title="SA_OUT_BILL_LINE (出库单行表 - 结案查询关联)"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>SA_OUT_BILL_LINE_ID</td><td>BIGINT</td><td>主键，出库单行ID</td></tr><tr><td>SA_OUT_BILL_HEAD_ID</td><td>BIGINT</td><td>出库单头ID</td></tr><tr><td>ITEM_ID</td><td>BIGINT</td><td>物料ID</td></tr><tr><td>QTY_BILL</td><td>BIGINT</td><td>开单数量</td></tr><tr><td>CONFIRM_OUT_QTY</td><td>BIGINT</td><td>出库确认数量</td></tr><tr><td>CANCEL_QTY</td><td>BIGINT</td><td>取消数量</td></tr><tr><td>ITEM_CODE</td><td>VARCHAR</td><td>物料编码(关联ITEM表)</td></tr><tr><td>ITEM_NAME</td><td>VARCHAR</td><td>物料名称(关联ITEM表)</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -582,20 +395,25 @@ WHERE EPC.CONTRACT_ID = 合同ID;</code></pre>
 </div>
 </div>
 </div>
-
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|---------|--------|
-| 2026-07-28 | v1.0 | 初始创建，梳理工程项目结案完整业务逻辑 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-07-28</td><td>v1.0</td><td>初始创建，梳理工程项目结案完整业务逻辑</td><td>AI</td></tr></tbody></table>
+<p>### 选择弹窗</p>
+<table class="kl-table"><thead><tr><th>选择项</th><th>说明</th></tr></thead><tbody><tr><td>操作类型选择（actionType）</td><td>1=项目结案（选择项目PROJECT_ID），2=合同结案（选择合同CONTRACT_ID）</td></tr><tr><td>结案类型选择</td><td>LOV编码 <code>AE.EPM.CONTRACT_COMPLETED_TYPE</code>，值：1=正常结案、2=提前结案、3=逾期结案</td></tr></tbody></table>
+<p class='kl-tip'>本菜单为hlod低代码页面，选择行为通过低代码表单配置实现。</p>
+<p>### 导入</p>
+<p class='kl-tip'>不支持导入功能。结案单是单条创建并走审批流程，不支持Excel批量导入。</p>
+<p>### 其他按钮</p>
+<table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>说明</th></tr></thead><tbody><tr><td>新建</td><td>始终显示</td><td>跳转低代码详情页创建结案单</td></tr><tr><td>查看</td><td>始终显示</td><td>跳转详情查看结案信息</td></tr><tr><td>编辑</td><td>新建/拒绝状态</td><td>修改结案单</td></tr><tr><td>提交</td><td>新建/拒绝状态</td><td>启动工作流审批（CONTRACT_COMPLETED_MAIN）</td></tr></tbody></table>
+<p>### 保存校验</p>
+<table class="kl-table"><thead><tr><th>序号</th><th>校验项</th><th>校验位置</th><th>说明</th></tr></thead><tbody><tr><td>1</td><td>actionType=2时contractId必填</td><td>后端detail接口</td><td>contractId为空时返回空VO，阻断查询</td></tr><tr><td>2</td><td>actionType=1时projectId必填</td><td>后端detail接口</td><td>projectId为空时返回空VO，阻断查询</td></tr><tr><td>3</td><td>结案类型completedType必填</td><td>前端低代码表单</td><td>LOV选择</td></tr></tbody></table>
+<p class='kl-tip'>前端为hlod低代码页面，校验由低代码平台配置承载。后端Controller仅暴露detail查询接口，保存通过低代码通用接口完成。</p>
+<p>### 提交校验 <strong>工作流编码：</strong> <code>CONTRACT_COMPLETED_MAIN</code>（工程项目结案） <strong>后端校验：</strong> <code>EpmContractCompletedServiceImpl</code>继承<code>WorkflowBaseService</code>，但<code>wfProcSubmit</code>、<code>volidate</code>、<code>eventExecute</code>方法均返回null，无特殊提交前校验。 <strong>审批通过后处理（wfComplete → doAudit）：</strong></p>
+<table class="kl-table"><thead><tr><th>操作类型</th><th>处理逻辑</th></tr></thead><tbody><tr><td>合同结案(actionType=2)</td><td>更新主合同valid=3、completedDate、completedType；更新子合同(MAIN_CONTRACT_ID关联)的completedDate、completedType</td></tr><tr><td>项目结案(actionType=1)</td><td>查询项目下所有HZ_APPROVE_STATUS=APPROVED的合同，批量更新valid=3、completedDate、completedType；更新报备projectValid=3、projectStageType=2、closeProjectTime</td></tr><tr><td>自动更新项目阶段</td><td>从EPM_STAGE_DEF查询stageName="项目结案"的阶段定义，自动更新项目阶段</td></tr><tr><td>推送CRM</td><td>推送报备失效状态(validStatus=0)到CRM，异常仅记录日志不影响主流程</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
-
 <div id="history" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
