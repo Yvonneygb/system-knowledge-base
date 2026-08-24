@@ -176,15 +176,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="重点逻辑">
-**具体逻辑**：
-
-- 1、**说明书与型号关联**：一份说明书可关联多个产品型号，通过ES_SPEC_MODEL表维护多对多关系
-- 2、**说明书与分类关联**：一份说明书可关联多个产品分类，通过ES_SPECCLAS_REF表维护多对多关系
-- 3、**附件管理**：说明书文件存储在ES_DOCS表，支持多文件上传
-- 4、**审批流程**：提交后触发SUB_PRODUCT_SPECIFICATION_MAIN工作流，审批通过后方可生效
-</KbCard>
-
+<KbCard title="重点逻辑"><p>1. <strong>说明书与型号关联</strong>：一份说明书可关联多个产品型号，通过ES_SPEC_MODEL表维护多对多关系 2. <strong>说明书与分类关联</strong>：一份说明书可关联多个产品分类，通过ES_SPECCLAS_REF表维护多对多关系 3. <strong>附件管理</strong>：说明书文件存储在ES_DOCS表，支持多文件上传 4. <strong>审批流程</strong>：提交后触发SUB_PRODUCT_SPECIFICATION_MAIN工作流，审批通过后方可生效</p></KbCard>
 </div>
 </div>
 </div>
@@ -202,130 +194,16 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 后端接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>/v1/{organizationId}/es-specs</td>
-<td>POST</td>
-<td>新建说明书</td>
-</tr>
-<tr>
-<td>/v1/{organizationId}/es-specs</td>
-<td>GET</td>
-<td>查询说明书列表</td>
-</tr>
-<tr>
-<td>/v1/{organizationId}/es-specs/{specId}</td>
-<td>GET</td>
-<td>查询说明书详情</td>
-</tr>
-<tr>
-<td>/v1/{organizationId}/es-specs/{specId}</td>
-<td>PUT</td>
-<td>更新说明书</td>
-</tr>
-<tr>
-<td>/v1/{organizationId}/es-specs/{specId}</td>
-<td>DELETE</td>
-<td>删除说明书</td>
-</tr>
-<tr>
-<td>/v1/{organizationId}/es-specs/{specId}/submit</td>
-<td>POST</td>
-<td>提交审批</td>
-</tr>
-</tbody></table></div>
-
-- Controller: `EsSpecController`
-
-</KbCard>
-
-<KbCard title="3.2 前端页面">
-
-- 前端包：`arrow-ae`
-- 页面路径：`arrow-ae/productInfo/esSpecProp`
-- 路由：
-  - `/es-spec-prop/list` — 说明书列表页
-  - `/es-spec-prop/detail/:specid` — 说明书详情页
-
-</KbCard>
-
-<KbCard title="3.3 工作流">
-
-- 工作流编码：`SUB_PRODUCT_SPECIFICATION_MAIN`
-- 工作流名称：产品说明书
-- 触发时机：用户点击"提交审批"按钮
-
-</KbCard>
-
-<KbCard title="3.4 核心业务规则">
-
-1. 新建时必填说明书名称、说明书编码
-2. 关联型号和分类支持多选
-3. 草稿状态可编辑，审批中不可修改
-4. 审批拒绝后可重新编辑提交
-
-</KbCard>
-
-<KbCard num="1" title="4.1 ES_SPEC（说明书表）">
-
-| 字段 | 说明 |
-|------|------|
-| spec_id | 说明书ID（主键） |
-| spec_name | 说明书名称 |
-| spec_code | 说明书编码 |
-| organization_id | 组织ID |
-| status | 状态（草稿/审批中/生效/失效） |
-| created_by | 创建人 |
-| creation_date | 创建时间 |
-| last_updated_by | 最后更新人 |
-| last_update_date | 最后更新时间 |
-
-</KbCard>
-
-<KbCard num="2" title="4.2 ES_SPEC_MODEL（说明书关联型号表）">
-
-| 字段 | 说明 |
-|------|------|
-| spec_model_id | 关联ID（主键） |
-| spec_id | 说明书ID |
-| model_id | 产品型号ID |
-| model_code | 产品型号编码 |
-
-</KbCard>
-
-<KbCard num="3" title="4.3 ES_SPECCLAS_REF（说明书与分类关联表）">
-
-| 字段 | 说明 |
-|------|------|
-| specclas_ref_id | 关联ID（主键） |
-| spec_id | 说明书ID |
-| classification_id | 产品分类ID |
-| classification_code | 产品分类编码 |
-
-</KbCard>
-
-<KbCard num="4" title="4.4 ES_DOCS（说明书文件表）">
-
-| 字段 | 说明 |
-|------|------|
-| doc_id | 文件ID（主键） |
-| spec_id | 说明书ID |
-| file_name | 文件名 |
-| file_path | 文件存储路径 |
-| file_type | 文件类型 |
-| file_size | 文件大小 |
-| upload_date | 上传时间 |
-| upload_by | 上传人 |
-
-</KbCard>
-
+<KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>/v1/{organizationId}/es-specs</td><td>POST</td><td>新建说明书</td></tr><tr><td>/v1/{organizationId}/es-specs</td><td>GET</td><td>查询说明书列表</td></tr><tr><td>/v1/{organizationId}/es-specs/{specId}</td><td>GET</td><td>查询说明书详情</td></tr><tr><td>/v1/{organizationId}/es-specs/{specId}</td><td>PUT</td><td>更新说明书</td></tr><tr><td>/v1/{organizationId}/es-specs/{specId}</td><td>DELETE</td><td>删除说明书</td></tr><tr><td>/v1/{organizationId}/es-specs/{specId}/submit</td><td>POST</td><td>提交审批</td></tr></tbody></table>
+<ul><li>Controller: <code>EsSpecController</code></li></ul></KbCard>
+<KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-ae</code></li><li>页面路径：<code>arrow-ae/productInfo/esSpecProp</code></li><li>路由：<ul><li><code>/es-spec-prop/list</code> — 说明书列表页</li><li><code>/es-spec-prop/detail/:specid</code> — 说明书详情页</li></ul></li></ul></KbCard>
+<KbCard title="3.3 工作流"><ul><li>工作流编码：<code>SUB_PRODUCT_SPECIFICATION_MAIN</code></li><li>工作流名称：产品说明书</li><li>触发时机：用户点击"提交审批"按钮</li></ul></KbCard>
+<KbCard title="3.4 核心业务规则"><p>1. 新建时必填说明书名称、说明书编码 2. 关联型号和分类支持多选 3. 草稿状态可编辑，审批中不可修改 4. 审批拒绝后可重新编辑提交</p>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n\\|\\ 弹窗名称\\ \\|\\ 说明\\ \\|\\r\\n\\|---------\\|------\\|\\r\\n\\|\\ 关联说明书弹窗\\ \\|\\ Modal\\.open，标题"选择关联说明书"，调用CRM接口获取产品数据\\ \\|\\r\\n\\r\\n&gt;\\ 值集：状态AE\\.ES_STAT、审批状态AE\\.APPROVE_STATUS\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 不支持导入功能（仅支持导出）。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 显示条件\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|---------\\|------\\|\\r\\n\\|\\ 新建\\ \\|\\ 列表页\\ \\|\\ 新建说明书\\ \\|\\r\\n\\|\\ 导出\\ \\|\\ 列表页\\ \\|\\ GET\\ /es-specs/export，watermarkCode="WATER_MARK"\\ \\|\\r\\n\\|\\ 保存\\ \\|\\ editFlag\\ \\|\\ 保存说明书\\ \\|\\r\\n\\|\\ 编辑\\ \\|\\ backEditFlag\\ \\|\\ 进入编辑\\ \\|\\r\\n\\|\\ 删除\\ \\|\\ editFlag\\ \\|\\ 删除说明书\\ \\|\\r\\n\\|\\ 版本升级\\ \\|\\ approveStatus='APPROVED'且history≠2\\ \\|\\ ver\\+1，不修改原版本\\ \\|\\r\\n\\|\\ 关联产品/取消关联\\ \\|\\ 关联产品型号Tab\\ \\|\\ 关联产品操作\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*前端校验：\\*\\*\\ 说明书名称\\(spectitle\\)非空，为空提示"说明书名称不能为空！"\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n\\*\\*工作流：\\*\\*\\ 后端EsSpecService实现WorkflowBaseService接口，有wfComplete方法；hzInstanceId关联流程实例\\r\\n\\r\\n\\*\\*审批状态：\\*\\*\\ NEW/RUN/APPROVED/SUSPEND/RETURN，版本升级后状态重置为NEW</p></KbCard>
+<KbCard title="4.1 ES_SPEC（说明书表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>spec_id</td><td>说明书ID（主键）</td></tr><tr><td>spec_name</td><td>说明书名称</td></tr><tr><td>spec_code</td><td>说明书编码</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>status</td><td>状态（草稿/审批中/生效/失效）</td></tr><tr><td>created_by</td><td>创建人</td></tr><tr><td>creation_date</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>最后更新时间</td></tr></tbody></table></KbCard>
+<KbCard title="4.2 ES_SPEC_MODEL（说明书关联型号表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>spec_model_id</td><td>关联ID（主键）</td></tr><tr><td>spec_id</td><td>说明书ID</td></tr><tr><td>model_id</td><td>产品型号ID</td></tr><tr><td>model_code</td><td>产品型号编码</td></tr></tbody></table></KbCard>
+<KbCard title="4.3 ES_SPECCLAS_REF（说明书与分类关联表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>specclas_ref_id</td><td>关联ID（主键）</td></tr><tr><td>spec_id</td><td>说明书ID</td></tr><tr><td>classification_id</td><td>产品分类ID</td></tr><tr><td>classification_code</td><td>产品分类编码</td></tr></tbody></table></KbCard>
+<KbCard title="4.4 ES_DOCS（说明书文件表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>doc_id</td><td>文件ID（主键）</td></tr><tr><td>spec_id</td><td>说明书ID</td></tr><tr><td>file_name</td><td>文件名</td></tr><tr><td>file_path</td><td>文件存储路径</td></tr><tr><td>file_type</td><td>文件类型</td></tr><tr><td>file_size</td><td>文件大小</td></tr><tr><td>upload_date</td><td>上传时间</td></tr><tr><td>upload_by</td><td>上传人</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -366,15 +244,22 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：说明书提交审批后能否修改？</strong></p>
+<p>A1：审批中和审批通过状态不可修改，审批拒绝后可重新编辑提交。</p>
+<p><strong>Q2：一份说明书可以关联多少个型号？</strong></p>
+<p>A2：无数量限制，支持多对多关联。</p>
+<p><strong>Q3：附件文件格式有限制吗？</strong></p>
+<p>A3：通常支持PDF、Word、图片等常见格式，具体以后端校验为准。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 内容 |
-|------|------|
-| 2026-08-03 | 初始创建 |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>内容</th></tr></thead><tbody><tr><td>2026-08-03</td><td>初始创建</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
