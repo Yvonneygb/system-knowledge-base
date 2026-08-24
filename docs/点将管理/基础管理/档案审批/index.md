@@ -189,6 +189,7 @@
 <div class="kl-wrap">
 <KbCard title="2.1 三类审批场景"><table class="kl-table"><thead><tr><th>审批类型</th><th>审批接口</th><th>说明</th></tr></thead><tbody><tr><td>档案审批</td><td>archivesAudit</td><td>对讲师档案基本信息的审批</td></tr><tr><td>价格审批</td><td>priceAudit</td><td>对讲师价格的首次审批</td></tr><tr><td>价格变更审批</td><td>priceChangeApproval</td><td>对讲师价格变更的审批</td></tr></tbody></table></KbCard>
 <KbCard title="2.2 审批状态流转">
+
 ```
 待审批 → 审批通过 / 审批拒绝
 ```
@@ -230,11 +231,11 @@
 <ul><li>通过 → 讲师价格更新为新价格</li><li>拒绝 → 价格维持原值不变</li></ul></KbCard>
 <KbCard title="3.3 值集依赖"><table class="kl-table"><thead><tr><th>值集编码</th><th>用途</th><th>使用位置</th></tr></thead><tbody><tr><td>MBO.APPROVAL_TYPE</td><td>审批类型</td><td>列表页查询条件-审批类型字段</td></tr><tr><td>MBO.APPROVAL_RESULT</td><td>审批结果</td><td>审批弹窗-审批结果选项</td></tr></tbody></table></KbCard>
 <KbCard title="3.4 API清单"><table class="kl-table"><thead><tr><th>API路径</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>mlt/maLecturerApproval/list</td><td>GET</td><td>查询审批列表</td></tr><tr><td>mlt/maLecturerApproval/detail</td><td>GET</td><td>查询审批详情</td></tr><tr><td>mlt/maLecturerApproval/archivesAudit</td><td>POST</td><td>档案审批</td></tr><tr><td>mlt/maLecturerApproval/priceAudit</td><td>POST</td><td>价格审批</td></tr><tr><td>mlt/maLecturerApproval/priceChangeApproval</td><td>POST</td><td>价格变更审批</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><p class='kl-tip'>无选择弹窗。查询栏"讲师类型"下拉必填，不选报错"请选择讲师类型"。</p></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>审批</td><td>需单选一条数据，跳转讲师档案详情页审批模式</td></tr><tr><td>查看详情</td><td>行操作，跳转讲师档案详情页</td></tr></tbody></table></KbCard>
-<KbCard title="保存校验"><p class='kl-tip'>无保存功能（纯审批列表）。</p></KbCard>
-<KbCard title="提交校验"><p>审批意见pprovalComments必填，档案审批通过时还需校验讲师级别lecturerLevel和牌价priceInfo。调用rchivesApproval/priceApproval接口，无工作流编码（直接接口审批）。</p></KbCard>
+<KbCard title="3.5 选择弹窗"><p class='kl-tip'>无选择弹窗。查询栏"讲师类型"下拉必填，不选报错"请选择讲师类型"。</p></KbCard>
+<KbCard title="3.6 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.7 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>审批</td><td>需单选一条数据，跳转讲师档案详情页审批模式</td></tr><tr><td>查看详情</td><td>行操作，跳转讲师档案详情页</td></tr></tbody></table></KbCard>
+<KbCard title="3.8 保存校验"><p class='kl-tip'>无保存功能（纯审批列表）。</p></KbCard>
+<KbCard title="3.9 提交校验"><p>审批意见pprovalComments必填，档案审批通过时还需校验讲师级别lecturerLevel和牌价priceInfo。调用rchivesApproval/priceApproval接口，无工作流编码（直接接口审批）。</p></KbCard>
 <KbCard title="4.1 主表：ma_lecturer_approval（讲师审批表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>lecturer_approval_id</td><td>VARCHAR2</td><td>主键ID</td><td>主键</td></tr><tr><td>lecturer_approval_code</td><td>VARCHAR2</td><td>审批单号</td><td>业务唯一键</td></tr><tr><td>lecturer_archives_code</td><td>VARCHAR2</td><td>关联档案编码</td><td>外键关联ma_lecturer_archive</td></tr><tr><td>approval_type</td><td>VARCHAR2</td><td>审批类型</td><td>值集MBO.APPROVAL_TYPE（档案审批/价格审批/价格变更审批）</td></tr><tr><td>approval_status</td><td>VARCHAR2</td><td>审批状态</td><td></td></tr><tr><td>approval_result</td><td>VARCHAR2</td><td>审批结果</td><td>值集MBO.APPROVAL_RESULT（通过/拒绝）</td></tr><tr><td>submit_by</td><td>VARCHAR2</td><td>提交人</td><td></td></tr><tr><td>submit_date</td><td>DATE</td><td>提交时间</td><td></td></tr><tr><td>approver</td><td>VARCHAR2</td><td>审批人</td><td></td></tr><tr><td>approval_date</td><td>DATE</td><td>审批时间</td><td></td></tr><tr><td>approval_remark</td><td>VARCHAR2</td><td>审批意见</td><td></td></tr><tr><td>original_price</td><td>NUMBER</td><td>原价格</td><td>价格变更审批时记录原价格</td></tr><tr><td>new_price</td><td>NUMBER</td><td>新价格</td><td>价格变更审批时记录新价格</td></tr><tr><td>price_change_reason</td><td>VARCHAR2</td><td>价格变更原因</td><td>价格变更审批时填写</td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>乐观锁版本号</td><td></td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -252,7 +253,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1: 档案审批、价格审批、价格变更审批有什么区别？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1: 档案审批、价格审批、价格变更审批有什么区别？</strong></p>
 <p>A: 档案审批是对讲师档案基本信息的审批；价格审批是对讲师首次设定价格的审批；价格变更审批是对讲师价格变更的审批。三者审批接口不同，回写逻辑也不同。</p>
 <p><strong>Q2: 审批拒绝后能否重新提交？</strong></p>
 <p>A: 可以。审批拒绝后，讲师档案状态回退，用户可在讲师档案菜单修改后重新提交审批。</p>
