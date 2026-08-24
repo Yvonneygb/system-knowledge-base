@@ -149,8 +149,12 @@
 <KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>/v1/{organizationId}/manual-classification/list-mode-data</td><td>GET</td><td>列表模式数据查询</td></tr><tr><td>/v1/{organizationId}/manual-classification/summary-mode-data</td><td>GET</td><td>汇总模式数据查询</td></tr></tbody></table>
 <ul><li>Controller: <code>ManualClassificationController</code></li></ul></KbCard>
 <KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-ae</code></li><li>页面路径：<code>arrow-ae/productInfo/manualClassification</code></li></ul></KbCard>
-<KbCard title="3.3 核心业务规则"><p>1. 列表模式返回每条查阅记录明细（含查阅人、查阅时间、查阅的说明书） 2. 汇总模式按说明书维度聚合，统计总查阅次数、最近查阅时间、查阅人数 3. 查阅日志由说明书查阅操作自动写入，无需手动录入 4. 无工作流</p>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 前端代码缺失（疑似hlod低代码页面），无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 列表模式返回每条查阅记录明细（含查阅人、查阅时间、查阅的说明书） 2. 汇总模式按说明书维度聚合，统计总查阅次数、最近查阅时间、查阅人数 3. 查阅日志由说明书查阅操作自动写入，无需手动录入 4. 无工作流</p></KbCard>
+<KbCard title="3.4 选择弹窗"><p class='kl-tip'>前端代码缺失（疑似hlod低代码页面），无法确认。</p></KbCard>
+<KbCard title="3.5 导入"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.6 其他按钮"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.7 保存校验"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.8 提交校验"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
 <KbCard title="4.1 ES_SEARCH_LOG（查阅日志表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>search_log_id</td><td>日志ID（主键）</td></tr><tr><td>spec_id</td><td>说明书ID</td></tr><tr><td>spec_name</td><td>说明书名称</td></tr><tr><td>search_by</td><td>查阅人</td></tr><tr><td>search_date</td><td>查阅时间</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>ip_address</td><td>查阅人IP地址</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -195,7 +199,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：查阅数据多久更新一次？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：查阅数据多久更新一次？</strong></p>
 <p>A1：实时更新，每次查阅说明书时自动写入日志。</p>
 <p><strong>Q2：列表模式和汇总模式的区别？</strong></p>
 <p>A2：列表模式展示每条查阅明细记录，汇总模式按说明书维度汇总统计查阅次数。</p>
