@@ -127,63 +127,9 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 前端路由">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>路由</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`/product/list`</td>
-<td>产品列表页</td>
-</tr>
-<tr>
-<td>`/product/detail/:id`</td>
-<td>产品详情页（:id为产品ID）</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="2" title="2.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/product`</td>
-<td>GET</td>
-<td>查询产品列表</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/product/{id}`</td>
-<td>GET</td>
-<td>查询产品详情</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/product`</td>
-<td>POST</td>
-<td>新增产品</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/product/{id}`</td>
-<td>PUT</td>
-<td>更新产品</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="3" title="2.3 无工作流">
-
-本菜单无审批工作流，数据直接保存生效。
-
-</KbCard>
-
+<KbCard title="2.1 前端路由"><table class="kl-table"><thead><tr><th>路由</th><th>说明</th></tr></thead><tbody><tr><td><code>/product/list</code></td><td>产品列表页</td></tr><tr><td><code>/product/detail/:id</code></td><td>产品详情页（:id为产品ID）</td></tr></tbody></table></KbCard>
+<KbCard title="2.2 API接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td><code>CRM_BUSINESS/v1/{orgId}/product</code></td><td>GET</td><td>查询产品列表</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/product/{id}</code></td><td>GET</td><td>查询产品详情</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/product</code></td><td>POST</td><td>新增产品</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/product/{id}</code></td><td>PUT</td><td>更新产品</td></tr></tbody></table></KbCard>
+<KbCard title="2.3 无工作流"><p>本菜单无审批工作流，数据直接保存生效。</p></KbCard>
 </div>
 </div>
 </div>
@@ -201,63 +147,12 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 产品列表页">
-
-- **查询条件**：产品编码、产品名称、产品型号、产品分类、产品状态、规格等
-- **列表展示字段**：产品编码、产品名称、产品型号、产品分类、规格、计量单位、产品状态、创建时间等
-- **操作按钮**：新增、编辑、查看详情、删除
-- **分页**：支持前端分页参数传递，后端返回分页结果
-
-</KbCard>
-
-<KbCard title="3.2 产品详情页">
-
-- **基础信息区域**：
-  - 产品编码（product_code）：唯一标识，新建时自动生成或手动输入
-  - 产品名称（product_name）：必填
-  - 产品型号（product_model）：产品型号描述
-  - 产品分类（product_category）：关联产品分类体系
-  - 规格（specification）：产品规格描述
-  - 计量单位（uom）：关联计量单位LOV
-  - 产品状态（product_status）：启用/禁用
-  - 产品描述（description）：文本描述
-
-- **Tab页签**：产品详情页可能包含多个Tab页签，如基础信息、产品图片、产品图册、产品分类等嵌入式组件
-
-</KbCard>
-
-<KbCard title="3.3 数据校验">
-
-- 产品编码唯一性校验
-- 产品名称必填校验
-- 产品分类有效性校验
-
-</KbCard>
-
-<KbCard num="1" title="4.1 产品主表">
-
-> 表名：PRODUCT（产品主表）
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| id | NUMBER | 主键ID | PK |
-| product_code | VARCHAR2 | 产品编码 | 唯一 |
-| product_name | VARCHAR2 | 产品名称 | NOT NULL |
-| product_model | VARCHAR2 | 产品型号 | |
-| product_category | VARCHAR2 | 产品分类 | |
-| specification | VARCHAR2 | 规格 | |
-| uom | VARCHAR2 | 计量单位 | |
-| product_status | VARCHAR2 | 产品状态 | |
-| description | VARCHAR2 | 产品描述 | |
-| organization_id | NUMBER | 组织ID | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | NUMBER | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-| object_version_number | NUMBER | 版本号 | 乐观锁 |
-
-</KbCard>
-
+<KbCard title="3.1 产品列表页"><ul><li><strong>查询条件</strong>：产品编码、产品名称、产品型号、产品分类、产品状态、规格等</li><li><strong>列表展示字段</strong>：产品编码、产品名称、产品型号、产品分类、规格、计量单位、产品状态、创建时间等</li><li><strong>操作按钮</strong>：新增、编辑、查看详情、删除</li><li><strong>分页</strong>：支持前端分页参数传递，后端返回分页结果</li></ul></KbCard>
+<KbCard title="3.2 产品详情页"><ul><li><strong>基础信息区域</strong>：<ul><li>产品编码（product_code）：唯一标识，新建时自动生成或手动输入</li><li>产品名称（product_name）：必填</li><li>产品型号（product_model）：产品型号描述</li><li>产品分类（product_category）：关联产品分类体系</li><li>规格（specification）：产品规格描述</li><li>计量单位（uom）：关联计量单位LOV</li><li>产品状态（product_status）：启用/禁用</li><li>产品描述（description）：文本描述</li></ul></li><li><strong>Tab页签</strong>：产品详情页可能包含多个Tab页签，如基础信息、产品图片、产品图册、产品分类等嵌入式组件</li></ul></KbCard>
+<KbCard title="3.3 数据校验"><ul><li>产品编码唯一性校验</li><li>产品名称必填校验</li><li>产品分类有效性校验</li></ul>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。查询字段使用值集下拉：CRM\\.LH_PROD_CHANNELS、CRM\\.LH_PROD_STATUS、CRM\\.PRODUCT_Z_STATE、CRM\\.ORG、CRM\\.PROD_PROMOTE_GRADE等。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。两个导入按钮：\\r\\n-\\ 产品图册-导入（templateCode=CRM\\.PROD_PHOTO）\\r\\n-\\ 产品附件-导入（templateCode=CRM\\.PROD_FILES）\\r\\n\\r\\n&gt;\\ 外部用户\\(userType='D'\\)隐藏导入按钮。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|------\\|\\r\\n\\|\\ 导出\\ \\|\\ GET\\ /prod/\\{internal\\|external}/export，异步导出\\ \\|\\r\\n\\|\\ 产品编码链接\\ \\|\\ 跳转产品详情\\ /product/detail/\\{id}\\ \\|\\r\\n\\r\\n&gt;\\ Tab页：商品检索\\(general\\)、配件&其它\\(other\\)。外部用户隐藏部分字段。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 无保存校验（纯查询页面）。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="4.1 产品主表"><p class='kl-tip'>表名：PRODUCT（产品主表）</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>product_code</td><td>VARCHAR2</td><td>产品编码</td><td>唯一</td></tr><tr><td>product_name</td><td>VARCHAR2</td><td>产品名称</td><td>NOT NULL</td></tr><tr><td>product_model</td><td>VARCHAR2</td><td>产品型号</td><td></td></tr><tr><td>product_category</td><td>VARCHAR2</td><td>产品分类</td><td></td></tr><tr><td>specification</td><td>VARCHAR2</td><td>规格</td><td></td></tr><tr><td>uom</td><td>VARCHAR2</td><td>计量单位</td><td></td></tr><tr><td>product_status</td><td>VARCHAR2</td><td>产品状态</td><td></td></tr><tr><td>description</td><td>VARCHAR2</td><td>产品描述</td><td></td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -307,15 +202,17 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>产品编码如何生成？</td><td>根据系统编码规则自动生成，或由用户手动输入，需保证唯一性</td></tr><tr><td>产品分类从哪里获取？</td><td>产品分类数据来源于AE微服务的ITEM_CLASS表，通过嵌入式组件在详情页中展示</td></tr><tr><td>产品删除有什么限制？</td><td>已被业务引用的产品不可删除，需先解除关联关系</td></tr><tr><td>产品状态变更如何操作？</td><td>在产品列表或详情页直接修改状态字段，无需审批流程</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | V1.0 | 初始创建 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>V1.0</td><td>初始创建</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
