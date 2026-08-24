@@ -117,53 +117,9 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 前端路由">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>路由</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`/product/changeList`</td>
-<td>产品变更列表页</td>
-</tr>
-<tr>
-<td>`/product/changeDetail/:id?`</td>
-<td>产品变更详情页（:id可选，无id时为新建）</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="2" title="2.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/productChange`</td>
-<td>GET</td>
-<td>查询产品变更列表</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/productChange/{id}`</td>
-<td>GET</td>
-<td>查询产品变更详情</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="3" title="2.3 无工作流">
-
-本菜单无审批工作流，变更记录由系统自动生成或由业务操作触发。
-
-</KbCard>
-
+<KbCard title="2.1 前端路由"><table class="kl-table"><thead><tr><th>路由</th><th>说明</th></tr></thead><tbody><tr><td><code>/product/changeList</code></td><td>产品变更列表页</td></tr><tr><td><code>/product/changeDetail/:id?</code></td><td>产品变更详情页（:id可选，无id时为新建）</td></tr></tbody></table></KbCard>
+<KbCard title="2.2 API接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td><code>CRM_BUSINESS/v1/{orgId}/productChange</code></td><td>GET</td><td>查询产品变更列表</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/productChange/{id}</code></td><td>GET</td><td>查询产品变更详情</td></tr></tbody></table></KbCard>
+<KbCard title="2.3 无工作流"><p>本菜单无审批工作流，变更记录由系统自动生成或由业务操作触发。</p></KbCard>
 </div>
 </div>
 </div>
@@ -181,83 +137,14 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 产品变更列表页">
-
-- **查询条件**：产品编码、产品名称、变更类型、变更时间范围、变更人等
-- **列表展示字段**：变更单号、产品编码、产品名称、变更类型、变更前值、变更后值、变更人、变更时间等
-- **操作按钮**：查看详情
-- **分页**：支持前端分页参数传递，后端返回分页结果
-
-</KbCard>
-
-<KbCard title="3.2 产品变更详情页">
-
-- **变更基础信息**：
-  - 变更单号（change_no）：系统自动生成
-  - 产品编码（product_code）：关联产品
-  - 变更类型（change_type）：价格变更/状态变更/属性变更等
-  - 变更原因（change_reason）：变更原因描述
-  - 变更人（changed_by）：执行变更的人员
-  - 变更时间（change_date）：变更发生的时间
-
-- **变更明细区域**：
-  - 变更字段（changed_field）：发生变更的具体字段
-  - 变更前值（before_value）：变更前的值
-  - 变更后值（after_value）：变更后的值
-
-</KbCard>
-
-<KbCard title="3.3 变更记录生成逻辑">
-
-- 产品价格变更时自动生成变更记录
-- 产品状态变更时自动生成变更记录
-- 产品属性（型号/规格/分类等）变更时自动生成变更记录
-- 变更记录不可编辑和删除，仅作查询和追溯用途
-
-</KbCard>
-
-<KbCard num="1" title="4.1 产品变更头表">
-
-> 表名：PRODUCT_CHANGE_HEADER（产品变更头表）
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| id | NUMBER | 主键ID | PK |
-| change_no | VARCHAR2 | 变更单号 | 唯一，自动生成 |
-| product_id | NUMBER | 产品ID | FK→PRODUCT |
-| product_code | VARCHAR2 | 产品编码 | |
-| product_name | VARCHAR2 | 产品名称 | |
-| change_type | VARCHAR2 | 变更类型 | PRICE/STATUS/ATTRIBUTE等 |
-| change_reason | VARCHAR2 | 变更原因 | |
-| changed_by | NUMBER | 变更人 | |
-| change_date | DATE | 变更时间 | |
-| organization_id | NUMBER | 组织ID | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | NUMBER | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-| object_version_number | NUMBER | 版本号 | 乐观锁 |
-
-</KbCard>
-
-<KbCard num="2" title="4.2 产品变更行表">
-
-> 表名：PRODUCT_CHANGE_LINE（产品变更行表）
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| id | NUMBER | 主键ID | PK |
-| header_id | NUMBER | 变更头ID | FK→PRODUCT_CHANGE_HEADER |
-| changed_field | VARCHAR2 | 变更字段 | |
-| field_name | VARCHAR2 | 字段名称 | |
-| before_value | VARCHAR2 | 变更前值 | |
-| after_value | VARCHAR2 | 变更后值 | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| object_version_number | NUMBER | 版本号 | 乐观锁 |
-
-</KbCard>
-
+<KbCard title="3.1 产品变更列表页"><ul><li><strong>查询条件</strong>：产品编码、产品名称、变更类型、变更时间范围、变更人等</li><li><strong>列表展示字段</strong>：变更单号、产品编码、产品名称、变更类型、变更前值、变更后值、变更人、变更时间等</li><li><strong>操作按钮</strong>：查看详情</li><li><strong>分页</strong>：支持前端分页参数传递，后端返回分页结果</li></ul></KbCard>
+<KbCard title="3.2 产品变更详情页"><ul><li><strong>变更基础信息</strong>：<ul><li>变更单号（change_no）：系统自动生成</li><li>产品编码（product_code）：关联产品</li><li>变更类型（change_type）：价格变更/状态变更/属性变更等</li><li>变更原因（change_reason）：变更原因描述</li><li>变更人（changed_by）：执行变更的人员</li><li>变更时间（change_date）：变更发生的时间</li></ul></li><li><strong>变更明细区域</strong>：<ul><li>变更字段（changed_field）：发生变更的具体字段</li><li>变更前值（before_value）：变更前的值</li><li>变更后值（after_value）：变更后的值</li></ul></li></ul></KbCard>
+<KbCard title="3.3 变更记录生成逻辑"><ul><li>产品价格变更时自动生成变更记录</li><li>产品状态变更时自动生成变更记录</li><li>产品属性（型号/规格/分类等）变更时自动生成变更记录</li><li>变更记录不可编辑和删除，仅作查询和追溯用途</li></ul>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n\\|\\ 弹窗名称\\ \\|\\ 接口\\ \\|\\ 说明\\ \\|\\r\\n\\|---------\\|------\\|------\\|\\r\\n\\|\\ 产品选择弹窗\\ \\|\\ /prod，参数selectType='all'\\ \\|\\ 单选，需输入产品编码/名称/型号之一才能查询\\ \\|\\r\\n\\|\\ 流程模板弹窗\\ \\|\\ /hmde/v1/0/executor/COMM_SCPOBJWFTEMP/list\\ \\|\\ objTypeId=8033\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。templateCode=CRM\\.PROD_CHANGE_FORM_ITEM，仅查看状态且canEditStatus时显示。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 显示条件\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|---------\\|------\\|\\r\\n\\|\\ 新增\\ \\|\\ 列表页\\ \\|\\ 跳详情页\\ \\|\\r\\n\\|\\ 保存\\ \\|\\ 编辑模式\\ \\|\\ 走保存接口\\ \\|\\r\\n\\|\\ 提交\\ \\|\\ 编辑模式\\ \\|\\ 走提交接口\\ \\|\\r\\n\\|\\ 编辑\\ \\|\\ canEditStatus\\(状态为NEW/REJECTED或空\\)\\ \\|\\ 进入编辑\\ \\|\\r\\n\\|\\ 取消\\ \\|\\ 编辑模式\\ \\|\\ 取消编辑\\ \\|\\r\\n\\r\\n&gt;\\ 明细行操作：新建、批量删除、移除、编辑、预览、下载。5个明细Tab：上下架变更、推广信息变更、关联产品变更、产品图册变更、产品附件变更。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*前端校验：\\*\\*\\ \\formDs\\.validate\\(\\)校验必填项，失败提示"请检查表单必填项!"\\r\\n\\r\\n\\*\\*明细行弹窗校验：\\*\\*\\ 必填字段：产品编码、变更内容/属性、变更要求、图片/附件类型；附件大小不超过100M\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n\\*\\*提交接口：\\*\\*\\ POST\\ /prodChangeForm/submit（参数id、confirmShelf）\\r\\n\\r\\n\\*\\*二次确认机制：\\*\\*\\ 后端返回code=CONFIRM_REQUIRED时弹确认框，确认后带confirmShelf=true重新提交\\r\\n\\r\\n\\*\\*工作流：\\*\\*\\ objTypeId=8033，hzInstanceId关联流程实例</p></KbCard>
+<KbCard title="4.1 产品变更头表"><p class='kl-tip'>表名：PRODUCT_CHANGE_HEADER（产品变更头表）</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>change_no</td><td>VARCHAR2</td><td>变更单号</td><td>唯一，自动生成</td></tr><tr><td>product_id</td><td>NUMBER</td><td>产品ID</td><td>FK→PRODUCT</td></tr><tr><td>product_code</td><td>VARCHAR2</td><td>产品编码</td><td></td></tr><tr><td>product_name</td><td>VARCHAR2</td><td>产品名称</td><td></td></tr><tr><td>change_type</td><td>VARCHAR2</td><td>变更类型</td><td>PRICE/STATUS/ATTRIBUTE等</td></tr><tr><td>change_reason</td><td>VARCHAR2</td><td>变更原因</td><td></td></tr><tr><td>changed_by</td><td>NUMBER</td><td>变更人</td><td></td></tr><tr><td>change_date</td><td>DATE</td><td>变更时间</td><td></td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
+<KbCard title="4.2 产品变更行表"><p class='kl-tip'>表名：PRODUCT_CHANGE_LINE（产品变更行表）</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>header_id</td><td>NUMBER</td><td>变更头ID</td><td>FK→PRODUCT_CHANGE_HEADER</td></tr><tr><td>changed_field</td><td>VARCHAR2</td><td>变更字段</td><td></td></tr><tr><td>field_name</td><td>VARCHAR2</td><td>字段名称</td><td></td></tr><tr><td>before_value</td><td>VARCHAR2</td><td>变更前值</td><td></td></tr><tr><td>after_value</td><td>VARCHAR2</td><td>变更后值</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -307,15 +194,17 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>变更记录可以手动创建吗？</td><td>变更记录由系统自动生成，不支持手动创建</td></tr><tr><td>变更记录可以删除吗？</td><td>变更记录不可删除，作为审计追溯数据永久保留</td></tr><tr><td>变更类型有哪些？</td><td>主要包括价格变更（PRICE）、状态变更（STATUS）、属性变更（ATTRIBUTE）等</td></tr><tr><td>变更详情页无id参数时是什么场景？</td><td>无id时为新建变更记录的入口，但通常变更记录由系统自动生成</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | V1.0 | 初始创建 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>V1.0</td><td>初始创建</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
