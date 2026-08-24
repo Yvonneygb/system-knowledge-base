@@ -197,6 +197,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard title="重点逻辑"><ul><li><strong>多级审批链路</strong>：设计师点将涉及4个内置审批流程，按顺序依次触发<ul><li><code>designApplyLecturerApproval</code>：讲师审批，确认讲师可排期</li><li><code>designApplyTerminalApproval</code>：门店审批，确认门店接受服务</li><li><code>designApplyApproval</code>：常规业务审批</li><li><code>designApplyCancelApproval</code>：取消审批，用于撤回已提交的点将</li></ul></li><li><strong>审批互斥</strong>：取消审批与常规审批互斥，已进入审批流程的申请需先完成或取消当前审批</li><li><strong>状态联动</strong>：审批状态变更自动更新申请主状态</li></ul></KbCard>
 </div>
 </div>
 </div>
@@ -214,109 +215,17 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 列表页">
-
-- **前端路由**：`/general/designGeneral/designGeneralManage/list`
-- **API**：`mlt/designApply/page`
-- **Entity**：`DesignApply`
-- **查询条件**：申请单号、设计师姓名、经销商名称、申请状态、申请时间范围
-- **列表字段**：申请单号、设计师姓名、设计师级别、经销商名称、门店名称、服务时间、申请状态、审批状态、创建时间
-- **操作按钮**：新建、提交、取消、查看详情
-
-</KbCard>
-
-<KbCard title="3.2 新建/编辑">
-
-- **API**：`mlt/designApply/insert`、`mlt/designApply/update`
-- **必填字段**：设计师、服务经销商、服务门店、服务开始时间、服务结束时间
-- **校验逻辑**：
-  - 设计师必须在档且状态正常
-  - 服务时间不可与该设计师已有排期冲突
-  - 服务时间需在有效范围内
-
-</KbCard>
-
-<KbCard title="3.3 提交审批">
-
-- **API**：`mlt/designApply/submit`
-- **审批流程**：提交后依次触发讲师审批→门店审批→常规审批
-- **审批回调**：审批通过/驳回后自动更新申请状态
-
-</KbCard>
-
-<KbCard title="3.4 取消审批">
-
-- **API**：`mlt/designApply/cancelApproval`
-- **内置审批**：`designApplyCancelApproval`
-- **前置条件**：申请已提交且未完成全部审批
-
-</KbCard>
-
-<KbCard title="3.5 内置审批说明">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>审批编码</th>
-<th>审批名称</th>
-<th>触发时机</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>designApplyLecturerApproval</td>
-<td>讲师审批</td>
-<td>提交申请后</td>
-<td>讲师确认可提供服务</td>
-</tr>
-<tr>
-<td>designApplyTerminalApproval</td>
-<td>门店审批</td>
-<td>讲师审批通过后</td>
-<td>门店确认接受服务</td>
-</tr>
-<tr>
-<td>designApplyApproval</td>
-<td>常规审批</td>
-<td>门店审批通过后</td>
-<td>业务审批</td>
-</tr>
-<tr>
-<td>designApplyCancelApproval</td>
-<td>取消审批</td>
-<td>发起取消时</td>
-<td>取消已提交的点将</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="1" title="design_apply（设计点将申请表）">
-
-| 字段名 | 类型 | 说明 |
-|--------|------|------|
-| apply_code | VARCHAR2 | 申请单号（主键） |
-| apply_type | VARCHAR2 | 申请类型 |
-| lecturer_code | VARCHAR2 | 设计师编码 |
-| lecturer_name | VARCHAR2 | 设计师姓名 |
-| lecturer_level | VARCHAR2 | 设计师级别 |
-| dealer_code | VARCHAR2 | 经销商编码 |
-| dealer_name | VARCHAR2 | 经销商名称 |
-| terminal_code | VARCHAR2 | 门店编码 |
-| terminal_name | VARCHAR2 | 门店名称 |
-| service_start_date | DATE | 服务开始时间 |
-| service_end_date | DATE | 服务结束时间 |
-| apply_status | VARCHAR2 | 申请状态 |
-| approval_status | VARCHAR2 | 审批状态 |
-| lecturer_approval_status | VARCHAR2 | 讲师审批状态 |
-| terminal_approval_status | VARCHAR2 | 门店审批状态 |
-| cancel_approval_status | VARCHAR2 | 取消审批状态 |
-| remark | VARCHAR2 | 备注 |
-| created_by | VARCHAR2 | 创建人 |
-| creation_date | DATE | 创建时间 |
-| last_updated_by | VARCHAR2 | 最后更新人 |
-| last_update_date | DATE | 最后更新时间 |
-
-</KbCard>
-
+<KbCard title="3.1 列表页"><ul><li><strong>前端路由</strong>：<code>/general/designGeneral/designGeneralManage/list</code></li><li><strong>API</strong>：<code>mlt/designApply/page</code></li><li><strong>Entity</strong>：<code>DesignApply</code></li><li><strong>查询条件</strong>：申请单号、设计师姓名、经销商名称、申请状态、申请时间范围</li><li><strong>列表字段</strong>：申请单号、设计师姓名、设计师级别、经销商名称、门店名称、服务时间、申请状态、审批状态、创建时间</li><li><strong>操作按钮</strong>：新建、提交、取消、查看详情</li></ul></KbCard>
+<KbCard title="3.2 新建/编辑"><ul><li><strong>API</strong>：<code>mlt/designApply/insert</code>、<code>mlt/designApply/update</code></li><li><strong>必填字段</strong>：设计师、服务经销商、服务门店、服务开始时间、服务结束时间</li><li><strong>校验逻辑</strong>：<ul><li>设计师必须在档且状态正常</li><li>服务时间不可与该设计师已有排期冲突</li><li>服务时间需在有效范围内</li></ul></li></ul></KbCard>
+<KbCard title="3.3 提交审批"><ul><li><strong>API</strong>：<code>mlt/designApply/submit</code></li><li><strong>审批流程</strong>：提交后依次触发讲师审批→门店审批→常规审批</li><li><strong>审批回调</strong>：审批通过/驳回后自动更新申请状态</li></ul></KbCard>
+<KbCard title="3.4 取消审批"><ul><li><strong>API</strong>：<code>mlt/designApply/cancelApproval</code></li><li><strong>内置审批</strong>：<code>designApplyCancelApproval</code></li><li><strong>前置条件</strong>：申请已提交且未完成全部审批</li></ul></KbCard>
+<KbCard title="3.5 内置审批说明"><table class="kl-table"><thead><tr><th>审批编码</th><th>审批名称</th><th>触发时机</th><th>说明</th></tr></thead><tbody><tr><td>designApplyLecturerApproval</td><td>讲师审批</td><td>提交申请后</td><td>讲师确认可提供服务</td></tr><tr><td>designApplyTerminalApproval</td><td>门店审批</td><td>讲师审批通过后</td><td>门店确认接受服务</td></tr><tr><td>designApplyApproval</td><td>常规审批</td><td>门店审批通过后</td><td>业务审批</td></tr><tr><td>designApplyCancelApproval</td><td>取消审批</td><td>发起取消时</td><td>取消已提交的点将</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>审批弹窗</td><td>审批意见Form+DesignApplyDetail</td></tr><tr><td>设计改派弹窗</td><td>新设计师Form+DesignApplyDetail</td></tr><tr><td>设计师选择弹窗</td><td>Table选择设计师，含查看饱和度</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="其他按钮"><p>SelectBox切换"设计点将管理/设计点将审批/设计点将取消审批/设计点将审批(设计师)/设计点将取消审批(设计师)"。按钮：查看申请、设计改派、审批。</p></KbCard>
+<KbCard title="保存校验"><p>设计改派校验 ewDesignerFormDS.validate()（新设计师必填），调用designReassignment。</p></KbCard>
+<KbCard title="提交校验"><p>审批校验pplyApprovalFormDS.validate()（审批意见必填），根据pageType选择不同接口：pplyApproval/cancelApplyApproval/designApplyApproval/designApplyTerminalApproval，无工作流编码。</p></KbCard>
+<KbCard title="design_apply（设计点将申请表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2</td><td>申请单号（主键）</td></tr><tr><td>apply_type</td><td>VARCHAR2</td><td>申请类型</td></tr><tr><td>lecturer_code</td><td>VARCHAR2</td><td>设计师编码</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>设计师姓名</td></tr><tr><td>lecturer_level</td><td>VARCHAR2</td><td>设计师级别</td></tr><tr><td>dealer_code</td><td>VARCHAR2</td><td>经销商编码</td></tr><tr><td>dealer_name</td><td>VARCHAR2</td><td>经销商名称</td></tr><tr><td>terminal_code</td><td>VARCHAR2</td><td>门店编码</td></tr><tr><td>terminal_name</td><td>VARCHAR2</td><td>门店名称</td></tr><tr><td>service_start_date</td><td>DATE</td><td>服务开始时间</td></tr><tr><td>service_end_date</td><td>DATE</td><td>服务结束时间</td></tr><tr><td>apply_status</td><td>VARCHAR2</td><td>申请状态</td></tr><tr><td>approval_status</td><td>VARCHAR2</td><td>审批状态</td></tr><tr><td>lecturer_approval_status</td><td>VARCHAR2</td><td>讲师审批状态</td></tr><tr><td>terminal_approval_status</td><td>VARCHAR2</td><td>门店审批状态</td></tr><tr><td>cancel_approval_status</td><td>VARCHAR2</td><td>取消审批状态</td></tr><tr><td>remark</td><td>VARCHAR2</td><td>备注</td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -330,15 +239,24 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：提交审批后能否修改？</strong></p>
+<p>A：已提交审批的申请不可修改，需先取消审批后再编辑重新提交。</p>
+<p><strong>Q2：讲师审批驳回后如何处理？</strong></p>
+<p>A：讲师审批驳回后，申请状态变为"已驳回"，可修改后重新提交。</p>
+<p><strong>Q3：取消审批的流程是什么？</strong></p>
+<p>A：发起取消后触发<code>designApplyCancelApproval</code>审批流程，审批通过后申请状态变为"已取消"。</p>
+<p><strong>Q4：设计师排期冲突如何校验？</strong></p>
+<p>A：提交时后端校验该设计师在申请服务时间段内是否已有排期，存在冲突则拒绝提交。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | v1.0 | 初始创建 | AI生成 |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>v1.0</td><td>初始创建</td><td>AI生成</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
