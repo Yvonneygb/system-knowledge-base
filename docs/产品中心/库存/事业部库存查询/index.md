@@ -163,26 +163,9 @@
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">事业部库存查询与普通库存查询的区别？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>事业部库存查询按事业部维度汇总展示，普通库存查询展示明细记录。
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">能否查看事业部下的库存明细？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>本页面展示汇总数据，明细需跳转到库存查询页面查看。
-    </div>
-  </div>
-</div>
+
+<!-- 空白:待补充 -->
+
 </KbCard>
 </div>
 </div>
