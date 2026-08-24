@@ -124,64 +124,9 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 前端路由">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>路由</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`/product/promoteGradeList`</td>
-<td>产品推广等级维护列表页</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="2" title="2.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGrades`</td>
-<td>GET</td>
-<td>查询推广等级列表</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGrades/{id}`</td>
-<td>GET</td>
-<td>查询推广等级详情</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGrades`</td>
-<td>POST</td>
-<td>新增推广等级</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGrades/{id}`</td>
-<td>PUT</td>
-<td>更新推广等级</td>
-</tr>
-<tr>
-<td>`CRM_BUSINESS/v1/{orgId}/prodPromoteGrades/{id}`</td>
-<td>DELETE</td>
-<td>删除推广等级</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="3" title="2.3 无工作流">
-
-本菜单无审批工作流，数据直接保存生效。
-
-</KbCard>
-
+<KbCard title="2.1 前端路由"><table class="kl-table"><thead><tr><th>路由</th><th>说明</th></tr></thead><tbody><tr><td><code>/product/promoteGradeList</code></td><td>产品推广等级维护列表页</td></tr></tbody></table></KbCard>
+<KbCard title="2.2 API接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGrades</code></td><td>GET</td><td>查询推广等级列表</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGrades/{id}</code></td><td>GET</td><td>查询推广等级详情</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGrades</code></td><td>POST</td><td>新增推广等级</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGrades/{id}</code></td><td>PUT</td><td>更新推广等级</td></tr><tr><td><code>CRM_BUSINESS/v1/{orgId}/prodPromoteGrades/{id}</code></td><td>DELETE</td><td>删除推广等级</td></tr></tbody></table></KbCard>
+<KbCard title="2.3 无工作流"><p>本菜单无审批工作流，数据直接保存生效。</p></KbCard>
 </div>
 </div>
 </div>
@@ -199,55 +144,12 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 推广等级列表页">
-
-- **查询条件**：等级编码、等级名称、启用状态等
-- **列表展示字段**：等级编码、等级名称、等级描述、排序号、启用状态、创建时间等
-- **操作按钮**：新增、编辑、删除、启用/禁用
-- **分页**：支持前端分页参数传递，后端返回分页结果
-
-</KbCard>
-
-<KbCard title="3.2 推广等级数据结构">
-
-- **等级编码（grade_code）**：推广等级的唯一编码，如A、B、C、D等
-- **等级名称（grade_name）**：推广等级的显示名称，如"重点推广"、"一般推广"、"限制推广"等
-- **等级描述（grade_description）**：推广等级的详细说明
-- **排序号（sequence_number）**：等级的排序顺序，数值越小优先级越高
-- **启用状态（enabled_flag）**：Y/N，控制等级是否可用
-
-</KbCard>
-
-<KbCard title="3.3 业务规则">
-
-- 推广等级编码在同一组织下唯一
-- 推广等级被产品引用后不可删除，只能禁用
-- 推广等级控制产品在不同渠道的推广力度，等级越高推广力度越大
-- 推广等级与推广等级要求配置（prodPromoteGradesControls）配合使用，等级要求配置定义达到某等级需要满足的条件
-
-</KbCard>
-
-<KbCard num="1" title="4.1 产品推广等级表">
-
-> 表名：PROD_PROMOTE_GRADES（产品推广等级表）
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| id | NUMBER | 主键ID | PK |
-| grade_code | VARCHAR2 | 等级编码 | 唯一，如A/B/C/D |
-| grade_name | VARCHAR2 | 等级名称 | NOT NULL |
-| grade_description | VARCHAR2 | 等级描述 | |
-| sequence_number | NUMBER | 排序号 | 数值越小优先级越高 |
-| enabled_flag | VARCHAR2 | 启用标志 | Y/N |
-| organization_id | NUMBER | 组织ID | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | NUMBER | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-| object_version_number | NUMBER | 版本号 | 乐观锁 |
-
-</KbCard>
-
+<KbCard title="3.1 推广等级列表页"><ul><li><strong>查询条件</strong>：等级编码、等级名称、启用状态等</li><li><strong>列表展示字段</strong>：等级编码、等级名称、等级描述、排序号、启用状态、创建时间等</li><li><strong>操作按钮</strong>：新增、编辑、删除、启用/禁用</li><li><strong>分页</strong>：支持前端分页参数传递，后端返回分页结果</li></ul></KbCard>
+<KbCard title="3.2 推广等级数据结构"><ul><li><strong>等级编码（grade_code）</strong>：推广等级的唯一编码，如A、B、C、D等</li><li><strong>等级名称（grade_name）</strong>：推广等级的显示名称，如"重点推广"、"一般推广"、"限制推广"等</li><li><strong>等级描述（grade_description）</strong>：推广等级的详细说明</li><li><strong>排序号（sequence_number）</strong>：等级的排序顺序，数值越小优先级越高</li><li><strong>启用状态（enabled_flag）</strong>：Y/N，控制等级是否可用</li></ul></KbCard>
+<KbCard title="3.3 业务规则"><ul><li>推广等级编码在同一组织下唯一</li><li>推广等级被产品引用后不可删除，只能禁用</li><li>推广等级控制产品在不同渠道的推广力度，等级越高推广力度越大</li><li>推广等级与推广等级要求配置（prodPromoteGradesControls）配合使用，等级要求配置定义达到某等级需要满足的条件</li></ul>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n\\|\\ 弹窗名称\\ \\|\\ 说明\\ \\|\\r\\n\\|---------\\|------\\|\\r\\n\\|\\ 产品选择弹窗\\ \\|\\ 新增/编辑弹窗中"产品编码"字段，使用productModalSelectConfigFn\\ \\|\\r\\n\\r\\n&gt;\\ 值集：等级CRM\\.PROD_PROMOTE_GRADE、生命状态CRM\\.PRODUCT_Z_STATE、状态CRM\\.COMMON_STATUS、品牌事业部AE\\.ITEM_ORGANIZATION\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。templateCode=CRM\\.PROD_PROMOTE_GRADE。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 显示条件\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|---------\\|------\\|\\r\\n\\|\\ 新增\\ \\|\\ 始终显示\\ \\|\\ 弹窗编辑\\ \\|\\r\\n\\|\\ 导出\\ \\|\\ 始终显示\\ \\|\\ 导出列表\\ \\|\\r\\n\\|\\ 批量失效\\ \\|\\ 始终显示\\ \\|\\ 红色按钮，批量置status='invalid'\\ \\|\\r\\n\\|\\ 行内失效\\ \\|\\ status='valid'\\ \\|\\ 确认弹窗"是否失效数据\\?"\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*前端校验：\\*\\*\\ commonFn_formValid\\(ds\\)，必填字段：产品编码、等级；新增时默认status='valid'、grade='C'\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="4.1 产品推广等级表"><p class='kl-tip'>表名：PROD_PROMOTE_GRADES（产品推广等级表）</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>grade_code</td><td>VARCHAR2</td><td>等级编码</td><td>唯一，如A/B/C/D</td></tr><tr><td>grade_name</td><td>VARCHAR2</td><td>等级名称</td><td>NOT NULL</td></tr><tr><td>grade_description</td><td>VARCHAR2</td><td>等级描述</td><td></td></tr><tr><td>sequence_number</td><td>NUMBER</td><td>排序号</td><td>数值越小优先级越高</td></tr><tr><td>enabled_flag</td><td>VARCHAR2</td><td>启用标志</td><td>Y/N</td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -297,15 +199,17 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>推广等级编码有哪些约定？</td><td>通常使用A/B/C/D等字母编码，A为最高等级，D为最低等级</td></tr><tr><td>推广等级被产品引用后能否删除？</td><td>不能删除，只能通过启用标志设为N来禁用</td></tr><tr><td>推广等级和推广等级要求配置的关系？</td><td>推广等级定义等级本身（A/B/C），要求配置定义达到某等级需满足的指标条件（如销售额≥100万为A级）</td></tr><tr><td>推广等级如何影响业务？</td><td>推广等级控制产品在不同渠道的推广力度，等级越高产品在各渠道的曝光和推广资源越多</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | V1.0 | 初始创建 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>V1.0</td><td>初始创建</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
