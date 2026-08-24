@@ -197,6 +197,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard title="重点逻辑"><p>1. <strong>双审批流</strong>：点将申请提交触发campApplyApproval审批流；取消申请触发cancelApplyApproval审批流，两者独立运行 2. <strong>applyCode自动生成</strong>：提交申请时系统自动生成唯一编码applyCode 3. <strong>状态联动</strong>：点将申请状态与审批状态联动，审批通过后申请状态自动变更为已通过 4. <strong>取消约束</strong>：仅已审批通过且未完成执行的申请可发起取消申请 5. <strong>CRM订单状态</strong>：点将申请关联CRM订单，通过值集MBO.CRM_ORDER_STATUS跟踪订单状态</p></KbCard>
 </div>
 </div>
 </div>
@@ -214,187 +215,18 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 前端路由">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>路由</th>
-<th>用途</th>
-</tr>
-<tr>
-<td>`/general/specialTrainingCamp/campGeneral/list`</td>
-<td>特训营点将列表页</td>
-</tr>
-<tr>
-<td>`/general/specialTrainingCamp/campGeneral/detail/:applyCode/:type`</td>
-<td>特训营点将详情页（type=apply/approval/cancelApply）</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口路径</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/create`</td>
-<td>提交点将申请</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/update`</td>
-<td>修改点将申请</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/query`</td>
-<td>查询点将申请列表</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/detail`</td>
-<td>查询点将申请详情</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/submit`</td>
-<td>提交审批</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/approve`</td>
-<td>审批通过</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/reject`</td>
-<td>审批拒绝</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/cancelApply`</td>
-<td>发起取消申请</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/cancelApprove`</td>
-<td>取消审批通过</td>
-</tr>
-<tr>
-<td>`mlt/trainCampApply/cancelReject`</td>
-<td>取消审批拒绝</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.3 内置审批">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>审批流编码</th>
-<th>说明</th>
-<th>触发时机</th>
-</tr>
-<tr>
-<td>campApplyApproval</td>
-<td>点将申请审批</td>
-<td>提交点将申请时触发</td>
-</tr>
-<tr>
-<td>cancelApplyApproval</td>
-<td>取消申请审批</td>
-<td>发起取消申请时触发</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.4 值集定义">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>值集编码</th>
-<th>说明</th>
-<th>典型值</th>
-</tr>
-<tr>
-<td>MBO.APPLY_APPROVAL_STATE</td>
-<td>申请审批状态</td>
-<td>待审批/已通过/已拒绝</td>
-</tr>
-<tr>
-<td>MBO.CAMP_APPLY_STATE</td>
-<td>特训营点将申请状态</td>
-<td>草稿/待审批/已通过/已拒绝/已取消/执行中/已完成</td>
-</tr>
-<tr>
-<td>MBO.CANCEL_APPROVAL_STATE</td>
-<td>取消审批状态</td>
-<td>待审批/已通过/已拒绝</td>
-</tr>
-<tr>
-<td>MBO.CRM_ORDER_STATUS</td>
-<td>CRM订单状态</td>
-<td>待下单/已下单/已发货/已完成</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.5 核心实体">
-
-**TrainCampApply**
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>apply_code</td>
-<td>申请编码（主键）</td>
-</tr>
-<tr>
-<td>camp_code</td>
-<td>特训营编码（FK）</td>
-</tr>
-<tr>
-<td>apply_status</td>
-<td>申请状态（值集：MBO.CAMP_APPLY_STATE）</td>
-</tr>
-<tr>
-<td>approval_state</td>
-<td>审批状态（值集：MBO.APPLY_APPROVAL_STATE）</td>
-</tr>
-<tr>
-<td>cancel_approval_state</td>
-<td>取消审批状态（值集：MBO.CANCEL_APPROVAL_STATE）</td>
-</tr>
-<tr>
-<td>crm_order_status</td>
-<td>CRM订单状态（值集：MBO.CRM_ORDER_STATUS）</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="1" title="train_camp_apply（特训营点将申请主表）">
-
-| 字段名 | 类型 | 说明 | 约束 |
-|--------|------|------|------|
-| apply_code | VARCHAR2(32) | 申请编码 | PK |
-| camp_code | VARCHAR2(32) | 特训营编码 | FK → train_camp.camp_code |
-| apply_status | VARCHAR2(30) | 申请状态 | NOT NULL |
-| approval_state | VARCHAR2(30) | 审批状态 | |
-| cancel_approval_state | VARCHAR2(30) | 取消审批状态 | |
-| crm_order_status | VARCHAR2(30) | CRM订单状态 | |
-| applicant_id | NUMBER | 申请人ID | |
-| apply_date | DATE | 申请日期 | |
-| cancel_apply_date | DATE | 取消申请日期 | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | NUMBER | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-
-</KbCard>
-
+<KbCard title="3.1 前端路由"><table class="kl-table"><thead><tr><th>路由</th><th>用途</th></tr></thead><tbody><tr><td><code>/general/specialTrainingCamp/campGeneral/list</code></td><td>特训营点将列表页</td></tr><tr><td><code>/general/specialTrainingCamp/campGeneral/detail/:applyCode/:type</code></td><td>特训营点将详情页（type=apply/approval/cancelApply）</td></tr></tbody></table></KbCard>
+<KbCard title="3.2 API接口"><table class="kl-table"><thead><tr><th>接口路径</th><th>说明</th></tr></thead><tbody><tr><td><code>mlt/trainCampApply/create</code></td><td>提交点将申请</td></tr><tr><td><code>mlt/trainCampApply/update</code></td><td>修改点将申请</td></tr><tr><td><code>mlt/trainCampApply/query</code></td><td>查询点将申请列表</td></tr><tr><td><code>mlt/trainCampApply/detail</code></td><td>查询点将申请详情</td></tr><tr><td><code>mlt/trainCampApply/submit</code></td><td>提交审批</td></tr><tr><td><code>mlt/trainCampApply/approve</code></td><td>审批通过</td></tr><tr><td><code>mlt/trainCampApply/reject</code></td><td>审批拒绝</td></tr><tr><td><code>mlt/trainCampApply/cancelApply</code></td><td>发起取消申请</td></tr><tr><td><code>mlt/trainCampApply/cancelApprove</code></td><td>取消审批通过</td></tr><tr><td><code>mlt/trainCampApply/cancelReject</code></td><td>取消审批拒绝</td></tr></tbody></table></KbCard>
+<KbCard title="3.3 内置审批"><table class="kl-table"><thead><tr><th>审批流编码</th><th>说明</th><th>触发时机</th></tr></thead><tbody><tr><td>campApplyApproval</td><td>点将申请审批</td><td>提交点将申请时触发</td></tr><tr><td>cancelApplyApproval</td><td>取消申请审批</td><td>发起取消申请时触发</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 值集定义"><table class="kl-table"><thead><tr><th>值集编码</th><th>说明</th><th>典型值</th></tr></thead><tbody><tr><td>MBO.APPLY_APPROVAL_STATE</td><td>申请审批状态</td><td>待审批/已通过/已拒绝</td></tr><tr><td>MBO.CAMP_APPLY_STATE</td><td>特训营点将申请状态</td><td>草稿/待审批/已通过/已拒绝/已取消/执行中/已完成</td></tr><tr><td>MBO.CANCEL_APPROVAL_STATE</td><td>取消审批状态</td><td>待审批/已通过/已拒绝</td></tr><tr><td>MBO.CRM_ORDER_STATUS</td><td>CRM订单状态</td><td>待下单/已下单/已发货/已完成</td></tr></tbody></table></KbCard>
+<KbCard title="3.5 核心实体"><p><strong>TrainCampApply</strong></p>
+<table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>申请编码（主键）</td></tr><tr><td>camp_code</td><td>特训营编码（FK）</td></tr><tr><td>apply_status</td><td>申请状态（值集：MBO.CAMP_APPLY_STATE）</td></tr><tr><td>approval_state</td><td>审批状态（值集：MBO.APPLY_APPROVAL_STATE）</td></tr><tr><td>cancel_approval_state</td><td>取消审批状态（值集：MBO.CANCEL_APPROVAL_STATE）</td></tr><tr><td>crm_order_status</td><td>CRM订单状态（值集：MBO.CRM_ORDER_STATUS）</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>特殊取消弹窗</td><td>取消原因TextArea+CampApplyDetail</td></tr><tr><td>审批弹窗</td><td>审批意见Form+CampApplyDetail，含签署人Select</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="其他按钮"><p>SelectBox切换"点将管理/点将审批/点将取消审批"。按钮：查看申请、同步CRM、特殊取消、审批、同步OA、同步FDD。详情页：查看结算确认、查看确认书、特殊取消、驳回、审核通过。</p></KbCard>
+<KbCard title="保存校验"><p>特殊取消校验cancelApplyFormDS.validate()（取消原因必填），调用cancelApply。</p></KbCard>
+<KbCard title="提交校验"><p>审批校验pplyApprovalFormDS.validate()（审批意见必填，通过时签署人必填），调用pplyApproval/cancelApplyApproval，无工作流编码。</p></KbCard>
+<KbCard title="train_camp_apply（特训营点将申请主表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>约束</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2(32)</td><td>申请编码</td><td>PK</td></tr><tr><td>camp_code</td><td>VARCHAR2(32)</td><td>特训营编码</td><td>FK → train_camp.camp_code</td></tr><tr><td>apply_status</td><td>VARCHAR2(30)</td><td>申请状态</td><td>NOT NULL</td></tr><tr><td>approval_state</td><td>VARCHAR2(30)</td><td>审批状态</td><td></td></tr><tr><td>cancel_approval_state</td><td>VARCHAR2(30)</td><td>取消审批状态</td><td></td></tr><tr><td>crm_order_status</td><td>VARCHAR2(30)</td><td>CRM订单状态</td><td></td></tr><tr><td>applicant_id</td><td>NUMBER</td><td>申请人ID</td><td></td></tr><tr><td>apply_date</td><td>DATE</td><td>申请日期</td><td></td></tr><tr><td>cancel_apply_date</td><td>DATE</td><td>取消申请日期</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -408,15 +240,24 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：点将申请被拒绝后能否重新提交？</strong></p>
+<p>A：可以，拒绝后可修改申请内容重新提交审批。</p>
+<p><strong>Q2：取消申请审批被拒绝后怎么办？</strong></p>
+<p>A：取消申请被拒绝后，原点将申请继续有效，可再次发起取消申请。</p>
+<p><strong>Q3：pageType如何区分页面模式？</strong></p>
+<p>A：通过路由参数type区分：apply为申请模式，approval为审批模式，cancelApply为取消申请模式。</p>
+<p><strong>Q4：点将申请与CRM订单如何关联？</strong></p>
+<p>A：点将申请审批通过后，系统自动创建CRM订单，通过crm_order_status跟踪订单执行状态。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 作者 |
-|------|------|----------|------|
-| 2026-08-03 | v1.0 | 初始文档 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>作者</th></tr></thead><tbody><tr><td>2026-08-03</td><td>v1.0</td><td>初始文档</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
