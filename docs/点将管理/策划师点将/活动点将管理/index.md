@@ -197,6 +197,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
+<KbCard title="重点逻辑"><p>1. <strong>双审批流</strong>：活动点将申请提交触发activityApplyApproval审批流；取消申请触发activityCancelApplyOrgApproval审批流（组织级审批），两者独立运行 2. <strong>applyCode自动生成</strong>：提交申请时系统自动生成唯一编码applyCode 3. <strong>策划师角色</strong>：本菜单由策划师角色发起，区别于特训营点将由经销商/业务员发起 4. <strong>状态联动</strong>：活动点将申请状态与审批状态联动，审批通过后申请状态自动变更为已通过 5. <strong>取消约束</strong>：仅已审批通过且未完成执行的申请可发起取消申请 6. <strong>组织级取消审批</strong>：取消申请审批流activityCancelApplyOrgApproval为组织级审批，审批层级高于普通审批</p></KbCard>
 </div>
 </div>
 </div>
@@ -214,147 +215,17 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 前端路由">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>路由</th>
-<th>用途</th>
-</tr>
-<tr>
-<td>`/general/activityGeneral/activityGeneralManage/list`</td>
-<td>活动点将管理列表页</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口路径</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`mlt/activityApply/create`</td>
-<td>提交活动点将申请</td>
-</tr>
-<tr>
-<td>`mlt/activityApply/update`</td>
-<td>修改活动点将申请</td>
-</tr>
-<tr>
-<td>`mlt/activityApply/query`</td>
-<td>查询活动点将申请列表</td>
-</tr>
-<tr>
-<td>`mlt/activityApply/detail`</td>
-<td>查询活动点将申请详情</td>
-</tr>
-<tr>
-<td>`mlt/activityApply/submit`</td>
-<td>提交审批</td>
-</tr>
-<tr>
-<td>`mlt/activityApply/approve`</td>
-<td>审批通过</td>
-</tr>
-<tr>
-<td>`mlt/activityApply/reject`</td>
-<td>审批拒绝</td>
-</tr>
-<tr>
-<td>`mlt/activityApply/cancelApply`</td>
-<td>发起取消申请</td>
-</tr>
-<tr>
-<td>`mlt/activityApply/cancelApprove`</td>
-<td>取消审批通过</td>
-</tr>
-<tr>
-<td>`mlt/activityApply/cancelReject`</td>
-<td>取消审批拒绝</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.3 内置审批">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>审批流编码</th>
-<th>说明</th>
-<th>触发时机</th>
-</tr>
-<tr>
-<td>activityApplyApproval</td>
-<td>活动点将申请审批</td>
-<td>提交活动点将申请时触发</td>
-</tr>
-<tr>
-<td>activityCancelApplyOrgApproval</td>
-<td>活动取消申请组织级审批</td>
-<td>发起取消申请时触发</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.4 核心实体">
-
-**ActivityApply**
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>字段</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>apply_code</td>
-<td>申请编码（主键）</td>
-</tr>
-<tr>
-<td>activity_name</td>
-<td>活动名称</td>
-</tr>
-<tr>
-<td>apply_status</td>
-<td>申请状态</td>
-</tr>
-<tr>
-<td>approval_state</td>
-<td>审批状态</td>
-</tr>
-<tr>
-<td>cancel_approval_state</td>
-<td>取消审批状态</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="1" title="activity_apply（活动点将申请主表）">
-
-| 字段名 | 类型 | 说明 | 约束 |
-|--------|------|------|------|
-| apply_code | VARCHAR2(32) | 申请编码 | PK |
-| activity_name | VARCHAR2(200) | 活动名称 | NOT NULL |
-| activity_type | VARCHAR2(30) | 活动类型 | |
-| apply_status | VARCHAR2(30) | 申请状态 | NOT NULL |
-| approval_state | VARCHAR2(30) | 审批状态 | |
-| cancel_approval_state | VARCHAR2(30) | 取消审批状态 | |
-| planner_id | NUMBER | 策划师ID | NOT NULL |
-| apply_date | DATE | 申请日期 | |
-| cancel_apply_date | DATE | 取消申请日期 | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | NUMBER | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-
-</KbCard>
-
+<KbCard title="3.1 前端路由"><table class="kl-table"><thead><tr><th>路由</th><th>用途</th></tr></thead><tbody><tr><td><code>/general/activityGeneral/activityGeneralManage/list</code></td><td>活动点将管理列表页</td></tr></tbody></table></KbCard>
+<KbCard title="3.2 API接口"><table class="kl-table"><thead><tr><th>接口路径</th><th>说明</th></tr></thead><tbody><tr><td><code>mlt/activityApply/create</code></td><td>提交活动点将申请</td></tr><tr><td><code>mlt/activityApply/update</code></td><td>修改活动点将申请</td></tr><tr><td><code>mlt/activityApply/query</code></td><td>查询活动点将申请列表</td></tr><tr><td><code>mlt/activityApply/detail</code></td><td>查询活动点将申请详情</td></tr><tr><td><code>mlt/activityApply/submit</code></td><td>提交审批</td></tr><tr><td><code>mlt/activityApply/approve</code></td><td>审批通过</td></tr><tr><td><code>mlt/activityApply/reject</code></td><td>审批拒绝</td></tr><tr><td><code>mlt/activityApply/cancelApply</code></td><td>发起取消申请</td></tr><tr><td><code>mlt/activityApply/cancelApprove</code></td><td>取消审批通过</td></tr><tr><td><code>mlt/activityApply/cancelReject</code></td><td>取消审批拒绝</td></tr></tbody></table></KbCard>
+<KbCard title="3.3 内置审批"><table class="kl-table"><thead><tr><th>审批流编码</th><th>说明</th><th>触发时机</th></tr></thead><tbody><tr><td>activityApplyApproval</td><td>活动点将申请审批</td><td>提交活动点将申请时触发</td></tr><tr><td>activityCancelApplyOrgApproval</td><td>活动取消申请组织级审批</td><td>发起取消申请时触发</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 核心实体"><p><strong>ActivityApply</strong></p>
+<table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>申请编码（主键）</td></tr><tr><td>activity_name</td><td>活动名称</td></tr><tr><td>apply_status</td><td>申请状态</td></tr><tr><td>approval_state</td><td>审批状态</td></tr><tr><td>cancel_approval_state</td><td>取消审批状态</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>按计划结算弹窗</td><td>PlanSettlementInfo+ActivityApplyDetail</td></tr><tr><td>特殊取消弹窗</td><td>取消原因</td></tr><tr><td>审批弹窗</td><td>审批意见+签署人Select</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="其他按钮"><p>SelectBox切换"点将活动管理/活动点将审批/活动点将取消审批"。按钮：按计划结算、查看申请、同步CRM、特殊取消、审批、同步OA、同步FDD。</p></KbCard>
+<KbCard title="保存校验"><table class="kl-table"><thead><tr><th>场景</th><th>校验项</th></tr></thead><tbody><tr><td>按计划结算</td><td>targetFormData、completeFormData、signerValid非空</td></tr><tr><td>特殊取消</td><td>取消原因必填</td></tr></tbody></table></KbCard>
+<KbCard title="提交校验"><p>审批校验pplyApprovalFormDS.validate()（审批意见必填，通过时签署人必填），调用pplyApproval/cancelApplyApproval，无工作流编码。</p></KbCard>
+<KbCard title="activity_apply（活动点将申请主表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>约束</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2(32)</td><td>申请编码</td><td>PK</td></tr><tr><td>activity_name</td><td>VARCHAR2(200)</td><td>活动名称</td><td>NOT NULL</td></tr><tr><td>activity_type</td><td>VARCHAR2(30)</td><td>活动类型</td><td></td></tr><tr><td>apply_status</td><td>VARCHAR2(30)</td><td>申请状态</td><td>NOT NULL</td></tr><tr><td>approval_state</td><td>VARCHAR2(30)</td><td>审批状态</td><td></td></tr><tr><td>cancel_approval_state</td><td>VARCHAR2(30)</td><td>取消审批状态</td><td></td></tr><tr><td>planner_id</td><td>NUMBER</td><td>策划师ID</td><td>NOT NULL</td></tr><tr><td>apply_date</td><td>DATE</td><td>申请日期</td><td></td></tr><tr><td>cancel_apply_date</td><td>DATE</td><td>取消申请日期</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -368,15 +239,22 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：活动点将与特训营点将有什么区别？</strong></p>
+<p>A：活动点将由策划师发起，审批流为activityApplyApproval；特训营点将由经销商/业务员发起，审批流为campApplyApproval。</p>
+<p><strong>Q2：取消审批为什么是组织级审批？</strong></p>
+<p>A：活动取消影响范围较大，需组织级管理层审批确认，因此取消审批流为activityCancelApplyOrgApproval。</p>
+<p><strong>Q3：活动点将申请被拒绝后能否重新提交？</strong></p>
+<p>A：可以，拒绝后可修改申请内容重新提交审批。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 作者 |
-|------|------|----------|------|
-| 2026-08-03 | v1.0 | 初始文档 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>作者</th></tr></thead><tbody><tr><td>2026-08-03</td><td>v1.0</td><td>初始文档</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
