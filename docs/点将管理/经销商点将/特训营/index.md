@@ -164,11 +164,11 @@
 <div class="kl-wrap">
 <KbCard title="3.1 列表页"><ul><li><strong>前端路由</strong>：<code>/general/distributorGeneral/distributorGeneralCamp/list</code></li><li><strong>API</strong>：<code>mlt/trainCampApply/pageForDealer</code></li><li><strong>Entity</strong>：<code>TrainCampApply</code></li><li><strong>查询条件</strong>：培训主题、培训时间范围、申请状态</li><li><strong>列表字段</strong>：申请单号、培训主题、培训时间、培训地点、讲师姓名、申请状态、创建时间</li><li><strong>数据过滤</strong>：后端自动按当前登录用户的经销商ID过滤，前端无需传经销商参数</li></ul></KbCard>
 <KbCard title="3.2 详情页"><ul><li>点击列表行进入详情，展示特训营完整信息</li><li>包含：基本信息、讲师信息、参训门店信息、时间安排等</li></ul></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>申请点将弹窗</td><td>Table选择特训营</td></tr><tr><td>报名信息弹窗</td><td>ApplyInfo组件，含交易公司、法人主体、用户列表编辑</td></tr><tr><td>取消点将弹窗</td><td>取消原因+CampApplyDetail</td></tr><tr><td>结算前确认弹窗</td><td>CampSettleDetail</td></tr><tr><td>特训营详情弹窗</td><td>CampDetail</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><p>列表页：申请确认(FDD签署)、取消点将、申请点将。行操作：查看详情、编辑、删除、流程摘要、报名/发送申请、结算前确认。</p></KbCard>
-<KbCard title="保存校验"><p><strong>前端校验：</strong> pplyFormDS.validate()（交易公司、法人主体必填）；用户列表每行必填项（入职日期、省市区、门店、手机号等），手机号正则/^1[3456789]\d{9}$/。</p></KbCard>
-<KbCard title="提交校验"><p>取消点将校验需提前7天且pprovalState==='fdd_sign'，取消原因必填。结算前确认调用settleBeforeConfirm。申请确认走FDD。无工作流编码。</p></KbCard>
+<KbCard title="3.3 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>申请点将弹窗</td><td>Table选择特训营</td></tr><tr><td>报名信息弹窗</td><td>ApplyInfo组件，含交易公司、法人主体、用户列表编辑</td></tr><tr><td>取消点将弹窗</td><td>取消原因+CampApplyDetail</td></tr><tr><td>结算前确认弹窗</td><td>CampSettleDetail</td></tr><tr><td>特训营详情弹窗</td><td>CampDetail</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.5 其他按钮"><p>列表页：申请确认(FDD签署)、取消点将、申请点将。行操作：查看详情、编辑、删除、流程摘要、报名/发送申请、结算前确认。</p></KbCard>
+<KbCard title="3.6 保存校验"><p><strong>前端校验：</strong> pplyFormDS.validate()（交易公司、法人主体必填）；用户列表每行必填项（入职日期、省市区、门店、手机号等），手机号正则/^1[3456789]\d{9}$/。</p></KbCard>
+<KbCard title="3.7 提交校验"><p>取消点将校验需提前7天且pprovalState==='fdd_sign'，取消原因必填。结算前确认调用settleBeforeConfirm。申请确认走FDD。无工作流编码。</p></KbCard>
 <KbCard title="train_camp_apply（特训营点将申请表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2</td><td>申请单号（主键）</td></tr><tr><td>train_theme</td><td>VARCHAR2</td><td>培训主题</td></tr><tr><td>train_start_date</td><td>DATE</td><td>培训开始时间</td></tr><tr><td>train_end_date</td><td>DATE</td><td>培训结束时间</td></tr><tr><td>train_address</td><td>VARCHAR2</td><td>培训地点</td></tr><tr><td>lecturer_code</td><td>VARCHAR2</td><td>讲师编码</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>讲师姓名</td></tr><tr><td>dealer_code</td><td>VARCHAR2</td><td>经销商编码</td></tr><tr><td>dealer_name</td><td>VARCHAR2</td><td>经销商名称</td></tr><tr><td>apply_status</td><td>VARCHAR2</td><td>申请状态</td></tr><tr><td>remark</td><td>VARCHAR2</td><td>备注</td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -186,7 +186,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：经销商看不到被点将的特训营记录？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：经销商看不到被点将的特训营记录？</strong></p>
 <p>A：检查该经销商是否被正确指定为参训方，确认<code>dealer_code</code>与当前登录用户关联的经销商一致。</p>
 <p><strong>Q2：特训营状态未更新？</strong></p>
 <p>A：经销商侧为只读展示，状态由总部侧点将流程驱动，需联系总部确认审批进度。</p>
