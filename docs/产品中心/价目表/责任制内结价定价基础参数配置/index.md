@@ -129,14 +129,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="重点逻辑">
-**具体逻辑**：
-
-- 1、**基础参数配置**：配置责任制内结价定价的基础参数，包括定价规则、系数等
-- 2、**CRUD操作**：支持新建、编辑、删除、查看配置
-- 3、**无审批流程**：配置保存即生效，无需审批
-</KbCard>
-
+<KbCard title="重点逻辑"><p>1. <strong>基础参数配置</strong>：配置责任制内结价定价的基础参数，包括定价规则、系数等 2. <strong>CRUD操作</strong>：支持新建、编辑、删除、查看配置 3. <strong>无审批流程</strong>：配置保存即生效，无需审批</p></KbCard>
 </div>
 </div>
 </div>
@@ -154,81 +147,11 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 后端接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/rspStmCfg</td>
-<td>POST</td>
-<td>新建配置</td>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/rspStmCfg</td>
-<td>GET</td>
-<td>查询配置列表</td>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/rspStmCfg/{id}</td>
-<td>GET</td>
-<td>查询配置详情</td>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/rspStmCfg/{id}</td>
-<td>PUT</td>
-<td>更新配置</td>
-</tr>
-<tr>
-<td>CRM_BUSINESS/v1/{orgId}/rspStmCfg/{id}</td>
-<td>DELETE</td>
-<td>删除配置</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.2 前端页面">
-
-- 前端包：`arrow-crm`
-- 路由：
-  - `/rspStmCfg/list` — 配置列表页
-  - `/rspStmCfg/detail/:id?` — 配置详情/新建页（id为空时新建）
-
-</KbCard>
-
-<KbCard title="3.3 核心业务规则">
-
-1. 配置参数包括定价规则、定价系数、适用范围等
-2. 同一适用范围内不允许重复配置
-3. 配置保存后立即生效
-4. 无工作流
-
-</KbCard>
-
-<KbCard num="1" title="4.1 RSP_STM_CFG（责任制内结价定价基础参数配置表）">
-
-| 字段 | 说明 |
-|------|------|
-| cfg_id | 配置ID（主键） |
-| organization_id | 组织ID |
-| cfg_name | 配置名称 |
-| pricing_rule | 定价规则 |
-| pricing_coefficient | 定价系数 |
-| applicable_scope | 适用范围 |
-| effective_date | 生效日期 |
-| expiry_date | 失效日期 |
-| enabled_flag | 启用标识（Y/N） |
-| created_by | 创建人 |
-| creation_date | 创建时间 |
-| last_updated_by | 最后更新人 |
-| last_update_date | 最后更新时间 |
-
-</KbCard>
-
+<KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmCfg</td><td>POST</td><td>新建配置</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmCfg</td><td>GET</td><td>查询配置列表</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmCfg/{id}</td><td>GET</td><td>查询配置详情</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmCfg/{id}</td><td>PUT</td><td>更新配置</td></tr><tr><td>CRM_BUSINESS/v1/{orgId}/rspStmCfg/{id}</td><td>DELETE</td><td>删除配置</td></tr></tbody></table></KbCard>
+<KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-crm</code></li><li>路由：<ul><li><code>/rspStmCfg/list</code> — 配置列表页</li><li><code>/rspStmCfg/detail/:id?</code> — 配置详情/新建页（id为空时新建）</li></ul></li></ul></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 配置参数包括定价规则、定价系数、适用范围等 2. 同一适用范围内不允许重复配置 3. 配置保存后立即生效 4. 无工作流</p>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。使用值集Select：产品分类四级级联CRM\\.PRODUCT_CLASS（SQL值集）、定价类型CRM\\.LNK_RSP_STM_CGF_PRICE_TYPE、状态CRM\\.LNK_RSP_STM_CFG_STATUS。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。templateCode=CRM\\.RSP_STM_CFG。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 显示条件\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|---------\\|------\\|\\r\\n\\|\\ 新建\\ \\|\\ 列表页\\ \\|\\ 跳详情页\\ \\|\\r\\n\\|\\ 导出\\ \\|\\ 列表页\\ \\|\\ 导出列表\\ \\|\\r\\n\\|\\ 保存\\ \\|\\ 新建或编辑模式\\ \\|\\ 保存配置\\ \\|\\r\\n\\|\\ 编辑\\ \\|\\ 查看模式\\ \\|\\ 进入编辑\\ \\|\\r\\n\\|\\ 取消\\ \\|\\ 编辑已有记录\\ \\|\\ 取消编辑\\ \\|\\r\\n\\r\\n&gt;\\ 编辑模式离开时弹确认"当前有未保存的更改，确定要离开吗？"\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*前端校验：\\*\\*\\ commonFn_formValid\\(formDs\\)，必填字段：定价类型、一级分类、二级分类、三级分类、状态\\r\\n\\r\\n\\*\\*条件必填：\\*\\*\\ 定价比例（priceType为ase_gross_margin或standard_price_ratio时必填，min=0、max=999999）\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="4.1 RSP_STM_CFG（责任制内结价定价基础参数配置表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>cfg_id</td><td>配置ID（主键）</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>cfg_name</td><td>配置名称</td></tr><tr><td>pricing_rule</td><td>定价规则</td></tr><tr><td>pricing_coefficient</td><td>定价系数</td></tr><tr><td>applicable_scope</td><td>适用范围</td></tr><tr><td>effective_date</td><td>生效日期</td></tr><tr><td>expiry_date</td><td>失效日期</td></tr><tr><td>enabled_flag</td><td>启用标识（Y/N）</td></tr><tr><td>created_by</td><td>创建人</td></tr><tr><td>creation_date</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -269,15 +192,22 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：配置保存后是否需要审批？</strong></p>
+<p>A1：不需要，保存即生效。</p>
+<p><strong>Q2：能否同时启用多条配置？</strong></p>
+<p>A2：可以，但同一适用范围内不允许重复。</p>
+<p><strong>Q3：已生效的配置能否修改？</strong></p>
+<p>A3：可以修改，修改后立即生效。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 内容 |
-|------|------|
-| 2026-08-03 | 初始创建 |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>内容</th></tr></thead><tbody><tr><td>2026-08-03</td><td>初始创建</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
