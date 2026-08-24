@@ -148,8 +148,13 @@
 <KbCard title="3.2 图册数据结构"><ul><li><strong>图册名称（album_name）</strong>：图册的显示名称，如"外观图"、"安装图"</li><li><strong>图册描述（album_description）</strong>：图册的详细说明</li><li><strong>图册封面（cover_image_id）</strong>：图册的封面图片，默认取图册中第一张图片</li><li><strong>图片数量（image_count）</strong>：图册中包含的图片数量</li><li><strong>排序号（sequence_number）</strong>：图册的显示排序</li></ul></KbCard>
 <KbCard title="3.3 图册与图片的关系"><ul><li>图册和图片是多对多关系，通过关联表维护</li><li>一张图片可以属于多个图册</li><li>图册中的图片支持排序，控制展示顺序</li><li>图册中的图片支持设置封面图</li></ul></KbCard>
 <KbCard title="3.4 图册管理操作"><ul><li><strong>新增图册</strong>：填写图册名称和描述，创建空图册</li><li><strong>向图册添加图片</strong>：从已上传的产品图片中选择添加到图册</li><li><strong>从图册移除图片</strong>：移除图册与图片的关联，不删除图片本身</li><li><strong>设置封面图</strong>：指定图册中的一张图片作为封面</li><li><strong>图册排序</strong>：调整图册的显示顺序</li><li><strong>图册内图片排序</strong>：调整图册内图片的显示顺序</li></ul></KbCard>
-<KbCard title="3.5 前端组件detailImgListConfig"><ul><li>组件标识：<code>detailImgListConfig</code></li><li>嵌入位置：产品详情页的图册Tab页签</li><li>展示方式：图册以卡片形式展示，点击展开查看图册内图片</li><li>图片展示：缩略图网格，支持点击查看大图</li></ul>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。查询条件：附件类型（CRM\\.OBJ_FILE_TYPE）、附件名称。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 不支持独立导入。导入在产品列表菜单中（templateCode=CRM\\.PROD_PHOTO）。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|------\\|\\r\\n\\|\\ 重置\\ \\|\\ 有查询条件时显示\\ \\|\\r\\n\\|\\ 刷新\\ \\|\\ 刷新图片列表\\ \\|\\r\\n\\|\\ 图片预览\\ \\|\\ Picture组件，签名URL\\ /hfle/v1/0/files/signedUrl\\ \\|\\r\\n\\r\\n&gt;\\ 轮播分页：每页6张图片（Carousel组件）。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 无保存校验（纯查询展示组件）。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="3.5 前端组件detailImgListConfig"><ul><li>组件标识：<code>detailImgListConfig</code></li><li>嵌入位置：产品详情页的图册Tab页签</li><li>展示方式：图册以卡片形式展示，点击展开查看图册内图片</li><li>图片展示：缩略图网格，支持点击查看大图</li></ul></KbCard>
+<KbCard title="3.6 选择弹窗"><p class='kl-tip'>无LOV选择弹窗。查询条件：附件类型（CRM.OBJ_FILE_TYPE）、附件名称。</p></KbCard>
+<KbCard title="3.7 导入"><p class='kl-tip'>不支持独立导入。导入在产品列表菜单中（templateCode=CRM.PROD_PHOTO）。</p></KbCard>
+<KbCard title="3.8 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>重置</td><td>有查询条件时显示</td></tr><tr><td>刷新</td><td>刷新图片列表</td></tr><tr><td>图片预览</td><td>Picture组件，签名URL /hfle/v1/0/files/signedUrl</td></tr></tbody></table>
+<p class='kl-tip'>轮播分页：每页6张图片（Carousel组件）。</p></KbCard>
+<KbCard title="3.9 保存校验"><p class='kl-tip'>无保存校验（纯查询展示组件）。</p></KbCard>
+<KbCard title="3.10 提交校验"><p class='kl-tip'>无提交/审批功能。</p></KbCard>
 <KbCard title="4.1 产品图册表"><p class='kl-tip'>表名：PRODUCT_IMG_ALBUM（产品图册表）</p>
 <table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>product_id</td><td>NUMBER</td><td>产品ID</td><td>FK→PRODUCT</td></tr><tr><td>album_name</td><td>VARCHAR2</td><td>图册名称</td><td>NOT NULL</td></tr><tr><td>album_description</td><td>VARCHAR2</td><td>图册描述</td><td></td></tr><tr><td>cover_image_id</td><td>NUMBER</td><td>封面图片ID</td><td>FK→PRODUCT_IMAGE</td></tr><tr><td>image_count</td><td>NUMBER</td><td>图片数量</td><td></td></tr><tr><td>sequence_number</td><td>NUMBER</td><td>排序号</td><td></td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 <KbCard title="4.2 产品图册图片关联表"><p class='kl-tip'>表名：PRODUCT_IMG_ALBUM_REL（产品图册图片关联表）</p>
@@ -160,62 +165,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">图册和图片是什么关系？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>多对多关系，一张图片可以属于多个图册
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">从图册移除图片会删除图片吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>不会，只移除关联关系，图片本身仍保留
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">图册封面图如何设置？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>默认取图册中第一张图片，可手动指定图册中任意图片为封面
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">图册名称有重复限制吗？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>同一产品下图册名称建议不重复，具体以业务规则为准
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q5</span>
-      <span style="font-size:15px;">detailImgListConfig组件在哪里使用？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>嵌入在产品详情页的图册Tab页签中
-    </div>
-  </div>
-</div>
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>图册和图片是什么关系？</td><td>多对多关系，一张图片可以属于多个图册</td></tr><tr><td>从图册移除图片会删除图片吗？</td><td>不会，只移除关联关系，图片本身仍保留</td></tr><tr><td>图册封面图如何设置？</td><td>默认取图册中第一张图片，可手动指定图册中任意图片为封面</td></tr><tr><td>图册名称有重复限制吗？</td><td>同一产品下图册名称建议不重复，具体以业务规则为准</td></tr><tr><td>detailImgListConfig组件在哪里使用？</td><td>嵌入在产品详情页的图册Tab页签中</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>图册和图片是什么关系？</td><td>多对多关系，一张图片可以属于多个图册</td></tr><tr><td>从图册移除图片会删除图片吗？</td><td>不会，只移除关联关系，图片本身仍保留</td></tr><tr><td>图册封面图如何设置？</td><td>默认取图册中第一张图片，可手动指定图册中任意图片为封面</td></tr><tr><td>图册名称有重复限制吗？</td><td>同一产品下图册名称建议不重复，具体以业务规则为准</td></tr><tr><td>detailImgListConfig组件在哪里使用？</td><td>嵌入在产品详情页的图册Tab页签中</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
