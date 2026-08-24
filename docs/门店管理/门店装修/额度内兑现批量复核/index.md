@@ -199,13 +199,13 @@
 <div class="kl-wrap">
 <KbCard title="3.1 API接口列表"><table class="kl-table"><thead><tr><th>方法</th><th>路径</th><th>说明</th></tr></thead><tbody><tr><td>GET</td><td>/</td><td>额度内兑现列表(分页)</td></tr><tr><td>GET</td><td>/{cashId}/detail</td><td>额度内兑现明细</td></tr><tr><td>POST</td><td>/</td><td>创建或更新额度内兑现</td></tr><tr><td>DELETE</td><td>/</td><td>删除额度内兑现</td></tr></tbody></table></KbCard>
 <KbCard title="3.2 工作流回调"><table class="kl-table"><thead><tr><th>方法</th><th>触发时机</th><th>逻辑说明</th></tr></thead><tbody><tr><td>wfProcSubmit</td><td>提交审批</td><td>启动工作流实例</td></tr><tr><td>wfComplete</td><td>审批完成</td><td>推送共享/资金池，更新兑现单状态</td></tr><tr><td>onWfComplete</td><td>审批通过</td><td>doSendShare + 批量更新</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><p class='kl-tip'>本菜单为hlod低代码页面，选择弹窗由低代码平台配置承载。后端接口：列表 <code>GET /fin-fee-in-cash-heads</code>，详情 <code>GET /fin-fee-in-cash-heads/{cashId}/detail</code>。</p></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能（hlod低代码页面，未发现导入相关接口）。</p></KbCard>
-<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>新建</td><td>创建额度内兑现批量复核单（POST接口）</td></tr><tr><td>编辑</td><td>修改复核单</td></tr><tr><td>删除</td><td>删除复核单（DELETE接口）</td></tr><tr><td>提交</td><td>启动工作流审批</td></tr></tbody></table>
+<KbCard title="3.3 选择弹窗"><p class='kl-tip'>本菜单为hlod低代码页面，选择弹窗由低代码平台配置承载。后端接口：列表 <code>GET /fin-fee-in-cash-heads</code>，详情 <code>GET /fin-fee-in-cash-heads/{cashId}/detail</code>。</p></KbCard>
+<KbCard title="3.4 导入"><p class='kl-tip'>不支持导入功能（hlod低代码页面，未发现导入相关接口）。</p></KbCard>
+<KbCard title="3.5 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>新建</td><td>创建额度内兑现批量复核单（POST接口）</td></tr><tr><td>编辑</td><td>修改复核单</td></tr><tr><td>删除</td><td>删除复核单（DELETE接口）</td></tr><tr><td>提交</td><td>启动工作流审批</td></tr></tbody></table>
 <p class='kl-tip'>后端接口：创建/更新（POST <code>/fin-fee-in-cash-heads</code>）、删除（DELETE <code>/fin-fee-in-cash-heads</code>）</p></KbCard>
-<KbCard title="保存校验"><p><strong>后端校验（FinFeeInCashHeadServiceImpl）：</strong></p>
+<KbCard title="3.6 保存校验"><p><strong>后端校验（FinFeeInCashHeadServiceImpl）：</strong></p>
 <table class="kl-table"><thead><tr><th>校验项</th><th>错误提示</th></tr></thead><tbody><tr><td>数据存在性</td><td>单据信息不存在</td></tr><tr><td>兑现单号</td><td>验收报销单号和门头兑现单号为空</td></tr><tr><td>总账日期</td><td>验收单号X，总账日期不能为空，请检查</td></tr></tbody></table></KbCard>
-<KbCard title="提交校验"><p><strong>工作流编码：</strong> <code>STORE_FIN_FEE_IN_CASH_HEAD</code>（MCS_AW额度内批量复核）</p>
+<KbCard title="3.7 提交校验"><p><strong>工作流编码：</strong> <code>STORE_FIN_FEE_IN_CASH_HEAD</code>（MCS_AW额度内批量复核）</p>
 <p><strong>审批通过后：</strong> 设置auditStat="审核完成"，hzApproveStatus=APPROVED，推送共享/资金池，更新兑现单状态</p></KbCard>
 <KbCard title="表：FIN_FEE_IN_CASH_HEAD"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>cash_id</td><td>Long</td><td>主键ID(单据ID)</td></tr><tr><td>cash_code</td><td>String</td><td>单号</td></tr><tr><td>organization_id</td><td>Long</td><td>组织ID</td></tr><tr><td>creator</td><td>String</td><td>申请人</td></tr><tr><td>create_time</td><td>Date</td><td>申请日期</td></tr><tr><td>creator_name</td><td>String</td><td>申请人名称</td></tr><tr><td>updator</td><td>String</td><td>更新人</td></tr><tr><td>update_time</td><td>Date</td><td>更新日期</td></tr><tr><td>updator_name</td><td>String</td><td>更新人名称</td></tr><tr><td>stat</td><td>Long</td><td>单据状态</td></tr><tr><td>wfid</td><td>Long</td><td>流程ID</td></tr><tr><td>wfflag</td><td>Long</td><td>流程状态</td></tr><tr><td>checker</td><td>String</td><td>审核人</td></tr><tr><td>check_time</td><td>Date</td><td>审核时间</td></tr><tr><td>audit_stat</td><td>String</td><td>审核状态</td></tr><tr><td>hz_instance_id</td><td>Long</td><td>流程实例ID</td></tr><tr><td>hz_approve_status</td><td>String</td><td>流程实例状态</td></tr></tbody></table>
 <p class='kl-tip'>注：兑现单明细通过FinFeeTerminalCashout表的cash_id字段关联</p></KbCard>
@@ -215,23 +215,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-
-| 问题 | 原因/解决方案 |
-|------|------|
-| 推送报"验收报销单号和门头兑现单号为空" | 绑定的兑现单必须关联验收报销单或门头兑现单 |
-| 资金池推送失败 | 检查ERP接口连通性和extAccountId |
-| 兑现单未标记审核完成 | 确认工作流审批已通过，onWfComplete正常执行 |
-| 总账日期异常 | 检查事业部上月冲销数据(FinFeeWriteoffInQuota) |
-
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>推送报"验收报销单号和门头兑现单号为空"</td><td>绑定的兑现单必须关联验收报销单或门头兑现单</td></tr><tr><td>资金池推送失败</td><td>检查ERP接口连通性和extAccountId</td></tr><tr><td>兑现单未标记审核完成</td><td>确认工作流审批已通过，onWfComplete正常执行</td></tr><tr><td>总账日期异常</td><td>检查事业部上月冲销数据(FinFeeWriteoffInQuota)</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>推送报"验收报销单号和门头兑现单号为空"</td><td>绑定的兑现单必须关联验收报销单或门头兑现单</td></tr><tr><td>资金池推送失败</td><td>检查ERP接口连通性和extAccountId</td></tr><tr><td>兑现单未标记审核完成</td><td>确认工作流审批已通过，onWfComplete正常执行</td></tr><tr><td>总账日期异常</td><td>检查事业部上月冲销数据(FinFeeWriteoffInQuota)</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
