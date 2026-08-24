@@ -154,43 +154,10 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 双Tab页签架构">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>Tab页签</th>
-<th>说明</th>
-<th>主要字段</th>
-</tr>
-<tr>
-<td>个人档案</td>
-<td>讲师个人基本信息</td>
-<td>姓名、手机号、邮箱、所属组织、身份证号等</td>
-</tr>
-<tr>
-<td>讲师档案</td>
-<td>讲师资质与业务信息</td>
-<td>讲师类型、培训讲师等级、活动讲师等级、设计讲师等级、讲师价格等</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="2" title="2.2 内置审批机制">
-**具体逻辑**：
-
-- 1、提交审批调用内置审批接口 `mlt/maLecturerApproval/*`
-- 2、审批状态通过值集 `MBO.APPROVAL_STATUS` 控制
-- 3、提交后档案状态变更为"审批中"，不可编辑
-- 4、审批结果返回后自动更新档案状态
-</KbCard>
-
-<KbCard num="3" title="2.3 讲师等级体系">
-**具体逻辑**：
-
-- 1、--
-</KbCard>
-
+<KbCard title="2.1 双Tab页签架构"><table class="kl-table"><thead><tr><th>Tab页签</th><th>说明</th><th>主要字段</th></tr></thead><tbody><tr><td>个人档案</td><td>讲师个人基本信息</td><td>姓名、手机号、邮箱、所属组织、身份证号等</td></tr><tr><td>讲师档案</td><td>讲师资质与业务信息</td><td>讲师类型、培训讲师等级、活动讲师等级、设计讲师等级、讲师价格等</td></tr></tbody></table></KbCard>
+<KbCard title="2.2 内置审批机制"><ul><li>提交审批调用内置审批接口 <code>mlt/maLecturerApproval/*</code></li><li>审批状态通过值集 <code>MBO.APPROVAL_STATUS</code> 控制</li><li>提交后档案状态变更为"审批中"，不可编辑</li><li>审批结果返回后自动更新档案状态</li></ul></KbCard>
+<KbCard title="2.3 讲师等级体系"><p>讲师等级按业务场景分为三类，分别由不同值集管控：</p>
+<table class="kl-table"><thead><tr><th>等级类型</th><th>值集</th><th>说明</th></tr></thead><tbody><tr><td>培训讲师等级</td><td>MBO.TRAIN_LECTURER_LEVEL</td><td>培训场景下的讲师等级</td></tr><tr><td>活动讲师等级</td><td>MBO.ACTIVITY_LECTURER_LEVEL</td><td>活动场景下的讲师等级</td></tr><tr><td>设计讲师等级</td><td>MBO.DESIGN_LECTURER_LEVEL</td><td>设计场景下的讲师等级</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -208,149 +175,22 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 列表页">
-
-- **路由**: `/general/base/lecturerProfile/list`
-- **API**: `mlt/maLecturerArchive/list`（分页查询）
-- **查询条件**: 讲师编码、讲师姓名、讲师类型、档案状态等
-- **列表字段**: 讲师档案编码、讲师姓名、讲师类型、档案状态、审批状态、讲师等级、创建时间等
-- **操作按钮**:
-  - 新建：跳转详情页（新增模式）
-  - 编辑：跳转详情页（编辑模式），仅草稿/审批拒绝状态可编辑
-  - 提交审批：调用审批接口提交
-  - 删除：仅草稿状态可删除
-  - 查看详情：跳转详情页（查看模式）
-
-</KbCard>
-
-<KbCard title="3.2 详情页">
-
-- **路由**: `/general/base/lecturerProfile/detail/:id/:type`
-  - `:id` — 讲师档案ID（lecturerArchivesId）
-  - `:type` — 操作类型（new/edit/view）
-- **API**:
-  - 查询详情: `mlt/maLecturerArchive/detail`
-  - 新增保存: `mlt/maLecturerArchive/create`
-  - 编辑保存: `mlt/maLecturerArchive/update`
-  - 提交审批: `mlt/maLecturerApproval/submit`
-
-**3.2.1 个人档案Tab**
-
-- 维护讲师个人基本信息
-- 字段：讲师姓名、性别、手机号、邮箱、身份证号、所属组织、入职日期等
-- 保存时校验必填字段
-
-**3.2.2 讲师档案Tab**
-
-- 维护讲师资质与业务信息
-- 字段：讲师类型（MBO.LECTURER_TYPE）、培训讲师等级、活动讲师等级、设计讲师等级、讲师价格、资质证书等
-- 档案状态（MBO.ARCHIVES_STATUS）：草稿/审批中/生效/失效
-- 保存时校验讲师类型和等级的合法性
-
-</KbCard>
-
-<KbCard title="3.3 审批提交逻辑">
-
-1. 校验档案信息完整性（必填字段、等级信息）
-2. 生成审批单，关联 `lecturerArchivesCode`
-3. 调用 `mlt/maLecturerApproval/submit` 提交
-4. 更新档案状态为"审批中"
-5. 审批结果回调后更新档案状态：
-   - 通过 → 状态变为"生效"
-   - 拒绝 → 状态变为"审批拒绝"，允许修改重新提交
-
-</KbCard>
-
-<KbCard title="3.4 值集依赖">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>值集编码</th>
-<th>用途</th>
-<th>使用位置</th>
-</tr>
-<tr>
-<td>MBO.LECTURER_TYPE</td>
-<td>讲师类型</td>
-<td>讲师档案Tab-讲师类型字段</td>
-</tr>
-<tr>
-<td>MBO.ARCHIVES_STATUS</td>
-<td>档案状态</td>
-<td>列表页状态列、详情页状态显示</td>
-</tr>
-<tr>
-<td>MBO.APPROVAL_STATUS</td>
-<td>审批状态</td>
-<td>列表页审批状态列</td>
-</tr>
-<tr>
-<td>MBO.TRAIN_LECTURER_LEVEL</td>
-<td>培训讲师等级</td>
-<td>讲师档案Tab-培训讲师等级字段</td>
-</tr>
-<tr>
-<td>MBO.ACTIVITY_LECTURER_LEVEL</td>
-<td>活动讲师等级</td>
-<td>讲师档案Tab-活动讲师等级字段</td>
-</tr>
-<tr>
-<td>MBO.DESIGN_LECTURER_LEVEL</td>
-<td>设计讲师等级</td>
-<td>讲师档案Tab-设计讲师等级字段</td>
-</tr>
-</tbody></table></div>
-
----
-
-</KbCard>
-
-<KbCard num="1" title="4.1 主表：ma_lecturer_archive（讲师档案表）">
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| lecturer_archives_id | VARCHAR2 | 主键ID | 主键 |
-| lecturer_archives_code | VARCHAR2 | 档案编码 | 业务唯一键 |
-| lecturer_name | VARCHAR2 | 讲师姓名 | |
-| lecturer_type | VARCHAR2 | 讲师类型 | 值集MBO.LECTURER_TYPE |
-| archives_status | VARCHAR2 | 档案状态 | 值集MBO.ARCHIVES_STATUS |
-| approval_status | VARCHAR2 | 审批状态 | 值集MBO.APPROVAL_STATUS |
-| train_lecturer_level | VARCHAR2 | 培训讲师等级 | 值集MBO.TRAIN_LECTURER_LEVEL |
-| activity_lecturer_level | VARCHAR2 | 活动讲师等级 | 值集MBO.ACTIVITY_LECTURER_LEVEL |
-| design_lecturer_level | VARCHAR2 | 设计讲师等级 | 值集MBO.DESIGN_LECTURER_LEVEL |
-| lecturer_price | NUMBER | 讲师价格 | |
-| phone | VARCHAR2 | 手机号 | |
-| email | VARCHAR2 | 邮箱 | |
-| id_card | VARCHAR2 | 身份证号 | |
-| organization_id | VARCHAR2 | 所属组织ID | |
-| organization_name | VARCHAR2 | 所属组织名称 | |
-| created_by | VARCHAR2 | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | VARCHAR2 | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-| object_version_number | NUMBER | 乐观锁版本号 | |
-
-</KbCard>
-
-<KbCard num="2" title="4.2 审批表：ma_lecturer_approval（讲师审批表）">
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| lecturer_approval_id | VARCHAR2 | 主键ID | 主键 |
-| lecturer_archives_code | VARCHAR2 | 关联档案编码 | 外键关联ma_lecturer_archive |
-| approval_type | VARCHAR2 | 审批类型 | |
-| approval_status | VARCHAR2 | 审批状态 | 值集MBO.APPROVAL_STATUS |
-| submit_date | DATE | 提交时间 | |
-| approver | VARCHAR2 | 审批人 | |
-| approval_date | DATE | 审批时间 | |
-| approval_remark | VARCHAR2 | 审批备注 | |
-| created_by | VARCHAR2 | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-
----
-
-</KbCard>
-
+<KbCard title="3.1 列表页"><ul><li><strong>路由</strong>: <code>/general/base/lecturerProfile/list</code></li><li><strong>API</strong>: <code>mlt/maLecturerArchive/list</code>（分页查询）</li><li><strong>查询条件</strong>: 讲师编码、讲师姓名、讲师类型、档案状态等</li><li><strong>列表字段</strong>: 讲师档案编码、讲师姓名、讲师类型、档案状态、审批状态、讲师等级、创建时间等</li><li><strong>操作按钮</strong>:<ul><li>新建：跳转详情页（新增模式）</li><li>编辑：跳转详情页（编辑模式），仅草稿/审批拒绝状态可编辑</li><li>提交审批：调用审批接口提交</li><li>删除：仅草稿状态可删除</li><li>查看详情：跳转详情页（查看模式）</li></ul></li></ul></KbCard>
+<KbCard title="3.2 详情页"><ul><li><strong>路由</strong>: <code>/general/base/lecturerProfile/detail/:id/:type</code><ul><li><code>:id</code> — 讲师档案ID（lecturerArchivesId）</li><li><code>:type</code> — 操作类型（new/edit/view）</li></ul></li><li><strong>API</strong>:<ul><li>查询详情: <code>mlt/maLecturerArchive/detail</code></li><li>新增保存: <code>mlt/maLecturerArchive/create</code></li><li>编辑保存: <code>mlt/maLecturerArchive/update</code></li><li>提交审批: <code>mlt/maLecturerApproval/submit</code></li></ul></li></ul>
+<p>#### 3.2.1 个人档案Tab</p>
+<ul><li>维护讲师个人基本信息</li><li>字段：讲师姓名、性别、手机号、邮箱、身份证号、所属组织、入职日期等</li><li>保存时校验必填字段</li></ul>
+<p>#### 3.2.2 讲师档案Tab</p>
+<ul><li>维护讲师资质与业务信息</li><li>字段：讲师类型（MBO.LECTURER_TYPE）、培训讲师等级、活动讲师等级、设计讲师等级、讲师价格、资质证书等</li><li>档案状态（MBO.ARCHIVES_STATUS）：草稿/审批中/生效/失效</li><li>保存时校验讲师类型和等级的合法性</li></ul></KbCard>
+<KbCard title="3.3 审批提交逻辑"><p>1. 校验档案信息完整性（必填字段、等级信息） 2. 生成审批单，关联 <code>lecturerArchivesCode</code> 3. 调用 <code>mlt/maLecturerApproval/submit</code> 提交 4. 更新档案状态为"审批中" 5. 审批结果回调后更新档案状态：</p>
+<ul><li>通过 → 状态变为"生效"</li><li>拒绝 → 状态变为"审批拒绝"，允许修改重新提交</li></ul></KbCard>
+<KbCard title="3.4 值集依赖"><table class="kl-table"><thead><tr><th>值集编码</th><th>用途</th><th>使用位置</th></tr></thead><tbody><tr><td>MBO.LECTURER_TYPE</td><td>讲师类型</td><td>讲师档案Tab-讲师类型字段</td></tr><tr><td>MBO.ARCHIVES_STATUS</td><td>档案状态</td><td>列表页状态列、详情页状态显示</td></tr><tr><td>MBO.APPROVAL_STATUS</td><td>审批状态</td><td>列表页审批状态列</td></tr><tr><td>MBO.TRAIN_LECTURER_LEVEL</td><td>培训讲师等级</td><td>讲师档案Tab-培训讲师等级字段</td></tr><tr><td>MBO.ACTIVITY_LECTURER_LEVEL</td><td>活动讲师等级</td><td>讲师档案Tab-活动讲师等级字段</td></tr><tr><td>MBO.DESIGN_LECTURER_LEVEL</td><td>设计讲师等级</td><td>讲师档案Tab-设计讲师等级字段</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><p class='kl-tip'>详情页"所属部门"用TreeSelect，"负责事业部"用Select，"讲师类型"用Select(LOV动态过滤)。无LOV弹窗。</p></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。有附件上传(讲师案例/照片，单文件≤30MB)。</p></KbCard>
+<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>新建/编辑/删除</td><td>列表页基本操作</td></tr><tr><td>提交</td><td>调用submit接口</td></tr><tr><td>牌价变更申请</td><td>调用priceChange，需申请理由、讲师级别、牌价</td></tr><tr><td>查看审批/生效/失效/查看日程/查看饱和度</td><td>列表页行操作</td></tr></tbody></table></KbCard>
+<KbCard title="保存校验"><p><strong>前端校验：</strong> aseFormDS.validate()必填项：讲师名称、讲师类型、所属部门、负责事业部、负责区域、讲师标签；培训类型在讲师类型为train时必填。额外校验：讲师简历非空、讲师案例资料非空、讲师照片非空。</p></KbCard>
+<KbCard title="提交校验"><p>列表页"提交"调用lecturerProfileApi.submit。牌价变更申请调用priceChange。审批走rchivesApproval/priceApproval接口，无工作流编码。</p></KbCard>
+<KbCard title="4.1 主表：ma_lecturer_archive（讲师档案表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>lecturer_archives_id</td><td>VARCHAR2</td><td>主键ID</td><td>主键</td></tr><tr><td>lecturer_archives_code</td><td>VARCHAR2</td><td>档案编码</td><td>业务唯一键</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>讲师姓名</td><td></td></tr><tr><td>lecturer_type</td><td>VARCHAR2</td><td>讲师类型</td><td>值集MBO.LECTURER_TYPE</td></tr><tr><td>archives_status</td><td>VARCHAR2</td><td>档案状态</td><td>值集MBO.ARCHIVES_STATUS</td></tr><tr><td>approval_status</td><td>VARCHAR2</td><td>审批状态</td><td>值集MBO.APPROVAL_STATUS</td></tr><tr><td>train_lecturer_level</td><td>VARCHAR2</td><td>培训讲师等级</td><td>值集MBO.TRAIN_LECTURER_LEVEL</td></tr><tr><td>activity_lecturer_level</td><td>VARCHAR2</td><td>活动讲师等级</td><td>值集MBO.ACTIVITY_LECTURER_LEVEL</td></tr><tr><td>design_lecturer_level</td><td>VARCHAR2</td><td>设计讲师等级</td><td>值集MBO.DESIGN_LECTURER_LEVEL</td></tr><tr><td>lecturer_price</td><td>NUMBER</td><td>讲师价格</td><td></td></tr><tr><td>phone</td><td>VARCHAR2</td><td>手机号</td><td></td></tr><tr><td>email</td><td>VARCHAR2</td><td>邮箱</td><td></td></tr><tr><td>id_card</td><td>VARCHAR2</td><td>身份证号</td><td></td></tr><tr><td>organization_id</td><td>VARCHAR2</td><td>所属组织ID</td><td></td></tr><tr><td>organization_name</td><td>VARCHAR2</td><td>所属组织名称</td><td></td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>乐观锁版本号</td><td></td></tr></tbody></table></KbCard>
+<KbCard title="4.2 审批表：ma_lecturer_approval（讲师审批表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>lecturer_approval_id</td><td>VARCHAR2</td><td>主键ID</td><td>主键</td></tr><tr><td>lecturer_archives_code</td><td>VARCHAR2</td><td>关联档案编码</td><td>外键关联ma_lecturer_archive</td></tr><tr><td>approval_type</td><td>VARCHAR2</td><td>审批类型</td><td></td></tr><tr><td>approval_status</td><td>VARCHAR2</td><td>审批状态</td><td>值集MBO.APPROVAL_STATUS</td></tr><tr><td>submit_date</td><td>DATE</td><td>提交时间</td><td></td></tr><tr><td>approver</td><td>VARCHAR2</td><td>审批人</td><td></td></tr><tr><td>approval_date</td><td>DATE</td><td>审批时间</td><td></td></tr><tr><td>approval_remark</td><td>VARCHAR2</td><td>审批备注</td><td></td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -364,15 +204,26 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1: 讲师档案提交审批后能否修改？</strong></p>
+<p>A: 审批中状态不可修改，需等审批完成。审批拒绝后可修改重新提交。</p>
+<p><strong>Q2: 一个讲师可以同时拥有多个等级吗？</strong></p>
+<p>A: 可以。培训讲师等级、活动讲师等级、设计讲师等级分别独立设置，互不影响。</p>
+<p><strong>Q3: 讲师档案编码如何生成？</strong></p>
+<p>A: 通过 <code>lecturerArchivesCode</code> 按编码规则自动生成，确保唯一性。</p>
+<p><strong>Q4: 删除讲师档案有什么限制？</strong></p>
+<p>A: 仅草稿状态的档案可删除，审批中/生效/失效状态均不可删除。</p>
+<p><strong>Q5: 讲师类型有哪些？</strong></p>
+<p>A: 由值集 MBO.LECTURER_TYPE 定义，常见如：内部讲师、外部讲师等。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | v1.0 | 初始创建 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>v1.0</td><td>初始创建</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
