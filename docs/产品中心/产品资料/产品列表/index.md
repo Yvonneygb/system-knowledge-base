@@ -149,8 +149,15 @@
 <div class="kl-wrap">
 <KbCard title="3.1 产品列表页"><ul><li><strong>查询条件</strong>：产品编码、产品名称、产品型号、产品分类、产品状态、规格等</li><li><strong>列表展示字段</strong>：产品编码、产品名称、产品型号、产品分类、规格、计量单位、产品状态、创建时间等</li><li><strong>操作按钮</strong>：新增、编辑、查看详情、删除</li><li><strong>分页</strong>：支持前端分页参数传递，后端返回分页结果</li></ul></KbCard>
 <KbCard title="3.2 产品详情页"><ul><li><strong>基础信息区域</strong>：<ul><li>产品编码（product_code）：唯一标识，新建时自动生成或手动输入</li><li>产品名称（product_name）：必填</li><li>产品型号（product_model）：产品型号描述</li><li>产品分类（product_category）：关联产品分类体系</li><li>规格（specification）：产品规格描述</li><li>计量单位（uom）：关联计量单位LOV</li><li>产品状态（product_status）：启用/禁用</li><li>产品描述（description）：文本描述</li></ul></li><li><strong>Tab页签</strong>：产品详情页可能包含多个Tab页签，如基础信息、产品图片、产品图册、产品分类等嵌入式组件</li></ul></KbCard>
-<KbCard title="3.3 数据校验"><ul><li>产品编码唯一性校验</li><li>产品名称必填校验</li><li>产品分类有效性校验</li></ul>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 无LOV选择弹窗。查询字段使用值集下拉：CRM\\.LH_PROD_CHANNELS、CRM\\.LH_PROD_STATUS、CRM\\.PRODUCT_Z_STATE、CRM\\.ORG、CRM\\.PROD_PROMOTE_GRADE等。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。两个导入按钮：\\r\\n-\\ 产品图册-导入（templateCode=CRM\\.PROD_PHOTO）\\r\\n-\\ 产品附件-导入（templateCode=CRM\\.PROD_FILES）\\r\\n\\r\\n&gt;\\ 外部用户\\(userType='D'\\)隐藏导入按钮。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|------\\|\\r\\n\\|\\ 导出\\ \\|\\ GET\\ /prod/\\{internal\\|external}/export，异步导出\\ \\|\\r\\n\\|\\ 产品编码链接\\ \\|\\ 跳转产品详情\\ /product/detail/\\{id}\\ \\|\\r\\n\\r\\n&gt;\\ Tab页：商品检索\\(general\\)、配件&其它\\(other\\)。外部用户隐藏部分字段。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 无保存校验（纯查询页面）。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 无提交/审批功能。</p></KbCard>
+<KbCard title="3.3 数据校验"><ul><li>产品编码唯一性校验</li><li>产品名称必填校验</li><li>产品分类有效性校验</li></ul></KbCard>
+<KbCard title="3.4 选择弹窗"><p class='kl-tip'>无LOV选择弹窗。查询字段使用值集下拉：CRM.LH_PROD_CHANNELS、CRM.LH_PROD_STATUS、CRM.PRODUCT_Z_STATE、CRM.ORG、CRM.PROD_PROMOTE_GRADE等。</p></KbCard>
+<KbCard title="3.5 导入"><p>支持Excel导入。两个导入按钮：</p>
+<ul><li>产品图册-导入（templateCode=CRM.PROD_PHOTO）</li><li>产品附件-导入（templateCode=CRM.PROD_FILES）</li></ul>
+<p class='kl-tip'>外部用户(userType='D')隐藏导入按钮。</p></KbCard>
+<KbCard title="3.6 其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>导出</td><td>GET /prod/{internal</td><td>external}/export，异步导出</td></tr><tr><td>产品编码链接</td><td>跳转产品详情 /product/detail/{id}</td></tr></tbody></table>
+<p class='kl-tip'>Tab页：商品检索(general)、配件&其它(other)。外部用户隐藏部分字段。</p></KbCard>
+<KbCard title="3.7 保存校验"><p class='kl-tip'>无保存校验（纯查询页面）。</p></KbCard>
+<KbCard title="3.8 提交校验"><p class='kl-tip'>无提交/审批功能。</p></KbCard>
 <KbCard title="4.1 产品主表"><p class='kl-tip'>表名：PRODUCT（产品主表）</p>
 <table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>product_code</td><td>VARCHAR2</td><td>产品编码</td><td>唯一</td></tr><tr><td>product_name</td><td>VARCHAR2</td><td>产品名称</td><td>NOT NULL</td></tr><tr><td>product_model</td><td>VARCHAR2</td><td>产品型号</td><td></td></tr><tr><td>product_category</td><td>VARCHAR2</td><td>产品分类</td><td></td></tr><tr><td>specification</td><td>VARCHAR2</td><td>规格</td><td></td></tr><tr><td>uom</td><td>VARCHAR2</td><td>计量单位</td><td></td></tr><tr><td>product_status</td><td>VARCHAR2</td><td>产品状态</td><td></td></tr><tr><td>description</td><td>VARCHAR2</td><td>产品描述</td><td></td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
@@ -159,53 +166,18 @@
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">产品编码如何生成？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>根据系统编码规则自动生成，或由用户手动输入，需保证唯一性
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">产品分类从哪里获取？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>产品分类数据来源于AE微服务的ITEM_CLASS表，通过嵌入式组件在详情页中展示
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">产品删除有什么限制？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>已被业务引用的产品不可删除，需先解除关联关系
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">产品状态变更如何操作？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>在产品列表或详情页直接修改状态字段，无需审批流程
-    </div>
-  </div>
-</div>
-</KbCard>
+<KbCard title="常见问题"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>产品编码如何生成？</td><td>根据系统编码规则自动生成，或由用户手动输入，需保证唯一性</td></tr><tr><td>产品分类从哪里获取？</td><td>产品分类数据来源于AE微服务的ITEM_CLASS表，通过嵌入式组件在详情页中展示</td></tr><tr><td>产品删除有什么限制？</td><td>已被业务引用的产品不可删除，需先解除关联关系</td></tr><tr><td>产品状态变更如何操作？</td><td>在产品列表或详情页直接修改状态字段，无需审批流程</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>产品编码如何生成？</td><td>根据系统编码规则自动生成，或由用户手动输入，需保证唯一性</td></tr><tr><td>产品分类从哪里获取？</td><td>产品分类数据来源于AE微服务的ITEM_CLASS表，通过嵌入式组件在详情页中展示</td></tr><tr><td>产品删除有什么限制？</td><td>已被业务引用的产品不可删除，需先解除关联关系</td></tr><tr><td>产品状态变更如何操作？</td><td>在产品列表或详情页直接修改状态字段，无需审批流程</td></tr></tbody></table></KbCard>
+<KbCard title="常见问题">
+
+<!-- 空白:待补充 -->
+
+</KbCard>
 </div>
 </div>
 </div>
