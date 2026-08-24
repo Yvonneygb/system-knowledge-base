@@ -221,11 +221,11 @@
 <KbCard title="3.4 值集定义"><table class="kl-table"><thead><tr><th>值集编码</th><th>说明</th><th>典型值</th></tr></thead><tbody><tr><td>MBO.APPLY_APPROVAL_STATE</td><td>申请审批状态</td><td>待审批/已通过/已拒绝</td></tr><tr><td>MBO.CAMP_APPLY_STATE</td><td>特训营点将申请状态</td><td>草稿/待审批/已通过/已拒绝/已取消/执行中/已完成</td></tr><tr><td>MBO.CANCEL_APPROVAL_STATE</td><td>取消审批状态</td><td>待审批/已通过/已拒绝</td></tr><tr><td>MBO.CRM_ORDER_STATUS</td><td>CRM订单状态</td><td>待下单/已下单/已发货/已完成</td></tr></tbody></table></KbCard>
 <KbCard title="3.5 核心实体"><p><strong>TrainCampApply</strong></p>
 <table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>申请编码（主键）</td></tr><tr><td>camp_code</td><td>特训营编码（FK）</td></tr><tr><td>apply_status</td><td>申请状态（值集：MBO.CAMP_APPLY_STATE）</td></tr><tr><td>approval_state</td><td>审批状态（值集：MBO.APPLY_APPROVAL_STATE）</td></tr><tr><td>cancel_approval_state</td><td>取消审批状态（值集：MBO.CANCEL_APPROVAL_STATE）</td></tr><tr><td>crm_order_status</td><td>CRM订单状态（值集：MBO.CRM_ORDER_STATUS）</td></tr></tbody></table></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>特殊取消弹窗</td><td>取消原因TextArea+CampApplyDetail</td></tr><tr><td>审批弹窗</td><td>审批意见Form+CampApplyDetail，含签署人Select</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><p>SelectBox切换"点将管理/点将审批/点将取消审批"。按钮：查看申请、同步CRM、特殊取消、审批、同步OA、同步FDD。详情页：查看结算确认、查看确认书、特殊取消、驳回、审核通过。</p></KbCard>
-<KbCard title="保存校验"><p>特殊取消校验cancelApplyFormDS.validate()（取消原因必填），调用cancelApply。</p></KbCard>
-<KbCard title="提交校验"><p>审批校验pplyApprovalFormDS.validate()（审批意见必填，通过时签署人必填），调用pplyApproval/cancelApplyApproval，无工作流编码。</p></KbCard>
+<KbCard title="3.6 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>特殊取消弹窗</td><td>取消原因TextArea+CampApplyDetail</td></tr><tr><td>审批弹窗</td><td>审批意见Form+CampApplyDetail，含签署人Select</td></tr><tr><td>流程摘要弹窗</td><td>ProcessDetail</td></tr></tbody></table></KbCard>
+<KbCard title="3.7 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.8 其他按钮"><p>SelectBox切换"点将管理/点将审批/点将取消审批"。按钮：查看申请、同步CRM、特殊取消、审批、同步OA、同步FDD。详情页：查看结算确认、查看确认书、特殊取消、驳回、审核通过。</p></KbCard>
+<KbCard title="3.9 保存校验"><p>特殊取消校验cancelApplyFormDS.validate()（取消原因必填），调用cancelApply。</p></KbCard>
+<KbCard title="3.10 提交校验"><p>审批校验pplyApprovalFormDS.validate()（审批意见必填，通过时签署人必填），调用pplyApproval/cancelApplyApproval，无工作流编码。</p></KbCard>
 <KbCard title="train_camp_apply（特训营点将申请主表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>约束</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2(32)</td><td>申请编码</td><td>PK</td></tr><tr><td>camp_code</td><td>VARCHAR2(32)</td><td>特训营编码</td><td>FK → train_camp.camp_code</td></tr><tr><td>apply_status</td><td>VARCHAR2(30)</td><td>申请状态</td><td>NOT NULL</td></tr><tr><td>approval_state</td><td>VARCHAR2(30)</td><td>审批状态</td><td></td></tr><tr><td>cancel_approval_state</td><td>VARCHAR2(30)</td><td>取消审批状态</td><td></td></tr><tr><td>crm_order_status</td><td>VARCHAR2(30)</td><td>CRM订单状态</td><td></td></tr><tr><td>applicant_id</td><td>NUMBER</td><td>申请人ID</td><td></td></tr><tr><td>apply_date</td><td>DATE</td><td>申请日期</td><td></td></tr><tr><td>cancel_apply_date</td><td>DATE</td><td>取消申请日期</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -243,7 +243,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：点将申请被拒绝后能否重新提交？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：点将申请被拒绝后能否重新提交？</strong></p>
 <p>A：可以，拒绝后可修改申请内容重新提交审批。</p>
 <p><strong>Q2：取消申请审批被拒绝后怎么办？</strong></p>
 <p>A：取消申请被拒绝后，原点将申请继续有效，可再次发起取消申请。</p>
