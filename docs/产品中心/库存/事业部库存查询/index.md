@@ -148,8 +148,12 @@
 <div class="kl-wrap">
 <KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>CRM_BUSINESS/v1/{orgId}/lnkInventorys</td><td>GET</td><td>查询库存数据（按事业部维度汇总）</td></tr></tbody></table></KbCard>
 <KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-crm</code></li></ul></KbCard>
-<KbCard title="3.3 核心业务规则"><p>1. 默认按当前用户所属事业部筛选 2. 支持切换事业部查看 3. 库存数据为汇总值，非明细 4. 无工作流</p>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 前端代码缺失（疑似hlod低代码页面），无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 默认按当前用户所属事业部筛选 2. 支持切换事业部查看 3. 库存数据为汇总值，非明细 4. 无工作流</p></KbCard>
+<KbCard title="3.4 选择弹窗"><p class='kl-tip'>前端代码缺失（疑似hlod低代码页面），无法确认。</p></KbCard>
+<KbCard title="3.5 导入"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.6 其他按钮"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.7 保存校验"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.8 提交校验"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
 <KbCard title="4.1 LNK_INVENTORYS（库存表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>inventory_id</td><td>库存ID（主键）</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>business_unit</td><td>事业部</td></tr><tr><td>warehouse_code</td><td>仓库编码</td></tr><tr><td>product_code</td><td>产品编码</td></tr><tr><td>available_qty</td><td>可用库存数量</td></tr><tr><td>total_qty</td><td>总库存数量</td></tr><tr><td>uom</td><td>单位</td></tr></tbody></table>
 <p class='kl-tip'>查询时按business_unit字段GROUP BY汇总</p></KbCard>
 </div>
@@ -186,7 +190,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：事业部库存查询与普通库存查询的区别？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：事业部库存查询与普通库存查询的区别？</strong></p>
 <p>A1：事业部库存查询按事业部维度汇总展示，普通库存查询展示明细记录。</p>
 <p><strong>Q2：能否查看事业部下的库存明细？</strong></p>
 <p>A2：本页面展示汇总数据，明细需跳转到库存查询页面查看。</p></KbCard>
