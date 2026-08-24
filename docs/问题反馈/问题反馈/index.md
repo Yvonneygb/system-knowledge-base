@@ -212,44 +212,9 @@ arrow-mbo/src/pages/afterSales/feedback/dealer/
 <div class="tab-pad">
 <div class="kl-wrap">
 <KbCard title="常见问题">
-<div class="faq-qa-wrap">
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q1</span>
-      <span style="font-size:15px;">已提交的反馈单能否编辑？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>不能。已提交状态仅支持取消操作，取消后也不可再编辑。如需修改，需取消后重新新建。
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q2</span>
-      <span style="font-size:15px;">删除反馈单是物理删除还是逻辑删除？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>仅草稿状态可删除，具体删除方式取决于后端实现，一般为逻辑删除（状态标记为已删除）。
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q3</span>
-      <span style="font-size:15px;">反馈单号如何生成？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>由后端在保存时自动生成，前端无需传入。
-    </div>
-  </div>
-  <div class="kl-card" style="margin-bottom:20px; padding-left:12px; padding-right:12px;">
-    <div class="kl-card-title" style="margin-bottom:16px; background:#FFFFFF;">
-      <span class="kl-num">Q4</span>
-      <span style="font-size:15px;">品牌方回复后经销商能否继续追加反馈？</span>
-    </div>
-    <div class="faq-answer" style="padding:12px 16px; background:#F5F3FF; border-radius:6px; font-size:14px; color:#374151; line-height:1.8;">
-      <strong style="color:#7C3AED;">处理：</strong>当前版本经销商端为单向提交模式，不支持追加反馈。如需补充，需新建反馈单。
-    </div>
-  </div>
-</div>
+
+<!-- 空白:待补充 -->
+
 </KbCard>
 </div>
 </div>
