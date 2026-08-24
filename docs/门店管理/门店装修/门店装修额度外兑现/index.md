@@ -175,69 +175,13 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 新增逻辑（doInsert）">
-
-**具体逻辑**：
-
-- 1、生成兑现编码：编码规则`AE.TERMINAL_CASHOUT_CODE`，前缀为divisionCode
-- 2、计提年份：若未填写，从验收报销单号截取并查询对应年份
-- 3、新增主表、发票明细(FinFeeTerminalReCashInv)、资源信息明细(FinFeeTerminalReCashLine)
-- 4、发票税金汇总：自动计算invoiceTaxAmt和factInvoiceNotaxAmt
-- 5、新增附件
-</KbCard>
-
-<KbCard num="2" title="2.2 更新逻辑（doUpdate）">
-
-**具体逻辑**：
-
-- 1、更新主表、发票明细、资源信息明细
-- 2、重新计算发票税金汇总
-- 3、保存附件
-</KbCard>
-
-<KbCard num="3" title="2.3 删除逻辑（doDelete）">
-
-**具体逻辑**：
-
-- 1、删除主表、发票明细、资源信息明细
-</KbCard>
-
-<KbCard num="4" title="2.4 审批通过回调（onWfComplete）">
-
-**具体逻辑**：
-
-- 1、更新兑现单：checkTime=今天，hzApproveStatus=APPROVED
-- 2、更新验收报销单：
-- 3、额度外兑现比例 = 已兑现金额 / 额度外可兑现小计(sumOutCanNotaxBxAmt)
-- 4、剩余未兑现金额 = 额度外可兑现小计 - 已兑现金额
-</KbCard>
-
-<KbCard num="5" title="2.5 推送共享（doSendToSie）">
-
-**具体逻辑**：
-
-- 1、调用terminalReCashShareIntf.terminalCashShare构建共享接口数据
-- 2、推送成功：hzApproveStatus=RUN
-- 3、推送失败：记录错误信息到errorCollection
-</KbCard>
-
-<KbCard num="6" title="2.6 推送资金池（synAdjustCashPoolToEbs）">
-
-**具体逻辑**：
-
-- 1、获取经销商账户(extAccountId)
-- 2、构建CashPoolDataDTO，sourceType="广告费（额外）"
-- 3、amount取afterTaxCashoutAmt(扣税差后可兑现金额)
-</KbCard>
-
-<KbCard num="7" title="2.7 提交审批（wfProcSubmit）">
-
-**具体逻辑**：
-
-- 1、更新工作流变量objId
-- 2、启动工作流实例，状态更新为RUN
-</KbCard>
-
+<KbCard title="2.1 新增逻辑（doInsert）"><ul><li>生成兑现编码：编码规则<code>AE.TERMINAL_CASHOUT_CODE</code>，前缀为divisionCode</li><li>计提年份：若未填写，从验收报销单号截取并查询对应年份</li><li>新增主表、发票明细(FinFeeTerminalReCashInv)、资源信息明细(FinFeeTerminalReCashLine)</li><li>发票税金汇总：自动计算invoiceTaxAmt和factInvoiceNotaxAmt</li><li>新增附件</li></ul></KbCard>
+<KbCard title="2.2 更新逻辑（doUpdate）"><ul><li>更新主表、发票明细、资源信息明细</li><li>重新计算发票税金汇总</li><li>保存附件</li></ul></KbCard>
+<KbCard title="2.3 删除逻辑（doDelete）"><ul><li>删除主表、发票明细、资源信息明细</li></ul></KbCard>
+<KbCard title="2.4 审批通过回调（onWfComplete）"><ul><li>更新兑现单：checkTime=今天，hzApproveStatus=APPROVED</li><li>更新验收报销单：<ul><li>额度外兑现比例 = 已兑现金额 / 额度外可兑现小计(sumOutCanNotaxBxAmt)</li><li>剩余未兑现金额 = 额度外可兑现小计 - 已兑现金额</li></ul></li></ul></KbCard>
+<KbCard title="2.5 推送共享（doSendToSie）"><ul><li>调用terminalReCashShareIntf.terminalCashShare构建共享接口数据</li><li>推送成功：hzApproveStatus=RUN</li><li>推送失败：记录错误信息到errorCollection</li></ul></KbCard>
+<KbCard title="2.6 推送资金池（synAdjustCashPoolToEbs）"><ul><li>获取经销商账户(extAccountId)</li><li>构建CashPoolDataDTO，sourceType="广告费（额外）"</li><li>amount取afterTaxCashoutAmt(扣税差后可兑现金额)</li></ul></KbCard>
+<KbCard title="2.7 提交审批（wfProcSubmit）"><ul><li>更新工作流变量objId</li><li>启动工作流实例，状态更新为RUN</li></ul></KbCard>
 </div>
 </div>
 </div>
@@ -255,104 +199,15 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 API接口列表">
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | /do-select | 兑现明细 |
-| POST | / | 创建或更新兑现 |
-| DELETE | / | 删除兑现 |
-
-</KbCard>
-
-<KbCard title="3.2 工作流回调">
-
-| 方法 | 触发时机 | 逻辑说明 |
-|------|------|------|
-| wfProcSubmit | 提交审批 | 启动工作流实例 |
-| wfComplete | 审批完成 | 通过→onWfComplete；驳回→onWfBreak |
-| onWfComplete | 审批通过 | 更新兑现比例，更新报销单 |
-| onWfBreak | 审批驳回 | 更新状态 |
-
-</KbCard>
-
-<KbCard num="1" title="表：FIN_FEE_TERMINAL_RE_CASHOUT">
-
-| 字段名 | 类型 | 说明 |
-|------|------|------|
-| terminal_cashout_id | Long | 主键ID(兑现ID) |
-| terminal_cashout_code | String | 兑现编码 |
-| check_bx_code | String | 验收报销单号 |
-| check_bx_id | Long | 验收报销ID |
-| cust_id | Long | 经销商ID |
-| cust_code | String | 经销商编码 |
-| short_name | String | 经销商简称 |
-| cust_name | String | 经销商名称 |
-| trading_company_id | Long | 交易公司ID |
-| trading_company_code | String | 交易公司编码 |
-| trading_company_name | String | 交易公司名称 |
-| billing_unit_id | Long | 开票单位ID |
-| billing_unit_code | String | 法人编码 |
-| billing_unit_name | String | 法人名称 |
-| finished_time | LocalDate | 验收完成时间 |
-| out_cashout_end_time | LocalDate | 额度外二次兑现失效日期 |
-| terminal_id | Long | 门店ID |
-| terminal_code | String | 门店编码 |
-| terminal_name | String | 门店名称 |
-| pay_type | Long | 支付方式 |
-| vendor_id | Long | 供应商ID |
-| vendor_code | String | 供应商编码 |
-| vendor_name | String | 供应商名称 |
-| cost_center_id | Long | 成本中心ID |
-| cost_center_code | String | 成本中心编码 |
-| cost_center_name | String | 成本中心名称 |
-| note | String | 备注 |
-| creator_name | String | 申请人 |
-| create_time | Date | 申请时间 |
-| organization_id | Long | 组织ID |
-| stat | Long | 单据状态 |
-| wfid | Long | 流程ID |
-| wfflag | Long | 流程状态 |
-| invoice_tax_rate | Long | 发票税点 |
-| invoice_type | Long | 发票类型 |
-| our_invoicing | Long | 本方开票 |
-| this_sur_cashout_amt | BigDecimal | 剩余未兑现金额(未扣税) |
-| this_bx_proportion | BigDecimal | 申请兑现比例(%) |
-| this_apply_cashout_amt | BigDecimal | 本次申请兑现金额 |
-| after_tax_cashout_amt | BigDecimal | 扣税差后可兑现金额 |
-| fact_invoice_amt | BigDecimal | 实际兑现含税金额 |
-| invoice_tax_amt | BigDecimal | 发票税金 |
-| fact_invoice_notax_amt | BigDecimal | 实际兑现不含税金额 |
-| receipt_status | String | 转货款状态 |
-| invoice_paid_date | LocalDateTime | 入账日期 |
-| invoice_paid_amount | BigDecimal | 入账金额 |
-| reduce_amt | BigDecimal | 核销金额 |
-| cashout_rate | Long | 兑现率 |
-| can_not_tax_bx_amt | BigDecimal | 可兑现金额-不含税 |
-| cashout_type | Long | 兑现类型 |
-| creator | String | 申请人 |
-| checker | String | 审核人 |
-| check_time | LocalDate | 审核日期 |
-| entid | Long | 事业部ID |
-| audit_stat | String | 审核状态 |
-| salezone_org_id | Long | 销售区域ID |
-| salezone_org_name | String | 销售区域 |
-| operat_center_org_id | Long | 运营中心ID |
-| operat_center_org_name | String | 运营中心 |
-| close_cash | Long | 是否关闭剩余未兑现 |
-| error_collection | String | 错误收集器 |
-| ledger_date | LocalDate | 总账日期 |
-| cash_count | String | 兑现次数 |
-| ticket_status | String | 税务接口状态 |
-| ticket_message | String | 税务接口信息 |
-| withholding_time_year | String | 计提年份 |
-| designer | String | 委派设计师 |
-| userid | String | 设计师ID |
-| hz_instance_id | Long | 流程实例ID |
-| hz_approve_status | String | 流程实例状态 |
-
-</KbCard>
-
+<KbCard title="3.1 API接口列表"><table class="kl-table"><thead><tr><th>方法</th><th>路径</th><th>说明</th></tr></thead><tbody><tr><td>GET</td><td>/do-select</td><td>兑现明细</td></tr><tr><td>POST</td><td>/</td><td>创建或更新兑现</td></tr><tr><td>DELETE</td><td>/</td><td>删除兑现</td></tr></tbody></table></KbCard>
+<KbCard title="3.2 工作流回调"><table class="kl-table"><thead><tr><th>方法</th><th>触发时机</th><th>逻辑说明</th></tr></thead><tbody><tr><td>wfProcSubmit</td><td>提交审批</td><td>启动工作流实例</td></tr><tr><td>wfComplete</td><td>审批完成</td><td>通过→onWfComplete；驳回→onWfBreak</td></tr><tr><td>onWfComplete</td><td>审批通过</td><td>更新兑现比例，更新报销单</td></tr><tr><td>onWfBreak</td><td>审批驳回</td><td>更新状态</td></tr></tbody></table></KbCard>
+<KbCard title="选择弹窗"><p class='kl-tip'>无LOV选择弹窗。查询栏使用值集下拉：事业部（<code>AE.EPM_DIVISION</code>）、单据状态（<code>AE.SHARE_STAT</code>）。有执行冲销弹窗（Modal）：年月（必填）、交易公司编码（必填）。</p></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th><th>接口</th></tr></thead><tbody><tr><td>执行</td><td>打开冲销Modal弹窗</td><td><code>/writeoff-in-quota/exec-reversal-data</code></td></tr><tr><td>导出</td><td>导出列表数据</td><td><code>/writeoff-in-quota/export</code></td></tr></tbody></table>
+<p class='kl-tip'>纯列表操作页，无详情页。</p></KbCard>
+<KbCard title="保存校验"><p class='kl-tip'>无保存功能。执行冲销弹窗校验：年月、交易公司编码必填（modalDs.validate()）。</p></KbCard>
+<KbCard title="提交校验"><p class='kl-tip'>无提交/审批功能，无工作流。</p></KbCard>
+<KbCard title="表：FIN_FEE_TERMINAL_RE_CASHOUT"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>terminal_cashout_id</td><td>Long</td><td>主键ID(兑现ID)</td></tr><tr><td>terminal_cashout_code</td><td>String</td><td>兑现编码</td></tr><tr><td>check_bx_code</td><td>String</td><td>验收报销单号</td></tr><tr><td>check_bx_id</td><td>Long</td><td>验收报销ID</td></tr><tr><td>cust_id</td><td>Long</td><td>经销商ID</td></tr><tr><td>cust_code</td><td>String</td><td>经销商编码</td></tr><tr><td>short_name</td><td>String</td><td>经销商简称</td></tr><tr><td>cust_name</td><td>String</td><td>经销商名称</td></tr><tr><td>trading_company_id</td><td>Long</td><td>交易公司ID</td></tr><tr><td>trading_company_code</td><td>String</td><td>交易公司编码</td></tr><tr><td>trading_company_name</td><td>String</td><td>交易公司名称</td></tr><tr><td>billing_unit_id</td><td>Long</td><td>开票单位ID</td></tr><tr><td>billing_unit_code</td><td>String</td><td>法人编码</td></tr><tr><td>billing_unit_name</td><td>String</td><td>法人名称</td></tr><tr><td>finished_time</td><td>LocalDate</td><td>验收完成时间</td></tr><tr><td>out_cashout_end_time</td><td>LocalDate</td><td>额度外二次兑现失效日期</td></tr><tr><td>terminal_id</td><td>Long</td><td>门店ID</td></tr><tr><td>terminal_code</td><td>String</td><td>门店编码</td></tr><tr><td>terminal_name</td><td>String</td><td>门店名称</td></tr><tr><td>pay_type</td><td>Long</td><td>支付方式</td></tr><tr><td>vendor_id</td><td>Long</td><td>供应商ID</td></tr><tr><td>vendor_code</td><td>String</td><td>供应商编码</td></tr><tr><td>vendor_name</td><td>String</td><td>供应商名称</td></tr><tr><td>cost_center_id</td><td>Long</td><td>成本中心ID</td></tr><tr><td>cost_center_code</td><td>String</td><td>成本中心编码</td></tr><tr><td>cost_center_name</td><td>String</td><td>成本中心名称</td></tr><tr><td>note</td><td>String</td><td>备注</td></tr><tr><td>creator_name</td><td>String</td><td>申请人</td></tr><tr><td>create_time</td><td>Date</td><td>申请时间</td></tr><tr><td>organization_id</td><td>Long</td><td>组织ID</td></tr><tr><td>stat</td><td>Long</td><td>单据状态</td></tr><tr><td>wfid</td><td>Long</td><td>流程ID</td></tr><tr><td>wfflag</td><td>Long</td><td>流程状态</td></tr><tr><td>invoice_tax_rate</td><td>Long</td><td>发票税点</td></tr><tr><td>invoice_type</td><td>Long</td><td>发票类型</td></tr><tr><td>our_invoicing</td><td>Long</td><td>本方开票</td></tr><tr><td>this_sur_cashout_amt</td><td>BigDecimal</td><td>剩余未兑现金额(未扣税)</td></tr><tr><td>this_bx_proportion</td><td>BigDecimal</td><td>申请兑现比例(%)</td></tr><tr><td>this_apply_cashout_amt</td><td>BigDecimal</td><td>本次申请兑现金额</td></tr><tr><td>after_tax_cashout_amt</td><td>BigDecimal</td><td>扣税差后可兑现金额</td></tr><tr><td>fact_invoice_amt</td><td>BigDecimal</td><td>实际兑现含税金额</td></tr><tr><td>invoice_tax_amt</td><td>BigDecimal</td><td>发票税金</td></tr><tr><td>fact_invoice_notax_amt</td><td>BigDecimal</td><td>实际兑现不含税金额</td></tr><tr><td>receipt_status</td><td>String</td><td>转货款状态</td></tr><tr><td>invoice_paid_date</td><td>LocalDateTime</td><td>入账日期</td></tr><tr><td>invoice_paid_amount</td><td>BigDecimal</td><td>入账金额</td></tr><tr><td>reduce_amt</td><td>BigDecimal</td><td>核销金额</td></tr><tr><td>cashout_rate</td><td>Long</td><td>兑现率</td></tr><tr><td>can_not_tax_bx_amt</td><td>BigDecimal</td><td>可兑现金额-不含税</td></tr><tr><td>cashout_type</td><td>Long</td><td>兑现类型</td></tr><tr><td>creator</td><td>String</td><td>申请人</td></tr><tr><td>checker</td><td>String</td><td>审核人</td></tr><tr><td>check_time</td><td>LocalDate</td><td>审核日期</td></tr><tr><td>entid</td><td>Long</td><td>事业部ID</td></tr><tr><td>audit_stat</td><td>String</td><td>审核状态</td></tr><tr><td>salezone_org_id</td><td>Long</td><td>销售区域ID</td></tr><tr><td>salezone_org_name</td><td>String</td><td>销售区域</td></tr><tr><td>operat_center_org_id</td><td>Long</td><td>运营中心ID</td></tr><tr><td>operat_center_org_name</td><td>String</td><td>运营中心</td></tr><tr><td>close_cash</td><td>Long</td><td>是否关闭剩余未兑现</td></tr><tr><td>error_collection</td><td>String</td><td>错误收集器</td></tr><tr><td>ledger_date</td><td>LocalDate</td><td>总账日期</td></tr><tr><td>cash_count</td><td>String</td><td>兑现次数</td></tr><tr><td>ticket_status</td><td>String</td><td>税务接口状态</td></tr><tr><td>ticket_message</td><td>String</td><td>税务接口信息</td></tr><tr><td>withholding_time_year</td><td>String</td><td>计提年份</td></tr><tr><td>designer</td><td>String</td><td>委派设计师</td></tr><tr><td>userid</td><td>String</td><td>设计师ID</td></tr><tr><td>hz_instance_id</td><td>Long</td><td>流程实例ID</td></tr><tr><td>hz_approve_status</td><td>String</td><td>流程实例状态</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -371,15 +226,17 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>原因/解决方案</th></tr></thead><tbody><tr><td>推送共享报"接口推送失败"</td><td>检查共享接口连通性和数据格式</td></tr><tr><td>计提年份未自动带出</td><td>检查验收报销单号格式，截取逻辑依赖单号前缀</td></tr><tr><td>兑现比例计算异常</td><td>确认验收报销单的sumOutCanNotaxBxAmt不为0</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 作者 | 说明 |
-|------|------|------|
-| 2025-11-13 | YD | 初始创建 |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>作者</th><th>说明</th></tr></thead><tbody><tr><td>2025-11-13</td><td>YD</td><td>初始创建</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
