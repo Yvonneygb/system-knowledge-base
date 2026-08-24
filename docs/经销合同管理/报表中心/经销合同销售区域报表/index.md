@@ -127,32 +127,10 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 经销合同区域报表查询">
-<KbQuote>按销售区域维度展示经销合同信息，支持按事业部、合同年度、经销商、审批状态等多条件筛选，核心价值在于区域维度的合同管控与分析。</KbQuote>
-
-**具体逻辑**：
-
-- 1、查询以经销合同主表为驱动表，LEFT JOIN区域表获取五级区域信息（国/省/市/区县/乡镇）
-- 2、通过LISTAGG函数将排除区域关系表的多行拼接为逗号分隔的"不包含地区说明"
-- 3、事业部名称通过子查询从事业部基础设置表获取
-- 4、更新人姓名通过关联hzero平台用户表翻译
-- 5、合同类型名称通过关联数据字典表翻译
-- 6、生效状态使用DECODE(VALID, 0, NULL, VALID)处理，0值转为空不展示
-- 7、外层WHERE子句对子查询结果进行二次过滤，支持日期范围筛选（开始日期&gt;=、结束日期&lt;=+1天）
-</KbCard>
-
-<KbCard num="2" title="2.2 导出逻辑">
-<KbQuote>将报表查询结果按Excel模板导出，供线下分析使用。</KbQuote>
-
-**具体逻辑**：
-
-- 1、导出复用查询逻辑，先调用saSaleContractHeadSearch获取数据
-- 2、通过MapStruct（SaSaleContractHeadConvert）将SearchVO转为ExportVO
-- 3、使用@ProcessLovValue注解自动翻译值集含义：审批状态（HWKF.APPROVE_STATUS）、生效状态（AE.VALID）、合同类型（AE.SALES_CONTRACT_TYPE）
-- 4、导出Sheet标题为"经销合同销售区域报表"
-- 5、--
-</KbCard>
-
+<KbCard title="2.1 经销合同区域报表查询"><p><strong>业务意义</strong>：按销售区域维度展示经销合同信息，支持按事业部、合同年度、经销商、审批状态等多条件筛选，核心价值在于区域维度的合同管控与分析。</p>
+<ul><li>查询以经销合同主表为驱动表，LEFT JOIN区域表获取五级区域信息（国/省/市/区县/乡镇）</li><li>通过LISTAGG函数将排除区域关系表的多行拼接为逗号分隔的"不包含地区说明"</li><li>事业部名称通过子查询从事业部基础设置表获取</li><li>更新人姓名通过关联hzero平台用户表翻译</li><li>合同类型名称通过关联数据字典表翻译</li><li>生效状态使用DECODE(VALID, 0, NULL, VALID)处理，0值转为空不展示</li><li>外层WHERE子句对子查询结果进行二次过滤，支持日期范围筛选（开始日期&gt;=、结束日期&lt;=+1天）</li></ul></KbCard>
+<KbCard title="2.2 导出逻辑"><p><strong>业务意义</strong>：将报表查询结果按Excel模板导出，供线下分析使用。</p>
+<ul><li>导出复用查询逻辑，先调用saSaleContractHeadSearch获取数据</li><li>通过MapStruct（SaSaleContractHeadConvert）将SearchVO转为ExportVO</li><li>使用@ProcessLovValue注解自动翻译值集含义：审批状态（HWKF.APPROVE_STATUS）、生效状态（AE.VALID）、合同类型（AE.SALES_CONTRACT_TYPE）</li><li>导出Sheet标题为"经销合同销售区域报表"</li></ul></KbCard>
 </div>
 </div>
 </div>
@@ -170,197 +148,25 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="选择弹窗">
-</KbCard>
-<KbCard title="导入">
-
-</KbCard>
-<KbCard title="其他按钮">
-</KbCard>
-<KbCard title="保存校验">
-</KbCard>
-<KbCard title="提交校验">
-</KbCard>
-<KbCard title="状态机">
-
-无（纯查询报表，无状态流转）
-
----
-
-</KbCard>
-<KbCard num="1" title="4.1 SA_SALE_CONTRACT_HEAD">
-
-**说明**：经销合同主表，存储合同基本信息
-
-| 字段名 | 类型 | 说明 |
-|---|---|---|
-| SA_CONTR_HEAD_ID | NUMBER | 销售合同ID（主键） |
-| SA_CONTR_HEAD_CODE | VARCHAR2 | 销售合同编号 |
-| START_DATE | DATE | 合同开始日期 |
-| END_DATE | DATE | 合同截止日期 |
-| WFID | NUMBER | 流程ID |
-| STAT | NUMBER | 单据状态（已弃用，使用HZ_APPROVE_STATUS） |
-| WFFLAG | NUMBER | 流程标志 |
-| TRADING_COMPANY_ID | NUMBER | 交易公司ID |
-| TRADING_COMPANY_NAME | VARCHAR2 | 交易公司名称 |
-| TRADING_COMPANY_CODE | VARCHAR2 | 交易公司编码 |
-| CREDIT_BALANCE | NUMBER | 授信余额 |
-| ACTUAL_CONTROLLER | VARCHAR2 | 暂未用：实际控制人 |
-| BILLING_UNIT_ID | NUMBER | 开票单位ID |
-| BILLING_UNIT_NAME | VARCHAR2 | 实际控制人 |
-| BALANCE | NUMBER | 货款余额 |
-| RANK | NUMBER | 客户等级 |
-| EXT_CONTRACT_CODE | VARCHAR2 | 外部合同编码 |
-| CUST_ID | NUMBER | 经销商ID |
-| CUST_CODE | VARCHAR2 | 经销商编码 |
-| CUST_NAME | VARCHAR2 | 经销商名称 |
-| CREATOR | VARCHAR2 | 申请人 |
-| CREATE_TIME | DATE | 申请日期 |
-| UPDATOR | VARCHAR2 | 更新人 |
-| UPDATE_TIME | DATE | 更新日期 |
-| CHECKOR | VARCHAR2 | 审核人 |
-| CHECK_TIME | DATE | 审核日期 |
-| CG_TASK_AMT | NUMBER | 常规任务 |
-| DZ_TASK_AMT | NUMBER | 定制卫浴任务 |
-| GROWTH_RATE | NUMBER | 增长率 |
-| LAST_TOTAL_TASK | NUMBER | 上年总任务 |
-| RETURN_AMT | NUMBER | 回款完成 |
-| RETURN_RATE | NUMBER | 回款完成率 |
-| SALE_AMT | NUMBER | 发货完成 |
-| SALE_RATE | NUMBER | 发货完成率 |
-| LAST_DZ_TASK | NUMBER | 上年定制任务 |
-| ORDER_AMT | NUMBER | 定制下单金额 |
-| DZ_RATE | NUMBER | 定制完成率 |
-| TERMINAL_NOTE | VARCHAR2 | 网点建设要求 |
-| ENTID | NUMBER | 组织ID |
-| OLD_SA_CONTR_HEAD_ID | NUMBER | 原销售合同ID |
-| OLD_SA_CONTR_HEAD_CODE | VARCHAR2 | 原销售合同编号 |
-| SALE_YEAR | NUMBER | 销售年度 |
-| TOTAL_TASK | NUMBER | 销售任务总额 |
-| DEPOSIT_AMT | NUMBER | 保证金（万元） |
-| MKT_COST_RATE | NUMBER | 市场推广服务费率(%) |
-| PRICE_DOWN_RATE | NUMBER | 指导价下浮比例(%) |
-| AFTER_SIGN_MTHS | NUMBER | 签约后XX月 |
-| NEW_STORE_TASK | NUMBER | 专卖店建设任务（个） |
-| NEW_OUTLETS_TASK | NUMBER | 新开网点任务 |
-| OLD_OUTLETS_TASK | NUMBER | 旧网点改造任务/个 |
-| TOTAL_TASK_AMT | NUMBER | 合同任务总额 |
-| VALID | NUMBER | 生效状态 |
-| CUST_FULL_NAME | VARCHAR2 | 经销商编码和名称拼接 |
-| SALES_CONTRACT_TYPE | NUMBER | 销售合同类型 |
-| OLD_START_DATE | DATE | 上年度合同开始日期 |
-| OLD_END_DATE | DATE | 上年度合同结束日期 |
-| SHORT_NAME | VARCHAR2 | 经销商简称 |
-| CLIENTNAME | VARCHAR2 | 区分APP与PC |
-| DISCOUNT_MAX | NUMBER | 最大返点 |
-| CRM_ID | VARCHAR2 | CRM合同ID |
-| RETAIL_CHANNEL | NUMBER | 特约客户任务 |
-| DELAY_DATE | DATE | 延迟发货日期 |
-| CLOSE_DATA | DATE | 结案日期 |
-| IS_NEXTYEAR | NUMBER | 已执行次年折扣率 |
-| IS_BALANCE | NUMBER | 已执行任务差额违约金 |
-| CORPORATE | VARCHAR2 | 法人 |
-| CORPORATE_CODE | VARCHAR2 | 法人编码 |
-| IS_PUSH_CRM | VARCHAR2 | 记录推送CRM |
-| ELECTRICITY_CONSULT | VARCHAR2 | 电商平台数量 |
-| ELECTRICITY_CONSULT_SHOP | NUMBER | 电商平台开设店铺数 |
-| NOTE | VARCHAR2 | 备注 |
-| STATE_PIGEONHOLE | NUMBER | 归档状态 |
-| PIGEONHOLE_DATE | DATE | 合同应归档时间 |
-| PIGEONHOLE_DATE_REALLY | DATE | 合同实际归档时间 |
-| PIGEONHOLE_CREATE | VARCHAR2 | 归档人 |
-| IS_DOCRM | NUMBER | 是否抛转CRM |
-| DOCRM_DATE | DATE | 抛转时间 |
-| IS_PIGEONHOLE | NUMBER | 是否归档数据 |
-| SA_CONTR_ADD_ID | NUMBER | 销售合同变更单ID |
-| AUDIT_STAT | VARCHAR2 | 外部系统审核状态 |
-| ERROR | VARCHAR2 | 提示信息 |
-| REPEAT_AREA | NUMBER | 是否重复区域（1否 2是） |
-| ORIGINAL_CONTRACT_CODE | VARCHAR2 | 合同变更后原合同编码 |
-| CREATOR_NAME | VARCHAR2 | 申请人名称 |
-| UPDATOR_NAME | VARCHAR2 | 更新人名称 |
-| RETAIL_CHANNEL_AMT | NUMBER | 零售渠道金额 |
-| HOME_CHANNEL_AMT | NUMBER | 家装渠道金额 |
-| BUSINESS_CHANNEL_AMT | NUMBER | 商务渠道金额 |
-| FITMETAL_CHANNEL_AMT | NUMBER | 五金渠道金额 |
-| ENGINEERING_CHANNEL_AMT | NUMBER | 工程渠道金额 |
-| OTHER_CHANNEL_AMT | NUMBER | 其他渠道金额 |
-| TOWNSHIP_CHANNEL | NUMBER | 乡镇渠道 |
-| DIVISION_ID | NUMBER | 事业部ID |
-| CURRENCY | VARCHAR2 | 币种 |
-| ROUTINE_BATHROOM_CHANNEL | NUMBER | 常规卫浴渠道 |
-| SIGNATURE_STATE | NUMBER | 签章状态 |
-| SIGNATURE_URL | VARCHAR2 | 签章URL |
-| DOCID | NUMBER | 文档ID |
-| OWNER_LINKMAN | VARCHAR2 | 业主联系人 |
-| OWNER_LINKMAN_PHONE | VARCHAR2 | 业主联系电话 |
-| ENGINEER_TASK | NUMBER | 工程任务 |
-| HOME_TASK | NUMBER | 家装任务 |
-| ENGINEER_HOME_TASK | NUMBER | 工程家装任务 |
-| BATHROOM_SCREEN_TASK | NUMBER | 浴屏任务 |
-| DZ_BATHROOM_TASK | NUMBER | 定制卫浴任务 |
-| RETAIL_CHANNEL_TASK | NUMBER | 零售渠道任务 |
-| CONTRACT_CHANNEL_REL_ID | NUMBER | 合同渠道关系ID |
-| MASTER_CONTRACT_ID | NUMBER | 主合同ID |
-| REBATE_ID | NUMBER | 返利ID |
-| BREACH_ID | NUMBER | 违约ID |
-| DISCOUNT_ID | NUMBER | 折扣ID |
-| PAY_COMPLETE | VARCHAR2 | 付款完成 |
-| EXIST_OUTLETS_QTY | VARCHAR2 | 现有网点数量 |
-| SOLD_PRODUCTS | VARCHAR2 | 已售产品 |
-| HZ_INSTANCE_ID | NUMBER | 工作流实例ID |
-| HZ_APPROVE_STATUS | VARCHAR2 | 审批状态 |
-| CALLBACK_SOURCE | VARCHAR2 | 回调来源 |
-| CREATION_DATE | DATE | 创建时间 |
-| CREATED_BY | NUMBER | 创建人 |
-| LAST_UPDATED_BY | NUMBER | 更新人ID |
-| LAST_UPDATE_DATE | DATE | 更新时间 |
-| OBJECT_VERSION_NUMBER | NUMBER | 乐观锁版本号 |
-
-</KbCard>
-
-<KbCard num="2" title="4.2 SA_SALE_CONTRACT_AREA">
-
-**说明**：经销合同区域表，存储合同对应的销售区域信息
-
-| 字段名 | 类型 | 说明 |
-|---|---|---|
-| SA_CONTR_HEAD_ID | NUMBER | 销售合同ID（外键） |
-| SEQ | NUMBER | 区域行序号 |
-| COUNTRY_AREANAME | VARCHAR2 | 国家地区名称 |
-| PROVINCE_AREANAME | VARCHAR2 | 省份地区名称 |
-| CITY_AREANAME | VARCHAR2 | 城市地区名称 |
-| COUNTY_AREANAME | VARCHAR2 | 区县地区名称 |
-| TOWNSHIP_AREANAME | VARCHAR2 | 乡镇地区名称 |
-
-</KbCard>
-
-<KbCard num="3" title="4.3 EXCLUDE_AREA_REL">
-
-**说明**：排除区域关系表，存储合同区域中排除的地区
-
-| 字段名 | 类型 | 说明 |
-|---|---|---|
-| SA_CONTR_HEAD_ID | NUMBER | 销售合同ID（外键） |
-| AREA_LINE_ID | NUMBER | 区域行ID（关联SA_SALE_CONTRACT_AREA.SEQ） |
-| AREANAME | VARCHAR2 | 排除区域名称 |
-
-</KbCard>
-
-<KbCard num="4" title="4.4 DIVISION_BASE_SET">
-
-**说明**：事业部基础设置表
-
-| 字段名 | 类型 | 说明 |
-|---|---|---|
-| DIVISION_ID | NUMBER | 事业部ID |
-| DIVISION_NAME | VARCHAR2 | 事业部名称 |
-| ORGANIZATION_ID | NUMBER | 组织ID |
-
----
-
-</KbCard>
-
+<KbCard title="3.1 界面模块"><table class="kl-table"><thead><tr><th>模块</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>查询条件区</td><td>表单</td><td>合同年度、经销商编码、组织、事业部、合同编号、法人编码、合同类型、开始时间、结束时间、审批状态</td></tr><tr><td>报表数据区</td><td>Table</td><td>展示经销合同区域报表数据，支持分页排序</td></tr><tr><td>导出按钮</td><td>ExcelExportPro</td><td>导出经销合同销售区域报表Excel</td></tr></tbody></table></KbCard>
+<KbCard title="3.2 查询条件"><table class="kl-table"><thead><tr><th>字段</th><th>类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody><tr><td>auditStat</td><td>输入框</td><td>否</td><td>审核状态</td></tr><tr><td>saleYear</td><td>输入框</td><td>否</td><td>合同年度</td></tr><tr><td>custCode</td><td>输入框</td><td>否</td><td>经销商编码</td></tr><tr><td>entid</td><td>输入框</td><td>否</td><td>组织ID</td></tr><tr><td>divisionId</td><td>输入框</td><td>否</td><td>事业部ID</td></tr><tr><td>saContrHeadCode</td><td>输入框</td><td>否</td><td>合同编码</td></tr><tr><td>corporateCode</td><td>输入框</td><td>否</td><td>法人编码</td></tr><tr><td>salesContractType</td><td>输入框</td><td>否</td><td>合同类型</td></tr><tr><td>startDate</td><td>日期</td><td>否</td><td>开始时间，格式YYYY-MM-DD</td></tr><tr><td>endDate</td><td>日期</td><td>否</td><td>结束时间，格式YYYY-MM-DD</td></tr><tr><td>hzApproveStatus</td><td>输入框</td><td>否</td><td>审批状态</td></tr></tbody></table></KbCard>
+<KbCard title="3.3 报表展示字段"><table class="kl-table"><thead><tr><th>列名</th><th>说明</th></tr></thead><tbody><tr><td>divisionName</td><td>事业部</td></tr><tr><td>hzApproveStatus</td><td>审批状态（值集翻译）</td></tr><tr><td>valid</td><td>生效状态（值集翻译）</td></tr><tr><td>creationDate</td><td>申请时间</td></tr><tr><td>saleYear</td><td>合同年度</td></tr><tr><td>custName</td><td>经销商全称</td></tr><tr><td>custCode</td><td>经销商编码</td></tr><tr><td>shortName</td><td>经销商简称</td></tr><tr><td>saContrHeadCode</td><td>合同编号</td></tr><tr><td>salesContractTypeName</td><td>合同类型（值集翻译）</td></tr><tr><td>countryAreaname</td><td>国</td></tr><tr><td>provinceAreaname</td><td>省</td></tr><tr><td>cityAreaname</td><td>市</td></tr><tr><td>countyAreaname</td><td>区/县</td></tr><tr><td>townshipAreaname</td><td>乡/镇</td></tr><tr><td>excludeArea</td><td>不包含地区说明（LISTAGG拼接）</td></tr><tr><td>startDate</td><td>经销期限开始日期</td></tr><tr><td>endDate</td><td>经销期限结束日期</td></tr><tr><td>corporateCode</td><td>法人编码</td></tr><tr><td>corporate</td><td>法人名称</td></tr><tr><td>realName</td><td>更新人</td></tr><tr><td>lastUpdateDate</td><td>更新日期</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 导出"><table class="kl-table"><thead><tr><th>项目</th><th>说明</th></tr></thead><tbody><tr><td>导出方式</td><td>GET请求，@ExcelExport注解驱动</td></tr><tr><td>导出VO</td><td>SaSaleContractHeadExportVO</td></tr><tr><td>Sheet标题</td><td>经销合同销售区域报表</td></tr><tr><td>值集翻译</td><td>@LovValue: HWKF.APPROVE_STATUS、AE.VALID、AE.SALES_CONTRACT_TYPE</td></tr><tr><td>转换器</td><td>SaSaleContractHeadConvert（MapStruct）</td></tr></tbody></table></KbCard>
+<KbCard title="3.5 选择弹窗"><p>无</p></KbCard>
+<KbCard title="3.6 保存校验"><p>无（纯查询报表，无保存操作）</p></KbCard>
+<KbCard title="3.7 提交校验"><p>无（纯查询报表，无提交操作）</p></KbCard>
+<KbCard title="3.8 状态机"><p>无（纯查询报表，无状态流转）</p></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能</p></KbCard>
+<KbCard title="其他按钮"><table class="kl-table"><thead><tr><th>按钮</th><th>说明</th></tr></thead><tbody><tr><td>导出</td><td>支持导出查询结果，后端接口 <code>ContractReportController</code> 提供导出能力</td></tr><tr><td>查询</td><td>按条件查询经销合同销售区域报表数据</td></tr></tbody></table>
+<p class='kl-tip'>无打印功能。无新增/编辑/删除按钮（纯查询报表）。</p></KbCard>
+<KbCard title="4.1 SA_SALE_CONTRACT_HEAD"><p><strong>说明</strong>：经销合同主表，存储合同基本信息</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>SA_CONTR_HEAD_ID</td><td>NUMBER</td><td>销售合同ID（主键）</td></tr><tr><td>SA_CONTR_HEAD_CODE</td><td>VARCHAR2</td><td>销售合同编号</td></tr><tr><td>START_DATE</td><td>DATE</td><td>合同开始日期</td></tr><tr><td>END_DATE</td><td>DATE</td><td>合同截止日期</td></tr><tr><td>WFID</td><td>NUMBER</td><td>流程ID</td></tr><tr><td>STAT</td><td>NUMBER</td><td>单据状态（已弃用，使用HZ_APPROVE_STATUS）</td></tr><tr><td>WFFLAG</td><td>NUMBER</td><td>流程标志</td></tr><tr><td>TRADING_COMPANY_ID</td><td>NUMBER</td><td>交易公司ID</td></tr><tr><td>TRADING_COMPANY_NAME</td><td>VARCHAR2</td><td>交易公司名称</td></tr><tr><td>TRADING_COMPANY_CODE</td><td>VARCHAR2</td><td>交易公司编码</td></tr><tr><td>CREDIT_BALANCE</td><td>NUMBER</td><td>授信余额</td></tr><tr><td>ACTUAL_CONTROLLER</td><td>VARCHAR2</td><td>暂未用：实际控制人</td></tr><tr><td>BILLING_UNIT_ID</td><td>NUMBER</td><td>开票单位ID</td></tr><tr><td>BILLING_UNIT_NAME</td><td>VARCHAR2</td><td>实际控制人</td></tr><tr><td>BALANCE</td><td>NUMBER</td><td>货款余额</td></tr><tr><td>RANK</td><td>NUMBER</td><td>客户等级</td></tr><tr><td>EXT_CONTRACT_CODE</td><td>VARCHAR2</td><td>外部合同编码</td></tr><tr><td>CUST_ID</td><td>NUMBER</td><td>经销商ID</td></tr><tr><td>CUST_CODE</td><td>VARCHAR2</td><td>经销商编码</td></tr><tr><td>CUST_NAME</td><td>VARCHAR2</td><td>经销商名称</td></tr><tr><td>CREATOR</td><td>VARCHAR2</td><td>申请人</td></tr><tr><td>CREATE_TIME</td><td>DATE</td><td>申请日期</td></tr><tr><td>UPDATOR</td><td>VARCHAR2</td><td>更新人</td></tr><tr><td>UPDATE_TIME</td><td>DATE</td><td>更新日期</td></tr><tr><td>CHECKOR</td><td>VARCHAR2</td><td>审核人</td></tr><tr><td>CHECK_TIME</td><td>DATE</td><td>审核日期</td></tr><tr><td>CG_TASK_AMT</td><td>NUMBER</td><td>常规任务</td></tr><tr><td>DZ_TASK_AMT</td><td>NUMBER</td><td>定制卫浴任务</td></tr><tr><td>GROWTH_RATE</td><td>NUMBER</td><td>增长率</td></tr><tr><td>LAST_TOTAL_TASK</td><td>NUMBER</td><td>上年总任务</td></tr><tr><td>RETURN_AMT</td><td>NUMBER</td><td>回款完成</td></tr><tr><td>RETURN_RATE</td><td>NUMBER</td><td>回款完成率</td></tr><tr><td>SALE_AMT</td><td>NUMBER</td><td>发货完成</td></tr><tr><td>SALE_RATE</td><td>NUMBER</td><td>发货完成率</td></tr><tr><td>LAST_DZ_TASK</td><td>NUMBER</td><td>上年定制任务</td></tr><tr><td>ORDER_AMT</td><td>NUMBER</td><td>定制下单金额</td></tr><tr><td>DZ_RATE</td><td>NUMBER</td><td>定制完成率</td></tr><tr><td>TERMINAL_NOTE</td><td>VARCHAR2</td><td>网点建设要求</td></tr><tr><td>ENTID</td><td>NUMBER</td><td>组织ID</td></tr><tr><td>OLD_SA_CONTR_HEAD_ID</td><td>NUMBER</td><td>原销售合同ID</td></tr><tr><td>OLD_SA_CONTR_HEAD_CODE</td><td>VARCHAR2</td><td>原销售合同编号</td></tr><tr><td>SALE_YEAR</td><td>NUMBER</td><td>销售年度</td></tr><tr><td>TOTAL_TASK</td><td>NUMBER</td><td>销售任务总额</td></tr><tr><td>DEPOSIT_AMT</td><td>NUMBER</td><td>保证金（万元）</td></tr><tr><td>MKT_COST_RATE</td><td>NUMBER</td><td>市场推广服务费率(%)</td></tr><tr><td>PRICE_DOWN_RATE</td><td>NUMBER</td><td>指导价下浮比例(%)</td></tr><tr><td>AFTER_SIGN_MTHS</td><td>NUMBER</td><td>签约后XX月</td></tr><tr><td>NEW_STORE_TASK</td><td>NUMBER</td><td>专卖店建设任务（个）</td></tr><tr><td>NEW_OUTLETS_TASK</td><td>NUMBER</td><td>新开网点任务</td></tr><tr><td>OLD_OUTLETS_TASK</td><td>NUMBER</td><td>旧网点改造任务/个</td></tr><tr><td>TOTAL_TASK_AMT</td><td>NUMBER</td><td>合同任务总额</td></tr><tr><td>VALID</td><td>NUMBER</td><td>生效状态</td></tr><tr><td>CUST_FULL_NAME</td><td>VARCHAR2</td><td>经销商编码和名称拼接</td></tr><tr><td>SALES_CONTRACT_TYPE</td><td>NUMBER</td><td>销售合同类型</td></tr><tr><td>OLD_START_DATE</td><td>DATE</td><td>上年度合同开始日期</td></tr><tr><td>OLD_END_DATE</td><td>DATE</td><td>上年度合同结束日期</td></tr><tr><td>SHORT_NAME</td><td>VARCHAR2</td><td>经销商简称</td></tr><tr><td>CLIENTNAME</td><td>VARCHAR2</td><td>区分APP与PC</td></tr><tr><td>DISCOUNT_MAX</td><td>NUMBER</td><td>最大返点</td></tr><tr><td>CRM_ID</td><td>VARCHAR2</td><td>CRM合同ID</td></tr><tr><td>RETAIL_CHANNEL</td><td>NUMBER</td><td>特约客户任务</td></tr><tr><td>DELAY_DATE</td><td>DATE</td><td>延迟发货日期</td></tr><tr><td>CLOSE_DATA</td><td>DATE</td><td>结案日期</td></tr><tr><td>IS_NEXTYEAR</td><td>NUMBER</td><td>已执行次年折扣率</td></tr><tr><td>IS_BALANCE</td><td>NUMBER</td><td>已执行任务差额违约金</td></tr><tr><td>CORPORATE</td><td>VARCHAR2</td><td>法人</td></tr><tr><td>CORPORATE_CODE</td><td>VARCHAR2</td><td>法人编码</td></tr><tr><td>IS_PUSH_CRM</td><td>VARCHAR2</td><td>记录推送CRM</td></tr><tr><td>ELECTRICITY_CONSULT</td><td>VARCHAR2</td><td>电商平台数量</td></tr><tr><td>ELECTRICITY_CONSULT_SHOP</td><td>NUMBER</td><td>电商平台开设店铺数</td></tr><tr><td>NOTE</td><td>VARCHAR2</td><td>备注</td></tr><tr><td>STATE_PIGEONHOLE</td><td>NUMBER</td><td>归档状态</td></tr><tr><td>PIGEONHOLE_DATE</td><td>DATE</td><td>合同应归档时间</td></tr><tr><td>PIGEONHOLE_DATE_REALLY</td><td>DATE</td><td>合同实际归档时间</td></tr><tr><td>PIGEONHOLE_CREATE</td><td>VARCHAR2</td><td>归档人</td></tr><tr><td>IS_DOCRM</td><td>NUMBER</td><td>是否抛转CRM</td></tr><tr><td>DOCRM_DATE</td><td>DATE</td><td>抛转时间</td></tr><tr><td>IS_PIGEONHOLE</td><td>NUMBER</td><td>是否归档数据</td></tr><tr><td>SA_CONTR_ADD_ID</td><td>NUMBER</td><td>销售合同变更单ID</td></tr><tr><td>AUDIT_STAT</td><td>VARCHAR2</td><td>外部系统审核状态</td></tr><tr><td>ERROR</td><td>VARCHAR2</td><td>提示信息</td></tr><tr><td>REPEAT_AREA</td><td>NUMBER</td><td>是否重复区域（1否 2是）</td></tr><tr><td>ORIGINAL_CONTRACT_CODE</td><td>VARCHAR2</td><td>合同变更后原合同编码</td></tr><tr><td>CREATOR_NAME</td><td>VARCHAR2</td><td>申请人名称</td></tr><tr><td>UPDATOR_NAME</td><td>VARCHAR2</td><td>更新人名称</td></tr><tr><td>RETAIL_CHANNEL_AMT</td><td>NUMBER</td><td>零售渠道金额</td></tr><tr><td>HOME_CHANNEL_AMT</td><td>NUMBER</td><td>家装渠道金额</td></tr><tr><td>BUSINESS_CHANNEL_AMT</td><td>NUMBER</td><td>商务渠道金额</td></tr><tr><td>FITMETAL_CHANNEL_AMT</td><td>NUMBER</td><td>五金渠道金额</td></tr><tr><td>ENGINEERING_CHANNEL_AMT</td><td>NUMBER</td><td>工程渠道金额</td></tr><tr><td>OTHER_CHANNEL_AMT</td><td>NUMBER</td><td>其他渠道金额</td></tr><tr><td>TOWNSHIP_CHANNEL</td><td>NUMBER</td><td>乡镇渠道</td></tr><tr><td>DIVISION_ID</td><td>NUMBER</td><td>事业部ID</td></tr><tr><td>CURRENCY</td><td>VARCHAR2</td><td>币种</td></tr><tr><td>ROUTINE_BATHROOM_CHANNEL</td><td>NUMBER</td><td>常规卫浴渠道</td></tr><tr><td>SIGNATURE_STATE</td><td>NUMBER</td><td>签章状态</td></tr><tr><td>SIGNATURE_URL</td><td>VARCHAR2</td><td>签章URL</td></tr><tr><td>DOCID</td><td>NUMBER</td><td>文档ID</td></tr><tr><td>OWNER_LINKMAN</td><td>VARCHAR2</td><td>业主联系人</td></tr><tr><td>OWNER_LINKMAN_PHONE</td><td>VARCHAR2</td><td>业主联系电话</td></tr><tr><td>ENGINEER_TASK</td><td>NUMBER</td><td>工程任务</td></tr><tr><td>HOME_TASK</td><td>NUMBER</td><td>家装任务</td></tr><tr><td>ENGINEER_HOME_TASK</td><td>NUMBER</td><td>工程家装任务</td></tr><tr><td>BATHROOM_SCREEN_TASK</td><td>NUMBER</td><td>浴屏任务</td></tr><tr><td>DZ_BATHROOM_TASK</td><td>NUMBER</td><td>定制卫浴任务</td></tr><tr><td>RETAIL_CHANNEL_TASK</td><td>NUMBER</td><td>零售渠道任务</td></tr><tr><td>CONTRACT_CHANNEL_REL_ID</td><td>NUMBER</td><td>合同渠道关系ID</td></tr><tr><td>MASTER_CONTRACT_ID</td><td>NUMBER</td><td>主合同ID</td></tr><tr><td>REBATE_ID</td><td>NUMBER</td><td>返利ID</td></tr><tr><td>BREACH_ID</td><td>NUMBER</td><td>违约ID</td></tr><tr><td>DISCOUNT_ID</td><td>NUMBER</td><td>折扣ID</td></tr><tr><td>PAY_COMPLETE</td><td>VARCHAR2</td><td>付款完成</td></tr><tr><td>EXIST_OUTLETS_QTY</td><td>VARCHAR2</td><td>现有网点数量</td></tr><tr><td>SOLD_PRODUCTS</td><td>VARCHAR2</td><td>已售产品</td></tr><tr><td>HZ_INSTANCE_ID</td><td>NUMBER</td><td>工作流实例ID</td></tr><tr><td>HZ_APPROVE_STATUS</td><td>VARCHAR2</td><td>审批状态</td></tr><tr><td>CALLBACK_SOURCE</td><td>VARCHAR2</td><td>回调来源</td></tr><tr><td>CREATION_DATE</td><td>DATE</td><td>创建时间</td></tr><tr><td>CREATED_BY</td><td>NUMBER</td><td>创建人</td></tr><tr><td>LAST_UPDATED_BY</td><td>NUMBER</td><td>更新人ID</td></tr><tr><td>LAST_UPDATE_DATE</td><td>DATE</td><td>更新时间</td></tr><tr><td>OBJECT_VERSION_NUMBER</td><td>NUMBER</td><td>乐观锁版本号</td></tr></tbody></table></KbCard>
+<KbCard title="4.2 SA_SALE_CONTRACT_AREA"><p><strong>说明</strong>：经销合同区域表，存储合同对应的销售区域信息</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>SA_CONTR_HEAD_ID</td><td>NUMBER</td><td>销售合同ID（外键）</td></tr><tr><td>SEQ</td><td>NUMBER</td><td>区域行序号</td></tr><tr><td>COUNTRY_AREANAME</td><td>VARCHAR2</td><td>国家地区名称</td></tr><tr><td>PROVINCE_AREANAME</td><td>VARCHAR2</td><td>省份地区名称</td></tr><tr><td>CITY_AREANAME</td><td>VARCHAR2</td><td>城市地区名称</td></tr><tr><td>COUNTY_AREANAME</td><td>VARCHAR2</td><td>区县地区名称</td></tr><tr><td>TOWNSHIP_AREANAME</td><td>VARCHAR2</td><td>乡镇地区名称</td></tr></tbody></table></KbCard>
+<KbCard title="4.3 EXCLUDE_AREA_REL"><p><strong>说明</strong>：排除区域关系表，存储合同区域中排除的地区</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>SA_CONTR_HEAD_ID</td><td>NUMBER</td><td>销售合同ID（外键）</td></tr><tr><td>AREA_LINE_ID</td><td>NUMBER</td><td>区域行ID（关联SA_SALE_CONTRACT_AREA.SEQ）</td></tr><tr><td>AREANAME</td><td>VARCHAR2</td><td>排除区域名称</td></tr></tbody></table></KbCard>
+<KbCard title="4.4 DIVISION_BASE_SET"><p><strong>说明</strong>：事业部基础设置表</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>DIVISION_ID</td><td>NUMBER</td><td>事业部ID</td></tr><tr><td>DIVISION_NAME</td><td>VARCHAR2</td><td>事业部名称</td></tr><tr><td>ORGANIZATION_ID</td><td>NUMBER</td><td>组织ID</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -433,17 +239,27 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="5.1 报错一览表"><table class="kl-table"><thead><tr><th>报错信息</th><th>原因</th><th>解决方案</th></tr></thead><tbody><tr><td>开始时间格式必须为YYYY-MM-DD</td><td>startDate格式校验不通过</td><td>确保日期格式为YYYY-MM-DD</td></tr><tr><td>结束时间格式必须为YYYY-MM-DD</td><td>endDate格式校验不通过</td><td>确保日期格式为YYYY-MM-DD</td></tr><tr><td>ORA-00923: FROM keyword not found</td><td>LISTAGG在Oracle版本不支持</td><td>确认Oracle版本&gt;=11g R2</td></tr></tbody></table></KbCard>
+<KbCard title="5.2 常见问题"><p><strong>Q1：排除区域显示为空？</strong></p>
+<p>A：排除区域通过LISTAGG(EXCLUDE_AREA_REL.AREANAME, ',')拼接，若该合同区域下无排除区域记录，则返回NULL。</p>
+<p><strong>Q2：生效状态显示为空？</strong></p>
+<p>A：SQL中使用DECODE(VALID, 0, NULL, VALID)，当VALID=0时转为NULL，导出时通过@LovValue(AE.VALID)翻译值集含义。</p>
+<p><strong>Q3：合同类型名称未翻译？</strong></p>
+<p>A：合同类型名称通过关联SCPDICT数据字典翻译，需确保SCPDICT中存在DICTCODE='sales_contract_type'的记录且ENTID匹配。</p>
+<p><strong>Q4：事业部名称未显示？</strong></p>
+<p>A：事业部名称通过子查询从DIVISION_BASE_SET获取，需确保DIVISION_BASE_SET中存在对应ORGANIZATION_ID的记录。</p>
+<p><strong>Q5：更新人显示为空？</strong></p>
+<p>A：更新人通过LEFT JOIN hzero.iam_user翻译real_name，若LAST_UPDATED_BY对应用户不存在则返回空。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 变更内容 | 变更人 |
-|---|---|---|---|
-| 2025-12-12 | V1.0 | 初始创建经销合同销售区域报表查询及导出功能 | lingma |
-| 2026-01-01 | V1.1 | 新增审批状态(hzApproveStatus)查询条件 | - |
-| 2026-01-01 | V1.2 | 导出VO增加@LovValue值集翻译注解 | - |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>变更内容</th><th>变更人</th></tr></thead><tbody><tr><td>2025-12-12</td><td>V1.0</td><td>初始创建经销合同销售区域报表查询及导出功能</td><td>lingma</td></tr><tr><td>2026-01-01</td><td>V1.1</td><td>新增审批状态(hzApproveStatus)查询条件</td><td>-</td></tr><tr><td>2026-01-01</td><td>V1.2</td><td>导出VO增加@LovValue值集翻译注解</td><td>-</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
