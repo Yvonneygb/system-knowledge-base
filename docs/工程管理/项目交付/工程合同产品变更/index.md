@@ -1,4 +1,5 @@
 <BreadcrumbTabs />
+
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -91,6 +92,7 @@
 </div>
 </div>
 </div>
+
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
 <div class="bf-truth-flow">
@@ -150,6 +152,7 @@
 </div>
 </div>
 </div>
+
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -193,6 +196,7 @@
 - searchFlag=4（折扣延期）：stat=5 + 合同有效 + 排除已有延期单 + 提前天数校验
 - searchFlag=5（其他场景）：stat=5 + 合同有效 + 有效期内 + 可下单数量
 **完整SQL**（searchFlag=3场景核心查询）：
+
 ```sql
 SELECT a.*, ct.short_name, co.operat_center_org_name, c.valid AS contractValid,
        c.contract_amt, c.project_category, ep1.project_type, ep1.project_valid,
@@ -220,11 +224,16 @@ WHERE a.contract_id = #{contractId}
   AND a.organization_id = #{organizationId}
 ORDER BY a.createtime DESC
 ```
+
 **源码位置**：Controller: `ContractUpdateController.java:70` | Service: `ContractUpdateServiceImpl.java:104` | SQL: `EpmProjectContractMapper.xml:1073`
 </KbCard>
+
 </div>
+
 </div>
+
 </div>
+
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -442,6 +451,7 @@ ORDER BY a.createtime DESC
 <KbCard title="状态机">
 ### 状态机
 <KbSubTitle>状态机流转图</KbSubTitle>
+
 ```text
 
 [新建 NEW] ──保存并提交──→ [审批中 RUN] ──审批通过──→ [已审批 APPROVED]
@@ -451,38 +461,25 @@ ORDER BY a.createtime DESC
                                 └──审批驳回──→ [已驳回 REJECTED]
 
 ```
+
 <KbSubTitle>状态机列表</KbSubTitle>
-<table class="kl-table">
-<thead><tr>
-<th>状态机名称</th>
-<th>状态释义</th>
-<th>可执行的操作</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>NEW</td>
-<td>新建</td>
-<td>保存、保存并提交、编辑、删除</td>
-</tr>
-<tr>
-<td>RUN</td>
-<td>审批中</td>
-<td>等待审批结果</td>
-</tr>
-<tr>
-<td>APPROVED</td>
-<td>已审批</td>
-<td>查看(折扣单已更新)</td>
-</tr>
-<tr>
-<td>REJECTED</td>
-<td>已驳回</td>
-<td>保存、保存并提交、编辑</td>
-</tr>
-</tbody>
-</table>
+
+| 状态机名称 | 状态释义 | 可执行的操作 |
+
+|-----------|---------|------------|
+
+| NEW | 新建 | 保存、保存并提交、编辑、删除 |
+
+| RUN | 审批中 | 等待审批结果 |
+
+| APPROVED | 已审批 | 查看(折扣单已更新) |
+
+| REJECTED | 已驳回 | 保存、保存并提交、编辑 |
+
 ---
+
 </KbCard>
+
 <KbCard num="1" title="表1：EPM_DISCOUNT_ECN（折扣变更/延期头）">
 <table class="kl-table">
 <thead><tr>
@@ -573,6 +570,7 @@ ORDER BY a.createtime DESC
 </tbody>
 </table>
 </KbCard>
+
 <KbCard num="2" title="表2：EPM_DISCOUNT_ECN_LINE（折扣变更/延期行）">
 <table class="kl-table">
 <thead><tr>
@@ -657,9 +655,13 @@ ORDER BY a.createtime DESC
 </table>
 ---
 </KbCard>
+
 </div>
+
 </div>
+
 </div>
+
 <div id="permission" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -669,6 +671,7 @@ ORDER BY a.createtime DESC
 </div>
 </div>
 </div>
+
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -737,6 +740,7 @@ ORDER BY a.createtime DESC
 </div>
 </div>
 </div>
+
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -761,6 +765,7 @@ ORDER BY a.createtime DESC
 </div>
 </div>
 </div>
+
 <div id="history" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
