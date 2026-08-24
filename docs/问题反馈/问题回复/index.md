@@ -1,5 +1,4 @@
 <BreadcrumbTabs />
-
 <div id="biz-intro" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -77,7 +76,6 @@
 </div>
 </div>
 </div>
-
 <div id="biz-flow" style="display:none;">
 <div class="tab-pad">
 <div class="bf-truth-flow">
@@ -142,191 +140,16 @@
 </div>
 </div>
 </div>
-
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 状态流转">
-**具体逻辑**：
-
-- 1、状态值集：`MBO.FEEDBACK_STATE`
-- 2、无工作流引擎，状态变更通过API直接更新
-- 3、"已回复"状态可多次追加回复，直到结束
-</KbCard>
-
-<KbCard num="2" title="2.2 权限控制">
-**具体逻辑**：
-
-- 1、本菜单为事业部端角色
-- 2、可查看本事业部下所有经销商的反馈单
-- 3、具备回复、结束、评价操作权限
-</KbCard>
-
-<KbCard num="3" title="2.3 与问题反馈的关系">
-**具体逻辑**：
-
-- 1、共用同一张MBO反馈表，通过角色区分操作端
-- 2、经销商端负责提交反馈，事业部端负责回复和评价
-- 3、回复记录和评价信息双向可见
-- 4、--
-</KbCard>
-
+<KbCard title="2.1 状态流转"><table class="kl-table"><thead><tr><th>当前状态</th><th>操作</th><th>目标状态</th><th>说明</th></tr></thead><tbody><tr><td>已提交</td><td>回复</td><td>已回复</td><td>feedback/answer</td></tr><tr><td>已回复</td><td>回复</td><td>已回复</td><td>持续追加回复</td></tr><tr><td>已回复</td><td>结束</td><td>已结束</td><td>feedback/end/{id}</td></tr><tr><td>已提交</td><td>取消</td><td>已取消</td><td>feedback/cancel/{id}（事业部取消）</td></tr></tbody></table>
+<ul><li>状态值集：<code>MBO.FEEDBACK_STATE</code></li><li>无工作流引擎，状态变更通过API直接更新</li><li>"已回复"状态可多次追加回复，直到结束</li></ul></KbCard>
+<KbCard title="2.2 权限控制"><ul><li>本菜单为事业部端角色</li><li>可查看本事业部下所有经销商的反馈单</li><li>具备回复、结束、评价操作权限</li></ul></KbCard>
+<KbCard title="2.3 与问题反馈的关系"><ul><li>共用同一张MBO反馈表，通过角色区分操作端</li><li>经销商端负责提交反馈，事业部端负责回复和评价</li><li>回复记录和评价信息双向可见</li></ul></KbCard>
 </div>
 </div>
 </div>
-
-<div id="detail-logic" style="display:none;">
-<div class="tab-pad">
-<div class="kl-wrap">
-<KbCard title="3.1 前端路由">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>路由</th>
-<th>页面</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`/afterSales/brand/feedback/list`</td>
-<td>列表页</td>
-<td>事业部端分页查询反馈单</td>
-</tr>
-<tr>
-<td>`/afterSales/brand/feedback/:type/:id?`</td>
-<td>详情/回复页</td>
-<td>type=view查看/answer回复</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`feedback/division/page`</td>
-<td>POST</td>
-<td>事业部端分页查询反馈单</td>
-</tr>
-<tr>
-<td>`feedback/answer`</td>
-<td>POST</td>
-<td>回复反馈单</td>
-</tr>
-<tr>
-<td>`feedback/cancel/{id}`</td>
-<td>PUT</td>
-<td>取消反馈单</td>
-</tr>
-<tr>
-<td>`feedback/end/{id}`</td>
-<td>PUT</td>
-<td>结束反馈单</td>
-</tr>
-<tr>
-<td>`feedback/comment`</td>
-<td>POST</td>
-<td>获取回复记录</td>
-</tr>
-<tr>
-<td>`feedback/evaluate`</td>
-<td>POST</td>
-<td>提交/查看评价</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard title="3.3 列表页逻辑">
-
-- 调用 `feedback/division/page` 分页查询
-- 支持按反馈单号、状态、反馈类型、经销商、创建时间等条件筛选
-- 操作列根据状态动态显示：已提交/已回复（回复/结束）、已结束（评价）
-- 点击行跳转详情页
-
-</KbCard>
-
-<KbCard title="3.4 详情页逻辑">
-
-- 展示反馈单基本信息（只读）
-- **FeedbackChat.tsx** 组件：以对话形式展示反馈回复记录
-  - 调用 `feedback/comment` 获取历史回复
-  - 左侧显示经销商反馈，右侧显示事业部回复
-  - 支持时间线排序展示
-- 回复区域：文本输入框 + 提交按钮，调用 `feedback/answer`
-- 结束按钮：调用 `feedback/end/{id}`，结束前确认提示
-
-</KbCard>
-
-<KbCard title="3.5 评价逻辑">
-
-- **Evaluation.tsx** 组件：评价表单
-- 仅"已结束"状态可评价
-- 调用 `feedback/evaluate` 提交评价
-- 评价内容可能包含评分、评语等（具体字段由Evaluation组件定义）
-
-</KbCard>
-
-<KbCard title="3.6 前端文件结构">
-
-```
-arrow-mbo/src/pages/afterSales/feedback/brand/
-├── index.tsx              # 列表页
-├── Detail.tsx             # 详情页（含回复功能）
-└── components/            # 事业部端私有组件
-
-arrow-mbo/src/pages/afterSales/feedback/
-└── components/
-    ├── FeedbackChat.tsx   # [公共] 反馈回复记录对话组件
-    └── Evaluation.tsx     # [公共] 评价组件
-```
-
----
-
-</KbCard>
-
-<KbCard num="1" title="MBO反馈表（与问题反馈共用）">
-
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| questionid | VARCHAR2 | 反馈单号（主键/业务单号） |
-| state | VARCHAR2 | 状态（值集：MBO.FEEDBACK_STATE） |
-| type_code | VARCHAR2 | 反馈类型 |
-| type_sup_code | VARCHAR2 | 反馈子类型 |
-| type_detail_code | VARCHAR2 | 产品细分 |
-| content | VARCHAR2/CLOB | 反馈内容 |
-| contacts_name | VARCHAR2 | 联系人 |
-| phone | VARCHAR2 | 电话 |
-| address | VARCHAR2 | 地址 |
-
-</KbCard>
-
-<KbCard num="2" title="MBO反馈回复表（关联表）">
-
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | NUMBER | 主键 |
-| questionid | VARCHAR2 | 反馈单号（外键关联MBO反馈表） |
-| content | VARCHAR2/CLOB | 回复内容 |
-| reply_type | VARCHAR2 | 回复类型（经销商反馈/事业部回复） |
-| createCmp | VARCHAR2 | 创建人 |
-| createDate | TIMESTAMP | 创建时间 |
-
-> 注：回复记录和评价可能存储在独立的子表中，通过questionid与主表关联
-
----
-
-</KbCard>
-
-</div>
-</div>
-</div>
-
 <div id="permission" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -338,7 +161,48 @@ arrow-mbo/src/pages/afterSales/feedback/
 </div>
 </div>
 </div>
+<div id="detail-logic" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="3.1 前端路由"><table class="kl-table"><thead><tr><th>路由</th><th>页面</th><th>说明</th></tr></thead><tbody><tr><td><code>/afterSales/brand/feedback/list</code></td><td>列表页</td><td>事业部端分页查询反馈单</td></tr><tr><td><code>/afterSales/brand/feedback/:type/:id?</code></td><td>详情/回复页</td><td>type=view查看/answer回复</td></tr></tbody></table></KbCard>
+<KbCard title="3.2 API接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td><code>feedback/division/page</code></td><td>POST</td><td>事业部端分页查询反馈单</td></tr><tr><td><code>feedback/answer</code></td><td>POST</td><td>回复反馈单</td></tr><tr><td><code>feedback/cancel/{id}</code></td><td>PUT</td><td>取消反馈单</td></tr><tr><td><code>feedback/end/{id}</code></td><td>PUT</td><td>结束反馈单</td></tr><tr><td><code>feedback/comment</code></td><td>POST</td><td>获取回复记录</td></tr><tr><td><code>feedback/evaluate</code></td><td>POST</td><td>提交/查看评价</td></tr></tbody></table></KbCard>
+<KbCard title="3.3 列表页逻辑"><ul><li>调用 <code>feedback/division/page</code> 分页查询</li><li>支持按反馈单号、状态、反馈类型、经销商、创建时间等条件筛选</li><li>操作列根据状态动态显示：已提交/已回复（回复/结束）、已结束（评价）</li><li>点击行跳转详情页</li></ul></KbCard>
+<KbCard title="3.4 详情页逻辑"><ul><li>展示反馈单基本信息（只读）</li><li><strong>FeedbackChat.tsx</strong> 组件：以对话形式展示反馈回复记录<ul><li>调用 <code>feedback/comment</code> 获取历史回复</li><li>左侧显示经销商反馈，右侧显示事业部回复</li><li>支持时间线排序展示</li></ul></li><li>回复区域：文本输入框 + 提交按钮，调用 <code>feedback/answer</code></li><li>结束按钮：调用 <code>feedback/end/{id}</code>，结束前确认提示</li></ul></KbCard>
+<KbCard title="3.5 评价逻辑"><ul><li><strong>Evaluation.tsx</strong> 组件：评价表单</li><li>仅"已结束"状态可评价</li><li>调用 <code>feedback/evaluate</code> 提交评价</li><li>评价内容可能包含评分、评语等（具体字段由Evaluation组件定义）</li></ul></KbCard>
+<KbCard title="3.6 前端文件结构">
+```
+arrow-mbo/src/pages/afterSales/feedback/brand/
+├── index.tsx              # 列表页
+├── Detail.tsx             # 详情页（含回复功能）
+└── components/            # 事业部端私有组件
 
+arrow-mbo/src/pages/afterSales/feedback/
+└── components/
+    ├── FeedbackChat.tsx   # [公共] 反馈回复记录对话组件
+    └── Evaluation.tsx     # [公共] 评价组件
+```
+</KbCard>
+<KbCard title="选择弹窗"><p class='kl-tip'>无LOV选择弹窗。表单中的值集下拉同经销商端（反馈类型、反馈子类型、产品细分、状态），但反馈子类型使用带查看权限过滤的LOV配置（<code>subTypeViewLookupConfig</code>）。</p></KbCard>
+<KbCard title="导入"><p class='kl-tip'>不支持导入功能。支持导出：列表页"导出"按钮，接口 <code>feedback/division/export</code>。</p></KbCard>
+<KbCard title="其他按钮"><p><strong>列表页按钮：</strong></p>
+<table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>接口</th></tr></thead><tbody><tr><td>导出</td><td>始终显示</td><td><code>feedback/division/export</code></td></tr><tr><td>回复</td><td><code>_hasEditPer</code> && state∈[4,5]</td><td>跳转详情页</td></tr><tr><td>完结</td><td><code>_hasEditPer</code> && state∈[4,5]</td><td><code>feedback/end/{id}</code>（POST）</td></tr><tr><td>取消</td><td><code>_hasEditPer</code> && state∉[6,7,8]</td><td><code>feedback/cancel/{id}</code>（POST）</td></tr></tbody></table>
+<p class='kl-tip'>事业部端无"新增"按钮，不能新建反馈单。所有操作按钮需 <code>_hasEditPer</code> 权限标志为true（基于反馈子类型的细粒度权限控制，权限前缀 <code>hzero.feedback.dealer.ps.sub_type</code>）。</p>
+<p><strong>详情页按钮：</strong></p>
+<table class="kl-table"><thead><tr><th>按钮</th><th>显示条件</th><th>接口</th></tr></thead><tbody><tr><td>取消</td><td>详情 && state∉[6,7,8]</td><td><code>feedback/cancel/{id}</code>（POST）</td></tr><tr><td>完结</td><td>详情 && state∈[4,5]</td><td><code>feedback/end/{id}</code>（POST），前置Modal.confirm确认</td></tr><tr><td>回复</td><td>详情 && state∈[4,5]</td><td><code>feedback/answer</code>（POST）</td></tr></tbody></table></KbCard>
+<KbCard title="保存校验"><p><strong>前端表单校验：</strong> 与经销商端共用 <code>detailConfig.tsx</code> 的 baseDS，校验规则相同（联系人、联系电话、联系地址、反馈类型、反馈子类型、产品细分等必填校验，电话正则校验，内容长度限制）。</p>
+<p><strong>回复内容校验：</strong> <code>commentContent</code> 字段，isDetail且state∈[4,5]时必填，maxLength=2000。</p>
+<p><strong>附件校验：</strong> 单文件≤30MB，最多20个文件。</p>
+<p class='kl-tip'>后端校验在MBO微服务中，不在当前代码库，无法分析。</p></KbCard>
+<KbCard title="提交校验"><p><strong>回复流程：</strong> 详情页"回复"按钮 → <code>baseFormDS.validate()</code> 前端校验 → <code>feedback/answer</code>（POST）</p>
+<p><strong>完结流程：</strong> 详情页"完结"按钮 → Modal.confirm确认"确认完结该反馈吗？" → <code>feedback/end/{id}</code>（POST）</p>
+<p><strong>取消流程：</strong> 详情页"取消"按钮 → Modal.confirm确认"确认取消该反馈吗？" → <code>feedback/cancel/{id}</code>（POST）</p>
+<p class='kl-tip'>无工作流引擎，状态变更通过API直接更新。后端校验在MBO微服务中，不在当前代码库。</p></KbCard>
+<KbCard title="MBO反馈表（与问题反馈共用）"><table class="kl-table"><thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>questionid</td><td>VARCHAR2</td><td>反馈单号（主键/业务单号）</td></tr><tr><td>state</td><td>VARCHAR2</td><td>状态（值集：MBO.FEEDBACK_STATE）</td></tr><tr><td>type_code</td><td>VARCHAR2</td><td>反馈类型</td></tr><tr><td>type_sup_code</td><td>VARCHAR2</td><td>反馈子类型</td></tr><tr><td>type_detail_code</td><td>VARCHAR2</td><td>产品细分</td></tr><tr><td>content</td><td>VARCHAR2/CLOB</td><td>反馈内容</td></tr><tr><td>contacts_name</td><td>VARCHAR2</td><td>联系人</td></tr><tr><td>phone</td><td>VARCHAR2</td><td>电话</td></tr><tr><td>address</td><td>VARCHAR2</td><td>地址</td></tr></tbody></table></KbCard>
+<KbCard title="MBO反馈回复表（关联表）"><table class="kl-table"><thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键</td></tr><tr><td>questionid</td><td>VARCHAR2</td><td>反馈单号（外键关联MBO反馈表）</td></tr><tr><td>content</td><td>VARCHAR2/CLOB</td><td>回复内容</td></tr><tr><td>reply_type</td><td>VARCHAR2</td><td>回复类型（经销商反馈/事业部回复）</td></tr><tr><td>createCmp</td><td>VARCHAR2</td><td>创建人</td></tr><tr><td>createDate</td><td>TIMESTAMP</td><td>创建时间</td></tr></tbody></table>
+<p class='kl-tip'>注：回复记录和评价可能存储在独立的子表中，通过questionid与主表关联</p></KbCard>
+</div>
+</div>
+</div>
 <div id="faq" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
@@ -394,20 +258,29 @@ arrow-mbo/src/pages/afterSales/feedback/
 </div>
 </div>
 </div>
-
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：事业部能否取消经销商的反馈单？</strong></p>
+<p>A：可以。事业部端有 <code>feedback/cancel/{id}</code> 接口，可取消已提交的反馈单。</p>
+<p><strong>Q2：结束反馈后还能继续回复吗？</strong></p>
+<p>A：不能。"已结束"状态不可再回复，仅可进行评价操作。</p>
+<p><strong>Q3：评价是否必填？</strong></p>
+<p>A：评价为可选操作，结束反馈后不强制要求评价。</p>
+<p><strong>Q4：回复记录是否支持附件/图片？</strong></p>
+<p>A：取决于FeedbackChat组件实现，当前文档未涉及附件上传接口，默认仅支持文本回复。</p>
+<p><strong>Q5：事业部端能否看到所有经销商的反馈？</strong></p>
+<p>A：仅能看到本事业部管辖范围内的经销商反馈，数据范围由后端权限控制。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 作者 |
-|------|------|---------|------|
-| 2026-08-03 | v1.0 | 初始文档生成 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>作者</th></tr></thead><tbody><tr><td>2026-08-03</td><td>v1.0</td><td>初始文档生成</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
-
 <div id="history" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
