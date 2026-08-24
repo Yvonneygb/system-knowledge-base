@@ -149,8 +149,12 @@
 <KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>CRM_BUSINESS/v1/{orgId}/cross-bu-sales-list</td><td>GET</td><td>查询跨事业部产品销售清单</td></tr></tbody></table>
 <p class='kl-tip'>接口路径为推测，以实际代码为准</p></KbCard>
 <KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-crm</code></li></ul></KbCard>
-<KbCard title="3.3 核心业务规则"><p>1. 需要有跨事业部数据查看权限 2. 支持按事业部、产品、时间范围筛选 3. 无工作流</p>
-<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 前端代码缺失（疑似hlod低代码页面），无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 需要有跨事业部数据查看权限 2. 支持按事业部、产品、时间范围筛选 3. 无工作流</p></KbCard>
+<KbCard title="3.4 选择弹窗"><p class='kl-tip'>前端代码缺失（疑似hlod低代码页面），无法确认。</p></KbCard>
+<KbCard title="3.5 导入"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.6 其他按钮"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.7 保存校验"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="3.8 提交校验"><p class='kl-tip'>前端代码缺失，无法确认。</p></KbCard>
 <KbCard title="数据库表详解"><p class='kl-tip'>具体表结构待确认，推测涉及产品销售相关表，包含以下核心字段：</p>
 <table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>product_code</td><td>产品编码</td></tr><tr><td>product_name</td><td>产品名称</td></tr><tr><td>business_unit</td><td>事业部</td></tr><tr><td>sales_price</td><td>销售价格</td></tr><tr><td>sales_qty</td><td>销售数量</td></tr><tr><td>sales_amount</td><td>销售金额</td></tr></tbody></table></KbCard>
 </div>
@@ -187,7 +191,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：跨事业部查询需要特殊权限吗？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：跨事业部查询需要特殊权限吗？</strong></p>
 <p>A1：是，需要分配跨事业部数据查看权限。</p>
 <p><strong>Q2：能否导出销售清单？</strong></p>
 <p>A2：视前端是否提供导出功能，以后端接口支持为准。</p></KbCard>
