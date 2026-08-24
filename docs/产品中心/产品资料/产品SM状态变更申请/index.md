@@ -176,100 +176,9 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="2.1 后端Controller">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>项目</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>Controller</td>
-<td>ProductOverHeaderController</td>
-</tr>
-<tr>
-<td>基础路径</td>
-<td>`/v1/{organizationId}/product-over-headers`</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="2" title="2.2 API接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/product-over-headers`</td>
-<td>GET</td>
-<td>查询变更申请列表</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/product-over-headers/{id}`</td>
-<td>GET</td>
-<td>查询变更申请详情（含行）</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/product-over-headers`</td>
-<td>POST</td>
-<td>新增变更申请</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/product-over-headers/{id}`</td>
-<td>PUT</td>
-<td>更新变更申请</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/product-over-headers/{id}`</td>
-<td>DELETE</td>
-<td>删除变更申请（仅草稿）</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/product-over-headers/{id}/submit`</td>
-<td>POST</td>
-<td>提交审批</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/product-over-headers/{id}/approve`</td>
-<td>POST</td>
-<td>审批通过</td>
-</tr>
-<tr>
-<td>`/v1/{organizationId}/product-over-headers/{id}/reject`</td>
-<td>POST</td>
-<td>审批驳回</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
-<KbCard num="3" title="2.3 工作流">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>项目</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>工作流实体</td>
-<td>PRODUCT_OVER_HEADER</td>
-</tr>
-<tr>
-<td>工作流名称</td>
-<td>产品SM状态变更</td>
-</tr>
-<tr>
-<td>审批节点</td>
-<td>根据工作流配置，支持多级审批</td>
-</tr>
-</tbody></table></div>
-
-</KbCard>
-
+<KbCard title="2.1 后端Controller"><table class="kl-table"><thead><tr><th>项目</th><th>说明</th></tr></thead><tbody><tr><td>Controller</td><td>ProductOverHeaderController</td></tr><tr><td>基础路径</td><td><code>/v1/{organizationId}/product-over-headers</code></td></tr></tbody></table></KbCard>
+<KbCard title="2.2 API接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td><code>/v1/{organizationId}/product-over-headers</code></td><td>GET</td><td>查询变更申请列表</td></tr><tr><td><code>/v1/{organizationId}/product-over-headers/{id}</code></td><td>GET</td><td>查询变更申请详情（含行）</td></tr><tr><td><code>/v1/{organizationId}/product-over-headers</code></td><td>POST</td><td>新增变更申请</td></tr><tr><td><code>/v1/{organizationId}/product-over-headers/{id}</code></td><td>PUT</td><td>更新变更申请</td></tr><tr><td><code>/v1/{organizationId}/product-over-headers/{id}</code></td><td>DELETE</td><td>删除变更申请（仅草稿）</td></tr><tr><td><code>/v1/{organizationId}/product-over-headers/{id}/submit</code></td><td>POST</td><td>提交审批</td></tr><tr><td><code>/v1/{organizationId}/product-over-headers/{id}/approve</code></td><td>POST</td><td>审批通过</td></tr><tr><td><code>/v1/{organizationId}/product-over-headers/{id}/reject</code></td><td>POST</td><td>审批驳回</td></tr></tbody></table></KbCard>
+<KbCard title="2.3 工作流"><table class="kl-table"><thead><tr><th>项目</th><th>说明</th></tr></thead><tbody><tr><td>工作流实体</td><td>PRODUCT_OVER_HEADER</td></tr><tr><td>工作流名称</td><td>产品SM状态变更</td></tr><tr><td>审批节点</td><td>根据工作流配置，支持多级审批</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -287,97 +196,16 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 变更申请头（PRODUCT_OVER_HEADER）">
-
-- **申请单号（apply_no）**：系统自动生成，格式按编码规则
-- **申请人（applicant）**：当前登录用户
-- **申请日期（apply_date）**：默认当前日期
-- **变更原因（change_reason）**：必填，说明SM状态变更原因
-- **申请状态（apply_status）**：草稿/待审批/审批中/已通过/已驳回/已撤回
-- **审批意见（approval_comment）**：审批人填写的意见
-
-</KbCard>
-
-<KbCard title="3.2 变更申请行（PRODUCT_OVER_LINE）">
-
-- 每行对应一个产品的SM状态变更
-- **产品ID（product_id）**：关联产品
-- **产品编码（product_code）**：产品编码
-- **产品名称（product_name）**：产品名称
-- **当前SM状态（current_sm_status）**：变更前的SM状态
-- **目标SM状态（target_sm_status）**：变更后的SM状态
-- **行备注（line_remark）**：行级备注说明
-
-</KbCard>
-
-<KbCard title="3.3 SM状态说明">
-
-- SM（Sales Management）状态用于控制产品在销售管理中的可用性
-- 常见SM状态：正常销售/限制销售/停止销售/淘汰等
-- SM状态变更需审批，防止随意变更影响业务
-
-</KbCard>
-
-<KbCard title="3.4 审批通过后处理">
-
-- 审批通过后，系统自动将行中产品的SM状态更新为目标SM状态
-- 更新操作在事务中执行，确保头和行数据一致性
-- 状态更新后触发相关业务通知
-
-</KbCard>
-
-<KbCard title="3.5 数据校验">
-
-- 申请单号唯一性校验
-- 目标SM状态不可与当前SM状态相同
-- 产品必须存在且有效
-- 草稿状态才可编辑和删除
-
-</KbCard>
-
-<KbCard num="1" title="4.1 产品SM#状态变更头表">
-
-> 表名：PRODUCT_OVER_HEADER（产品SM状态变更头表）
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| id | NUMBER | 主键ID | PK |
-| apply_no | VARCHAR2 | 申请单号@ |D| 唯一，自动生成 |
-| applicant | NUMBER | 申请人 | |
-| apply_date | DATE | 申请日期 | |
-| change_reason | VARCHAR2 | 变更原因 | NOT NULL |
-| apply_status | VARCHAR2 | 申请状态 | DRAFT/SUBMITTED/APPROVING/APPROVED/REJECTED/WITHDRAWN |
-| approval_comment | VARCHAR2 | 审批意见 | |
-| organization_id | NUMBER | 组织ID | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| last_updated_by | NUMBER | 最后更新人 | |
-| last_update_date | DATE | 最后更新时间 | |
-| object_version_number | NUMBER | 版本号 | 乐观锁 |
-
-</KbCard>
-
-<KbCard num="2" title="4.2 产品SM状态变更行表">
-
-> 表名：PRODUCT_OVER_LINE（产品SM状态变更行表）
-
-| 字段名 | 类型 | 说明 | 备注 |
-|--------|------|------|------|
-| id | NUMBER | 主键ID | PK |
-| header_id | NUMBER | 变更头ID | FK→PRODUCT_OVER_HEADER |
-| line_number | NUMBER | 行号 | |
-| product_id | NUMBER | 产品ID | FK→PRODUCT |
-| product_code | VARCHAR2 | 产品编码 | |
-| product_name | VARCHAR2 | 产品名称 | |
-| current_sm_status | VARCHAR2 | 当前SM状态 | |
-| target_sm_status | VARCHAR2 | 目标SM状态 | |
-| line_remark | VARCHAR2 | 行备注 | |
-| created_by | NUMBER | 创建人 | |
-| creation_date | DATE | 创建时间 | |
-| object_version_number | NUMBER | 版本号 | 乐观锁 |
-
-</KbCard>
-
+<KbCard title="3.1 变更申请头（PRODUCT_OVER_HEADER）"><ul><li><strong>申请单号（apply_no）</strong>：系统自动生成，格式按编码规则</li><li><strong>申请人（applicant）</strong>：当前登录用户</li><li><strong>申请日期（apply_date）</strong>：默认当前日期</li><li><strong>变更原因（change_reason）</strong>：必填，说明SM状态变更原因</li><li><strong>申请状态（apply_status）</strong>：草稿/待审批/审批中/已通过/已驳回/已撤回</li><li><strong>审批意见（approval_comment）</strong>：审批人填写的意见</li></ul></KbCard>
+<KbCard title="3.2 变更申请行（PRODUCT_OVER_LINE）"><ul><li>每行对应一个产品的SM状态变更</li><li><strong>产品ID（product_id）</strong>：关联产品</li><li><strong>产品编码（product_code）</strong>：产品编码</li><li><strong>产品名称（product_name）</strong>：产品名称</li><li><strong>当前SM状态（current_sm_status）</strong>：变更前的SM状态</li><li><strong>目标SM状态（target_sm_status）</strong>：变更后的SM状态</li><li><strong>行备注（line_remark）</strong>：行级备注说明</li></ul></KbCard>
+<KbCard title="3.3 SM状态说明"><ul><li>SM（Sales Management）状态用于控制产品在销售管理中的可用性</li><li>常见SM状态：正常销售/限制销售/停止销售/淘汰等</li><li>SM状态变更需审批，防止随意变更影响业务</li></ul></KbCard>
+<KbCard title="3.4 审批通过后处理"><ul><li>审批通过后，系统自动将行中产品的SM状态更新为目标SM状态</li><li>更新操作在事务中执行，确保头和行数据一致性</li><li>状态更新后触发相关业务通知</li></ul></KbCard>
+<KbCard title="3.5 数据校验"><ul><li>申请单号唯一性校验</li><li>目标SM状态不可与当前SM状态相同</li><li>产品必须存在且有效</li><li>草稿状态才可编辑和删除</li></ul>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n\\|\\ 弹窗名称\\ \\|\\ 接口\\ \\|\\ 说明\\ \\|\\r\\n\\|---------\\|------\\|------\\|\\r\\n\\|\\ 产品弹窗\\ \\|\\ GET\\ /get-product-pop-up\\ \\|\\ 选择需变更SM状态的产品\\ \\|\\r\\n\\|\\ SM状态值集\\ \\|\\ GET\\ /get-change-status-lov\\ \\|\\ 参数isEliminate、smState\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n支持Excel导入。后端接口\\ POST\\ /data-upload（异步导入临时表，参数templateCode、excel）。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n\\|\\ 按钮\\ \\|\\ 接口\\ \\|\\ 说明\\ \\|\\r\\n\\|------\\|------\\|------\\|\\r\\n\\|\\ 查询\\ \\|\\ GET\\ /list\\ \\|\\ 列表查询\\ \\|\\r\\n\\|\\ 导出\\ \\|\\ GET\\ /export\\ \\|\\ 导出，注解@ExcelExport\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n\\*\\*后端校验（saveVerify方法）：\\*\\*\\r\\n\\r\\n\\|\\ 校验项\\ \\|\\ 错误提示\\ \\|\\r\\n\\|--------\\|----------\\|\\r\\n\\|\\ 产品编码重复\\ \\|\\ 以下产品编码重复，请检查！\\+重复编码\\ \\|\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n\\*\\*后端校验（submitVerify方法）：\\*\\*\\r\\n\\r\\n\\|\\ 校验项\\ \\|\\ 错误提示\\ \\|\\r\\n\\|--------\\|----------\\|\\r\\n\\|\\ 明细行存在\\ \\|\\ 产品SM状态变更申请明细行不存在！\\ \\|\\r\\n\\|\\ 在途申请校验\\ \\|\\ 以下产品已有在途申请，无法重复提交\\.\\.\\.申请单号xxx正在处理产品xxx\\ \\|\\r\\n\\r\\n\\*\\*工作流：\\*\\*\\ 实现WorkflowBaseService接口，有wfComplete、doProcessOA方法</p></KbCard>
+<KbCard title="4.1 产品SM#状态变更头表"><p class='kl-tip'>表名：PRODUCT_OVER_HEADER（产品SM状态变更头表）</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>apply_no</td><td>VARCHAR2</td><td>申请单号@</td><td>D</td><td>唯一，自动生成</td></tr><tr><td>applicant</td><td>NUMBER</td><td>申请人</td><td></td></tr><tr><td>apply_date</td><td>DATE</td><td>申请日期</td><td></td></tr><tr><td>change_reason</td><td>VARCHAR2</td><td>变更原因</td><td>NOT NULL</td></tr><tr><td>apply_status</td><td>VARCHAR2</td><td>申请状态</td><td>DRAFT/SUBMITTED/APPROVING/APPROVED/REJECTED/WITHDRAWN</td></tr><tr><td>approval_comment</td><td>VARCHAR2</td><td>审批意见</td><td></td></tr><tr><td>organization_id</td><td>NUMBER</td><td>组织ID</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>last_updated_by</td><td>NUMBER</td><td>最后更新人</td><td></td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
+<KbCard title="4.2 产品SM状态变更行表"><p class='kl-tip'>表名：PRODUCT_OVER_LINE（产品SM状态变更行表）</p>
+<table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td>id</td><td>NUMBER</td><td>主键ID</td><td>PK</td></tr><tr><td>header_id</td><td>NUMBER</td><td>变更头ID</td><td>FK→PRODUCT_OVER_HEADER</td></tr><tr><td>line_number</td><td>NUMBER</td><td>行号</td><td></td></tr><tr><td>product_id</td><td>NUMBER</td><td>产品ID</td><td>FK→PRODUCT</td></tr><tr><td>product_code</td><td>VARCHAR2</td><td>产品编码</td><td></td></tr><tr><td>product_name</td><td>VARCHAR2</td><td>产品名称</td><td></td></tr><tr><td>current_sm_status</td><td>VARCHAR2</td><td>当前SM状态</td><td></td></tr><tr><td>target_sm_status</td><td>VARCHAR2</td><td>目标SM状态</td><td></td></tr><tr><td>line_remark</td><td>VARCHAR2</td><td>行备注</td><td></td></tr><tr><td>created_by</td><td>NUMBER</td><td>创建人</td><td></td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td><td></td></tr><tr><td>object_version_number</td><td>NUMBER</td><td>版本号</td><td>乐观锁</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -445,15 +273,17 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><table class="kl-table"><thead><tr><th>问题</th><th>解答</th></tr></thead><tbody><tr><td>SM状态有哪些值？</td><td>常见有正常销售、限制销售、停止销售、淘汰等，具体以LOV配置为准</td></tr><tr><td>为什么SM状态变更需要审批？</td><td>SM状态直接影响产品销售可用性，随意变更可能影响业务，故需审批管控</td></tr><tr><td>一个申请可以变更多个产品吗？</td><td>可以，每个产品对应一行记录</td></tr><tr><td>审批驳回后可以重新提交吗？</td><td>可以，修改后重新提交审批</td></tr><tr><td>草稿状态的申请可以删除吗？</td><td>可以，仅草稿状态允许删除</td></tr><tr><td>审批通过后产品SM状态何时生效？</td><td>审批通过后立即生效，系统自动更新产品SM状态</td></tr></tbody></table></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 版本 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 2026-08-03 | V1.0 | 初始创建 | AI |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>版本</th><th>更新内容</th><th>更新人</th></tr></thead><tbody><tr><td>2026-08-03</td><td>V1.0</td><td>初始创建</td><td>AI</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
