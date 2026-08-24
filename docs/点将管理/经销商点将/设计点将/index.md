@@ -164,11 +164,11 @@
 <div class="kl-wrap">
 <KbCard title="3.1 列表页"><ul><li><strong>前端路由</strong>：<code>/general/distributorGeneral/distributorGeneralDesign/list</code></li><li><strong>API</strong>：<code>mlt/designApply/dealer/page</code></li><li><strong>Entity</strong>：<code>DesignApply</code></li><li><strong>查询条件</strong>：设计师姓名、服务时间范围、申请状态</li><li><strong>列表字段</strong>：申请单号、设计师姓名、服务类型、服务时间、经销商名称、申请状态、创建时间</li><li><strong>数据过滤</strong>：后端自动按当前登录用户的经销商ID过滤</li></ul></KbCard>
 <KbCard title="3.2 详情页"><ul><li><strong>前端路由</strong>：<code>/general/distributorGeneral/distributorGeneralDesign/detail/:applyCode/:type</code></li><li><strong>API</strong>：<code>mlt/designApply/dealer/detail</code></li><li><strong>参数说明</strong>：<ul><li><code>applyCode</code>：设计点将申请单号</li><li><code>type</code>：详情查看类型</li></ul></li><li><strong>展示内容</strong>：设计师基本信息、服务门店信息、服务时间安排、审批状态等</li></ul></KbCard>
-<KbCard title="选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>申请点将弹窗</td><td>Table选择设计师，含查看饱和度</td></tr><tr><td>取消点将弹窗</td><td>取消原因+DesignApplyDetail</td></tr><tr><td>设计图纸弹窗</td><td>设计图/效果图/施工及软装图三组Table</td></tr><tr><td>反馈弹窗</td><td>反馈意见Form</td></tr><tr><td>查看饱和度弹窗</td><td>SaturationForm</td></tr></tbody></table></KbCard>
-<KbCard title="导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
-<KbCard title="其他按钮"><p>列表页：图纸确认(FDD签署)、面积确认(FDD签署)、取消点将、申请点将。行操作：查看详情、编辑、删除、流程摘要、效果图补申、设计图纸下载、查看讲师档案、查看饱和度。详情页：保存、保存并提交、查看结算确认、查看确认书、取消。</p></KbCard>
-<KbCard title="保存校验"><p><strong>前端校验：</strong> generalFormDS.validate()和designInfoFormDS.validate()（基本信息+设计信息必填项）。反馈校验eedbackFormDS.validate()。</p></KbCard>
-<KbCard title="提交校验"><p>取消点将校验取消原因必填。图纸/面积确认走FDD签署。无工作流编码。</p></KbCard>
+<KbCard title="3.3 选择弹窗"><table class="kl-table"><thead><tr><th>弹窗名称</th><th>说明</th></tr></thead><tbody><tr><td>申请点将弹窗</td><td>Table选择设计师，含查看饱和度</td></tr><tr><td>取消点将弹窗</td><td>取消原因+DesignApplyDetail</td></tr><tr><td>设计图纸弹窗</td><td>设计图/效果图/施工及软装图三组Table</td></tr><tr><td>反馈弹窗</td><td>反馈意见Form</td></tr><tr><td>查看饱和度弹窗</td><td>SaturationForm</td></tr></tbody></table></KbCard>
+<KbCard title="3.4 导入"><p class='kl-tip'>不支持导入功能。</p></KbCard>
+<KbCard title="3.5 其他按钮"><p>列表页：图纸确认(FDD签署)、面积确认(FDD签署)、取消点将、申请点将。行操作：查看详情、编辑、删除、流程摘要、效果图补申、设计图纸下载、查看讲师档案、查看饱和度。详情页：保存、保存并提交、查看结算确认、查看确认书、取消。</p></KbCard>
+<KbCard title="3.6 保存校验"><p><strong>前端校验：</strong> generalFormDS.validate()和designInfoFormDS.validate()（基本信息+设计信息必填项）。反馈校验eedbackFormDS.validate()。</p></KbCard>
+<KbCard title="3.7 提交校验"><p>取消点将校验取消原因必填。图纸/面积确认走FDD签署。无工作流编码。</p></KbCard>
 <KbCard title="design_apply（设计点将申请表）"><table class="kl-table"><thead><tr><th>字段名</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>apply_code</td><td>VARCHAR2</td><td>申请单号（主键）</td></tr><tr><td>apply_type</td><td>VARCHAR2</td><td>申请类型</td></tr><tr><td>lecturer_code</td><td>VARCHAR2</td><td>设计师编码</td></tr><tr><td>lecturer_name</td><td>VARCHAR2</td><td>设计师姓名</td></tr><tr><td>lecturer_level</td><td>VARCHAR2</td><td>设计师级别</td></tr><tr><td>dealer_code</td><td>VARCHAR2</td><td>经销商编码</td></tr><tr><td>dealer_name</td><td>VARCHAR2</td><td>经销商名称</td></tr><tr><td>terminal_code</td><td>VARCHAR2</td><td>门店编码</td></tr><tr><td>terminal_name</td><td>VARCHAR2</td><td>门店名称</td></tr><tr><td>service_start_date</td><td>DATE</td><td>服务开始时间</td></tr><tr><td>service_end_date</td><td>DATE</td><td>服务结束时间</td></tr><tr><td>apply_status</td><td>VARCHAR2</td><td>申请状态</td></tr><tr><td>approval_status</td><td>VARCHAR2</td><td>审批状态</td></tr><tr><td>remark</td><td>VARCHAR2</td><td>备注</td></tr><tr><td>created_by</td><td>VARCHAR2</td><td>创建人</td></tr><tr><td>creation_date</td><td>DATE</td><td>创建时间</td></tr><tr><td>last_updated_by</td><td>VARCHAR2</td><td>最后更新人</td></tr><tr><td>last_update_date</td><td>DATE</td><td>最后更新时间</td></tr></tbody></table></KbCard>
 </div>
 </div>
@@ -186,7 +186,7 @@
 <div id="faq-qa" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="常见问题FAQ"><p><strong>Q1：经销商看不到被点将的设计师记录？</strong></p>
+<KbCard title="常见问题"><p><strong>Q1：经销商看不到被点将的设计师记录？</strong></p>
 <p>A：检查该经销商是否被正确指定为服务方，确认<code>dealer_code</code>与当前登录用户关联的经销商一致。</p>
 <p><strong>Q2：设计师点将的审批状态如何查看？</strong></p>
 <p>A：在详情页中可查看完整审批链路，包括讲师审批、门店审批等各环节状态。</p>
