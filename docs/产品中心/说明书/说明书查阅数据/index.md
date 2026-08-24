@@ -128,14 +128,7 @@
 <div id="key-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard num="1" title="重点逻辑">
-**具体逻辑**：
-
-- 1、**双模式展示**：列表模式展示每条查阅记录明细，汇总模式按说明书维度汇总查阅次数
-- 2、**查阅日志采集**：用户每次查阅说明书时，系统自动记录查阅日志到ES_SEARCH_LOG表
-- 3、**统计维度**：支持按说明书、按时间范围、按查阅人等维度统计
-</KbCard>
-
+<KbCard title="重点逻辑"><p>1. <strong>双模式展示</strong>：列表模式展示每条查阅记录明细，汇总模式按说明书维度汇总查阅次数 2. <strong>查阅日志采集</strong>：用户每次查阅说明书时，系统自动记录查阅日志到ES_SEARCH_LOG表 3. <strong>统计维度</strong>：支持按说明书、按时间范围、按查阅人等维度统计</p></KbCard>
 </div>
 </div>
 </div>
@@ -153,60 +146,12 @@
 <div id="detail-logic" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="3.1 后端接口">
-
-<div class="kb-field-scroll"><table class="kb-field-tbl"><tbody>
-<tr>
-<th>接口</th>
-<th>方法</th>
-<th>说明</th>
-</tr>
-<tr>
-<td>/v1/{organizationId}/manual-classification/list-mode-data</td>
-<td>GET</td>
-<td>列表模式数据查询</td>
-</tr>
-<tr>
-<td>/v1/{organizationId}/manual-classification/summary-mode-data</td>
-<td>GET</td>
-<td>汇总模式数据查询</td>
-</tr>
-</tbody></table></div>
-
-- Controller: `ManualClassificationController`
-
-</KbCard>
-
-<KbCard title="3.2 前端页面">
-
-- 前端包：`arrow-ae`
-- 页面路径：`arrow-ae/productInfo/manualClassification`
-
-</KbCard>
-
-<KbCard title="3.3 核心业务规则">
-
-1. 列表模式返回每条查阅记录明细（含查阅人、查阅时间、查阅的说明书）
-2. 汇总模式按说明书维度聚合，统计总查阅次数、最近查阅时间、查阅人数
-3. 查阅日志由说明书查阅操作自动写入，无需手动录入
-4. 无工作流
-
-</KbCard>
-
-<KbCard num="1" title="4.1 ES_SEARCH_LOG（查阅日志表）">
-
-| 字段 | 说明 |
-|------|------|
-| search_log_id | 日志ID（主键） |
-| spec_id | 说明书ID |
-| spec_name | 说明书名称 |
-| search_by | 查阅人 |
-| search_date | 查阅时间 |
-| organization_id | 组织ID |
-| ip_address | 查阅人IP地址 |
-
-</KbCard>
-
+<KbCard title="3.1 后端接口"><table class="kl-table"><thead><tr><th>接口</th><th>方法</th><th>说明</th></tr></thead><tbody><tr><td>/v1/{organizationId}/manual-classification/list-mode-data</td><td>GET</td><td>列表模式数据查询</td></tr><tr><td>/v1/{organizationId}/manual-classification/summary-mode-data</td><td>GET</td><td>汇总模式数据查询</td></tr></tbody></table>
+<ul><li>Controller: <code>ManualClassificationController</code></li></ul></KbCard>
+<KbCard title="3.2 前端页面"><ul><li>前端包：<code>arrow-ae</code></li><li>页面路径：<code>arrow-ae/productInfo/manualClassification</code></li></ul></KbCard>
+<KbCard title="3.3 核心业务规则"><p>1. 列表模式返回每条查阅记录明细（含查阅人、查阅时间、查阅的说明书） 2. 汇总模式按说明书维度聚合，统计总查阅次数、最近查阅时间、查阅人数 3. 查阅日志由说明书查阅操作自动写入，无需手动录入 4. 无工作流</p>
+<p>\\#\\#\\#\\ 选择弹窗\\r\\n\\r\\n&gt;\\ 前端代码缺失（疑似hlod低代码页面），无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 导入\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 其他按钮\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 保存校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。\\r\\n\\r\\n\\#\\#\\#\\ 提交校验\\r\\n\\r\\n&gt;\\ 前端代码缺失，无法确认。</p></KbCard>
+<KbCard title="4.1 ES_SEARCH_LOG（查阅日志表）"><table class="kl-table"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>search_log_id</td><td>日志ID（主键）</td></tr><tr><td>spec_id</td><td>说明书ID</td></tr><tr><td>spec_name</td><td>说明书名称</td></tr><tr><td>search_by</td><td>查阅人</td></tr><tr><td>search_date</td><td>查阅时间</td></tr><tr><td>organization_id</td><td>组织ID</td></tr><tr><td>ip_address</td><td>查阅人IP地址</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
@@ -247,15 +192,22 @@
 </div>
 </div>
 </div>
+<div id="faq-qa" style="display:none;">
+<div class="tab-pad">
+<div class="kl-wrap">
+<KbCard title="常见问题FAQ"><p><strong>Q1：查阅数据多久更新一次？</strong></p>
+<p>A1：实时更新，每次查阅说明书时自动写入日志。</p>
+<p><strong>Q2：列表模式和汇总模式的区别？</strong></p>
+<p>A2：列表模式展示每条查阅明细记录，汇总模式按说明书维度汇总统计查阅次数。</p>
+<p><strong>Q3：能否导出查阅数据？</strong></p>
+<p>A3：视前端是否提供导出按钮，具体以后端接口支持为准。</p></KbCard>
+</div>
+</div>
+</div>
 <div id="changelog" style="display:none;">
 <div class="tab-pad">
 <div class="kl-wrap">
-<KbCard title="更新记录">
-
-| 日期 | 内容 |
-|------|------|
-| 2026-08-03 | 初始创建 |
-</KbCard>
+<KbCard title="更新记录"><table class="kl-table"><thead><tr><th>日期</th><th>内容</th></tr></thead><tbody><tr><td>2026-08-03</td><td>初始创建</td></tr></tbody></table></KbCard>
 </div>
 </div>
 </div>
